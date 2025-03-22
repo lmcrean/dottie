@@ -9,7 +9,10 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:yolo": "vitest --run"
+    "test:yolo": "vitest --run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:dev": "playwright test -c playwright.config.ts --project=safari"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -67,6 +70,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
     "@testing-library/react-hooks": "^8.0.1",
