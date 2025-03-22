@@ -11,8 +11,8 @@ graph TD
     %% Path 1: Take Assessment - Green
     MainMenu -->|Take Assessment| StartAssessment[Start New Assessment]
     StartAssessment -->|Apply Logic Tree| Results[Results Screen]
-    Results -->|AI Analysis| Recommendations[Personalized Recommendations]
-    Recommendations --> JournalEntry[Save Journal Entry]
+    Results -->|AI Analysis| AI_CHAT[AI Chat]
+    Results -->|Save Assessment| JournalEntry[Save Journal Entry]
     JournalEntry -->|Saves to Database| MainMenu
     
     %% Path 2: View Past Entries - Blue
@@ -25,12 +25,14 @@ graph TD
     classDef menu fill:#f9f9f9,stroke:#333,stroke-width:2px
     classDef action fill:#d4edda,stroke:#006400,stroke-width:2px
     classDef results fill:#fff3cd,stroke:#8B4513,stroke-width:2px
+    classDef aiChat fill:lightyellow,stroke:none
     
     %% Node styling
     class Start menu
     class MainMenu menu
-    class StartAssessment,JournalEntry,Results,Recommendations action
+    class StartAssessment,JournalEntry,Results action
     class ViewEntries,EntryDetails action
+    class AI_CHAT aiChat
     
     %% Link styling - use a simpler approach with fewer link styles
     %% Main connection
@@ -47,8 +49,8 @@ graph TD
     linkStyle 6 stroke:#4169E1,stroke-width:2px
     linkStyle 7 stroke:#4169E1,stroke-width:2px
     linkStyle 8 stroke:#4169E1,stroke-width:2px
-    linkStyle 9 stroke:#4169E1,stroke-width:2px
 ```
+
 
 ## Path Descriptions
 
@@ -64,10 +66,14 @@ graph TD
    - Question 5: Pain level
    - Question 6: Physical and emotional symptoms
 4. System processes answers using the Logic Tree
-5. User receives personalized results and analysis
-6. AI generates personalized recommendations
+5. User receives personalized results from the logic tree (not yet AI)
+   - includes analysis
+   - includes recommendations
+6. User has two options:
+   -  Option to engage with AI Chat
+   - Save assessment as a journal entry
 7. Assessment is automatically saved as a journal entry
-8. User returns to the Main Menu
+8.  User returns to the Main Menu
 
 ### Path 2: View Past Entries
 
