@@ -1,5 +1,7 @@
 # Integration Tests
 
+refer to the README.md file in the backend folder for the API endpoints and data format.
+
 ## userlifecycle.test.js
 
 This test covers the following:
@@ -30,6 +32,8 @@ this test covers the following:
 9. delete the 2nd assessment result
 10. get the updated list of assessment results
 11. delete the user
+
+
 
 
 
