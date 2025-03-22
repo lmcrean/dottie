@@ -3,6 +3,7 @@ import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
 import app from '../../../server.js';
 import { createServer } from 'http';
+import { initTestDatabase } from '../../setup.js';
 
 // Create a supertest instance
 const request = supertest(app);
@@ -12,11 +13,14 @@ let assessmentId;
 // Store server instance
 let server;
 
-// Use a different port for tests to avoid conflicts with the running server
-const TEST_PORT = 5001;
+// Use a higher random port to avoid conflicts with the running server
+const TEST_PORT = Math.floor(Math.random() * 10000) + 30000;
 
 // Start server before all tests
 beforeAll(async () => {
+  // Initialize the test database before starting the server
+  await initTestDatabase();
+  
   server = createServer(app);
   await new Promise((resolve) => {
     server.listen(TEST_PORT, () => {
