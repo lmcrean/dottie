@@ -17,7 +17,7 @@ This test covers the following:
    4. login with the new username and password
 6. Delete the user
 
-## productlifecycle.test.js
+## assessmentlifecycle.test.js
 
 this test covers the following:
 
