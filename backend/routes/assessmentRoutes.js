@@ -10,6 +10,13 @@ const router = express.Router();
 // Add logging middleware
 router.use((req, res, next) => {
   console.log(`Assessment route: ${req.method} ${req.path}`);
+  
+  // For PUT and DELETE requests, log the request body
+  if (req.method === 'PUT' || req.method === 'DELETE') {
+    console.log(`${req.method} ${req.originalUrl}`);
+    console.log('Body:', req.body);
+  }
+  
   next();
 });
 
@@ -132,6 +139,71 @@ router.get("/:id", authenticateToken, (req, res) => {
   } catch (error) {
     console.error('Error fetching assessment:', error);
     res.status(500).json({ error: 'Failed to fetch assessment' });
+  }
+});
+
+// Update a specific assessment
+router.put("/update/:id", authenticateToken, (req, res) => {
+  try {
+    const assessmentId = req.params.id;
+    const { assessmentData } = req.body;
+    
+    console.log(`PUT /api/assessment/update/${assessmentId} - checking`);
+    
+    // Find the assessment by ID
+    const assessmentIndex = assessments.findIndex(a => a.id === assessmentId);
+    
+    if (assessmentIndex === -1) {
+      console.log(`PUT /api/assessment/update/${assessmentId} - not found`);
+      return res.status(404).json({ error: 'Assessment not found' });
+    }
+    
+    // Check if the assessment belongs to the user
+    if (assessments[assessmentIndex].userId !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden: Cannot update other users assessments' });
+    }
+    
+    // Update the assessment
+    assessments[assessmentIndex] = {
+      ...assessments[assessmentIndex],
+      assessmentData,
+      updatedAt: new Date().toISOString()
+    };
+    
+    res.json(assessments[assessmentIndex]);
+  } catch (error) {
+    console.error('Error updating assessment:', error);
+    res.status(500).json({ error: 'Failed to update assessment' });
+  }
+});
+
+// Delete a specific assessment
+router.delete("/delete/:id", authenticateToken, (req, res) => {
+  try {
+    const assessmentId = req.params.id;
+    
+    console.log(`DELETE /api/assessment/delete/${assessmentId} - checking`);
+    
+    // Find the assessment by ID
+    const assessmentIndex = assessments.findIndex(a => a.id === assessmentId);
+    
+    if (assessmentIndex === -1) {
+      console.log(`DELETE /api/assessment/delete/${assessmentId} - not found`);
+      return res.status(404).json({ error: 'Assessment not found' });
+    }
+    
+    // Check if the assessment belongs to the user
+    if (assessments[assessmentIndex].userId !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden: Cannot delete other users assessments' });
+    }
+    
+    // Remove the assessment
+    assessments.splice(assessmentIndex, 1);
+    
+    res.json({ message: 'Assessment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting assessment:', error);
+    res.status(500).json({ error: 'Failed to delete assessment' });
   }
 });
 
