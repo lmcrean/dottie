@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Development Environment Tests', () => {
   test('should display development mode in heading', async ({ page }) => {
     // Navigate to the test page
-    await page.goto('/test');
+    await page.goto('/test_page');
     
     // Check that the page heading shows DEVELOPMENT
     const heading = page.locator('h1');
@@ -12,7 +12,7 @@ test.describe('Development Environment Tests', () => {
 
   test('should successfully connect to API', async ({ page }) => {
     // Navigate to the test page
-    await page.goto('/test');
+    await page.goto('/test_page');
     
     // Click the API test button
     const apiButton = page.getByRole('button', { name: 'Test API Message' });
@@ -31,7 +31,7 @@ test.describe('Development Environment Tests', () => {
 
   test('should successfully connect to SQLite in development mode', async ({ page }) => {
     // Navigate to the test page
-    await page.goto('/test');
+    await page.goto('/test_page');
     
     // Click the SQLite test button
     const dbButton = page.getByRole('button', { name: 'Test SQLite Connection' });
@@ -62,7 +62,7 @@ test.describe('Development Environment Tests', () => {
   
   test('API error handling works correctly', async ({ page, context }) => {
     // Navigate to the test page
-    await page.goto('/test');
+    await page.goto('/test_page');
     
     // Mock a failed API response
     await context.route('/api/message', route => route.abort('failed'));

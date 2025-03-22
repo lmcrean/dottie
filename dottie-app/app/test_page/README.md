@@ -10,10 +10,10 @@ This page serves as a development and testing utility for the Dottie application
 
 ## How to Access
 
-The test page is accessible at the `/test` route:
+The test page is accessible at the `/test_page` route:
 
 ```
-http://localhost:3000/test
+http://localhost:3000/test_page
 ```
 
 ## API Endpoints Used
@@ -28,7 +28,7 @@ This test page interacts with the following API endpoints:
 Tests are organized in the `__tests__` directory with the following structure:
 
 ```
-/app/test/__tests__/
+/app/test_page/__tests__/
 ├── GetApiMessage/           # Unit tests for API message functionality
 │   ├── GetApiMessage.test.tsx
 │   └── AxiosReq.test.tsx
@@ -85,4 +85,4 @@ npm run test:e2e:dev
 - **In production mode:**
   - The heading will show "PRODUCTION"
   - The SQLite test will show a message indicating it's not available
-- All API responses include timestamps for verification purposes
+- All API responses include timestamps for verification purposes 

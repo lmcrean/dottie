@@ -5,7 +5,7 @@ import { spawn } from 'child_process';
 // Reference: https://playwright.dev/docs/test-configuration
 export default defineConfig({
   // Directory where tests are located
-  testDir: path.join(__dirname, 'app/test/__tests__/e2e'),
+  testDir: path.join(__dirname, 'app/test_page/__tests__/e2e'),
   
   // Run tests in files in parallel
   fullyParallel: true,

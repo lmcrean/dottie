@@ -1,6 +1,6 @@
 # End-to-End Tests for Test Page
 
-This directory contains Playwright end-to-end tests for the `/test` page of the Dottie application. These tests verify that the page behaves correctly in both development and production environments.
+This directory contains Playwright end-to-end tests for the `/test_page` page of the Dottie application. These tests verify that the page behaves correctly in both development and production environments.
 
 ## Test Files
 
@@ -33,7 +33,7 @@ npm run test:e2e:dev
 ## How the Tests Work
 
 1. The Playwright configuration automatically starts the development server
-2. Tests navigate to the `/test` page and interact with its elements
+2. Tests navigate to the `/test_page` page and interact with its elements
 3. Production mode is simulated by mocking API responses and injecting environment settings
 
 ## Notes

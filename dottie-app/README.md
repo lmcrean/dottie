@@ -28,13 +28,13 @@ Dottie is a mobile-friendly web application designed to provide personalized men
 
 ### Test Page
 
-Dottie includes a test page at the `/test` endpoint for verifying API connections and database functionality in different environments. This page:
+Dottie includes a test page at the `/test_page` endpoint for verifying API connections and database functionality in different environments. This page:
 
 - Shows the current environment (DEVELOPMENT/PRODUCTION)
 - Provides buttons to test API and database connectivity 
 - Displays responses from the API
 
-For more information, see the [Test Page README](app/test/README.md).
+For more information, see the [Test Page README](app/test_page/README.md).
 
 ### Unit Testing
 
@@ -78,7 +78,7 @@ The E2E tests verify:
 - API connections work as expected
 - SQLite availability is correctly indicated based on the environment
 
-For more information, see the [E2E Tests README](app/test/__tests__/e2e/README.md).
+For more information, see the [E2E Tests README](app/test_page/__tests__/e2e/README.md).
 
 ## Getting Started
 
