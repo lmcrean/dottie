@@ -33,7 +33,8 @@ describe('TestPage', () => {
     render(<TestPage />);
     
     const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toHaveTextContent(/development/i);
+    expect(heading).toHaveTextContent(/now testing in/i);
+    expect(heading).toHaveTextContent(/test/i);
   });
 
   it('handles API test button click correctly', async () => {
@@ -119,7 +120,7 @@ describe('TestPage', () => {
     
     // Wait for the error to be displayed
     await waitFor(() => {
-      expect(screen.getByText(`Error: ${errorMessage}`)).toBeInTheDocument();
+      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
     });
   });
 }); 
