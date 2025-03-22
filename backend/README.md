@@ -283,3 +283,33 @@ const getAssessmentDetails = async (assessmentId) => {
   return await response.json();
 };
 ```
+
+#### Updating Assessment Data
+
+```javascript
+const updateAssessment = async (assessmentId, assessmentData) => {
+  const response = await fetch(`http://localhost:5000/api/assessment/update/${assessmentId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer your-access-token"
+    },
+    body: JSON.stringify({ assessmentData })
+  });
+  return await response.json();
+};
+```
+
+#### Deleting Assessment
+
+```javascript
+const deleteAssessment = async (assessmentId) => {
+  const response = await fetch(`http://localhost:5000/api/assessment/delete/${assessmentId}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": "Bearer your-access-token"
+    }
+  });
+  return await response.json();
+};
+```
