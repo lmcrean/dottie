@@ -22,14 +22,65 @@ Dottie is a mobile-friendly web application designed to provide personalized men
 - **Styling**: Tailwind CSS
 - **UI Components**: shadcn/ui
 - **Icons**: Lucide React
+- **Testing**: Vitest, Playwright
+
+## Testing
+
+### Test Page
+
+Dottie includes a test page at the `/test` endpoint for verifying API connections and database functionality in different environments. This page:
+
+- Shows the current environment (DEVELOPMENT/PRODUCTION)
+- Provides buttons to test API and database connectivity 
+- Displays responses from the API
+
+For more information, see the [Test Page README](app/test/README.md).
+
+### Unit Testing
+
+Unit tests are implemented using Vitest and are located in the respective `__tests__` directories.
+
+To run unit tests:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests in "yolo" mode (for TDD workflow)
+npm run test:yolo
+
+# Run specific tests
+npm test -- "GetApiMessage"
+```
+
+### End-to-End Testing
+
+End-to-end tests are implemented using Playwright and test the application in a real browser environment.
+
+To run E2E tests:
+
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI for debugging
+npm run test:e2e:ui
+
+# Run only development tests
+npm run test:e2e:dev
+```
+
+The E2E tests verify:
+- The test page displays the correct environment
+- API connections work as expected
+- SQLite availability is correctly indicated based on the environment
+
+For more information, see the [E2E Tests README](app/test/__tests__/e2e/README.md).
 
 ## Getting Started
-
-Here’s an updated version of your `README.md` with additional details and improvements for clarity:
-
----
-
-## Dottie App
 
 ### Prerequisites
 
@@ -44,7 +95,7 @@ node -v
 npm -v
 ```
 
-If you don’t have Node.js installed, follow these steps:
+If you don't have Node.js installed, follow these steps:
 
 #### **Installing Node.js**
 
@@ -77,8 +128,6 @@ If you don’t have Node.js installed, follow these steps:
      sudo apt install nodejs npm
      ```
 
----
-
 ### Installation
 
 1. Clone the repository:
@@ -101,8 +150,6 @@ If you don’t have Node.js installed, follow these steps:
    - Create a `.env` file in the root directory.
    - Add necessary environment variables (e.g., API keys, database URLs).
 
----
-
 ### Running the Application
 
 1. Start the development server:
@@ -118,8 +165,6 @@ If you don’t have Node.js installed, follow these steps:
    ```
    http://localhost:3000
    ```
-
----
 
 ### Building for Production
 
@@ -141,8 +186,6 @@ If you don’t have Node.js installed, follow these steps:
    yarn start
    ```
 
----
-
 ### Contributing
 
 If you'd like to contribute to this project, please follow these steps:
@@ -162,18 +205,10 @@ If you'd like to contribute to this project, please follow these steps:
    ```
 5. Open a pull request on GitHub.
 
----
-
 ### License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
-
 ### Support
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/lmcrean/dottie.git/issues) on GitHub.
-
----
-
-This updated `README.md` provides clear instructions for setting up the project, running it, and contributing. Let me know if you need further adjustments!
