@@ -5,15 +5,37 @@ process.env.TEST_MODE = 'true';
 import db from '../db/index.js';
 import { createTables } from '../db/migrations/initialSchema.js';
 
+// Track if the database has been initialized
+let isDbInitialized = false;
+
 /**
  * Initialize the test database
  * This function will create the tables if they don't exist
  */
 export async function initTestDatabase() {
   try {
+    // If already initialized, skip
+    if (isDbInitialized) {
+      console.log('Test database already initialized, skipping...');
+      return true;
+    }
+    
     console.log('Setting up test database...');
-    await createTables(db);
-    console.log('Test database setup complete');
+    
+    try {
+      await createTables(db);
+      console.log('Test database setup complete');
+    } catch (error) {
+      // If error is about tables already existing, that's okay
+      if (error.message && error.message.includes('already exists')) {
+        console.log('Tables already exist, continuing...');
+      } else {
+        // Other error, rethrow
+        throw error;
+      }
+    }
+    
+    isDbInitialized = true;
     return true;
   } catch (error) {
     console.error('Error setting up test database:', error);
