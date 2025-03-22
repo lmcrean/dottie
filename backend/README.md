@@ -53,7 +53,8 @@ API endpoints cover 3 key functionalities:
 | `/api/assessment/send`               | POST   | Send assessment results from frontend context     |
 | `/api/assessment/list`                  | GET    | Get list of all assessments for current user      |
 | `/api/assessment/:id`                   | GET    | Get detailed view of a specific assessment        |
-
+| `/api/assessment/update/:id`            | PUT    | Update a specific assessment                     |
+| `/api/assessment/delete/:id`            | DELETE | Delete a specific assessment                     |
 
 ### Data Flow
 
