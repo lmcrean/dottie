@@ -4,6 +4,7 @@ import supertest from 'supertest';
 import app from '../../../server.js';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
+import { initTestDatabase } from '../../setup.js';
 
 // Create a supertest instance
 const request = supertest(app);
@@ -14,8 +15,8 @@ let testUserId;
 let testToken;
 let testAssessmentId;
 
-// Use a different port for tests to avoid conflicts with the running server
-const TEST_PORT = 5002;
+// Use a higher random port to avoid conflicts with the running server
+const TEST_PORT = Math.floor(Math.random() * 10000) + 40000;
 
 // Create a mock token for testing
 const createMockToken = (userId) => {
@@ -28,6 +29,9 @@ const createMockToken = (userId) => {
 
 // Start server before all tests
 beforeAll(async () => {
+  // Initialize the test database before starting the server
+  await initTestDatabase();
+  
   server = createServer(app);
   await new Promise((/** @type {() => void} */ resolve) => {
     server.listen(TEST_PORT, () => {
