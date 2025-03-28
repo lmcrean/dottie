@@ -125,6 +125,66 @@ This architecture allows developers to work locally without needing to set up a 
 - **ORM**: Knex.js for database queries
 - **Testing**: Vitest, Supertest
 - **Documentation**: Docusaurus (see `/docs` directory)
+- **Frontend**: React, Vite, shadcn/ui
+
+### UI Components (shadcn/ui)
+The project uses shadcn/ui for consistent, accessible, and customizable components. Here's how to work with the UI components:
+
+#### Component Structure
+Components are located in `src/components/ui/` and follow shadcn/ui's component structure:
+```
+src/components/ui/
+├── button.tsx
+├── dialog.tsx
+├── input.tsx
+├── scroll-area.tsx
+└── ... (other components)
+```
+
+#### Adding New Components
+To add new shadcn/ui components:
+
+1. Install the component using the shadcn/ui CLI:
+   ```bash
+   npx shadcn-ui@latest add [component-name]
+   ```
+
+2. The component will be added to `src/components/ui/`
+
+3. Import and use the component:
+   ```tsx
+   import { ComponentName } from "@/components/ui/component-name"
+   ```
+
+#### Styling
+- Components use Tailwind CSS for styling
+- Custom styles can be added in the component's `className` prop
+- Theme customization is available in `src/lib/utils.ts`
+
+#### Best Practices
+1. Always use the shadcn/ui components from `src/components/ui/`
+2. Maintain accessibility by using the provided props
+3. Follow the component's TypeScript interface for props
+4. Use the `className` prop for additional styling
+
+#### Example Usage
+```tsx
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+export function MyComponent() {
+  return (
+    <Dialog>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Title</DialogTitle>
+        </DialogHeader>
+        <Button>Click me</Button>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
 
 ## Contributing
 We welcome contributions to the Dottie project! Please see our [contributing guidelines](CONTRIBUTING.md) for more information.

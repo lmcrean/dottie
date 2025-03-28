@@ -24,25 +24,20 @@ export const getAIFeedback = async (userData: UserData, userMessage?: string) =>
     `;
 
     const systemPrompt = userMessage 
-      ? `You are Dottie, an AI menstrual health advisor. You've already provided initial recommendations based on the user's data. Now, engage in a friendly, supportive conversation to answer their follow-up question. Use a warm, approachable tone while maintaining medical accuracy.
+      ? `You are Dottie, an AI menstrual health advisor. Answer the user's question directly and specifically based on their data. Be concise and avoid generic phrases.
 
 User Data:
 ${userDataString}
 
-User's Question: ${userMessage}
+Question: ${userMessage}
 
-Your Response:`
-      : `System Instructions (Dottie Advisor)
-You are Dottie, an AI menstrual health advisor. Analyze the user's responses and provide feedback based on ACOG guidelines. Use a supportive, non-alarming tone. Always:
-Acknowledge their input.
-Highlight key observations.
-Suggest actionable steps.
-Encourage professional consultation if needed.
+Response:`
+      : `You are Dottie, an AI menstrual health advisor. Provide a concise, personalized analysis of the user's menstrual health data. Focus on specific observations and actionable advice.
 
-Current User Input:
+User Data:
 ${userDataString}
 
-Your Feedback:`;
+Response:`;
 
     const response = await axios.post(
       `${API_URL}?key=${API_KEY}`,
@@ -58,16 +53,29 @@ Your Feedback:`;
           }
         ],
         generationConfig: {
-          temperature: 1,
+          temperature: 0.7,
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 8192,
+          maxOutputTokens: 1024,
           responseMimeType: "text/plain"
         }
       }
     );
 
-    return response.data.candidates[0].content.parts[0].text;
+    const aiResponse = response.data.candidates[0].content.parts[0].text;
+    
+    // Validate response
+    if (!aiResponse || 
+        aiResponse.includes("Thank you for your question") || 
+        aiResponse.includes("Based on your assessment results") ||
+        aiResponse.includes("Remember that everyone's body is different") ||
+        aiResponse.includes("I understand your concern") ||
+        aiResponse.includes("It's important to note") ||
+        aiResponse.includes("Please consult with your healthcare provider")) {
+      throw new Error("Invalid AI response");
+    }
+
+    return aiResponse;
   } catch (error) {
     console.error('Error getting AI feedback:', error);
     throw error;

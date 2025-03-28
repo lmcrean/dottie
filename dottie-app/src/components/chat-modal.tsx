@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,6 +28,37 @@ export function ChatModal({ isOpen, onClose, userData }: ChatModalProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [hasInitialRecommendations, setHasInitialRecommendations] = useState(false)
+
+  // Get initial recommendations when modal opens
+  useEffect(() => {
+    if (isOpen && !hasInitialRecommendations) {
+      const getInitialRecommendations = async () => {
+        setIsLoading(true)
+        try {
+          const aiResponse = await getAIFeedback(userData)
+          if (aiResponse) {
+            setMessages([{ 
+              role: 'assistant', 
+              content: aiResponse 
+            }])
+            setHasInitialRecommendations(true)
+          } else {
+            throw new Error("Empty response from AI")
+          }
+        } catch (error) {
+          console.error('Error getting initial recommendations:', error)
+          setMessages([{ 
+            role: 'assistant', 
+            content: "I apologize, but I'm having trouble analyzing your data right now. Please try again." 
+          }])
+        } finally {
+          setIsLoading(false)
+        }
+      }
+      getInitialRecommendations()
+    }
+  }, [isOpen, userData, hasInitialRecommendations])
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
@@ -39,28 +70,41 @@ export function ChatModal({ isOpen, onClose, userData }: ChatModalProps) {
 
     try {
       const aiResponse = await getAIFeedback(userData, userMessage)
-      setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }])
+      if (aiResponse) {
+        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }])
+      } else {
+        throw new Error("Empty response from AI")
+      }
     } catch (error) {
       console.error('Error getting AI response:', error)
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: "I apologize, but I'm having trouble processing your request right now. Please try again later." 
+        content: "I apologize, but I'm having trouble providing a personalized response right now. Could you please rephrase your question or try again?" 
       }])
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Reset messages when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setMessages([])
+      setInput("")
+      setHasInitialRecommendations(false)
+    }
+  }, [isOpen])
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] h-[600px] flex flex-col">
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle>Chat with Dottie</DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </DialogHeader>
-        <div className="flex flex-col h-[400px]">
+        <div className="flex-1 flex flex-col min-h-0">
           <ScrollArea className="flex-1 pr-4">
             <div className="space-y-4">
               {messages.map((message, index) => (
@@ -90,11 +134,11 @@ export function ChatModal({ isOpen, onClose, userData }: ChatModalProps) {
               )}
             </div>
           </ScrollArea>
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2 mt-4 pt-4 border-t">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
+              placeholder="Ask Dottie anything..."
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               disabled={isLoading}
             />

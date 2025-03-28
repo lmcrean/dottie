@@ -158,9 +158,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
 }
 
 export default function ResultsPage() {
-
   const [isChatOpen, setIsChatOpen] = useState(false)
-
   const [pattern, setPattern] = useState<MenstrualPattern>("developing")
   const [age, setAge] = useState<string>("")
   const [cycleLength, setCycleLength] = useState<string>("")
@@ -178,15 +176,6 @@ export default function ResultsPage() {
     const storedPainLevel = sessionStorage.getItem("painLevel")
     const storedSymptoms = sessionStorage.getItem("symptoms")
     
-    console.log("Stored values:", {
-      age: storedAge,
-      cycleLength: storedCycleLength,
-      periodDuration: storedPeriodDuration,
-      flowLevel: storedFlowLevel,
-      painLevel: storedPainLevel,
-      symptoms: storedSymptoms
-    })
-
     if (storedAge) setAge(storedAge)
     if (storedCycleLength) setCycleLength(storedCycleLength)
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration)
@@ -250,7 +239,7 @@ export default function ResultsPage() {
     <div className="flex min-h-screen flex-col bg-white">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
-        <img src="/public/chatb.png" alt="Dottie Logo" width={32} height={32} />
+          <img src="/public/chatb.png" alt="Dottie Logo" width={32} height={32} />
           <span className="font-semibold text-pink-500">Dottie</span>
         </div>
         <Link to="/" className="text-gray-500">
@@ -268,7 +257,7 @@ export default function ResultsPage() {
               </p>
             </div>
 
-              <div className="flex gap-3 mb-4">
+            <div className="flex gap-3 mb-4">
               <Button className="flex-1 bg-pink-500 hover:bg-pink-600" onClick={() => setIsChatOpen(true)}>
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Ask Dottie
@@ -385,15 +374,20 @@ export default function ResultsPage() {
             <ChevronRight className="h-4 w-4 ml-2" />
           </Button>
         </Link>
+
+        <ChatModal 
+          isOpen={isChatOpen} 
+          onClose={() => setIsChatOpen(false)} 
+          userData={{
+            age,
+            cycleLength,
+            periodDuration,
+            flowHeaviness: flowLevel,
+            painLevel,
+            symptoms
+          }} 
+        />
       </main>
-      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} userData={{
-        age,
-        cycleLength,
-        periodDuration,
-        flowHeaviness: flowLevel,
-        painLevel,
-        symptoms
-      }} />
     </div>
   )
 }
