@@ -82,15 +82,15 @@ Dottie uses a dual-database approach to simplify development while maintaining p
 - **Development**: SQLite for local development (no setup required)
 - **Production**: Azure SQL Database for scalable cloud deployment
 - **ORM**: Knex.js provides a unified query interface across both database types
-
+- **Deployment**: Azure Static Web Apps
 This architecture allows developers to work locally without needing to set up a database server, while ensuring a smooth transition to production with Azure SQL.
 
 #### Backend
 - **API Server**: Express.js handles HTTP requests and routing
 - **Data Models**: Knex.js models for database interaction
-- **Authentication**: (Coming soon) JWT-based authentication
+- **Authentication**: JWT-based authentication
 - **Middleware**: Express middleware for request processing
-
+  
 ### Getting Started
 
 #### Backend Setup
