@@ -1,13 +1,12 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import logger from '../../../services/logger.js';
 import { insertChatMessage, createConversation, getConversation } from '../../../models/chat.js';
 
 // Initialize Gemini API
 const API_KEY = process.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+const genAI = new GoogleGenAI({ apiKey: API_KEY });
 
-// The system prompt will provide context about Dottie to the AI
+// The system prompt provides context about Dottie to the AI
 const SYSTEM_PROMPT = `You are Dottie, a supportive AI assistant for women's health and period tracking. 
 You provide empathetic, accurate information about menstrual cycles, symptoms, and reproductive health. 
 Your tone is friendly and non-judgmental. Always make it clear that your advice is informational, 
@@ -21,7 +20,7 @@ not medical, and encourage users to consult healthcare providers for medical con
 export const sendMessage = async (req, res) => {
   try {
     const { message, conversationId } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
@@ -30,7 +29,7 @@ export const sendMessage = async (req, res) => {
     // Get conversation history if conversationId provided
     let history = [];
     let currentConversationId = conversationId;
-    
+
     if (conversationId) {
       // Verify the conversation belongs to this user
       const conversation = await getConversation(conversationId, userId);
@@ -49,7 +48,8 @@ export const sendMessage = async (req, res) => {
     }
 
     // Prepare the chat session with history and system prompt
-    const chat = model.startChat({
+    const chat = genAI.chats.start({
+      model: 'gemini-2.0-flash-001',
       history,
       generationConfig: {
         temperature: 0.7,
