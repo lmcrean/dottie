@@ -129,9 +129,6 @@ describe('User API', () => {
     });
   });
   
-  
-
-
   describe('updatePassword', () => {
     it('should update the user password', async () => {
       const mockInput = { currentPassword: 'old', newPassword: 'new' };

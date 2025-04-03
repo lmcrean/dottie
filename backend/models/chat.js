@@ -1,5 +1,5 @@
-import db from '../db/connection.js';
 import { v4 as uuidv4 } from 'uuid';
+import DbService from '../services/dbService.js';
 import logger from '../services/logger.js';
 
 /**
@@ -12,11 +12,12 @@ export const createConversation = async (userId) => {
     const conversationId = uuidv4();
     const now = new Date().toISOString();
     
-    await db.query(
-      `INSERT INTO conversations (id, user_id, created_at, updated_at) 
-       VALUES (?, ?, ?, ?)`,
-      [conversationId, userId, now, now]
-    );
+    await DbService.create('conversations', {
+      id: conversationId,
+      user_id: userId,
+      created_at: now,
+      updated_at: now
+    });
     
     return conversationId;
   } catch (error) {
@@ -36,17 +37,19 @@ export const insertChatMessage = async (conversationId, message) => {
     const messageId = uuidv4();
     const now = new Date().toISOString();
     
-    await db.query(
-      `INSERT INTO chat_messages (id, conversation_id, role, content, created_at) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [messageId, conversationId, message.role, message.content, now]
-    );
+    // Insert the message
+    await DbService.create('chat_messages', {
+      id: messageId,
+      conversation_id: conversationId,
+      role: message.role,
+      content: message.content,
+      created_at: now
+    });
     
     // Update conversation's updated_at time
-    await db.query(
-      `UPDATE conversations SET updated_at = ? WHERE id = ?`,
-      [now, conversationId]
-    );
+    await DbService.update('conversations', conversationId, {
+      updated_at: now
+    });
     
     return true;
   } catch (error) {
@@ -64,29 +67,25 @@ export const insertChatMessage = async (conversationId, message) => {
 export const getConversation = async (conversationId, userId) => {
   try {
     // First check if the conversation exists and belongs to the user
-    const conversation = await db.query(
-      `SELECT id, user_id as userId, created_at as createdAt, updated_at as updatedAt 
-       FROM conversations 
-       WHERE id = ? AND user_id = ?`,
-      [conversationId, userId]
-    );
+    const conversation = await DbService.findBy('conversations', 'id', conversationId);
     
-    if (!conversation || conversation.length === 0) {
+    if (!conversation || conversation.length === 0 || conversation[0].user_id !== userId) {
       return null;
     }
     
     // Get all messages for this conversation
-    const messages = await db.query(
-      `SELECT role, content, created_at as createdAt
-       FROM chat_messages
-       WHERE conversation_id = ?
-       ORDER BY created_at ASC`,
-      [conversationId]
-    );
+    const messages = await DbService.findBy('chat_messages', 'conversation_id', conversationId);
     
     return {
       ...conversation[0],
-      messages: messages || []
+      userId: conversation[0].user_id,
+      createdAt: conversation[0].created_at,
+      updatedAt: conversation[0].updated_at,
+      messages: messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+        createdAt: msg.created_at
+      }))
     };
   } catch (error) {
     logger.error('Error getting conversation:', error);
@@ -102,18 +101,13 @@ export const getConversation = async (conversationId, userId) => {
 export const getUserConversations = async (userId) => {
   try {
     // Get all conversations
-    const conversations = await db.query(
-      `SELECT c.id, c.updated_at as lastMessageDate,
-       (SELECT content FROM chat_messages 
-        WHERE conversation_id = c.id 
-        ORDER BY created_at DESC LIMIT 1) as preview
-       FROM conversations c
-       WHERE c.user_id = ?
-       ORDER BY c.updated_at DESC`,
-      [userId]
-    );
+    const conversations = await DbService.findBy('conversations', 'user_id', userId);
     
-    return conversations || [];
+    return conversations.map(conversation => ({
+      id: conversation.id,
+      lastMessageDate: conversation.updated_at,
+      preview: conversation.updated_at
+    }));
   } catch (error) {
     logger.error('Error getting user conversations:', error);
     throw error;
@@ -129,26 +123,17 @@ export const getUserConversations = async (userId) => {
 export const deleteConversation = async (conversationId, userId) => {
   try {
     // First check if the conversation exists and belongs to the user
-    const conversation = await db.query(
-      `SELECT id FROM conversations WHERE id = ? AND user_id = ?`,
-      [conversationId, userId]
-    );
+    const conversation = await DbService.findBy('conversations', 'id', conversationId);
     
-    if (!conversation || conversation.length === 0) {
+    if (!conversation || conversation.length === 0 || conversation[0].user_id !== userId) {
       return false;
     }
     
     // Delete all messages first (due to foreign key constraint)
-    await db.query(
-      `DELETE FROM chat_messages WHERE conversation_id = ?`,
-      [conversationId]
-    );
+    await DbService.delete('chat_messages', 'conversation_id', conversationId);
     
     // Delete the conversation
-    await db.query(
-      `DELETE FROM conversations WHERE id = ?`,
-      [conversationId]
-    );
+    await DbService.delete('conversations', 'id', conversationId);
     
     return true;
   } catch (error) {

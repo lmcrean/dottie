@@ -1,10 +1,10 @@
 import express from 'express';
-import { authenticateToken as auth } from '../../../middleware/auth.js';
+import { authenticateToken } from '../../auth/middleware/index.js';
 import * as controller from './controller.js';
 
 const router = express.Router();
 
 // GET /api/chat/history - Get all conversations for the authenticated user
-router.get('/', auth, controller.getHistory);
+router.get('/', authenticateToken, controller.getHistory);
 
 export default router; 

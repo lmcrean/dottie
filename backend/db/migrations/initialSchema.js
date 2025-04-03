@@ -67,6 +67,48 @@ export async function createTables(db) {
     });
   }
 
+  // Conversations table
+  if (!(await db.schema.hasTable('conversations'))) {
+    await db.schema.createTable('conversations', (table) => {
+      table.uuid('id').primary();
+      table.uuid('user_id').notNullable();
+      table.timestamps(true, true);
+      
+      // Foreign key handling based on database type
+      if (!isSQLite) {
+        table.foreign('user_id').references('users.id');
+      } else {
+        try {
+          table.foreign('user_id').references('users.id');
+        } catch (error) {
+          console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
+        }
+      }
+    });
+  }
+
+  // Chat messages table
+  if (!(await db.schema.hasTable('chat_messages'))) {
+    await db.schema.createTable('chat_messages', (table) => {
+      table.uuid('id').primary();
+      table.uuid('conversation_id').notNullable();
+      table.string('role').notNullable(); // 'user' or 'assistant'
+      table.text('content').notNullable();
+      table.timestamp('created_at').defaultTo(db.fn.now());
+      
+      // Foreign key handling based on database type
+      if (!isSQLite) {
+        table.foreign('conversation_id').references('conversations.id');
+      } else {
+        try {
+          table.foreign('conversation_id').references('conversations.id');
+        } catch (error) {
+          console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
+        }
+      }
+    });
+  }
+
   // Check if we're in test mode
   if (process.env.TEST_MODE === 'true') {
     // In test mode, use the special assessment schema
@@ -117,4 +159,6 @@ export async function dropTables(db) {
   await db.schema.dropTableIfExists('symptoms');
   await db.schema.dropTableIfExists('period_logs');
   await db.schema.dropTableIfExists('users');
+  await db.schema.dropTableIfExists('chat_messages');
+  await db.schema.dropTableIfExists('conversations');
 } 

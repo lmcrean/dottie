@@ -12,6 +12,7 @@ import assessmentRoutes from "./routes/assessment/index.js";
 import userRoutes from "./routes/user/index.js";
 import authRoutes from "./routes/auth/index.js";
 import setupRoutes from "./routes/setup/index.js";
+import chatRoutes from "./routes/chat/index.js";
 
 // Load environment variables
 dotenv.config();
@@ -52,6 +53,7 @@ app.use("/api/assessment", assessmentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/setup", setupRoutes);
+app.use("/api/chat", chatRoutes);
 
 // For local development
 const PORT = process.env.PORT || 5000;
