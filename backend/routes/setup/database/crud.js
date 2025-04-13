@@ -1,88 +1,67 @@
 import express from 'express';
-import db from '../../../db/index.js';
+import supabase from '../../../services/supabaseService.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
-router.get("/crud-test", async (req, res) => {
+router.get('/', async (req, res) => {
+  const TABLE_NAME = 'temp_test_crud';
+  const testId = uuidv4();
+  
   try {
-    const isAzureSql = db.client.config.client === 'mssql';
-    const tableName = 'VercelTest' + Date.now();
+    // Create temporary table if it doesn't exist
+    await supabase.rpc('create_temp_test_table');
     
-    if (isAzureSql) {
-      await db.raw(`
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = '${tableName}')
-        BEGIN
-          CREATE TABLE ${tableName} (
-            id INT IDENTITY(1,1) PRIMARY KEY,
-            message VARCHAR(255),
-            created_at DATETIME DEFAULT GETDATE()
-          )
-        END
-      `);
-    } else {
-      await db.schema.createTable(tableName, (table) => {
-        table.increments('id');
-        table.string('message');
-        table.timestamp('created_at').defaultTo(db.fn.now());
-      });
-    }
+    // Insert a test record
+    const { data: insertData, error: insertError } = await supabase
+      .from(TABLE_NAME)
+      .insert({
+        id: testId,
+        name: 'Test User',
+        created_at: new Date().toISOString()
+      })
+      .select();
     
-    let newId;
-    const testMessage = 'Test from Vercel ' + new Date().toISOString();
+    if (insertError) throw insertError;
     
-    if (isAzureSql) {
-      const insertResult = await db.raw(`
-        INSERT INTO ${tableName} (message) 
-        OUTPUT INSERTED.id 
-        VALUES ('${testMessage}')
-      `);
-      newId = insertResult[0].id;
-    } else {
-      const insertedIds = await db(tableName).insert({ message: testMessage });
-      newId = insertedIds[0];
-    }
+    // Read the test record
+    const { data: readData, error: readError } = await supabase
+      .from(TABLE_NAME)
+      .select('*')
+      .eq('id', testId)
+      .single();
     
-    let readResult;
-    if (isAzureSql) {
-      const result = await db.raw(`SELECT * FROM ${tableName} WHERE id = ${newId}`);
-      readResult = result[0];
-    } else {
-      readResult = await db(tableName).where('id', newId).first();
-    }
+    if (readError) throw readError;
     
-    let totalCount;
-    if (isAzureSql) {
-      const result = await db.raw(`SELECT COUNT(*) as count FROM ${tableName}`);
-      totalCount = result[0].count;
-    } else {
-      const result = await db(tableName).count('id as count');
-      totalCount = result[0].count;
-    }
+    // Update the test record
+    const { data: updateData, error: updateError } = await supabase
+      .from(TABLE_NAME)
+      .update({ name: 'Updated Test User' })
+      .eq('id', testId)
+      .select();
     
-    if (isAzureSql) {
-      await db.raw(`DROP TABLE ${tableName}`);
-    } else {
-      await db.schema.dropTable(tableName);
-    }
+    if (updateError) throw updateError;
     
-    res.json({
+    // Delete the test record
+    const { error: deleteError } = await supabase
+      .from(TABLE_NAME)
+      .delete()
+      .eq('id', testId);
+    
+    if (deleteError) throw deleteError;
+    
+    return res.json({
       success: true,
-      message: `Successfully performed CRUD operations on ${isAzureSql ? 'Azure SQL' : 'SQLite database'}`,
-      data: {
-        createdRecord: readResult,
-        totalRecords: totalCount,
-        databaseType: db.client.config.client
-      }
+      message: `Successfully performed CRUD operations on Supabase database`,
+      databaseType: 'Supabase'
     });
   } catch (error) {
     console.error('Database CRUD test error:', error);
-    res.status(500).json({
+    
+    return res.status(500).json({
       success: false,
       message: 'Failed to perform CRUD operations on database',
-      error: {
-        name: error.name,
-        message: error.message
-      }
+      error: error.message
     });
   }
 });
