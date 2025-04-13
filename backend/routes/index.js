@@ -10,7 +10,7 @@ const router = express.Router();
 // Mount routes
 router.use('/auth', authRoutes);
 router.use('/assessment', assessmentRoutes);
-router.use('/users', userRoutes);
+router.use('/user', userRoutes);
 router.use('/setup', setupRoutes);
 router.use('/chat', chatRoutes)
 

@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import db from "./db/index.js";
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
@@ -13,68 +12,81 @@ import userRoutes from "./routes/user/index.js";
 import authRoutes from "./routes/auth/index.js";
 import setupRoutes from "./routes/setup/index.js";
 import chatRoutes from "./routes/chat/index.js";
+import routes from './routes/index.js';
 
 // Load environment variables
 dotenv.config();
 
-// Initialize express app
-const app = express();
+// Determine environment
+const isProduction = process.env.NODE_ENV === 'production';
+const isVercel = process.env.VERCEL === '1';
 
-// Middleware
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://dottie-app.com', 'https://dottie-lmcreans-projects.vercel.app', 'https://lemon-bush-046734d10.6.azurestaticapps.net'] 
-    : ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true
-}));
-app.use(bodyParser.json());
-app.use(cookieParser());
+// Check for required environment variables in production
+if (isProduction && isVercel) {
+  const requiredEnvVars = [
+    'SUPABASE_ANON_PUBLIC'
+  ];
 
-// Request logging in development
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    next();
-  });
-}
+  const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', environment: process.env.NODE_ENV || 'development' });
-});
-
-// Direct hello endpoint for tests
-app.get('/api/hello', (req, res) => {
-  res.status(200).json({ message: "Hello World from Dottie API!" });
-});
-
-// Mount route modules
-app.use("/api/assessment", assessmentRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/setup", setupRoutes);
-app.use("/api/chat", chatRoutes);
-
-// For local development
-const PORT = process.env.PORT || 5000;
-
-// Start server only if this file is run directly (not in serverless mode)
-const currentFilePath = fileURLToPath(import.meta.url);
-if (process.argv[1] === currentFilePath) {
-  // Initialize database connection when running as a standalone server
-  try {
-    await db.raw('SELECT 1');
-    console.log("Database connection successful");
-    
-    // Start server after DB connection is verified
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Failed to connect to database:", error);
+  if (missingEnvVars.length > 0) {
+    console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
     process.exit(1);
   }
 }
 
-// Export for serverless environment
+// Create Express app
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Determine environment
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+
+// Configure CORS
+const corsOptions = {
+  origin: isDevelopment 
+    ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://127.0.0.1:5173'] 
+    : ['https://dottie-health.vercel.app', 'https://dottie-lmcreans-projects.vercel.app', 'https://dottie-oi1fayiad-lmcreans-projects.vercel.app'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
+// Routes
+app.use('/api', routes);
+
+// Health check for Vercel
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  
+  console.error(`Error: ${message}`);
+  console.error(err.stack);
+  
+  res.status(statusCode).json({ error: message });
+});
+
+// Start the server if we're running directly
+const isMainModule = import.meta.url.endsWith(process.argv[1]);
+
+if (isMainModule || process.env.NODE_ENV === 'development') {
+  // Start server
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  });
+} else {
+  console.log('Exporting server app for serverless deployment');
+}
+
 export default app;

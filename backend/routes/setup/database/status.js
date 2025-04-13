@@ -1,16 +1,29 @@
 import express from 'express';
-import db from '../../../db/index.js';
+import supabase from '../../../services/supabaseService.js';
 
 const router = express.Router();
 
-router.get("/status", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Try to query the database
-    await db.raw("SELECT 1");
-    res.json({ status: "connected" });
+    const { data, error } = await supabase.from('healthcheck').select('*').limit(1);
+    
+    if (error) throw error;
+    
+    return res.json({
+      status: 'connected',
+      database: 'Supabase',
+      message: 'Successfully connected to Supabase database'
+    });
   } catch (error) {
     console.error("Database connection error:", error);
-    res.status(500).json({ status: "error", message: error.message });
+    
+    return res.status(500).json({
+      status: 'error',
+      database: 'Supabase',
+      message: 'Failed to connect to Supabase database',
+      error: error.message
+    });
   }
 });
 

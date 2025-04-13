@@ -1,4 +1,4 @@
-import db from '../db/index.js';
+import { db } from '../db/index.js';
 
 /**
  * Database service for common operations
@@ -12,8 +12,11 @@ class DbService {
    */
   static async findById(table, id) {
     try {
-      const result = await db(table).where('id', id).first();
-      return result || null;
+      const record = await db(table)
+        .where('id', id)
+        .first();
+      
+      return record || null;
     } catch (error) {
       console.error(`Error in findById for ${table}:`, error);
       throw error;
@@ -29,7 +32,10 @@ class DbService {
    */
   static async findBy(table, field, value) {
     try {
-      return await db(table).where(field, value);
+      const records = await db(table)
+        .where(field, value);
+      
+      return records || [];
     } catch (error) {
       console.error(`Error in findBy for ${table}:`, error);
       throw error;
@@ -44,17 +50,12 @@ class DbService {
    */
   static async create(table, data) {
     try {
-      // SQLite doesn't support returning, so we need to use a different approach
-      await db(table).insert(data);
+      const [id] = await db(table)
+        .insert(data);
       
-      // For tables with UUID as primary key, find by that ID
-      if (data.id) {
-        return this.findById(table, data.id);
-      }
-      
-      // For auto-incrementing ID tables, get the last inserted record
-      const lastRecord = await db(table).orderBy('id', 'desc').first();
-      return lastRecord;
+      // For SQLite compatibility, fetch the record after insertion
+      const insertedRecord = await this.findById(table, data.id || id);
+      return insertedRecord;
     } catch (error) {
       console.error(`Error in create for ${table}:`, error);
       throw error;
@@ -70,8 +71,13 @@ class DbService {
    */
   static async update(table, id, data) {
     try {
-      await db(table).where('id', id).update(data);
-      return this.findById(table, id);
+      await db(table)
+        .where('id', id)
+        .update(data);
+      
+      // For compatibility, fetch the updated record
+      const updatedRecord = await this.findById(table, id);
+      return updatedRecord;
     } catch (error) {
       console.error(`Error in update for ${table}:`, error);
       throw error;
@@ -79,28 +85,32 @@ class DbService {
   }
 
   /**
- * Delete record(s) from a table
- * @param {string} table - Table name
- * @param {string|number|Object} option - Record ID or conditions object
- * @returns {Promise<boolean>} - Success flag
- */
-static async delete(table, option) {
-  try {
-    const query = db(table);
+   * Delete record(s) from a table
+   * @param {string} table - Table name
+   * @param {string|number|Object} option - Record ID or conditions object
+   * @returns {Promise<boolean>} - Success flag
+   */
+  static async delete(table, option) {
+    try {
+      let query = db(table);
 
-    if (typeof option === 'object' && option !== null) {
-      query.where(option); // custom conditions
-    } else {
-      query.where('id', option); // single id
+      if (typeof option === 'object' && option !== null) {
+        // Handle each condition in the object
+        Object.entries(option).forEach(([key, value]) => {
+          query = query.where(key, value);
+        });
+      } else {
+        // Simple ID-based deletion
+        query = query.where('id', option);
+      }
+
+      const count = await query.delete();
+      return count > 0;
+    } catch (error) {
+      console.error(`Error deleting from ${table}:`, error);
+      throw error;
     }
-
-    const deletedCount = await query.del();
-    return deletedCount > 0;
-  } catch (error) {
-    console.error(`Error deleting from ${table}:`, error);
-    throw error;
   }
-}
 
   /**
    * Get all records from a table
@@ -109,7 +119,8 @@ static async delete(table, option) {
    */
   static async getAll(table) {
     try {
-      return await db(table);
+      const records = await db(table).select('*');
+      return records || [];
     } catch (error) {
       console.error(`Error in getAll for ${table}:`, error);
       throw error;
@@ -123,20 +134,30 @@ static async delete(table, option) {
    */
   static async getConversationsWithPreviews(userId) {
     try {
-      return await db('conversations as c')
-        .select([
-          'c.id',
-          'c.updated_at as lastMessageDate',
-          db.raw(`(
-            SELECT SUBSTR(content, 1, 50) 
-            FROM chat_messages 
-            WHERE conversation_id = c.id 
-            ORDER BY created_at DESC 
-            LIMIT 1
-          ) as preview`)
-        ])
-        .where('c.user_id', userId)
-        .orderBy('c.updated_at', 'desc');
+      // Get all conversations for the user
+      const conversations = await db('conversations')
+        .where('user_id', userId)
+        .orderBy('updated_at', 'desc');
+      
+      // For each conversation, get the latest message
+      const conversationsWithPreviews = await Promise.all(
+        (conversations || []).map(async (conv) => {
+          const latestMessage = await db('chat_messages')
+            .where('conversation_id', conv.id)
+            .orderBy('created_at', 'desc')
+            .first();
+          
+          return {
+            id: conv.id,
+            lastMessageDate: conv.updated_at,
+            preview: latestMessage
+              ? latestMessage.content.substring(0, 50)
+              : ''
+          };
+        })
+      );
+      
+      return conversationsWithPreviews;
     } catch (error) {
       console.error(`Error in getConversationsWithPreviews:`, error);
       throw error;
