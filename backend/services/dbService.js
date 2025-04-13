@@ -1,7 +1,7 @@
-import supabase from './supabaseService.js';
+import { db } from '../db/index.js';
 
 /**
- * Database service for common operations using Supabase
+ * Database service for common operations
  */
 class DbService {
   /**
@@ -12,14 +12,11 @@ class DbService {
    */
   static async findById(table, id) {
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*')
-        .eq('id', id)
-        .single();
+      const record = await db(table)
+        .where('id', id)
+        .first();
       
-      if (error) throw error;
-      return data || null;
+      return record || null;
     } catch (error) {
       console.error(`Error in findById for ${table}:`, error);
       throw error;
@@ -35,13 +32,10 @@ class DbService {
    */
   static async findBy(table, field, value) {
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*')
-        .eq(field, value);
+      const records = await db(table)
+        .where(field, value);
       
-      if (error) throw error;
-      return data || [];
+      return records || [];
     } catch (error) {
       console.error(`Error in findBy for ${table}:`, error);
       throw error;
@@ -56,14 +50,12 @@ class DbService {
    */
   static async create(table, data) {
     try {
-      const { data: insertedData, error } = await supabase
-        .from(table)
-        .insert(data)
-        .select()
-        .single();
+      const [id] = await db(table)
+        .insert(data);
       
-      if (error) throw error;
-      return insertedData;
+      // For SQLite compatibility, fetch the record after insertion
+      const insertedRecord = await this.findById(table, data.id || id);
+      return insertedRecord;
     } catch (error) {
       console.error(`Error in create for ${table}:`, error);
       throw error;
@@ -79,15 +71,13 @@ class DbService {
    */
   static async update(table, id, data) {
     try {
-      const { data: updatedData, error } = await supabase
-        .from(table)
-        .update(data)
-        .eq('id', id)
-        .select()
-        .single();
+      await db(table)
+        .where('id', id)
+        .update(data);
       
-      if (error) throw error;
-      return updatedData;
+      // For compatibility, fetch the updated record
+      const updatedRecord = await this.findById(table, id);
+      return updatedRecord;
     } catch (error) {
       console.error(`Error in update for ${table}:`, error);
       throw error;
@@ -102,21 +92,19 @@ class DbService {
    */
   static async delete(table, option) {
     try {
-      let query = supabase.from(table);
+      let query = db(table);
 
       if (typeof option === 'object' && option !== null) {
         // Handle each condition in the object
         Object.entries(option).forEach(([key, value]) => {
-          query = query.eq(key, value);
+          query = query.where(key, value);
         });
       } else {
         // Simple ID-based deletion
-        query = query.eq('id', option);
+        query = query.where('id', option);
       }
 
-      const { error, count } = await query.delete().select('count');
-      
-      if (error) throw error;
+      const count = await query.delete();
       return count > 0;
     } catch (error) {
       console.error(`Error deleting from ${table}:`, error);
@@ -131,12 +119,8 @@ class DbService {
    */
   static async getAll(table) {
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*');
-      
-      if (error) throw error;
-      return data || [];
+      const records = await db(table).select('*');
+      return records || [];
     } catch (error) {
       console.error(`Error in getAll for ${table}:`, error);
       throw error;
@@ -150,33 +134,24 @@ class DbService {
    */
   static async getConversationsWithPreviews(userId) {
     try {
-      // For Supabase, we need to use a more basic approach or stored functions
-      // First get all conversations for the user
-      const { data: conversations, error: convError } = await supabase
-        .from('conversations')
-        .select('id, updated_at')
-        .eq('user_id', userId)
-        .order('updated_at', { ascending: false });
-      
-      if (convError) throw convError;
+      // Get all conversations for the user
+      const conversations = await db('conversations')
+        .where('user_id', userId)
+        .orderBy('updated_at', 'desc');
       
       // For each conversation, get the latest message
       const conversationsWithPreviews = await Promise.all(
         (conversations || []).map(async (conv) => {
-          const { data: messages, error: msgError } = await supabase
-            .from('chat_messages')
-            .select('content, created_at')
-            .eq('conversation_id', conv.id)
-            .order('created_at', { ascending: false })
-            .limit(1);
-          
-          if (msgError) throw msgError;
+          const latestMessage = await db('chat_messages')
+            .where('conversation_id', conv.id)
+            .orderBy('created_at', 'desc')
+            .first();
           
           return {
             id: conv.id,
             lastMessageDate: conv.updated_at,
-            preview: messages && messages.length > 0
-              ? messages[0].content.substring(0, 50)
+            preview: latestMessage
+              ? latestMessage.content.substring(0, 50)
               : ''
           };
         })
