@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import supabase from './services/supabaseService.js';
 
 // Import route modules
 import assessmentRoutes from "./routes/assessment/index.js";
@@ -18,16 +17,22 @@ import routes from './routes/index.js';
 // Load environment variables
 dotenv.config();
 
-// Check for required environment variables
-const requiredEnvVars = [
-  'SUPABASE_ANON_PUBLIC'
-];
+// Determine environment
+const isProduction = process.env.NODE_ENV === 'production';
+const isVercel = process.env.VERCEL === '1';
 
-const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+// Check for required environment variables in production
+if (isProduction && isVercel) {
+  const requiredEnvVars = [
+    'SUPABASE_ANON_PUBLIC'
+  ];
 
-if (missingEnvVars.length > 0) {
-  console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
-  process.exit(1);
+  const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+  if (missingEnvVars.length > 0) {
+    console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+    process.exit(1);
+  }
 }
 
 // Create Express app
@@ -44,7 +49,7 @@ app.use(cookieParser());
 // Configure CORS
 const corsOptions = {
   origin: isDevelopment 
-    ? ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'] 
+    ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://127.0.0.1:5173'] 
     : ['https://dottie-health.vercel.app', 'https://dottie-lmcreans-projects.vercel.app', 'https://dottie-oi1fayiad-lmcreans-projects.vercel.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
@@ -79,7 +84,6 @@ if (isMainModule || process.env.NODE_ENV === 'development') {
   // Start server
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-    console.log('Using Supabase database');
   });
 } else {
   console.log('Exporting server app for serverless deployment');
