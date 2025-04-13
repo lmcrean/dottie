@@ -9,8 +9,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "dev": "node scripts/setup-env.js && nodemon server.js",
     "db:init": "node db/init.js",
+    "db:init:sqlite": "node db/init-sqlite.js",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
