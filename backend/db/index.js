@@ -1,183 +1,209 @@
 /**
- * Database configuration and connection module
+ * Database shim for Supabase
+ * This file provides a Knex-like interface to Supabase for backward compatibility
  */
 
-import knex from 'knex';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import supabase from '../services/supabaseService.js';
 
-// Load environment variables
-dotenv.config();
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Determine if we're in test mode
-const isTestMode = process.env.TEST_MODE === 'true';
-
-// SQLite database file path - Use the same file for both dev and test
-const dbPath = path.resolve(__dirname, '../dev.sqlite3');
-
-// Determine database configuration based on environment
-const isProduction = process.env.NODE_ENV === 'production';
-// Only use Azure SQL in production and if the variables are available
-const useAzure = isProduction && process.env.AZURE_SQL_SERVER && process.env.AZURE_SQL_DATABASE;
-
-let dbConfig;
-
-if (useAzure) {
-  // Azure SQL configuration with static connection pool
-  dbConfig = {
-    client: 'mssql',
-    connection: {
-      server: process.env.AZURE_SQL_SERVER,
-      database: process.env.AZURE_SQL_DATABASE,
-      user: process.env.AZURE_SQL_USER,
-      password: process.env.AZURE_SQL_PASSWORD,
-      options: {
-        encrypt: true,
-        trustServerCertificate: false,
-        enableArithAbort: true,
-        connectTimeout: 15000, // Reduced from 30 seconds to 15 seconds for serverless
-        requestTimeout: 15000  // Reduced timeout for serverless
+// Create a wrapper that simulates the Knex query builder
+const createQueryBuilder = (tableName) => {
+  const queryBuilder = {
+    // State
+    _table: tableName,
+    _wheres: [],
+    _orders: [],
+    _limit: null,
+    _offset: null,
+    _inserts: null,
+    _updates: null,
+    
+    // Methods
+    where(field, value) {
+      this._wheres.push({ field, value });
+      return this;
+    },
+    
+    orderBy(field, direction = 'asc') {
+      this._orders.push({ field, direction });
+      return this;
+    },
+    
+    limit(limit) {
+      this._limit = limit;
+      return this;
+    },
+    
+    offset(offset) {
+      this._offset = offset;
+      return this;
+    },
+    
+    insert(data) {
+      this._inserts = data;
+      return this._runInsert();
+    },
+    
+    update(data) {
+      this._updates = data;
+      return this._runUpdate();
+    },
+    
+    delete() {
+      return this._runDelete();
+    },
+    
+    select(columns) {
+      return this._runSelect(columns);
+    },
+    
+    first() {
+      this._limit = 1;
+      return this._runSelect().then(data => data[0] || null);
+    },
+    
+    // Execution methods
+    async _runSelect(columns = '*') {
+      let query = supabase.from(this._table).select(columns);
+      
+      // Apply wheres
+      for (const where of this._wheres) {
+        query = query.eq(where.field, where.value);
       }
-    },
-    pool: {
-      min: 0,         // Start with no connections for serverless (reduced from 2)
-      max: 5,         // Reduced max connections for serverless (was 10)
-      idleTimeoutMillis: 60000,  // Reduced idle timeout (was 300000)
-      acquireTimeoutMillis: 15000, // Reduced acquisition timeout (was 30000)
-      createTimeoutMillis: 15000,  // Reduced creation timeout (was 30000)
-      createRetryIntervalMillis: 200,
-      propagateCreateError: false
-    },
-    acquireConnectionTimeout: 30000 // Reduced from 60000
-  };
-  console.log('Using Azure SQL database');
-} else {
-  // SQLite configuration (local development)
-  dbConfig = {
-    client: 'sqlite3',
-    connection: {
-      filename: dbPath
-    },
-    useNullAsDefault: true
-  };
-  console.log('Using SQLite database');
-}
-
-// Create a mock database object for testing
-const testDb = function(tableName) {
-  const mockData = {
-    users: [
-      {
-        id: 'test-user-1',
-        username: 'Test User 1',
-        email: 'test1@example.com',
-        age: '18_24'
+      
+      // Apply ordering
+      if (this._orders.length > 0) {
+        const { field, direction } = this._orders[0];
+        query = query.order(field, { ascending: direction === 'asc' });
       }
-    ]
+      
+      // Apply limit and offset
+      if (this._limit !== null) {
+        query = query.limit(this._limit);
+      }
+      
+      if (this._offset !== null) {
+        query = query.range(this._offset, this._offset + (this._limit || 1000) - 1);
+      }
+      
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      return data || [];
+    },
+    
+    async _runInsert() {
+      const { data, error } = await supabase
+        .from(this._table)
+        .insert(this._inserts)
+        .select();
+      
+      if (error) throw error;
+      return data?.map(item => item.id) || [];
+    },
+    
+    async _runUpdate() {
+      let query = supabase.from(this._table).update(this._updates);
+      
+      // Apply wheres
+      for (const where of this._wheres) {
+        query = query.eq(where.field, where.value);
+      }
+      
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      return data ? 1 : 0; // Return count affected (simplified)
+    },
+    
+    async _runDelete() {
+      let query = supabase.from(this._table).delete();
+      
+      // Apply wheres
+      for (const where of this._wheres) {
+        query = query.eq(where.field, where.value);
+      }
+      
+      const { error } = await query;
+      
+      if (error) throw error;
+      return 1; // Return count affected (simplified)
+    }
   };
-
-  return {
-    where: (field, value) => ({
-      first: () => Promise.resolve(mockData[tableName]?.find(item => item[field] === value) || null),
-      delete: () => Promise.resolve(1),
-      update: () => Promise.resolve(1),
-      orderBy: () => ({
-        first: () => Promise.resolve(mockData[tableName]?.[0] || null)
-      })
-    }),
-    insert: () => Promise.resolve([1]),
-    orderBy: () => ({
-      first: () => Promise.resolve(mockData[tableName]?.[0] || null)
-    }),
-    // Return the mock data array for the table
-    then: (resolve) => resolve(mockData[tableName] || [])
+  
+  // Make it thenable for direct execution
+  queryBuilder.then = (resolve, reject) => {
+    return queryBuilder._runSelect()
+      .then(resolve)
+      .catch(reject);
   };
+  
+  return queryBuilder;
 };
 
-// Add additional methods to the test database
-testDb.schema = {
+// Create a function that acts like the knex instance
+const db = (tableName) => {
+  return createQueryBuilder(tableName);
+};
+
+// Add raw query method
+db.raw = async (sql) => {
+  // For simple queries, try to interpret them
+  if (sql === 'SELECT 1') {
+    return [{ '1': 1 }];
+  }
+  
+  // For other queries, console log them for now
+  console.log(`[SUPABASE SHIM] Raw SQL not directly supported: ${sql}`);
+  return [{ message: 'Raw SQL queries are not directly supported with Supabase' }];
+};
+
+// Add schema operations
+db.schema = {
   hasTable: async (tableName) => {
-    console.log(`Mock checking if table ${tableName} exists`);
-    return false; // Always say tables don't exist in test mode
+    try {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select('count')
+        .limit(1);
+      
+      return !error;
+    } catch (error) {
+      return false;
+    }
   },
+  
   createTable: async (tableName, tableBuilder) => {
-    console.log(`Mock creating table ${tableName}`);
+    console.log(`[SUPABASE SHIM] Creating tables not supported: ${tableName}`);
+    return true;
+  },
+  
+  dropTable: async (tableName) => {
+    console.log(`[SUPABASE SHIM] Dropping tables not supported: ${tableName}`);
     return true;
   }
 };
 
-// Add a raw method for testing
-testDb.raw = async (query) => {
-  console.log(`Mock executing raw query: ${query}`);
-  if (query.includes('1')) {
-    return [{ testValue: 1 }];
-  } else {
-    return [{ message: 'Hello World from Mock DB!' }];
+// Add client info for compatibility
+db.client = {
+  config: {
+    client: 'supabase'
   }
 };
 
-// Mock database destruction
-testDb.destroy = async () => {
-  console.log('Mock database connection closed');
+// Database cleanup
+db.destroy = async () => {
+  console.log('[SUPABASE SHIM] Connection closed');
   return true;
 };
 
-// Initialize database connection or use real SQLite for tests
-let db;
-if (isTestMode) {
-  // Use in-memory SQLite for testing instead of mocks
-  const realTestDbConfig = {
-    client: 'sqlite3',
-    connection: {
-      filename: ':memory:'
-    },
-    useNullAsDefault: true
-  };
-  
-  db = knex(realTestDbConfig);
-  
-  // Log when queries are executed
-  db.on('query-response', () => {
-    console.log('SQLite query executed');
-  });
-  
-  // Initialize the schema in the next tick to avoid blocking
-  setTimeout(async () => {
-    try {
-      // Import the schema creation function
-      const { createTables } = await import('./migrations/initialSchema.js');
-      await createTables(db);
-      console.log('Test database tables created');
-    } catch (err) {
-      console.error('Failed to create test database tables:', err);
-    }
-  }, 0);
-} else {
-  db = knex(dbConfig);
-  
-  // Handle connection errors
-  db.on('error', (err) => {
-    console.error('Unexpected error on idle client', err);
-  });
-  
-  // Only verify connection in non-serverless environment
-  // Check if we're in a serverless environment (Vercel)
-  const isServerless = process.env.VERCEL === '1';
-  
-  // Verify connection in non-serverless environments
-  if (useAzure && !isServerless) {
-    db.raw('SELECT 1')
-      .then(() => {
-        console.log('Successfully connected to Azure SQL Database');
-      })
-      .catch((err) => {
-        console.error('Failed to connect to Azure SQL Database:', err);
-      });
+// Add events
+db.on = (event, callback) => {
+  if (event === 'error') {
+    // We could add real error handling here
+    console.log('[SUPABASE SHIM] Registered error handler');
   }
-}
+  return db;
+};
 
-// Export the database object
-export default db;
+export { db };
+export default db; 
