@@ -1,7 +1,7 @@
-import db from '../db/index.js';
+import supabase from './supabaseService.js';
 
 /**
- * Database service for common operations
+ * Database service for common operations using Supabase
  */
 class DbService {
   /**
@@ -12,8 +12,14 @@ class DbService {
    */
   static async findById(table, id) {
     try {
-      const result = await db(table).where('id', id).first();
-      return result || null;
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data || null;
     } catch (error) {
       console.error(`Error in findById for ${table}:`, error);
       throw error;
@@ -29,7 +35,13 @@ class DbService {
    */
   static async findBy(table, field, value) {
     try {
-      return await db(table).where(field, value);
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .eq(field, value);
+      
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error(`Error in findBy for ${table}:`, error);
       throw error;
@@ -44,17 +56,14 @@ class DbService {
    */
   static async create(table, data) {
     try {
-      // SQLite doesn't support returning, so we need to use a different approach
-      await db(table).insert(data);
+      const { data: insertedData, error } = await supabase
+        .from(table)
+        .insert(data)
+        .select()
+        .single();
       
-      // For tables with UUID as primary key, find by that ID
-      if (data.id) {
-        return this.findById(table, data.id);
-      }
-      
-      // For auto-incrementing ID tables, get the last inserted record
-      const lastRecord = await db(table).orderBy('id', 'desc').first();
-      return lastRecord;
+      if (error) throw error;
+      return insertedData;
     } catch (error) {
       console.error(`Error in create for ${table}:`, error);
       throw error;
@@ -70,8 +79,15 @@ class DbService {
    */
   static async update(table, id, data) {
     try {
-      await db(table).where('id', id).update(data);
-      return this.findById(table, id);
+      const { data: updatedData, error } = await supabase
+        .from(table)
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return updatedData;
     } catch (error) {
       console.error(`Error in update for ${table}:`, error);
       throw error;
@@ -79,28 +95,34 @@ class DbService {
   }
 
   /**
- * Delete record(s) from a table
- * @param {string} table - Table name
- * @param {string|number|Object} option - Record ID or conditions object
- * @returns {Promise<boolean>} - Success flag
- */
-static async delete(table, option) {
-  try {
-    const query = db(table);
+   * Delete record(s) from a table
+   * @param {string} table - Table name
+   * @param {string|number|Object} option - Record ID or conditions object
+   * @returns {Promise<boolean>} - Success flag
+   */
+  static async delete(table, option) {
+    try {
+      let query = supabase.from(table);
 
-    if (typeof option === 'object' && option !== null) {
-      query.where(option); // custom conditions
-    } else {
-      query.where('id', option); // single id
+      if (typeof option === 'object' && option !== null) {
+        // Handle each condition in the object
+        Object.entries(option).forEach(([key, value]) => {
+          query = query.eq(key, value);
+        });
+      } else {
+        // Simple ID-based deletion
+        query = query.eq('id', option);
+      }
+
+      const { error, count } = await query.delete().select('count');
+      
+      if (error) throw error;
+      return count > 0;
+    } catch (error) {
+      console.error(`Error deleting from ${table}:`, error);
+      throw error;
     }
-
-    const deletedCount = await query.del();
-    return deletedCount > 0;
-  } catch (error) {
-    console.error(`Error deleting from ${table}:`, error);
-    throw error;
   }
-}
 
   /**
    * Get all records from a table
@@ -109,7 +131,12 @@ static async delete(table, option) {
    */
   static async getAll(table) {
     try {
-      return await db(table);
+      const { data, error } = await supabase
+        .from(table)
+        .select('*');
+      
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error(`Error in getAll for ${table}:`, error);
       throw error;
@@ -123,20 +150,39 @@ static async delete(table, option) {
    */
   static async getConversationsWithPreviews(userId) {
     try {
-      return await db('conversations as c')
-        .select([
-          'c.id',
-          'c.updated_at as lastMessageDate',
-          db.raw(`(
-            SELECT SUBSTR(content, 1, 50) 
-            FROM chat_messages 
-            WHERE conversation_id = c.id 
-            ORDER BY created_at DESC 
-            LIMIT 1
-          ) as preview`)
-        ])
-        .where('c.user_id', userId)
-        .orderBy('c.updated_at', 'desc');
+      // For Supabase, we need to use a more basic approach or stored functions
+      // First get all conversations for the user
+      const { data: conversations, error: convError } = await supabase
+        .from('conversations')
+        .select('id, updated_at')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false });
+      
+      if (convError) throw convError;
+      
+      // For each conversation, get the latest message
+      const conversationsWithPreviews = await Promise.all(
+        (conversations || []).map(async (conv) => {
+          const { data: messages, error: msgError } = await supabase
+            .from('chat_messages')
+            .select('content, created_at')
+            .eq('conversation_id', conv.id)
+            .order('created_at', { ascending: false })
+            .limit(1);
+          
+          if (msgError) throw msgError;
+          
+          return {
+            id: conv.id,
+            lastMessageDate: conv.updated_at,
+            preview: messages && messages.length > 0
+              ? messages[0].content.substring(0, 50)
+              : ''
+          };
+        })
+      );
+      
+      return conversationsWithPreviews;
     } catch (error) {
       console.error(`Error in getConversationsWithPreviews:`, error);
       throw error;
