@@ -16,6 +16,7 @@ import { toast } from "sonner";
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
   const [assessment, setAssessment] = useState<Assessment | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function AssessmentDetailsPage() {
     return value
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+      .join("-");
   };
 
   if (isLoading) {
@@ -73,8 +74,7 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = (assessment?.assessmentData as any)?.assessmentData;
-
+  const assessmentData = (assessment?.assessmentData as any)?.assessmentData.assessmentData;
   if (!assessmentData) {
     return (
       <div className="min-h-screen bg-gray-50">
