@@ -1,37 +1,30 @@
 import express from 'express';
-import db from '../../../db/index.js';
+import supabase from '../../../services/supabaseService.js';
 
 const router = express.Router();
 
-router.get("/hello", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Determine the database type
-    const dbType = db.client.config.client;
-    const isDevelopment = process.env.NODE_ENV !== 'production';
+    const databaseType = 'Supabase';
     
     // Create dynamic message based on the database type
-    const dbTypeName = dbType === 'mssql' ? 'Azure SQL' : 'SQLite';
+    const message = `Hello World from ${databaseType}!`;
     
-    // Query with the dynamic message
-    const result = await db.raw(`SELECT 'Hello World from ${dbTypeName}!' AS message`);
-    
-    // Different DB providers return results in different formats
-    const message = dbType === 'mssql' 
-      ? result[0].message 
-      : result[0]?.message || `Hello World from ${dbTypeName}!`;
-    
-    res.json({ 
+    // Get response directly, without a query
+    // We could also perform a simple query if needed
+    const response = {
       message,
-      dbType,
-      isConnected: true
-    });
+      timestamp: new Date().toISOString(),
+      databaseType
+    };
+    
+    return res.json(response);
   } catch (error) {
     console.error("Database query error:", error);
-    res.status(500).json({ 
-      status: "error", 
-      message: error.message,
-      dbType: db.client.config.client,
-      isConnected: false
+    return res.status(500).json({ 
+      error: error.message,
+      message: 'Error connecting to Supabase database'
     });
   }
 });
