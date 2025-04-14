@@ -27,7 +27,7 @@ export default function PainPage() {
         <UserIcon />
       </header>
 
-      <main className="flex-1 flex flex-col p-6 max-w-md mx-auto w-full">
+      <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm text-gray-500">83% Complete</div>
         </div>
@@ -36,64 +36,68 @@ export default function PainPage() {
           <div className="bg-pink-500 h-2 rounded-full w-[83%]"></div>
         </div>
 
-        <h1 className="text-xl font-bold mb-2">Question 5 of 6</h1>
-        <h2 className="text-lg font-semibold mb-1">How would you rate your menstrual pain?</h2>
-        <p className="text-sm text-gray-500 mb-6">
-          Select the option that best describes your typical pain level during your period
-        </p>
-
-        <RadioGroup value={selectedPain || ""} onValueChange={handlePainChange} className="mb-6">
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-              <RadioGroupItem value="no-pain" id="no-pain" />
-              <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
-                <div className="font-medium">No Pain</div>
-                <p className="text-sm text-gray-500">I don't experience any discomfort during my period</p>
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-              <RadioGroupItem value="mild" id="mild" />
-              <Label htmlFor="mild" className="flex-1 cursor-pointer">
-                <div className="font-medium">Mild</div>
-                <p className="text-sm text-gray-500">Noticeable but doesn't interfere with daily activities</p>
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-              <RadioGroupItem value="moderate" id="moderate" />
-              <Label htmlFor="moderate" className="flex-1 cursor-pointer">
-                <div className="font-medium">Moderate</div>
-                <p className="text-sm text-gray-500">Uncomfortable and may require pain relief</p>
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-              <RadioGroupItem value="severe" id="severe" />
-              <Label htmlFor="severe" className="flex-1 cursor-pointer">
-                <div className="font-medium">Severe</div>
-                <p className="text-sm text-gray-500">Significant pain that limits normal activities</p>
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-              <RadioGroupItem value="debilitating" id="debilitating" />
-              <Label htmlFor="debilitating" className="flex-1 cursor-pointer">
-                <div className="font-medium">Debilitating</div>
-                <p className="text-sm text-gray-500">Extreme pain that prevents normal activities</p>
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-              <RadioGroupItem value="varies" id="varies" />
-              <Label htmlFor="varies" className="flex-1 cursor-pointer">
-                <div className="font-medium">It varies</div>
-                <p className="text-sm text-gray-500">Pain level changes throughout your period or between cycles</p>
-              </Label>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="text-center content-center mb-8">
+            <h1 className="text-xl font-bold mb-2">Question 5 of 6</h1>
+            <h1 className="text-3xl font-bold mb-3">How would you rate your menstrual pain?</h1>
+            <p className="text-gray-600">
+              Select the option that best describes your typical pain level during your period
+            </p>
           </div>
-        </RadioGroup>
 
+          <RadioGroup value={selectedPain || ""} onValueChange={handlePainChange} className="mb-6">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <RadioGroupItem value="no-pain" id="no-pain" />
+                <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
+                  <div className="font-medium">No Pain</div>
+                  <p className="text-sm text-gray-500">I don't experience any discomfort during my period</p>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <RadioGroupItem value="mild" id="mild" />
+                <Label htmlFor="mild" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Mild</div>
+                  <p className="text-sm text-gray-500">Noticeable but doesn't interfere with daily activities</p>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <RadioGroupItem value="moderate" id="moderate" />
+                <Label htmlFor="moderate" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Moderate</div>
+                  <p className="text-sm text-gray-500">Uncomfortable and may require pain relief</p>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <RadioGroupItem value="severe" id="severe" />
+                <Label htmlFor="severe" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Severe</div>
+                  <p className="text-sm text-gray-500">Significant pain that limits normal activities</p>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <RadioGroupItem value="debilitating" id="debilitating" />
+                <Label htmlFor="debilitating" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Debilitating</div>
+                  <p className="text-sm text-gray-500">Extreme pain that prevents normal activities</p>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <RadioGroupItem value="varies" id="varies" />
+                <Label htmlFor="varies" className="flex-1 cursor-pointer">
+                  <div className="font-medium">It varies</div>
+                  <p className="text-sm text-gray-500">Pain level changes throughout your period or between cycles</p>
+                </Label>
+              </div>
+            </div>
+          </RadioGroup>
+        </div>
+        
         <Card className="w-full mb-8 bg-pink-50 border-pink-100">
           <CardContent className="pt-6">
             <div className="flex gap-2">
@@ -117,7 +121,7 @@ export default function PainPage() {
           Your data is private and secure. Dottie does not store your personal health information.
         </p>
 
-        <div className="flex justify-between w-full mt-auto">
+        <div className="flex justify-between w-full">
           <Link to="/assessment/flow">
             <Button variant="outline" className="flex items-center">
               <ChevronLeft className="h-4 w-4 mr-2" />

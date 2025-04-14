@@ -33,50 +33,53 @@ export default function AgeVerificationPage() {
           <div className="bg-pink-500 h-2 rounded-full w-[16%] transition-all duration-500"></div>
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-3">What is your age range?</h1>
-          <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="text-center content-center mb-8">
+            <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
+            <h1 className="text-3xl font-bold mb-3">What is your age range?</h1>
+            <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
+          </div>
 
-        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-8 pb-8">
-            <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <CardContent className="pt-8 pb-8">
+              <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
+              <div className="space-y-4">
                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="under-13" id="under-13" className="text-pink-500" />
-                  <Label htmlFor="under-13" className="flex-1 cursor-pointer">
-                    <div className="font-medium text-lg">Under 13 years</div>
+                    <Label htmlFor="under-13" className="flex-1 cursor-pointer">
+                      <div className="font-medium text-lg">Under 13 years</div>
                     <p className="text-sm text-gray-500">Parental guidance recommended</p>
-                  </Label>
-                </div>
+                    </Label>
+                  </div>
 
                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "13-17" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="13-17" id="13-17" className="text-pink-500" />
-                  <Label htmlFor="13-17" className="flex-1 cursor-pointer">
-                    <div className="font-medium text-lg">13-17 years</div>
+                    <Label htmlFor="13-17" className="flex-1 cursor-pointer">
+                      <div className="font-medium text-lg">13-17 years</div>
                     <p className="text-sm text-gray-500">Teen-appropriate content</p>
-                  </Label>
-                </div>
+                    </Label>
+                  </div>
 
                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "18-24" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="18-24" id="18-24" className="text-pink-500" />
-                  <Label htmlFor="18-24" className="flex-1 cursor-pointer">
-                    <div className="font-medium text-lg">18-24 years</div>
+                    <Label htmlFor="18-24" className="flex-1 cursor-pointer">
+                      <div className="font-medium text-lg">18-24 years</div>
                     <p className="text-sm text-gray-500">Young adult content</p>
-                  </Label>
-                </div>
+                    </Label>
+                  </div>
 
                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "25-plus" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="25-plus" id="25-plus" className="text-pink-500" />
-                  <Label htmlFor="25-plus" className="flex-1 cursor-pointer">
-                    <div className="font-medium text-lg">25+ years</div>
-                    <p className="text-sm text-gray-500">Adult content</p>
-                  </Label>
+                    <Label htmlFor="25-plus" className="flex-1 cursor-pointer">
+                      <div className="font-medium text-lg">25+ years</div>
+                      <p className="text-sm text-gray-500">Adult content</p>
+                    </Label>
+                  </div>
                 </div>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
+              </RadioGroup>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="flex justify-between w-full">
           <Link to="/">
@@ -87,8 +90,8 @@ export default function AgeVerificationPage() {
           </Link>
 
           <Link to={selectedAge ? "/assessment/cycle-length" : "#"}>
-            <Button 
-              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`} 
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
               disabled={!selectedAge}
             >
               Continue
