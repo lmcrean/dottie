@@ -72,7 +72,6 @@ export default function SymptomsPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
     <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
@@ -250,7 +249,7 @@ export default function SymptomsPage() {
 
           <Link to="/assessment/results" onClick={handleContinue}>
             <Button className="flex items-center px-6 py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white">
-              Complete Assessment
+              Finish Assessment
               <ChevronRight className="h-5 w-5 ml-2" />
             </Button>
           </Link>
