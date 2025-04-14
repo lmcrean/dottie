@@ -430,28 +430,26 @@ export default function ResultsPage() {
         userId: "", // This will be set by the backend
         createdAt: new Date().toISOString(),
         assessmentData: {
-          userId: "", // This will be set by the backend
-          createdAt: new Date().toISOString(),
-          assessmentData: {
-            date: new Date().toISOString(),
-            pattern,
-            age,
-            cycleLength,
-            periodDuration: periodDuration || "Not provided",
-            flowHeaviness: flowLevel,
-            painLevel: painLevel || "Not provided",
-            symptoms: {
-              physical: symptoms || [],
-              emotional: [],
-            },
-            recommendations:
-              patternInfo?.recommendations?.map((rec) => ({
-                title: rec.title,
-                description: rec.description,
-              })) || [],
+          date: new Date().toISOString(),
+          pattern,
+          age,
+          cycleLength,
+          periodDuration: periodDuration || "Not provided",
+          flowHeaviness: flowLevel,
+          painLevel: painLevel || "Not provided",
+          symptoms: {
+            physical: symptoms || [],
+            emotional: [],
           },
+          recommendations:
+            patternInfo?.recommendations?.map((rec) => ({
+              title: rec.title,
+              description: rec.description,
+            })) || [],
         },
       };
+
+      
 
       console.log("Sending assessment data:", assessment);
 
@@ -573,14 +571,14 @@ export default function ResultsPage() {
         </Card>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <Button 
+          <Button
             className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-6 text-lg"
             onClick={() => setIsChatOpen(true)}
           >
             <MessageCircle className="h-5 w-5" />
             Chat with Dottie
           </Button>
-          <Button 
+          <Button
             className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-500 px-6 py-6 text-lg"
             onClick={handleSaveResults}
             disabled={isSaving}

@@ -6,7 +6,7 @@ dotenv.config();
 
 // Create a Supabase client
 const supabase = createClient(
-  'https://nooizeyjujtddtxkirof.supabase.co',
+  process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_PUBLIC
 );
 

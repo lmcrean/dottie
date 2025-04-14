@@ -6,17 +6,19 @@
 export function validateAssessmentData(assessment) {
   const errors = [];
   
+
   // Check for required fields
-  if (!assessment.userId) {
-    errors.push('userId is required');
-  }
+  // if (!assessment.userId) {
+  //   errors.push('userId is required');
+  // }
   
   if (!assessment.assessmentData) {
     errors.push('assessmentData is required');
     return { isValid: errors.length === 0, errors };
   }
   
-  const { assessmentData } = assessment;
+  const assessmentData = assessment.assessmentData;
+  console.log('Validating assessment data:', assessmentData);
   
   // Validate required assessment fields
   if (!assessmentData.age) {
@@ -52,26 +54,26 @@ export function validateAssessmentData(assessment) {
 
 // Helper validation functions
 function isValidAge(age) {
-  const validAges = ['under_18', '18_24', '25_29', '30_34', '35_39', '40_44', '45_plus'];
+  const validAges = ['under-13', '13-17', '18-24', '25-plus'];
   return validAges.includes(age);
 }
 
 function isValidCycleLength(cycleLength) {
-  const validCycleLengths = ['less_than_21', '21_25', '26_30', '31_35', '36_40', 'more_than_40', 'irregular'];
+  const validCycleLengths = ['less-than-21', '21-25', '26-30', '31-35', '36-40', 'irregular', 'not-sure', 'other'];
   return validCycleLengths.includes(cycleLength);
 }
 
 function isValidPeriodDuration(duration) {
-  const validDurations = ['1_3', '4_5', '6_7', 'more_than_7'];
+  const validDurations = ['1-3', '4-5', '6-7', '8-plus', 'varies', 'not-sure', 'other' ];
   return validDurations.includes(duration);
 }
 
 function isValidFlowHeaviness(flow) {
-  const validFlows = ['light', 'moderate', 'heavy', 'very_heavy'];
+  const validFlows = ['light', 'moderate', 'heavy', 'very-heavy', 'varies', 'not-sure' ];
   return validFlows.includes(flow);
 }
 
 function isValidPainLevel(pain) {
-  const validPainLevels = ['none', 'mild', 'moderate', 'severe'];
+  const validPainLevels = ['no-pain', 'mild', 'moderate', 'severe', 'debilitating', 'varies'];
   return validPainLevels.includes(pain);
 } 

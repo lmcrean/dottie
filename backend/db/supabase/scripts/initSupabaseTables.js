@@ -6,7 +6,7 @@ dotenv.config();
 
 // Create Supabase client
 const supabase = createClient(
-  'https://nooizeyjujtddtxkirof.supabase.co',
+  process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY // Use service role key for admin operations
 );
 

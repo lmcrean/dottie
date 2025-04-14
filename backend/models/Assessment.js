@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import db from '../db/index.js';
+import DbService from '../services/dbService.js';
+
 
 // In-memory store for tests
 const testAssessments = {};
@@ -15,26 +17,16 @@ class Assessment {
    */
   static async findById(id) {
     try {
-      // Use in-memory store for tests
       if (isTestMode && testAssessments[id]) {
         return testAssessments[id];
       }
-
-      // Placeholder implementation - replace with actual database query
-      const assessment = await db.query(
-        'SELECT * FROM assessments WHERE id = ?',
-        [id]
-      );
-      
-      if (assessment && assessment.length > 0) {
-        return assessment[0];
-      }
-      return null;
+      return await DbService.findByIdWithJson('assessments', id, ['assessment_data']);
     } catch (error) {
       console.error('Error finding assessment by ID:', error);
       throw error;
     }
   }
+
 
   /**
    * Create a new assessment
@@ -46,8 +38,7 @@ class Assessment {
     try {
       const id = uuidv4();
       const now = new Date();
-      
-      // Use in-memory store for tests
+
       if (isTestMode) {
         const assessment = {
           id,
@@ -60,24 +51,38 @@ class Assessment {
         return assessment;
       }
 
-      // Placeholder implementation - replace with actual database query
-      await db.query(
-        'INSERT INTO assessments (id, user_id, assessment_data, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-        [id, userId, JSON.stringify(assessmentData), now, now]
-      );
-      
-      return {
+      const payload = {
         id,
-        userId,
-        assessmentData,
-        createdAt: now,
-        updatedAt: now
+        user_id: userId,
+        assessment_data: assessmentData.assessmentData,
+        created_at: now,
+        updated_at: now
+      };
+
+      const inserted = await DbService.createWithJson(
+        'assessments',
+        payload,
+        ['assessment_data']
+      );
+
+      console.log('Inserted assessment:', inserted);
+
+
+
+
+      return {
+        id: inserted.id,
+        userId: inserted.user_id,
+        assessmentData: inserted.assessment_data,
+        createdAt: inserted.created_at,
+        updatedAt: inserted.updated_at
       };
     } catch (error) {
       console.error('Error creating assessment:', error);
       throw error;
     }
   }
+
 
   /**
    * List all assessments for a user
@@ -91,17 +96,13 @@ class Assessment {
         return Object.values(testAssessments)
           .filter(assessment => assessment.userId === userId);
       }
-
-      // Placeholder implementation - replace with actual database query
-      const assessments = await db.query(
-        'SELECT * FROM assessments WHERE user_id = ? ORDER BY created_at DESC',
-        [userId]
+      return await DbService.findByFieldWithJson(
+        'assessments',
+        'user_id',
+        userId,
+        ['assessment_data'],
+        'created_at'
       );
-      
-      return assessments.map(assessment => ({
-        ...assessment,
-        assessmentData: JSON.parse(assessment.assessment_data)
-      }));
     } catch (error) {
       console.error('Error listing assessments by user:', error);
       throw error;
@@ -117,33 +118,27 @@ class Assessment {
   static async update(id, assessmentData) {
     try {
       const now = new Date();
-      
+
       // Use in-memory store for tests
       if (isTestMode) {
         if (!testAssessments[id]) {
           throw new Error(`Assessment with ID ${id} not found`);
         }
-        
+
         testAssessments[id] = {
           ...testAssessments[id],
           assessmentData,
           updatedAt: now
         };
-        
+
         return testAssessments[id];
       }
-
-      // Placeholder implementation - replace with actual database query
-      await db.query(
-        'UPDATE assessments SET assessment_data = ?, updated_at = ? WHERE id = ?',
-        [JSON.stringify(assessmentData), now, id]
+      return await DbService.updateWithJson(
+        'assessments',
+        id,
+        { assessment_data: assessmentData, updated_at: new Date() },
+        ['assessment_data']
       );
-      
-      const updatedAssessment = await this.findById(id);
-      return {
-        ...updatedAssessment,
-        assessmentData
-      };
     } catch (error) {
       console.error('Error updating assessment:', error);
       throw error;
@@ -162,18 +157,11 @@ class Assessment {
         if (!testAssessments[id]) {
           throw new Error(`Assessment with ID ${id} not found`);
         }
-        
+
         delete testAssessments[id];
         return true;
       }
-
-      // Placeholder implementation - replace with actual database query
-      await db.query(
-        'DELETE FROM assessments WHERE id = ?',
-        [id]
-      );
-      
-      return true;
+      return await DbService.delete('assessments', id);
     } catch (error) {
       console.error('Error deleting assessment:', error);
       throw error;

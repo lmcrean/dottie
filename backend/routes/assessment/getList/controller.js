@@ -1,5 +1,7 @@
 import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
+import Assessment from '../../../models/Assessment.js';
+
 
 /**
  * Get list of all assessments for the authenticated user
@@ -10,6 +12,7 @@ export const listAssessments = async (req, res) => {
   try {
     // Get userId from authenticated user
     const userId = req.user.userId;
+    console.log(userId)
     
     if (!userId) {
       return res.status(400).json({ error: 'User ID is required' });
@@ -59,8 +62,16 @@ export const listAssessments = async (req, res) => {
     }
     
     // Filter assessments by user ID from in-memory store
-    const userAssessments = assessments.filter(a => a.userId === userId);
-    res.json(userAssessments);
+    // const userAssessments = assessments.filter(a => a.userId === userId);
+    // res.json(userAssessments);
+
+
+    const userAssessments = await Assessment.listByUser(userId)
+    if (userAssessments && userAssessments.length > 0) {
+      return res.status(200).json(userAssessments);
+    } else {
+      return res.status(404).json({ message: 'No assessments found for this user' });
+    }
   } catch (error) {
     console.error('Error fetching assessments:', error);
     res.status(500).json({ error: 'Failed to fetch assessments' });
