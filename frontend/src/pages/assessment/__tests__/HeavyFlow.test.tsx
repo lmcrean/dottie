@@ -42,7 +42,7 @@ describe('Heavy Flow Menstrual Pattern Assessment Path', () => {
     renderResults(sessionData)
     
     // Verify heading is present
-    expect(screen.getByText(/Your Menstrual Pattern/i)).toBeInTheDocument()
+    expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify heavy flow pattern (O2 in LogicTree)
     expect(screen.getByText('Your flow is heavier or longer than typical, which could impact your daily activities.')).toBeInTheDocument()
@@ -72,7 +72,7 @@ describe('Heavy Flow Menstrual Pattern Assessment Path', () => {
     renderResults(sessionData)
     
     // Verify heading is present
-    expect(screen.getByText(/Your Menstrual Pattern/i)).toBeInTheDocument()
+    expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify heavy flow pattern (O2 in LogicTree)
     expect(screen.getByText('Your flow is heavier or longer than typical, which could impact your daily activities.')).toBeInTheDocument()
