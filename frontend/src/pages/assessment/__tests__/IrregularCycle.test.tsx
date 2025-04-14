@@ -38,7 +38,7 @@ describe('Irregular Menstrual Cycle Assessment Path', () => {
     renderResults(sessionData)
     
     // Verify heading is present
-    expect(screen.getByText(/Your Menstrual Pattern/i)).toBeInTheDocument()
+    expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify irregular cycle pattern (O1 in LogicTree)
     expect(screen.getByText('Your cycle length is outside the typical range, which may indicate hormonal fluctuations.')).toBeInTheDocument()
@@ -69,7 +69,7 @@ describe('Irregular Menstrual Cycle Assessment Path', () => {
     renderResults(sessionData)
     
     // Verify heading is present
-    expect(screen.getByText(/Your Menstrual Pattern/i)).toBeInTheDocument()
+    expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify irregular cycle pattern (O1 in LogicTree)
     expect(screen.getByText('Your cycle length is outside the typical range, which may indicate hormonal fluctuations.')).toBeInTheDocument()
