@@ -36,15 +36,14 @@ export default function AgeVerificationPage() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
-          <div className="lg:w-1/2 md:max flex items-top justify-center lg:justify-start text-center lg:text-left">
+          <div className="lg:w-1/2 flex items-center justify-center lg:justify-start text-center lg:text-left">
            <div className="flex flex-col gap-3">
-           <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
-           <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
+              <h1 className="text-3xl font-bold mb-3">What is your age range?</h1>
               <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
             </div>
           </div>
 
-          <Card className="w-full lg:w-1/2 lg:max-w-none md:mx-auto md:max-w-md shadow-md hover:shadow-lg transition-shadow duration-300">
+          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
             <CardContent className="pt-8 pb-8">
               <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
                 <div className="space-y-4">
