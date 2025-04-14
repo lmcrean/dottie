@@ -7,3 +7,9 @@ node_modules/*
 
 .test-results/*
 .qodo
+
+node_modules/*
+
+*/node_modules/
+
+.qodo
