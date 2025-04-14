@@ -15,23 +15,24 @@ Dottie is a mobile-friendly web application designed to provide personalized men
 - **Custom Recommendations**: Practical advice based on assessment results
 - **Resource Library**: Curated resources for further learning and support
 - **Privacy-Focused**: No personal health information is stored
+- **AI Chat Assistant**: Gemini-powered assistant with fallback mock responses for local development
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+### Frontend
+- **Framework**: React with Vite
 - **Styling**: Tailwind CSS
 - **UI Components**: shadcn/ui
 - **Icons**: Lucide React
 
-## Getting Started
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express
+- **Database**: SQLite (development), SQL Server (production)
+- **AI Integration**: Google Gemini API (with mock implementation for local development)
+- **Cloud Storage**: Supabase (with mock implementation for local development)
 
-Here’s an updated version of your `README.md` with additional details and improvements for clarity:
-
----
-
-## Dottie App
-
-### Prerequisites
+# Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
 
@@ -44,7 +45,7 @@ node -v
 npm -v
 ```
 
-If you don’t have Node.js installed, follow these steps:
+If you don't have Node.js installed, follow these steps:
 
 #### **Installing Node.js**
 
@@ -84,62 +85,75 @@ If you don’t have Node.js installed, follow these steps:
 1. Clone the repository:
    ```bash
    git clone https://github.com/lmcrean/dottie.git
-   cd dottie-app
+   cd dottie
    ```
 
-2. Install dependencies:
-   - Using **npm**:
-     ```bash
-     npm install
-     ```
-   - Using **yarn**:
-     ```bash
-     yarn install
-     ```
+2. Install dependencies for both frontend and backend:
+   ```bash
+   # Install backend dependencies
+   cd backend
+   npm install
+   
+   # Install frontend dependencies
+   cd ../frontend
+   npm install
+   ```
 
-3. Set up environment variables (if required):
-   - Create a `.env` file in the root directory.
-   - Add necessary environment variables (e.g., API keys, database URLs).
+3. Environment Variables (Optional):
+   - The application is designed to run without environment variables in development mode
+   - If you want to use real API services, create a `.env` file in the backend directory with:
+     ```
+     # Gemini API key (optional - mock responses used if not provided)
+     VITE_GEMINI_API_KEY=your_gemini_api_key
+     
+     # Supabase configuration (optional - mock client used if not provided)
+     SUPABASE_URL=your_supabase_url
+     SUPABASE_ANON_PUBLIC=your_supabase_anon_key
+     
+     # Local development flag
+     LOCAL_DEV=true
+     ```
 
 ---
 
 ### Running the Application
 
-1. Start the development server:
+1. Start the development server for both frontend and backend:
    ```bash
+   # From the frontend directory
    npm run dev
    ```
-   or
-   ```bash
-   yarn dev
-   ```
+   This will start both the backend (on port 5000) and frontend (on port 3000) concurrently.
 
 2. Open your browser and navigate to:
    ```
    http://localhost:3000
    ```
 
+**Note**: The application uses mock implementations for Gemini AI and Supabase when API keys are not provided, allowing for full functionality during local development without external dependencies.
+
+---
+
+### Project Structure
+
+- **/frontend**: React application built with Vite
+- **/backend**: Node.js API server
+  - **/routes**: API endpoints organized by feature
+  - **/services**: Shared services (logger, database connections, etc.)
+  - **/models**: Data models and database interactions
+  - **/db**: Database configuration and migrations
+
 ---
 
 ### Building for Production
 
-1. Build the application:
+1. Build the frontend application:
    ```bash
+   cd frontend
    npm run build
    ```
-   or
-   ```bash
-   yarn build
-   ```
 
-2. Start the production server:
-   ```bash
-   npm run start
-   ```
-   or
-   ```bash
-   yarn start
-   ```
+2. For production deployment, ensure appropriate environment variables are set in your hosting environment.
 
 ---
 
@@ -173,7 +187,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### Support
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/lmcrean/dottie.git/issues) on GitHub.
-
----
-
-This updated `README.md` provides clear instructions for setting up the project, running it, and contributing. Let me know if you need further adjustments!
