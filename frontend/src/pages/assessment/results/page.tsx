@@ -255,8 +255,8 @@ export default function ResultsPage() {
     // Q1: Is cycle length between 21-45 days?
     const isCycleLengthNormal = !(
       containsAny(storedCycleLength, ["irregular"]) ||
-      containsAny(storedCycleLength, ["less than 21", "<21", "less-than-21"]) ||
-      containsAny(storedCycleLength, ["more than 45", ">45", "45+"])
+      containsAny(storedCycleLength, ["less-than-21", "<21"]) ||
+      containsAny(storedCycleLength, ["more-than-45", "36-40", ">45", "45+"])
     );
     decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
 
@@ -273,17 +273,16 @@ if (!isCycleLengthNormal) {
   );
   decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
 
-  if (!isPeriodDurationNormal) {
-    // O2: Heavy or Prolonged Flow Pattern
-    determinedPattern = "heavy";
-    decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
-  } else {
-    // Q3: Is flow light to moderate?
-    const isFlowNormal = !(
-      storedFlowLevel === "heavy" ||
-      containsAny(storedFlowLevel, ["heavy", "very heavy"])
-    );
-    decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
+      if (!isPeriodDurationNormal) {
+        // O2: Heavy or Prolonged Flow Pattern
+        determinedPattern = "heavy";
+        decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
+      } else {
+        // Q3: Is flow light to moderate?
+        const isFlowNormal = !(
+          containsAny(storedFlowLevel, ["heavy", "very-heavy"])
+        );
+        decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
 
     if (!isFlowNormal) {
       // O2: Heavy or Prolonged Flow Pattern
@@ -408,6 +407,7 @@ if (!isCycleLengthNormal) {
       const assessment: Omit<Assessment, "id"> = {
         userId: "", // This will be set by the backend
         createdAt: new Date().toISOString(),
+        assessment_data: {
         assessment_data: {
           date: new Date().toISOString(),
           pattern,
