@@ -41,7 +41,7 @@ export default function AgeVerificationPage() {
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="under-13" id="under-13" className="text-pink-500" />
                   <Label htmlFor="under-13" className="flex-1 cursor-pointer">
@@ -78,7 +78,7 @@ export default function AgeVerificationPage() {
           </CardContent>
         </Card>
 
-        <div className="flex justify-between w-full mt-auto">
+        <div className="flex justify-between w-full">
           <Link to="/">
             <Button variant="outline" className="flex items-center px-6 py-6 text-lg">
               <ChevronLeft className="h-5 w-5 mr-2" />
