@@ -80,7 +80,8 @@ app.use((err, req, res, next) => {
 // Start the server if we're running directly
 const isMainModule = import.meta.url.endsWith(process.argv[1]);
 
-if (isMainModule || process.env.NODE_ENV === 'development') {
+// Force listen in development and when run directly
+if (isMainModule || process.env.NODE_ENV === 'development' || true) {
   // Start server
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
