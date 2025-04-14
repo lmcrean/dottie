@@ -74,7 +74,7 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = (assessment?.assessmentData as any)?.assessmentData.assessmentData;
+  const assessmentData = assessment?.assessment_data
   if (!assessmentData) {
     return (
       <div className="min-h-screen bg-gray-50">

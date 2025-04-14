@@ -54,10 +54,11 @@ class Assessment {
       const payload = {
         id,
         user_id: userId,
-        assessment_data: assessmentData.assessmentData,
+        assessment_data: assessmentData.assessment_data,
         created_at: now,
         updated_at: now
       };
+      
 
       const inserted = await DbService.createWithJson(
         'assessments',
@@ -65,7 +66,8 @@ class Assessment {
         ['assessment_data']
       );
 
-      console.log('Inserted assessment:', inserted);
+      // console.log('Inserted assessment:', inserted);
+
 
 
 

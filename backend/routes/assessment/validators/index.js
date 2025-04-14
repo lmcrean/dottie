@@ -12,13 +12,13 @@ export function validateAssessmentData(assessment) {
   //   errors.push('userId is required');
   // }
   
-  if (!assessment.assessmentData) {
-    errors.push('assessmentData is required');
+  if (!assessment.assessment_data) {
+    errors.push('assessment_data is required');
     return { isValid: errors.length === 0, errors };
   }
   
-  const assessmentData = assessment.assessmentData;
-  console.log('Validating assessment data:', assessmentData);
+  const assessmentData = assessment.assessment_data;
+  // console.log('Validating assessment data:', assessmentData);
   
   // Validate required assessment fields
   if (!assessmentData.age) {

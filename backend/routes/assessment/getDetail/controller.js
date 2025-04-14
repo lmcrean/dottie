@@ -1,5 +1,7 @@
 import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
+import Assessment from '../../../models/Assessment.js';
+
 
 /**
  * Get detailed view of a specific assessment by its ID
@@ -63,7 +65,8 @@ export const getAssessmentDetail = async (req, res) => {
     }
     
     // Find the assessment by ID and userId in memory
-    const assessment = assessments.find(a => a.id === assessmentId && a.userId === userId);
+    // const assessment = assessments.find(a => a.id === assessmentId && a.userId === userId);
+    const assessment = await Assessment.findById(assessmentId);
     
     if (!assessment) {
       return res.status(404).json({ error: 'Assessment not found' });

@@ -22,21 +22,21 @@ export function useAssessmentResult() {
     const { age, cycleLength, periodDuration, flowHeaviness, painLevel } = result;
 
     // Developing Pattern (O5)
-    if (age === "12_14" || age === "15_17") {
+    if (age === "under-13" || age === "13-17") {
       return 'developing';
     }
 
     // Irregular Timing Pattern (O1)
     if (cycleLength === 'irregular' || 
-        cycleLength === 'less_than_21' || 
-        cycleLength === 'more_than_35') {
+        cycleLength === 'less-than-21' || 
+        cycleLength === '36-40') {
       return 'irregular';
     }
 
     // Heavy Flow Pattern (O2)
     if (flowHeaviness === 'heavy' || 
-        flowHeaviness === 'very_heavy' || 
-        periodDuration === 'more_than_7') {
+        flowHeaviness === 'very-heavy' || 
+        periodDuration === '8-plus') {
       return 'heavy';
     }
 
