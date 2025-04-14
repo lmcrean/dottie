@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react"
@@ -175,5 +174,6 @@ export default function FlowPage() {
         </div>
       </main>
     </div>
+  </PageTransition>
   );
 }
