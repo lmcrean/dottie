@@ -4,6 +4,7 @@ import { Calendar, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { assessmentApi, type Assessment } from "@/src/api/assessment";
 import { toast } from "sonner";
+import PageTransition from "../page-transitions";
 
 export default function HistoryPage() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -66,6 +67,7 @@ export default function HistoryPage() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
@@ -157,5 +159,6 @@ export default function HistoryPage() {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 }

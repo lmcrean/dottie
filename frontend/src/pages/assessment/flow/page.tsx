@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radi
 import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
+import PageTransition from "../page-transitions"
 
 export default function FlowPage() {
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null)
@@ -18,6 +19,7 @@ export default function FlowPage() {
   }
 
   return (
+    <PageTransition>
     <div className="flex min-h-screen flex-col bg-white">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -132,6 +134,7 @@ export default function FlowPage() {
         </div>
       </main>
     </div>
+    </PageTransition>
   )
 }
 
