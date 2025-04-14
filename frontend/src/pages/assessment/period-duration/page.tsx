@@ -1,16 +1,15 @@
+
 "use client";
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/src/components/ui/!to-migrate/button";
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/src/components/ui/!to-migrate/radio-group";
-import { Label } from "@/src/components/ui/!to-migrate/label";
-import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
-import UserIcon from "@/src/components/navigation/UserIcon";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { Button } from "@/src/components/ui/!to-migrate/button"
+import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
+import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
+import { Label } from "@/src/components/ui/!to-migrate/label"
+import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
+import UserIcon from "@/src/components/navigation/UserIcon"
+import PageTransition from "../page-transitions"
 
 export default function PeriodDurationPage() {
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
@@ -21,6 +20,7 @@ export default function PeriodDurationPage() {
   };
 
   return (
+    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -173,5 +173,6 @@ export default function PeriodDurationPage() {
         </div>
       </main>
     </div>
+    </PageTransition>
   );
 }

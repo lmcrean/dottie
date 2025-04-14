@@ -8,6 +8,7 @@ import { Checkbox } from "@/src/components/ui/!to-migrate/checkbox";
 import { Input } from "@/src/components/ui/!to-migrate/input";
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
 import UserIcon from "@/src/components/navigation/UserIcon";
+import PageTransition from "../page-transitions";
 
 export default function SymptomsPage() {
   const [physicalSymptoms, setPhysicalSymptoms] = useState<string[]>([]);
@@ -71,6 +72,8 @@ export default function SymptomsPage() {
   };
 
   return (
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -254,5 +257,6 @@ export default function SymptomsPage() {
         </div>
       </main>
     </div>
+    </PageTransition>
   );
 }

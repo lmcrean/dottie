@@ -1,11 +1,14 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
 import { DotIcon, ExternalLink, Heart } from "lucide-react";
 import UserIcon from "@/src/components/navigation/UserIcon";
+import PageTransition from "../page-transitions";
 
 export default function ResourcesPage() {
   return (
+    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -172,5 +175,6 @@ export default function ResourcesPage() {
         </footer>
       </main>
     </div>
+    </PageTransition>
   );
 }

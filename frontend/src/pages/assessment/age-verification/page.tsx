@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radi
 import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, DotIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
+import PageTransition from "../page-transitions"
 
 export default function AgeVerificationPage() {
   const [selectedAge, setSelectedAge] = useState<string | null>(null)
@@ -18,6 +19,7 @@ export default function AgeVerificationPage() {
   }
 
   return (
+    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
@@ -98,6 +100,7 @@ export default function AgeVerificationPage() {
         </div>
       </main>
     </div>
+    </PageTransition>
   )
 }
 
