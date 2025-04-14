@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
+import { AuthProvider } from '@/src/context/AuthContext'
 
 // Import all assessment pages
 import AgeVerificationPage from '../age-verification/page'
@@ -27,17 +28,19 @@ export const renderWithRouter = (
   { route = '/' } = {}
 ) => {
   return render(
-    <MemoryRouter initialEntries={[route]}>
-      <Routes>
-        <Route path="/assessment/age-verification" element={<AgeVerificationPage />} />
-        <Route path="/assessment/cycle-length" element={<CycleLengthPage />} />
-        <Route path="/assessment/period-duration" element={<PeriodDurationPage />} />
-        <Route path="/assessment/flow" element={<FlowPage />} />
-        <Route path="/assessment/pain" element={<PainPage />} />
-        <Route path="/assessment/symptoms" element={<SymptomsPage />} />
-        <Route path="/assessment/results" element={<ResultsPage />} />
-      </Routes>
-    </MemoryRouter>
+    <AuthProvider>
+      <MemoryRouter initialEntries={[route]}>
+        <Routes>
+          <Route path="/assessment/age-verification" element={<AgeVerificationPage />} />
+          <Route path="/assessment/cycle-length" element={<CycleLengthPage />} />
+          <Route path="/assessment/period-duration" element={<PeriodDurationPage />} />
+          <Route path="/assessment/flow" element={<FlowPage />} />
+          <Route path="/assessment/pain" element={<PainPage />} />
+          <Route path="/assessment/symptoms" element={<SymptomsPage />} />
+          <Route path="/assessment/results" element={<ResultsPage />} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>
   )
 }
 
@@ -183,5 +186,13 @@ export const navigateToSymptoms = async (user: ReturnType<typeof userEvent.setup
 
 export const renderResults = (sessionData: Record<string, any>) => {
   setupSessionStorage(sessionData);
-  renderWithRouter(<ResultsPage />, { route: '/assessment/results' });
+  render(
+    <AuthProvider>
+      <MemoryRouter initialEntries={['/assessment/results']}>
+        <Routes>
+          <Route path="/assessment/results" element={<ResultsPage />} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>
+  );
 }; 
