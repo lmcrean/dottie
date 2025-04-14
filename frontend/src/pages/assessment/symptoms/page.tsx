@@ -92,7 +92,7 @@ export default function SymptomsPage() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
-          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
+          <div className="lg:w-1/2 flex items-center justify-center lg:justify-start text-center lg:text-left">
            <div className="flex flex-col gap-3">
         <h1 className="text-xl font-bold mb-2">Question 6 of 6</h1>
         <h2 className="text-3xl font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
