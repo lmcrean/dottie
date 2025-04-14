@@ -50,7 +50,7 @@ describe('Regular Menstrual Cycle Assessment Path', () => {
     renderResults(sessionData)
     
     // Verify heading is present
-    expect(screen.getByText(/Your Menstrual Pattern/i)).toBeInTheDocument()
+    expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify regular cycle pattern (O4 in LogicTree)
     expect(screen.getByText('Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.')).toBeInTheDocument()
