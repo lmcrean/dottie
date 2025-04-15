@@ -1,5 +1,6 @@
 .vite/*
 .test-results/*
+.qodo
 
 node_modules/*
 
