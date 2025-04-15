@@ -82,7 +82,7 @@ export default function SymptomsPage() {
         <UserIcon />
       </header>
 
-      <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
+      <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm text-gray-500">100% Complete</div>
         </div>
@@ -91,17 +91,19 @@ export default function SymptomsPage() {
           <div className="bg-pink-500 h-2 rounded-full w-full"></div>
         </div>
 
+        <div className="flex flex-col lg:flex-row gap-8 mb-8">
+          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
+           <div className="flex flex-col gap-3">
         <h1 className="text-xl font-bold mb-2">Question 6 of 6</h1>
-        <h2 className="text-lg font-semibold mb-1">
-          Do you experience any other symptoms with your period?
-        </h2>
+        <h2 className="text-3xl font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
         <p className="text-sm text-gray-500 mb-6">
           Select all that apply. These could occur before, during, or after your
           period.
         </p>
+        </div></div>
 
         <div className="mb-6">
-          <h3 className="font-medium mb-3">Physical symptoms</h3>
+          <h3 className="text-base text-center font-medium mb-3">Physical symptoms</h3>
           <div className="grid grid-cols-2 gap-3">
             {[
               { id: "bloating", label: "Bloating", emoji: "🫃" },
@@ -152,7 +154,7 @@ export default function SymptomsPage() {
         </div>
 
         <div className="mb-6">
-          <h3 className="font-medium mb-3">Emotional/Mood symptoms</h3>
+          <h3 className="text-base text-center font-medium mb-3">Emotional/Mood symptoms</h3>
           <div className="grid grid-cols-2 gap-3">
             {[
               { id: "irritability", label: "Irritability", emoji: "😠" },
@@ -192,6 +194,7 @@ export default function SymptomsPage() {
               </div>
             ))}
           </div>
+        </div>
         </div>
 
         <div className="mb-6">
