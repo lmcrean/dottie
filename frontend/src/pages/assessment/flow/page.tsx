@@ -9,6 +9,7 @@ import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
 import PageTransition from "../page-transitions"
+import { AssessmentIcons } from "@/src/constants/assessment-icons"
 
 export default function FlowPage() {
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
@@ -42,7 +43,10 @@ export default function FlowPage() {
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
               <h1 className="text-xl font-bold mb-2">Question 4 of 6</h1>
-              <h2 className="text-3xl font-semibold mb-1">How would you describe your menstrual flow?</h2>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-3xl font-semibold">How would you describe your menstrual flow?</h2>
+                <AssessmentIcons.FlowLevelIcon />
+              </div>
               <p className="text-sm text-gray-500 mb-6">Select the option that best describes your typical flow heaviness</p>
             </div>
           </div>

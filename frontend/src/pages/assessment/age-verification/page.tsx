@@ -9,6 +9,7 @@ import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, DotIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
 import PageTransition from "../page-transitions"
+import { AssessmentIcons } from "@/src/constants/assessment-icons"
 
 export default function AgeVerificationPage() {
   const [selectedAge, setSelectedAge] = useState<string | null>(null)
@@ -39,7 +40,10 @@ export default function AgeVerificationPage() {
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
            <div className="flex flex-col gap-3">
            <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
-           <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
+           <div className="flex items-center gap-2 mb-1">
+              <h2 className="text-3xl font-semibold">What is your age range?</h2>
+              <AssessmentIcons.AgeIcon />
+           </div>
               <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
             </div>
           </div>
@@ -94,8 +98,8 @@ export default function AgeVerificationPage() {
           </Link>
 
           <Link to={selectedAge ? "/assessment/cycle-length" : "#"}>
-            <Button 
-              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`} 
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
               disabled={!selectedAge}
             >
               Continue
@@ -108,4 +112,3 @@ export default function AgeVerificationPage() {
     </PageTransition>
   )
 }
-

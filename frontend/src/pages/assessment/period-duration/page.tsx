@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react"
@@ -10,6 +9,7 @@ import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
 import PageTransition from "../page-transitions"
+import { AssessmentIcons } from "@/src/constants/assessment-icons"
 
 export default function PeriodDurationPage() {
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
@@ -42,11 +42,14 @@ export default function PeriodDurationPage() {
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
            <div className="flex flex-col gap-3">
             <h1 className="text-xl font-bold mb-2">Question 3 of 6</h1>
-            <h2 className="text-3xl font-semibold mb-1">How many days does your period typically last?</h2>
+            <div className="flex items-center gap-2 mb-1">
+              <h2 className="text-3xl font-semibold">How many days does your period typically last?</h2>
+              <AssessmentIcons.PeriodDurationIcon />
+            </div>
             <p className="text-sm text-gray-500 mb-6">Count the days from when bleeding starts until it completely stops</p>
            </div>
           </div>
-        
+
           <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
               <CardContent className="pt-8 pb-8">
                 <RadioGroup value={selectedDuration || ""} onValueChange={handleDurationChange} className="mb-6">

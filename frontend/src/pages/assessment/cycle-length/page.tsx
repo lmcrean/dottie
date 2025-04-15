@@ -1,15 +1,16 @@
 
 "use client";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "@/src/components/ui/!to-migrate/button"
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
-import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
-import PageTransition from "../page-transitions"
+import UserIcon from "@/src/components/navigation/UserIcon";
+import { Button } from "@/src/components/ui/!to-migrate/button";
+import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
+import { Label } from "@/src/components/ui/!to-migrate/label";
+import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group";
+import { AssessmentIcons } from "@/src/constants/assessment-icons";
+import { ChevronLeft, ChevronRight, InfoIcon } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import PageTransition from "../page-transitions";
 
 export default function CycleLengthPage() {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
@@ -42,7 +43,10 @@ export default function CycleLengthPage() {
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
               <h1 className="text-xl font-bold mb-2">Question 2 of 6</h1>
-              <h2 className="text-3xl font-semibold mb-1">How long is your menstrual cycle?</h2>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-3xl font-semibold">How long is your menstrual cycle?</h2>
+                <AssessmentIcons.CycleIcon />
+              </div>
               <p className="text-sm text-gray-500 mb-6">
                 Count from the first day of one period to the first day of the next period
               </p>
