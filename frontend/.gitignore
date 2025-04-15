@@ -32,5 +32,4 @@ test-results/*
 test_screenshots/*
 
 # dist
-dist/assets/*
-
+dist/
