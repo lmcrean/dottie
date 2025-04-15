@@ -22,6 +22,7 @@ export function ChatModal({ isOpen, onClose, initialMessage }: ChatModalProps) {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const hasSentInitialMessage = useRef(false)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -32,11 +33,15 @@ export function ChatModal({ isOpen, onClose, initialMessage }: ChatModalProps) {
 
   // Send initial message if provided
   useEffect(() => {
-    if (isOpen && initialMessage && messages.length === 0) {
-      setMessages([{ role: 'user', content: initialMessage }])
-      handleSend(initialMessage)
-    }
-  }, [isOpen, initialMessage])
+    const sendInitialMessage = async () => {
+      if (isOpen && initialMessage && messages.length === 0 && !hasSentInitialMessage.current) {
+        hasSentInitialMessage.current = true; // Set flag immediately
+        await handleSend(initialMessage);
+      }
+    };
+  
+    sendInitialMessage();
+  }, [isOpen, initialMessage]);
 
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input.trim()
