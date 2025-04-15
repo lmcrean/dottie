@@ -15,7 +15,10 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   const { signup } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [cnfrmPasswordVisible, setCnfrmPasswordVisible] = useState(false);
+
   const togglePasswordVisibility = () => setPasswordVisible((prev) => !prev);
+  const toggleCnfrmPasswordVisibility = () => setCnfrmPasswordVisible((prev) => !prev);
 
   const {
     register,
@@ -114,8 +117,8 @@ export default function SignUpPage() {
             register={register}
             error={errors.confirmPassword?.message}
             required
-            isVisible={passwordVisible}
-            toggleVisibility={togglePasswordVisibility}
+            isVisible={cnfrmPasswordVisible}
+            toggleVisibility={toggleCnfrmPasswordVisibility}
           />
         </div>
         <div>
