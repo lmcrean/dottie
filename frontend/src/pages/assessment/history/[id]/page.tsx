@@ -13,6 +13,7 @@ import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
 import { toast } from "sonner";
 import AssessmentInfo from "@/src/components/history/AssessmentInfo";
+import Symptoms from "@/src/components/history/Symptoms";
 
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
@@ -131,38 +132,24 @@ export default function AssessmentDetailsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-gray-50 rounded-xl p-6 shadow-md">
+            <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Calendar className="h-6 w-6 text-gray-500" />
                 <h2 className="text-lg font-semibold text-gray-900">
                   Cycle Information
                 </h2>
               </div>
-              {/* <div className="space-y-2">
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Age:</span>{" "}
-                  {formatValue(assessmentData.age)} years
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Cycle Length:</span>{" "}
-                  {formatValue(assessmentData.cycleLength)} days
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Period Duration:</span>{" "}
-                  {formatValue(assessmentData.periodDuration)} days
-                </p>
-              </div> */}
-              <AssessmentInfo data={assessmentData} type={'CycleInfo'} formatValue={formatValue}/>
+              <AssessmentInfo data={assessmentData} type={'CycleInfo'} formatValue={formatValue} />
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-6 shadow-md">
+            <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Activity className="h-5 w-5 text-gray-500" />
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-lg font-medium text-gray-900">
                   Flow & Pain
                 </span>
               </div>
-              <AssessmentInfo data={assessmentData} type={'FlowAndPain'} formatValue={formatValue}/>
+              <AssessmentInfo data={assessmentData} type={'FlowAndPain'} formatValue={formatValue} />
             </div>
           </div>
 
@@ -174,22 +161,7 @@ export default function AssessmentDetailsPage() {
                   Physical Symptoms
                 </h2>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {physicalSymptoms.length > 0 ? (
-                  physicalSymptoms.map((symptom: string, index: number) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-                    >
-                      {symptom}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-sm text-gray-500">
-                    No physical symptoms reported
-                  </span>
-                )}
-              </div>
+              <Symptoms symptoms={["Headache", "Cramps", "Fatigue"]} symptomsType={'physicalSymptoms'} />
             </div>
 
             <div>
@@ -199,22 +171,7 @@ export default function AssessmentDetailsPage() {
                   Emotional Symptoms
                 </h2>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {emotionalSymptoms.length > 0 ? (
-                  emotionalSymptoms.map((symptom: string, index: number) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-                    >
-                      {symptom}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-sm text-gray-500">
-                    No emotional symptoms reported
-                  </span>
-                )}
-              </div>
+              <Symptoms symptoms={["Mood Swings", "Anxiety", "Irritability"]} symptomsType={'emotionalSymptoms'} />
             </div>
 
             <div>
