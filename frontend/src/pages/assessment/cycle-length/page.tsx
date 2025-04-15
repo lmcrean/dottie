@@ -40,10 +40,10 @@ export default function CycleLengthPage() {
           <div className="bg-pink-500 h-2 rounded-full w-[33%]"></div>
         </div>
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
-          <div className="lg:w-1/2 flex items-center justify-center lg:justify-start text-center lg:text-left">
+          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
               <h1 className="text-xl font-bold mb-2">Question 2 of 6</h1>
-              <h2 className="text-lg font-semibold mb-1">How long is your menstrual cycle?</h2>
+              <h2 className="text-3xl font-semibold mb-1">How long is your menstrual cycle?</h2>
               <p className="text-sm text-gray-500 mb-6">
                 Count from the first day of one period to the first day of the next period
               </p>
