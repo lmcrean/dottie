@@ -30,21 +30,25 @@ export default function AgeVerificationPage() {
         <UserIcon />
       </header>
 
-      <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
+      <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-[16%] transition-all duration-500"></div>
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-3">What is your age range?</h1>
-          <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
-        </div>
+        <div className="flex flex-col lg:flex-row gap-8 mb-8">
+          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
+           <div className="flex flex-col gap-3">
+           <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
+           <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
+              <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
+            </div>
+          </div>
 
-        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-8 pb-8">
-            <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
-              <div className="space-y-4">
-                <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
+          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <CardContent className="pt-8 pb-8">
+              <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
+                <div className="space-y-4">
+                                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="under-13" id="under-13" className="text-pink-500" />
                   <Label htmlFor="under-13" className="flex-1 cursor-pointer">
                     <div className="font-medium text-lg">Under 13 years</div>
@@ -75,10 +79,11 @@ export default function AgeVerificationPage() {
                     <p className="text-sm text-gray-500">Adult content</p>
                   </Label>
                 </div>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
+                </div>
+              </RadioGroup>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="flex justify-between w-full mt-auto">
           <Link to="/">
