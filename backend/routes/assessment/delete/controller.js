@@ -1,5 +1,7 @@
 import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
+import Assessment from '../../../models/Assessment.js';
+
 
 /**
  * Delete a specific assessment by user ID / assessment ID
@@ -38,18 +40,24 @@ export const deleteAssessment = async (req, res) => {
       }
     }
     
+  
+    // Delete associated symptoms from in-memory store
     // Find and delete from in-memory store
-    const assessmentIndex = assessments.findIndex(a => 
-      a.id === assessmentId && a.userId === userId
-    );
-    
-    if (assessmentIndex === -1) {
+    // const assessmentIndex = assessments.findIndex(a => 
+    //   a.id === assessmentId && a.userId === userId
+    // );
+    // if (assessmentIndex === -1) {
+    //   return res.status(404).json({ error: 'Assessment not found' });
+    // }
+    // // Remove the assessment
+    // assessments.splice(assessmentIndex, 1);
+
+
+
+    const deleteAssessment = await Assessment.delete(assessmentId);
+    if (!deleteAssessment) {
       return res.status(404).json({ error: 'Assessment not found' });
     }
-    
-    // Remove the assessment
-    assessments.splice(assessmentIndex, 1);
-    
     res.status(200).json({ message: 'Assessment deleted successfully' });
   } catch (error) {
     console.error('Error deleting assessment:', error);

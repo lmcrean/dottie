@@ -60,7 +60,6 @@ export const listAssessments = async (req, res) => {
         // Continue to in-memory check if database fails
       }
     }
-    
     // Filter assessments by user ID from in-memory store
     // const userAssessments = assessments.filter(a => a.userId === userId);
     // res.json(userAssessments);
