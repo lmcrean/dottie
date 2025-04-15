@@ -41,10 +41,10 @@ export default function PainPage() {
         </div>
 
       <div className="flex flex-col lg:flex-row gap-8 mb-8">
-          <div className="lg:w-1/2 flex items-center justify-center lg:justify-start text-center lg:text-left">
+          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
               <h1 className="text-xl font-bold mb-2">Question 5 of 6</h1>
-              <h2 className="text-lg font-semibold mb-1">How would you rate your menstrual pain?</h2>
+              <h2 className="text-3xl font-semibold mb-1">How would you rate your menstrual pain?</h2>
               <p className="text-sm text-gray-500 mb-6">
                 Select the option that best describes your typical pain level during your period
               </p>
