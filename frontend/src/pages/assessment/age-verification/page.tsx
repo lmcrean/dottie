@@ -34,9 +34,10 @@ export default function AgeVerificationPage() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
-          <div className="lg:w-1/2 flex items-center justify-center lg:justify-start text-center lg:text-left">
+          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
            <div className="flex flex-col gap-3">
-              <h1 className="text-3xl font-bold mb-3">What is your age range?</h1>
+           <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
+           <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
               <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
             </div>
           </div>
