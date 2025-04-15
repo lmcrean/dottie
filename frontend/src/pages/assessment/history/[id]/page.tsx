@@ -12,7 +12,7 @@ import {
 import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
 import { toast } from "sonner";
-import CycleInformation from "@/src/components/history/CycleInformation";
+import AssessmentInfo from "@/src/components/history/AssessmentInfo";
 
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
@@ -131,14 +131,14 @@ export default function AssessmentDetailsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-gray-400" />
-                <span className="text-sm font-medium text-gray-900">
+            <div className="bg-gray-50 rounded-xl p-6 shadow-md">
+              <div className="flex items-center gap-3 mb-4">
+                <Calendar className="h-6 w-6 text-gray-500" />
+                <h2 className="text-lg font-semibold text-gray-900">
                   Cycle Information
-                </span>
+                </h2>
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Age:</span>{" "}
                   {formatValue(assessmentData.age)} years
@@ -151,27 +151,18 @@ export default function AssessmentDetailsPage() {
                   <span className="font-medium">Period Duration:</span>{" "}
                   {formatValue(assessmentData.periodDuration)} days
                 </p>
-              </div>
-            </div> */}
-            <CycleInformation age = {assessmentData.age} cycleLength = {assessmentData.cycleLength} periodDuration = {assessmentData.periodDuration}/>
+              </div> */}
+              <AssessmentInfo data={assessmentData} type={'CycleInfo'} formatValue={formatValue}/>
+            </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-gray-400" />
+            <div className="bg-gray-50 rounded-xl p-6 shadow-md">
+              <div className="flex items-center gap-3 mb-4">
+                <Activity className="h-5 w-5 text-gray-500" />
                 <span className="text-sm font-medium text-gray-900">
                   Flow & Pain
                 </span>
               </div>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Flow Level:</span>{" "}
-                  {formatValue(assessmentData.flowHeaviness)}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Pain Level:</span>{" "}
-                  {formatValue(assessmentData.painLevel)}
-                </p>
-              </div>
+              <AssessmentInfo data={assessmentData} type={'FlowAndPain'} formatValue={formatValue}/>
             </div>
           </div>
 
