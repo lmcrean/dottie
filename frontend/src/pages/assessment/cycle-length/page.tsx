@@ -1,4 +1,5 @@
-"use client"
+
+"use client";
 
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -8,20 +9,22 @@ import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radi
 import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
+import PageTransition from "../page-transitions"
 
 export default function CycleLengthPage() {
-  const [selectedLength, setSelectedLength] = useState<string | null>(null)
+  const [selectedLength, setSelectedLength] = useState<string | null>(null);
 
   const handleLengthChange = (value: string) => {
-    setSelectedLength(value)
-    sessionStorage.setItem("cycleLength", value)
-  }
+    setSelectedLength(value);
+    sessionStorage.setItem("cycleLength", value);
+  };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <PageTransition>
+    <div className="flex min-h-screen flex-col  bg-gradient-to-b from-white to-pink-5">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
-        <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+          <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
           <span className="font-semibold text-pink-500">Dottie</span>
         </div>
         <UserIcon />
@@ -111,18 +114,22 @@ export default function CycleLengthPage() {
           </Card>
         </div>
 
-        <Card className="w-full mb-8 bg-pink-50 border-pink-100">
+        <Card className="w-full mb-8 bg-pink-50 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-6">
             <div className="flex gap-2">
               <InfoIcon className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-gray-800 mb-1">About Menstrual Cycles</h3>
+                <h3 className="font-semibold text-gray-800 mb-1">
+                  About Menstrual Cycles
+                </h3>
                 <p className="text-sm text-gray-600">
-                  A typical menstrual cycle can range from 21 to 35 days. Cycles outside this range or that vary
-                  significantly may indicate hormonal fluctuations.
+                  A typical menstrual cycle can range from 21 to 35 days. Cycles
+                  outside this range or that vary significantly may indicate
+                  hormonal fluctuations.
                 </p>
                 <p className="text-sm text-gray-600 mt-2">
-                  Not sure? Try using our period tracker for 2-3 months to discover your pattern.
+                  Not sure? Try using our period tracker for 2-3 months to
+                  discover your pattern.
                 </p>
               </div>
             </div>
@@ -131,21 +138,31 @@ export default function CycleLengthPage() {
 
         <div className="flex justify-between w-full mt-auto">
           <Link to="/assessment/age-verification">
-            <Button variant="outline" className="flex items-center">
-              <ChevronLeft className="h-4 w-4 mr-2" />
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg"
+            >
+              <ChevronLeft className="h-5 w-5 mr-2" />
               Back
             </Button>
           </Link>
 
           <Link to={selectedLength ? "/assessment/period-duration" : "#"}>
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white" disabled={!selectedLength}>
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${
+                selectedLength
+                  ? "bg-pink-500 hover:bg-pink-600 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              disabled={!selectedLength}
+            >
               Continue
-              <ChevronRight className="h-4 w-4 ml-2" />
+              <ChevronRight className="h-5 w-5 ml-2" />
             </Button>
           </Link>
         </div>
       </main>
     </div>
+   </PageTransition>
   )
 }
-

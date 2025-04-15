@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -8,20 +8,22 @@ import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radi
 import { Label } from "@/src/components/ui/!to-migrate/label"
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
 import UserIcon from "@/src/components/navigation/UserIcon"
+import PageTransition from "../page-transitions"
 
 export default function FlowPage() {
-  const [selectedFlow, setSelectedFlow] = useState<string | null>(null)
+  const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
 
   const handleFlowChange = (value: string) => {
-    setSelectedFlow(value)
-    sessionStorage.setItem("flowLevel", value)
-  }
+    setSelectedFlow(value);
+    sessionStorage.setItem("flowLevel", value);
+  };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <PageTransition>
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
-        <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+          <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
           <span className="font-semibold text-pink-500">Dottie</span>
         </div>
         <UserIcon />
@@ -122,26 +124,37 @@ export default function FlowPage() {
           </Card>
 
         <p className="text-xs text-center text-gray-500 mb-4">
-          Your data is private and secure. Dottie does not store your personal health information.
+          Your data is private and secure. Dottie does not store your personal
+          health information.
         </p>
 
         <div className="flex justify-between w-full mt-auto">
           <Link to="/assessment/period-duration">
-            <Button variant="outline" className="flex items-center">
-              <ChevronLeft className="h-4 w-4 mr-2" />
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg"
+            >
+              <ChevronLeft className="h-5 w-5 mr-2" />
               Back
             </Button>
           </Link>
 
           <Link to={selectedFlow ? "/assessment/pain" : "#"}>
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white" disabled={!selectedFlow}>
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${
+                selectedFlow
+                  ? "bg-pink-500 hover:bg-pink-600 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              disabled={!selectedFlow}
+            >
               Continue
-              <ChevronRight className="h-4 w-4 ml-2" />
+              <ChevronRight className="h-5 w-5 ml-2" />
             </Button>
           </Link>
         </div>
       </main>
     </div>
-  )
+  </PageTransition>
+  );
 }
-

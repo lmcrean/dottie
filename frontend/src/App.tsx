@@ -29,16 +29,15 @@ import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
-      <Toaster 
-        position="top-center" 
-        richColors 
+      <Toaster
+        position="top-center"
+        richColors
         toastOptions={{
           style: {
-            background: 'white',
-            color: '#333',
-            border: '1px solid #fce7f3',
-            borderRadius: '0.75rem',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            border: "1px solid #fce7f3",
+            borderRadius: "0.75rem",
+            boxShadow:
+              "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
           },
         }}
       />
