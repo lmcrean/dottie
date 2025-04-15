@@ -497,29 +497,61 @@ export default function ResultsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-medium text-lg mb-2">Age Range</h3>
-                <p className="text-gray-600">{age || "Not specified"}</p>
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img src="/public/time.png" className="w-[55px] h-[55px]"/>
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg mb-2">Age Range</h3>
+                  <p className="text-gray-600">{age || "Not specified"}</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img src="/public/calendar.png" className="w-[55px] h-[55px]"/>
+                </div>
+                <div>
                 <h3 className="font-medium text-lg mb-2">Cycle Length</h3>
                 <p className="text-gray-600">{cycleLength || "Not specified"}</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img src="/public/drop.png" className="w-[55px] h-[55px]"/>
+                </div>
+                <div>
                 <h3 className="font-medium text-lg mb-2">Period Duration</h3>
                 <p className="text-gray-600">{periodDuration || "Not specified"}</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]"/>
+                </div>
+                <div>
                 <h3 className="font-medium text-lg mb-2">Flow Level</h3>
                 <p className="text-gray-600">{flowLevel || "Not specified"}</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img src="/public/emotion.png" className="w-[55px] h-[55px]"/>
+                </div>
+                <div>
                 <h3 className="font-medium text-lg mb-2">Pain Level</h3>
                 <p className="text-gray-600">{painLevel || "Not specified"}</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-medium text-lg mb-2">Symptoms</h3>
-                <p className="text-gray-600">{symptoms.length > 0 ? symptoms.join(", ") : "None reported"}</p>
+              <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3 w-full max-w-full">
+                <div>
+                  <img src="/public/tracktime.png" className="w-[55px] h-[55px]" />
+                </div>
+                <div className="flex-1 overflow-x-auto">
+                  <h3 className="font-medium text-lg mb-2">Symptoms</h3>
+                  <p className="text-gray-600 whitespace-normal break-words">
+                    {symptoms.length > 0 ? symptoms.join(", ") : "None reported"}
+                  </p>
+                </div>
               </div>
             </div>
 
