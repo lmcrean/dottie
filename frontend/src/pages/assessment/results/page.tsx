@@ -255,23 +255,22 @@ export default function ResultsPage() {
     // Q1: Is cycle length between 21-45 days?
     const isCycleLengthNormal = !(
       containsAny(storedCycleLength, ["irregular"]) ||
-      containsAny(storedCycleLength, ["less-than-21", "<21"]) ||
-      containsAny(storedCycleLength, ["more-than-45", "36-40", ">45", "45+"])
+      containsAny(storedCycleLength, ["less than 21", "<21", "less-than-21"]) ||
+      containsAny(storedCycleLength, ["more than 45", ">45", "45+"])
     );
     decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
 
 
-if (!isCycleLengthNormal) {
-  // O1: Irregular Timing Pattern
-  determinedPattern = "irregular";
-  decisionPath.push(`O1: Assigning pattern = "irregular"`);
-} else {
-  // Q2: Does period last between 2-7 days?
-  const isPeriodDurationNormal = !(
-    storedPeriodDuration === "8-plus" ||
-    containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
-  );
-  decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
+    if (!isCycleLengthNormal) {
+      // O1: Irregular Timing Pattern
+      determinedPattern = "irregular";
+      decisionPath.push(`O1: Assigning pattern = "irregular"`);
+    } else {
+      // Q2: Does period last between 2-7 days?
+      const isPeriodDurationNormal = !(
+        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
+      );
+      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
 
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
@@ -407,7 +406,6 @@ if (!isCycleLengthNormal) {
       const assessment: Omit<Assessment, "id"> = {
         userId: "", // This will be set by the backend
         createdAt: new Date().toISOString(),
-        assessment_data: {
         assessment_data: {
           date: new Date().toISOString(),
           pattern,
