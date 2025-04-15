@@ -50,7 +50,14 @@ export default function SignInPage() {
   const onSubmit = async (data: SignInFormData) => {
     try {
       await login(data);
-      toast.success("Successfully signed in!");
+  
+      toast('Successfully Signed In', {
+        description: '',
+        style: {
+          backgroundColor: '#4CAF50', // red
+          color: 'white',
+        },
+      })
 
       // Debug: Log authentication token and user data
       console.log('[Auth Debug] After login - localStorage items:', {
@@ -71,7 +78,13 @@ export default function SignInPage() {
 
       navigate("/assessment/age-verification");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to sign in");
+      toast(error instanceof Error ? error.message : "Failed to sign in", {
+        description: '',
+        style: {
+          backgroundColor: '#FF4C4C', // red
+          color: 'white',
+        },
+      })
     }
   };
 
