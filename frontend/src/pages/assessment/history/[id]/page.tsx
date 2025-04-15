@@ -12,6 +12,7 @@ import {
 import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
 import { toast } from "sonner";
+import CycleInformation from "@/src/components/history/CycleInformation";
 
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
@@ -113,22 +114,24 @@ export default function AssessmentDetailsPage() {
         </Link>
 
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <h1 className="text-2xl font-bold text-pink-500">
                 Assessment Details
               </h1>
               <p className="text-sm text-gray-500">
                 {formatDate(assessmentData.date)}
               </p>
             </div>
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800">
-              {formatValue(assessmentData.pattern)}
-            </span>
+            <div>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800">
+                {formatValue(assessmentData.pattern)}
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-gray-400" />
                 <span className="text-sm font-medium text-gray-900">
@@ -149,7 +152,8 @@ export default function AssessmentDetailsPage() {
                   {formatValue(assessmentData.periodDuration)} days
                 </p>
               </div>
-            </div>
+            </div> */}
+            <CycleInformation age = {assessmentData.age} cycleLength = {assessmentData.cycleLength} periodDuration = {assessmentData.periodDuration}/>
 
             <div className="space-y-4">
               <div className="flex items-center gap-2">
