@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/fb1640d0-8b7c-4bc9-9310-eb2c1905acc2)
+
+
 # Dottie: Your Period Bestie
 
 ## Mission
