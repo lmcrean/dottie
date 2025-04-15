@@ -30,7 +30,7 @@ export default function PeriodDurationPage() {
         <UserIcon />
       </header>
 
-      <main className="flex-1 flex flex-col p-6 max-w-md mx-auto w-full">
+      <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm text-gray-500">50% Complete</div>
         </div>
