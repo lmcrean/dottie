@@ -115,27 +115,6 @@ export const updateAssessment = async (req, res) => {
       }
     }
     
-    // // Find and update in-memory assessment
-    // const assessmentIndex = assessments.findIndex(a => 
-    //   a.id === assessmentId && a.userId === userId
-    // );
-    
-    // if (assessmentIndex === -1) {
-    //   return res.status(404).json({ error: 'Assessment not found' });
-    // }
-    
-    // // Update the assessment
-    // const updatedAssessment = {
-    //   ...assessments[assessmentIndex],
-    //   assessmentData: {
-    //     ...assessments[assessmentIndex].assessmentData,
-    //     ...assessmentData
-    //   },
-    //   updatedAt: new Date().toISOString()
-    // };
-    
-    // // Replace the old assessment with the updated one
-    // assessments[assessmentIndex] = updatedAssessment;
 
     const updatedAssessment = await Assessment.update(assessmentId, assessmentData);
     if (!updatedAssessment) {
