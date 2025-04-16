@@ -30,15 +30,19 @@ export function ChatModal({ isOpen, onClose, initialMessage }: ChatModalProps) {
     }
   }, [messages])
 
+  const initialLoad = useRef(false);
+
   // Send initial message if provided
   useEffect(() => {
-    if (isOpen && initialMessage && messages.length === 0) {
-      setMessages([{ role: 'user', content: initialMessage }])
+    if (isOpen && initialMessage && messages.length === 0 && !initialLoad.current) {
+      // removed the initial message from the messages array to avoid duplication as handleSend is setting the messages intially with the initial message
       handleSend(initialMessage)
+      initialLoad.current = true;
     }
   }, [isOpen, initialMessage])
 
   const handleSend = async (messageText?: string) => {
+    console.log('yes')
     const textToSend = messageText || input.trim()
     if (!textToSend || isLoading) return
 
