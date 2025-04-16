@@ -10,9 +10,8 @@ import Assessment from '../../../models/Assessment.js';
  */
 export const listAssessments = async (req, res) => {
   try {
-    // Get userId from authenticated user
-    const userId = req.user.userId;
-    console.log(userId)
+    // Get userId from authenticated user    
+    const userId = req.user?.userId
     
     if (!userId) {
       return res.status(400).json({ error: 'User ID is required' });

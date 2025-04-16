@@ -10,15 +10,22 @@ import Assessment from '../../../models/Assessment.js';
  */
 export const updateAssessment = async (req, res) => {
   try {
-    const { userId, assessmentId } = req.params;
+    const assessmentId = req.params.id;
+    // Get userId from JWT token only to prevent unauthorized access
+    const userId = req.user?.userId
     const { assessmentData } = req.body;
     
     // Validate input
     if (!assessmentData) {
       return res.status(400).json({ error: 'Assessment data is required' });
     }
+
+    const isOwner = await Assessment.validateOwnership(assessmentId, userId);
+    if (!isOwner) {
+      return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
+    }
     
-    // For test IDs, try to update in the database
+    // For test IDs, try to update in the database // ! To be removed
     if (assessmentId.startsWith('test-')) {
       try {
         // Check if assessment exists and belongs to user
@@ -114,7 +121,6 @@ export const updateAssessment = async (req, res) => {
         // Continue to in-memory update if database fails
       }
     }
-    
 
     const updatedAssessment = await Assessment.update(assessmentId, assessmentData);
     if (!updatedAssessment) {

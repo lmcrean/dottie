@@ -12,8 +12,8 @@ import Assessment from '../../../models/Assessment.js';
 export const getAssessmentDetail = async (req, res) => {
   try {
     const assessmentId = req.params.id;
-    // Get userId from JWT token or from URL params
-    const userId = req.user?.userId || req.params.userId;
+    // Get userId from JWT token only to prevent unauthorized access
+    const userId = req.user?.userId
     
     if (!assessmentId) {
       return res.status(400).json({ error: 'Assessment ID is required' });
@@ -22,8 +22,13 @@ export const getAssessmentDetail = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ error: 'User ID is required' });
     }
+
+    const isOwner = await Assessment.validateOwnership(assessmentId, userId);
+    if (!isOwner) {
+      return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
+    }
     
-    // For test IDs, try to fetch from the database
+    // For test IDs, try to fetch from the database // ! to be removed
     if (assessmentId.startsWith('test-')) {
       // Try to find the assessment in the database first
       try {

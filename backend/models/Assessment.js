@@ -65,13 +65,6 @@ class Assessment {
         payload,
         ['assessment_data']
       );
-
-      // console.log('Inserted assessment:', inserted);
-
-
-
-
-
       return {
         id: inserted.id,
         userId: inserted.user_id,
@@ -169,6 +162,35 @@ class Assessment {
       throw error;
     }
   }
+
+  /**
+ * Validate if user is the owner of assessment
+ * @param {string} assessmentId - Assessment ID
+ * @param {string} userId - User ID
+ * @returns {Promise<boolean>} True if user is owner, false otherwise
+ */
+static async validateOwnership(assessmentId, userId) {
+  try {
+    // Test mode check
+    if (isTestMode && testAssessments[assessmentId]) {
+      return testAssessments[assessmentId].userId === userId;
+    }
+    
+    // Database check using DbService
+    const assessment = await DbService.findBy('assessments', 'id', assessmentId);
+    
+    // If assessment exists, check if user is the owner
+    if (assessment && assessment.length > 0) {
+      return assessment[0].user_id === userId;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('Error validating ownership:', error);
+    throw error;
+  }
+}
+
 }
 
 export default Assessment; 

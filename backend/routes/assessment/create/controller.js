@@ -14,7 +14,6 @@ export const createAssessment = async (req, res) => {
     // Get userId from the authenticated user
     const userId = req.user.userId;
     const { assessmentData } = req.body;
-    // console.log('Received assessment data:', assessmentData);
 
     // Validate assessment data
     if (!assessmentData) {
