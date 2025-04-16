@@ -99,6 +99,7 @@ You can override this by creating a `.env` file in `/backend`:
 
 ```env
 PORT=5050
+```
 
 ### Getting Started
 
