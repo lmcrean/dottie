@@ -1,8 +1,7 @@
-import { assessments } from "../store/index.js";
+// import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
 import Assessment from '../../../models/Assessment.js';
 
-import Assessment from '../../../models/Assessment.js';
 
 
 /**
@@ -68,7 +67,6 @@ export const getAssessmentDetail = async (req, res) => {
     
     // Find the assessment by ID and userId in memory
     // const assessment = assessments.find(a => a.id === assessmentId && a.userId === userId);
-    const assessment = await Assessment.findById(assessmentId);
     
     const assessment = await Assessment.findById(assessmentId);
     if (!assessment) {

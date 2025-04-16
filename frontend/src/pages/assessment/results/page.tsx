@@ -223,7 +223,7 @@ export default function ResultsPage() {
     const storedPainLevel = sessionStorage.getItem("painLevel");
     const storedSymptoms = sessionStorage.getItem("symptoms");
     const storedCyclePredictable = sessionStorage.getItem("cyclePredictable");
-
+  
     console.log("Stored values:", {
       age: storedAge,
       cycleLength: storedCycleLength,
@@ -233,7 +233,7 @@ export default function ResultsPage() {
       symptoms: storedSymptoms,
       cyclePredictable: storedCyclePredictable,
     });
-
+  
     if (storedAge) setAge(storedAge);
     if (storedCycleLength) setCycleLength(storedCycleLength);
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
@@ -246,12 +246,12 @@ export default function ResultsPage() {
         console.error("Error parsing symptoms:", e);
       }
     }
-
+  
     // Determine the pattern based on LogicTree logic
     // Following the exact decision tree from LogicTree.md
     let determinedPattern: MenstrualPattern;
     const decisionPath = [];
-
+  
     // Q1: Is cycle length between 21-45 days?
     const isCycleLengthNormal = !(
       containsAny(storedCycleLength, ["irregular"]) ||
@@ -259,56 +259,62 @@ export default function ResultsPage() {
       containsAny(storedCycleLength, ["more than 45", ">45", "45+"])
     );
     decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
-
-
+  
     if (!isCycleLengthNormal) {
       // O1: Irregular Timing Pattern
       determinedPattern = "irregular";
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !(
-        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
+      const isPeriodDurationNormal = !containsAny(
+        storedPeriodDuration,
+        ["more than 7", ">7", "8+", "8 days", "8-plus"]
       );
       decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
-
+  
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
         determinedPattern = "heavy";
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !(
-          containsAny(storedFlowLevel, ["heavy", "very-heavy"])
+        const isFlowNormal = !containsAny(
+          storedFlowLevel,
+          ["heavy", "very-heavy"]
         );
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
-
-    if (!isFlowNormal) {
-      // O2: Heavy or Prolonged Flow Pattern
-      determinedPattern = "heavy";
+  
+        if (!isFlowNormal) {
+          // O2: Heavy or Prolonged Flow Pattern
+          determinedPattern = "heavy";
+          decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
+        } else if (normalizeValue(storedPainLevel) === "severe") {
+          // O3: Pain Predominant
+          determinedPattern = "pain";
+          decisionPath.push(`O3: Assigning pattern = "pain"`);
+        } else if (
+          storedCycleLength &&
+          storedCycleLength.includes("days") &&
+          storedPeriodDuration &&
+          storedPeriodDuration.includes("days") &&
+          normalizeValue(storedFlowLevel) !== "heavy" &&
+          normalizeValue(storedPainLevel) !== "severe"
+        ) {
+          // O4: Regular Pattern
+          determinedPattern = "regular";
+          decisionPath.push(`O4: Assigning pattern = "regular"`);
+        } else {
+          // O5: Default to Developing Pattern (fallback)
+          determinedPattern = "developing";
+          decisionPath.push(`O5: Assigning pattern = "developing" (fallback)`);
+        }
+      }
     }
-    // Check for pain-predominant (O3)
-    else if (storedPainLevel === "severe") {
-      determinedPattern = "pain";
-    }
-    // Check for regular cycles (O4)
-    else if (
-      storedCycleLength &&
-      storedCycleLength.includes("days") &&
-      storedPeriodDuration &&
-      storedPeriodDuration.includes("days") &&
-      storedFlowLevel !== "Heavy" &&
-      storedPainLevel !== "Severe"
-    ) {
-      determinedPattern = "regular";
-    }
-    // Default to developing pattern (O5) - ! UPDATE: redundant 
-    // else if (storedAge ?? storedAge.includes("13-17")) {
-    //   determinedPattern = "developing";
-    // }
-
+  
+    console.log("Decision Path:", decisionPath);
     setPattern(determinedPattern);
   }, []);
+  
 
   const patternInfo = patternData[pattern];
 
