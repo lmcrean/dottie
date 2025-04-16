@@ -6,8 +6,9 @@ dotenv.config();
 
 let supabase;
 
+const isDevelopment = process.env.NODE_ENV !== "production";
 // Check if we're in development mode without Supabase credentials
-if (process.env.NODE_ENV === 'development' && (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_PUBLIC)) {
+if (isDevelopment && (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_PUBLIC)) {
   console.log('Using mock Supabase client for development');
   
   // Create a mock Supabase client with the methods you need
