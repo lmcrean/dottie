@@ -44,7 +44,7 @@ export default function SymptomsPage() {
         </div>
 
         <h1 className="text-xl font-bold mb-2">Question 6 of 6</h1>
-        <h2 className="text-lg font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
+        <h2 className="text-3xl font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
         <p className="text-sm text-gray-500 mb-6">
           Select all that apply. These could occur before, during, or after your period.
         </p>

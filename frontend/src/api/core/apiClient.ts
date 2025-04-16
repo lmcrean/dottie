@@ -5,8 +5,38 @@ import { getAuthToken, setAuthToken, setRefreshToken, TOKEN_KEYS } from './token
  * Axios instance for making API requests
  * This instance has all the common configurations and interceptors
  */
+// Determine API base URL with fallbacks
+const getBaseUrl = () => {
+  // First priority: Use environment variable if available
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  
+  // Second priority: Check for manually configured API URL in localStorage
+  const savedApiUrl = localStorage.getItem('api_base_url');
+  if (savedApiUrl) {
+    return savedApiUrl;
+  }
+  
+  // Default fallback for local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return `http://${window.location.hostname}:5000`;
+  }
+  
+  // Production fallback: assume API is at the same origin
+  return window.location.origin;
+};
+
+// Expose a function to update the API URL at runtime
+export const setApiBaseUrl = (url: string) => {
+  localStorage.setItem('api_base_url', url);
+  apiClient.defaults.baseURL = url;
+  console.log(`[API Client] Base URL updated to: ${url}`);
+  return url;
+};
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },

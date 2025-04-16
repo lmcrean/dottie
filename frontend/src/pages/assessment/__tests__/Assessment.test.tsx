@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from '@/src/context/AuthContext'
 
 // Import all assessment pages
 import AgeVerificationPage from '../age-verification/page'
@@ -14,9 +15,11 @@ import ResultsPage from '../results/page'
 // Wrap component with BrowserRouter for React Router compatibility
 const renderWithRouter = (component: React.ReactNode) => {
   return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        {component}
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
@@ -99,9 +102,9 @@ describe('Assessment Components', () => {
   describe('Results Page', () => {
     it('should render the results page correctly', () => {
       renderWithRouter(<ResultsPage />)
-      expect(screen.getByText(/your menstrual pattern/i)).toBeInTheDocument()
+      expect(screen.getByText(/your assessment results/i)).toBeInTheDocument()
       // Some common elements that should be present
-      expect(screen.getByText(/cycle summary/i)).toBeInTheDocument()
+      expect(screen.getByText(/based on your responses/i)).toBeInTheDocument()
     })
   })
 }) 

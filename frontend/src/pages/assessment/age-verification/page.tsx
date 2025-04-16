@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import UserIcon from "@/src/components/navigation/UserIcon"
 import { Button } from "@/src/components/ui/!to-migrate/button"
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
 import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, DotIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
+import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
+import { ChevronLeft, ChevronRight, DotIcon } from "lucide-react"
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import PageTransition from "../page-transitions"
 
 export default function AgeVerificationPage() {
   const [selectedAge, setSelectedAge] = useState<string | null>(null)
@@ -18,6 +19,7 @@ export default function AgeVerificationPage() {
   }
 
   return (
+    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
@@ -28,21 +30,25 @@ export default function AgeVerificationPage() {
         <UserIcon />
       </header>
 
-      <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
+      <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-[16%] transition-all duration-500"></div>
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-3">What is your age range?</h1>
-          <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
-        </div>
+        <div className="flex flex-col lg:flex-row gap-8 mb-8">
+          <div className="lg:w-1/2 md:max flex items-top justify-center lg:justify-start text-center lg:text-left">
+           <div className="flex flex-col gap-3">
+           <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
+           <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
+              <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
+            </div>
+          </div>
 
-        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-8 pb-8">
-            <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
-              <div className="space-y-4">
-                <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
+          <Card className="w-full lg:w-1/2 lg:max-w-none md:mx-auto md:max-w-md shadow-md hover:shadow-lg transition-shadow duration-300">
+            <CardContent className="pt-8 pb-8">
+              <RadioGroup value={selectedAge || ""} onValueChange={handleAgeChange}>
+                <div className="space-y-4">
+                                 <div className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"}`}>
                   <RadioGroupItem value="under-13" id="under-13" className="text-pink-500" />
                   <Label htmlFor="under-13" className="flex-1 cursor-pointer">
                     <div className="font-medium text-lg">Under 13 years</div>
@@ -73,10 +79,11 @@ export default function AgeVerificationPage() {
                     <p className="text-sm text-gray-500">Adult content</p>
                   </Label>
                 </div>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
+                </div>
+              </RadioGroup>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="flex justify-between w-full mt-auto">
           <Link to="/">
@@ -87,8 +94,8 @@ export default function AgeVerificationPage() {
           </Link>
 
           <Link to={selectedAge ? "/assessment/cycle-length" : "#"}>
-            <Button 
-              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`} 
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
               disabled={!selectedAge}
             >
               Continue
@@ -98,6 +105,7 @@ export default function AgeVerificationPage() {
         </div>
       </main>
     </div>
+    </PageTransition>
   )
 }
 

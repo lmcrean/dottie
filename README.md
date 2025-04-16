@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/fb1640d0-8b7c-4bc9-9310-eb2c1905acc2)
+
+
 # Dottie: Your Period Bestie
 
 ## Mission
@@ -88,32 +91,36 @@ This architecture allows developers to work locally without needing to set up a 
 - **Authentication**: (Coming soon) JWT-based authentication
 - **Middleware**: Express middleware for request processing
 
+### Backend Port Configuration & macOS Compatibility
+
+By default, the backend runs on:
+
+- **Port 5000** on Windows/Linux
+- **Port 5001** on macOS (to avoid conflict with AirPlay)
+
+You can override this by creating a `.env` file in `/backend`:
+
+```env
+PORT=5050
+```
+
 ### Getting Started
 
 #### Backend Setup
-1. Navigate to the backend directory:
+
+1. Navigate to the backend directory and install dependencies, return to root:
    ```
-   cd backend
+   cd backend; npm install; cd ..
    ```
 
-2. Install dependencies:
+2. Navigated to the frontend directory and build dependencies:
    ```
-   npm install
-   ```
-
-3. Initialize the database:
-   ```
-   npm run db:init
+   cd frontend; npm install; npm run build
    ```
 
-4. Run the development server:
+3. Run frontend (activates backend by itself with concurrently)
    ```
    npm run dev
-   ```
-
-5. Run tests:
-   ```
-   npm test
    ```
 
 ### Technologies Used

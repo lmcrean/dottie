@@ -34,7 +34,7 @@ export default function CycleLengthPage() {
         </div>
 
         <h1 className="text-xl font-bold mb-2">Question 2 of 6</h1>
-        <h2 className="text-lg font-semibold mb-1">How long is your menstrual cycle?</h2>
+        <h2 className="text-3xl font-semibold mb-1">How long is your menstrual cycle?</h2>
         <p className="text-sm text-gray-500 mb-6">
           Count from the first day of one period to the first day of the next period
         </p>
