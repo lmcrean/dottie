@@ -1,13 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
-import { MessageCircle, Heart, ChevronRight, DotIcon, Save, Share2, Download } from "lucide-react";
+import {
+  MessageCircle,
+  Heart,
+  ChevronRight,
+  DotIcon,
+  Save,
+  Share2,
+  Download,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
+import { FullscreenChat } from "@/src/pages/chat/FullscreenChat";
 import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
-import UserIcon from "@/src/components/navigation/UserIcon"
+import UserIcon from "@/src/components/navigation/UserIcon";
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern =
@@ -188,6 +197,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
 export default function ResultsPage() {
   const navigate = useNavigate();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [pattern, setPattern] = useState<MenstrualPattern>("developing");
@@ -201,7 +211,7 @@ export default function ResultsPage() {
   // Helper function to normalize string values for more reliable comparisons
   const normalizeValue = (value: string | null): string => {
     if (!value) return "";
-    
+
     const normalized = value.trim().toLowerCase();
     return normalized;
   };
@@ -209,9 +219,9 @@ export default function ResultsPage() {
   // Helper function to check if a string contains any of the given keywords
   const containsAny = (value: string | null, keywords: string[]): boolean => {
     if (!value) return false;
-    
+
     const normalized = normalizeValue(value);
-    return keywords.some(keyword => normalized.includes(keyword));
+    return keywords.some((keyword) => normalized.includes(keyword));
   };
 
   useEffect(() => {
@@ -266,10 +276,16 @@ export default function ResultsPage() {
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !(
-        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
+      const isPeriodDurationNormal = !containsAny(storedPeriodDuration, [
+        "more than 7",
+        ">7",
+        "8+",
+        "8 days",
+        "8-plus",
+      ]);
+      decisionPath.push(
+        `Q2: Period duration normal? ${isPeriodDurationNormal}`
       );
-      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
 
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
@@ -277,9 +293,10 @@ export default function ResultsPage() {
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !(
-          containsAny(storedFlowLevel, ["heavy", "very heavy"])
-        );
+        const isFlowNormal = !containsAny(storedFlowLevel, [
+          "heavy",
+          "very heavy",
+        ]);
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
 
         if (!isFlowNormal) {
@@ -288,9 +305,10 @@ export default function ResultsPage() {
           decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
         } else {
           // Q4: Is menstrual pain none to moderate?
-          const isPainNormal = !(
-            containsAny(storedPainLevel, ["severe", "debilitating"])
-          );
+          const isPainNormal = !containsAny(storedPainLevel, [
+            "severe",
+            "debilitating",
+          ]);
           decisionPath.push(`Q4: Pain normal? ${isPainNormal}`);
 
           if (!isPainNormal) {
@@ -304,23 +322,48 @@ export default function ResultsPage() {
             if (containsAny(storedCyclePredictable, ["no", "false"])) {
               // O5: Developing Pattern - cycles not predictable
               determinedPattern = "developing";
-              decisionPath.push(`O5: Assigning pattern = "developing" (explicitly not predictable)`);
+              decisionPath.push(
+                `O5: Assigning pattern = "developing" (explicitly not predictable)`
+              );
             } else if (containsAny(storedCyclePredictable, ["yes", "true"])) {
               // O4: Regular Menstrual Cycles - cycles are predictable
               determinedPattern = "regular";
-              decisionPath.push(`O4: Assigning pattern = "regular" (explicitly predictable)`);
+              decisionPath.push(
+                `O4: Assigning pattern = "regular" (explicitly predictable)`
+              );
             } else {
               // We don't have explicit predictability data, so infer based on age
-              decisionPath.push(`No explicit predictability data, inferring from age: ${storedAge}`);
+              decisionPath.push(
+                `No explicit predictability data, inferring from age: ${storedAge}`
+              );
               // If age is adolescent (12-17), assume developing, otherwise assume regular
-              if (storedAge && containsAny(storedAge, ["12-14", "15-17", "13-17", "12", "13", "14", "15", "16", "17", "teen", "adolescent"])) {
+              if (
+                storedAge &&
+                containsAny(storedAge, [
+                  "12-14",
+                  "15-17",
+                  "13-17",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "teen",
+                  "adolescent",
+                ])
+              ) {
                 // O5: Developing Pattern
                 determinedPattern = "developing";
-                decisionPath.push(`O5: Assigning pattern = "developing" (based on adolescent age)`);
+                decisionPath.push(
+                  `O5: Assigning pattern = "developing" (based on adolescent age)`
+                );
               } else {
                 // O4: Regular Menstrual Cycles
                 determinedPattern = "regular";
-                decisionPath.push(`O4: Assigning pattern = "regular" (default for non-adolescent)`);
+                decisionPath.push(
+                  `O4: Assigning pattern = "regular" (default for non-adolescent)`
+                );
               }
             }
           }
@@ -478,7 +521,6 @@ export default function ResultsPage() {
         </div>
         <UserIcon />
       </header>
-
       <main className="flex-1 p-6 max-w-4xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-full transition-all duration-500"></div>
@@ -486,20 +528,27 @@ export default function ResultsPage() {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-3">Your Assessment Results</h1>
-          <p className="text-gray-600">Based on your responses, here's what we've found about your menstrual health.</p>
+          <p className="text-gray-600">
+            Based on your responses, here's what we've found about your
+            menstrual health.
+          </p>
         </div>
 
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-pink-500 mb-2">{patternData[pattern].title}</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">{patternData[pattern].description}</p>
+              <h2 className="text-2xl font-bold text-pink-500 mb-2">
+                {patternData[pattern].title}
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                {patternData[pattern].description}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/time.png" className="w-[55px] h-[55px]"/>
+                  <img src="/public/time.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Age Range</h3>
@@ -508,48 +557,67 @@ export default function ResultsPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/calendar.png" className="w-[55px] h-[55px]"/>
+                  <img
+                    src="/public/calendar.png"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div>
-                <h3 className="font-medium text-lg mb-2">Cycle Length</h3>
-                <p className="text-gray-600">{cycleLength || "Not specified"}</p>
-                </div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
-                <div>
-                  <img src="/public/drop.png" className="w-[55px] h-[55px]"/>
-                </div>
-                <div>
-                <h3 className="font-medium text-lg mb-2">Period Duration</h3>
-                <p className="text-gray-600">{periodDuration || "Not specified"}</p>
+                  <h3 className="font-medium text-lg mb-2">Cycle Length</h3>
+                  <p className="text-gray-600">
+                    {cycleLength || "Not specified"}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]"/>
+                  <img src="/public/drop.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
-                <h3 className="font-medium text-lg mb-2">Flow Level</h3>
-                <p className="text-gray-600">{flowLevel || "Not specified"}</p>
+                  <h3 className="font-medium text-lg mb-2">Period Duration</h3>
+                  <p className="text-gray-600">
+                    {periodDuration || "Not specified"}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/emotion.png" className="w-[55px] h-[55px]"/>
+                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
-                <h3 className="font-medium text-lg mb-2">Pain Level</h3>
-                <p className="text-gray-600">{painLevel || "Not specified"}</p>
+                  <h3 className="font-medium text-lg mb-2">Flow Level</h3>
+                  <p className="text-gray-600">
+                    {flowLevel || "Not specified"}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img
+                    src="/public/emotion.png"
+                    className="w-[55px] h-[55px]"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg mb-2">Pain Level</h3>
+                  <p className="text-gray-600">
+                    {painLevel || "Not specified"}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3 w-full max-w-full">
                 <div>
-                  <img src="/public/tracktime.png" className="w-[55px] h-[55px]" />
+                  <img
+                    src="/public/tracktime.png"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="font-medium text-lg mb-2">Symptoms</h3>
                   <p className="text-gray-600 whitespace-normal break-words">
-                    {symptoms.length > 0 ? symptoms.join(", ") : "None reported"}
+                    {symptoms.length > 0
+                      ? symptoms.join(", ")
+                      : "None reported"}
                   </p>
                 </div>
               </div>
@@ -558,7 +626,10 @@ export default function ResultsPage() {
             <h3 className="text-xl font-bold mb-4">Recommendations</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {patternData[pattern].recommendations.map((rec, index) => (
-                <div key={index} className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300">
+                <div
+                  key={index}
+                  className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300"
+                >
                   <div className="flex items-start gap-3">
                     <div className="text-2xl">{rec.icon}</div>
                     <div>
@@ -573,14 +644,14 @@ export default function ResultsPage() {
         </Card>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <Button 
+          <Button
             className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-6 text-lg"
             onClick={() => setIsChatOpen(true)}
           >
             <MessageCircle className="h-5 w-5" />
             Chat with Dottie
           </Button>
-          <Button 
+          <Button
             className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-500 px-6 py-6 text-lg"
             onClick={handleSaveResults}
             disabled={isSaving}
@@ -592,17 +663,26 @@ export default function ResultsPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
           <Link to="/assessment/history">
-            <Button variant="outline" className="flex items-center px-6 py-6 text-lg">
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg"
+            >
               View History
             </Button>
           </Link>
 
           <div className="flex gap-4">
-            <Button variant="outline" className="flex items-center gap-2 px-6 py-6 text-lg">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-6 text-lg"
+            >
               <Share2 className="h-5 w-5" />
               Share
             </Button>
-            <Button variant="outline" className="flex items-center gap-2 px-6 py-6 text-lg">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-6 text-lg"
+            >
               <Download className="h-5 w-5" />
               Download
             </Button>
@@ -610,13 +690,21 @@ export default function ResultsPage() {
         </div>
       </main>
 
-      {isChatOpen && (
-        <ChatModal
-          isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
-          initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
-        />
-      )}
+      {isChatOpen &&
+        (isFullscreenChatOpen ? (
+          <FullscreenChat
+            onClose={() => setIsChatOpen(false)}
+            setIsFullscreen={setIsFullscreenChatOpen}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
+          />
+        ) : (
+          <ChatModal
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+            setIsFullscreen={setIsFullscreenChatOpen}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
+          />
+        ))}
     </div>
   );
 }
