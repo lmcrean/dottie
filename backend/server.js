@@ -39,7 +39,10 @@ if (isProduction && isVercel) {
 
 // Create Express app
 const app = express();
-const PORT = process.env.PORT || 5000;
+const isMac = process.platform === 'darwin';
+const PORT = process.env.PORT || (isMac ? 5001 : 5000);
+
+
 
 // Determine environment
 const isDevelopment = process.env.NODE_ENV !== "production";
