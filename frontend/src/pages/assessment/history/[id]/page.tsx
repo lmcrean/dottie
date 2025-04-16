@@ -156,22 +156,22 @@ export default function AssessmentDetailsPage() {
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Droplet className="h-5 w-5 text-gray-400" />
+                <Droplet className="h-6 w-6 text-gray-400" />
                 <h2 className="text-lg font-medium text-gray-900">
                   Physical Symptoms
                 </h2>
               </div>
-              <Symptoms symptoms={["Headache", "Cramps", "Fatigue"]} symptomsType={'physicalSymptoms'} />
+              <Symptoms symptoms={physicalSymptoms} symptomsType={'physicalSymptoms'} />
             </div>
 
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Brain className="h-5 w-5 text-gray-400" />
+                <Brain className="h-6 w-6 text-gray-400" />
                 <h2 className="text-lg font-medium text-gray-900">
                   Emotional Symptoms
                 </h2>
               </div>
-              <Symptoms symptoms={["Mood Swings", "Anxiety", "Irritability"]} symptomsType={'emotionalSymptoms'} />
+              <Symptoms symptoms={emotionalSymptoms} symptomsType={'emotionalSymptoms'} />
             </div>
 
             <div>
@@ -181,15 +181,15 @@ export default function AssessmentDetailsPage() {
                   Recommendations
                 </h2>
               </div>
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {recommendations.length > 0 ? (
                   recommendations.map(
                     (
                       rec: { title: string; description: string },
                       index: number
                     ) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-4">
-                        <h3 className="font-medium text-gray-900">
+                      <div key={index} className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300">
+                        <h3 className="font-medium text-lg">
                           {rec.title}
                         </h3>
                         <p className="text-sm text-gray-600 mt-1">
