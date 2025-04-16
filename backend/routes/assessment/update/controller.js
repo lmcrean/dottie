@@ -10,7 +10,8 @@ import Assessment from '../../../models/Assessment.js';
  */
 export const updateAssessment = async (req, res) => {
   try {
-    const assessmentId = req.params.id;
+
+    const assessmentId = req.params.assessmentId;
     // Get userId from JWT token only to prevent unauthorized access
     const userId = req.user?.userId
     const { assessmentData } = req.body;
