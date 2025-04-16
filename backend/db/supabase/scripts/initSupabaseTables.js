@@ -6,7 +6,7 @@ dotenv.config();
 
 // Create Supabase client
 const supabase = createClient(
-  'https://nooizeyjujtddtxkirof.supabase.co',
+  process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY // Use service role key for admin operations
 );
 
@@ -76,20 +76,27 @@ async function verifyConnection() {
        - created_at: timestamp with time zone DEFAULT NOW()
     
     6. assessments table:
-       - id: text PRIMARY KEY
-       - user_id: text NOT NULL
-       - created_at: text NOT NULL
-       - age: text
-       - cycle_length: text
-       - period_duration: text
-       - flow_heaviness: text
-       - pain_level: text
+       - id: uuid or char(36) PRIMARY KEY
+       - user_id: text NOT NULL (FK to users.id)
+       - assessment_data: text NOT NULL (JSON string of all assessment fields)
+       - created_at: timestamp NOT NULL (default now())
+       - updated_at: timestamp NOT NULL (auto-updated on change)
     
-    7. symptoms table:
-       - id: serial PRIMARY KEY
-       - assessment_id: text NOT NULL REFERENCES assessments(id)
-       - symptom_name: text NOT NULL
-       - symptom_type: text NOT NULL
+    7. assessment_data (JSON) structure
+       - date: string (ISO format timestamp)
+       - pattern: string 
+       - age: string 
+       - cycleLength: string 
+       - periodDuration: string (e.g., "4-5")
+       - flowHeaviness: string 
+       - painLevel: string 
+       - symptoms: object
+          - physical: string[] 
+          - emotional: string[] 
+       - recommendations: array of objects
+          - Each object has:
+             - title: string
+             - description: string
     
     8. temp_test_crud table:
        - id: uuid PRIMARY KEY
