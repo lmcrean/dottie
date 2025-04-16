@@ -49,7 +49,7 @@ export default function CycleLengthPage() {
             </div>
           </div>
 
-          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <Card className="w-full lg:w-1/2 lg:max-w-none md:mx-auto md:max-w-md shadow-md hover:shadow-lg transition-shadow duration-300">
               <CardContent className="pt-8 pb-8">
                 <RadioGroup value={selectedLength || ""} onValueChange={handleLengthChange} className="mb-6">
                   <div className="space-y-3">
