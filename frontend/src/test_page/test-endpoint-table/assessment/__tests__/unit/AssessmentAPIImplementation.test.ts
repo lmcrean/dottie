@@ -42,9 +42,9 @@ describe('AssessmentAPIImplementation', () => {
   let mockAxios: any;
   
   const mockAssessmentData = {
-    age: "18_24",
-    cycleLength: "26_30",
-    periodDuration: "4_5",
+    age: "18-24",
+    cycleLength: "26-30",
+    periodDuration: "4-5",
     flowHeaviness: "moderate",
     painLevel: "moderate",
     symptoms: {

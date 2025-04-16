@@ -1,4 +1,7 @@
-// Initial database schema creation
+// include updateAssessmentToJsonSchema.js - updated assessment table to use JSON
+import { updateAssessmentToJsonSchema } from './updateAssessmentToJsonSchema.js';
+
+//for test - TODO: remove
 import { updateAssessmentSchema } from './assessmentSchema.js';
 
 /**
@@ -109,36 +112,22 @@ export async function createTables(db) {
     });
   }
 
-  // Check if we're in test mode
-  if (process.env.TEST_MODE === 'true') {
-    // In test mode, use the special assessment schema
-    console.log('Test mode detected - using assessment schema for tests');
-    await updateAssessmentSchema(db);
-  } else {
-    // Normal assessment schema for non-test environments
-    // Assessment results table
-    if (!(await db.schema.hasTable('assessments'))) {
-      await db.schema.createTable('assessments', (table) => {
-        table.increments('id').primary();
-        table.uuid('user_id').notNullable();
-        table.date('date').notNullable();
-        table.string('result_category').notNullable(); // green, yellow, red
-        table.text('recommendations');
-        table.timestamps(true, true);
-        
-        // Foreign key handling based on database type
-        if (!isSQLite) {
-          table.foreign('user_id').references('users.id');
-        } else {
-          try {
-            table.foreign('user_id').references('users.id');
-          } catch (error) {
-            console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
-          }
-        }
-      });
+  // Create the assessment table with JSON schema 
+  await updateAssessmentToJsonSchema(db);
+
+
+    // Check if we're in test mode
+    if (process.env.TEST_MODE === 'true') {
+      // In test mode, use the special assessment schema
+      console.log('Test mode detected - using assessment schema for tests');
+      await updateAssessmentSchema(db);
+    } else {
+      // Normal assessment schema for non-test environments
+      // Assessment results table
+      if (!(await db.schema.hasTable('assessments'))) {
+        await updateAssessmentToJsonSchema(db);
+      }
     }
-  }
   
   // Enable foreign keys in SQLite
   if (isSQLite) {
@@ -161,4 +150,4 @@ export async function dropTables(db) {
   await db.schema.dropTableIfExists('users');
   await db.schema.dropTableIfExists('chat_messages');
   await db.schema.dropTableIfExists('conversations');
-} 
+}

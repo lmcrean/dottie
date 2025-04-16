@@ -37,18 +37,6 @@ CREATE TABLE IF NOT EXISTS public.period_logs (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Symptoms tracking table
-CREATE TABLE IF NOT EXISTS public.symptoms (
-  id SERIAL PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES public.users(id),
-  date DATE NOT NULL,
-  type TEXT NOT NULL,
-  severity INTEGER,
-  notes TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Conversations table
 CREATE TABLE IF NOT EXISTS public.conversations (
   id UUID PRIMARY KEY,
@@ -68,11 +56,9 @@ CREATE TABLE IF NOT EXISTS public.chat_messages (
 
 -- Assessment results table
 CREATE TABLE IF NOT EXISTS public.assessments (
-  id SERIAL PRIMARY KEY,
+  id UUID PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES public.users(id),
-  date DATE NOT NULL,
-  result_category TEXT NOT NULL,
-  recommendations TEXT,
+  assessment_data JSONB NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -103,7 +89,6 @@ For production, you might want to set up Row Level Security (RLS) policies:
 -- Enable RLS on all tables
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.period_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.symptoms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assessments ENABLE ROW LEVEL SECURITY;

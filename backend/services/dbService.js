@@ -15,7 +15,7 @@ class DbService {
       const record = await db(table)
         .where('id', id)
         .first();
-      
+
       return record || null;
     } catch (error) {
       console.error(`Error in findById for ${table}:`, error);
@@ -34,7 +34,7 @@ class DbService {
     try {
       const records = await db(table)
         .where(field, value);
-      
+
       return records || [];
     } catch (error) {
       console.error(`Error in findBy for ${table}:`, error);
@@ -52,7 +52,7 @@ class DbService {
     try {
       const [id] = await db(table)
         .insert(data);
-      
+
       // For SQLite compatibility, fetch the record after insertion
       const insertedRecord = await this.findById(table, data.id || id);
       return insertedRecord;
@@ -74,7 +74,7 @@ class DbService {
       await db(table)
         .where('id', id)
         .update(data);
-      
+
       // For compatibility, fetch the updated record
       const updatedRecord = await this.findById(table, id);
       return updatedRecord;
@@ -138,7 +138,7 @@ class DbService {
       const conversations = await db('conversations')
         .where('user_id', userId)
         .orderBy('updated_at', 'desc');
-      
+
       // For each conversation, get the latest message
       const conversationsWithPreviews = await Promise.all(
         (conversations || []).map(async (conv) => {
@@ -146,7 +146,7 @@ class DbService {
             .where('conversation_id', conv.id)
             .orderBy('created_at', 'desc')
             .first();
-          
+
           return {
             id: conv.id,
             lastMessageDate: conv.updated_at,
@@ -156,13 +156,130 @@ class DbService {
           };
         })
       );
-      
+
       return conversationsWithPreviews;
     } catch (error) {
       console.error(`Error in getConversationsWithPreviews:`, error);
       throw error;
     }
   }
+
+
+  /**
+   * Create a new record with JSON fields auto-stringified
+   * @param {string} table - Table name
+   * @param {object} data - Record data
+   * @param {Array<string>} jsonFields - Fields to stringify
+   * @returns {Promise<object>} - Created record
+   */
+  static async createWithJson(table, data, jsonFields = []) {
+    try {
+      const preparedData = { ...data };
+
+      for (const field of jsonFields) {
+        if (preparedData[field] !== undefined) {
+          preparedData[field] = JSON.stringify(preparedData[field]);
+        }
+      }
+
+      const [id] = await db(table).insert(preparedData);
+
+      const insertedRecord = await this.findById(table, data.id || id);
+
+      // Auto-parse JSON fields
+      for (const field of jsonFields) {
+        if (insertedRecord?.[field]) {
+          try {
+            insertedRecord[field] = JSON.parse(insertedRecord[field]);
+          } catch (err) {
+            console.warn(`Failed to parse field ${field} in ${table}:`, err);
+          }
+        }
+      }
+
+      return insertedRecord;
+    } catch (error) {
+      console.error(`Error in createWithJson for ${table}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+ * Find a record by ID and auto-parse JSON fields
+ * @param {string} table - Table name
+ * @param {string|number} id - Record ID
+ * @param {Array<string>} jsonFields - Fields to auto-parse
+ * @returns {Promise<object|null>} - Found record or null
+ */
+  static async findByIdWithJson(table, id, jsonFields = []) {
+    const record = await this.findById(table, id);
+
+    if (!record) return null;
+
+    for (const field of jsonFields) {
+      if (record[field]) {
+        try {
+          record[field] = JSON.parse(record[field]);
+        } catch (err) {
+          console.warn(`Failed to parse field ${field} in ${table}:`, err);
+        }
+      }
+    }
+
+    return record;
+  }
+
+
+  /**
+ * Find many records by field and parse JSON fields
+ * @param {string} table - Table name
+ * @param {string} field - Field to match
+ * @param {any} value - Value to match
+ * @param {Array<string>} jsonFields - Fields to auto-parse
+ * @param {string} [orderBy] - Optional order field
+ * @returns {Promise<Array>} - Matching records
+ */
+  static async findByFieldWithJson(table, field, value, jsonFields = [], orderBy = null) {
+    let query = db(table).where(field, value);
+    if (orderBy) query = query.orderBy(orderBy, 'desc');
+
+    const records = await query;
+
+    return records.map(record => {
+      for (const field of jsonFields) {
+        if (record[field]) {
+          try {
+            record[field] = JSON.parse(record[field]);
+          } catch (err) {
+            console.warn(`Failed to parse field ${field} in ${table}:`, err);
+          }
+        }
+      }
+      return record;
+    });
+  }
+
+
+  /**
+ * Update records with JSON fields
+ * @param {string} table - Table name
+ * @param {string|number} id - Record ID
+ * @param {any} data - update data to match
+ * @param {Array<string>} jsonFields - Fields to auto-parse
+ * @returns {Promise<Array>} - Matching records
+ */
+  static async updateWithJson(table, id, data, jsonFields = []) {
+    const preparedData = { ...data };
+    for (const field of jsonFields) {
+      if (preparedData[field] !== undefined) {
+        preparedData[field] = JSON.stringify(preparedData[field]);
+      }
+    }
+    await this.update(table, id, preparedData);
+    return await this.findByIdWithJson(table, id, jsonFields);
+  }
+
+
 }
 
 export default DbService; 
