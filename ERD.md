@@ -11,8 +11,10 @@ This document outlines the database structure for the Dottie Menstrual Health As
 ```mermaid
 erDiagram
     User ||--o{ Assessment : "creates"
+    User ||--o{ Conversation : "has"
     Assessment ||--o{ AssessmentAnswer : "contains"
-    Assessment ||--|| Result : "generates" 
+    Assessment ||--|| Result : "generates"
+    Conversation ||--o{ Message : "contains"
 
     User {
         string userId PK
@@ -53,6 +55,24 @@ erDiagram
         json cycleDetails
         json recommendations
     }
+    
+    Conversation {
+        string conversationId PK
+        string userId FK
+        string title
+        datetime createdAt
+        datetime lastMessageDate
+        boolean isActive
+    }
+    
+    Message {
+        string messageId PK
+        string conversationId FK
+        string role
+        string content
+        datetime createdAt
+        int orderNumber
+    }
 ```
 
 ## Entity Descriptions
@@ -91,11 +111,29 @@ erDiagram
 - **cycleDetails**: JSON storing cycle specifics (length, duration, symptoms, etc.)
 - **recommendations**: Array of recommendations (stored as JSON) including title, description and category
 
+### Conversation
+- **conversationId**: Unique identifier for each conversation
+- **userId**: Reference to the user who owns the conversation
+- **title**: A title or preview of the conversation
+- **createdAt**: When the conversation was created
+- **lastMessageDate**: Timestamp of the most recent message
+- **isActive**: Whether the conversation is active or archived
+
+### Message
+- **messageId**: Unique identifier for each message
+- **conversationId**: Reference to the conversation this message belongs to
+- **role**: The sender role (user or assistant)
+- **content**: The message content
+- **createdAt**: When the message was sent
+- **orderNumber**: The order of the message in the conversation
+
 ## Relationships
 
 1. **User to Assessment**: One-to-Many (A user can have multiple assessments/journal entries)
-2. **Assessment to AssessmentAnswer**: One-to-Many (An assessment has multiple answers)
-3. **Assessment to Result**: One-to-One (Each completed assessment has one result)
+2. **User to Conversation**: One-to-Many (A user can have multiple conversations)
+3. **Assessment to AssessmentAnswer**: One-to-Many (An assessment has multiple answers)
+4. **Assessment to Result**: One-to-One (Each completed assessment has one result)
+5. **Conversation to Message**: One-to-Many (A conversation contains multiple messages)
 
 ## Static Data (Not in Database)
 
@@ -134,6 +172,7 @@ const questions = [
 - Medical journal reference comparison
 - Improved analytics and visualizations
 - Azure ML integration for personalized feedback
+- AI chat functionality for user questions
 
 ## Database Implementation Notes
 

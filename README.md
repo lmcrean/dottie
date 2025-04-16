@@ -91,6 +91,19 @@ This architecture allows developers to work locally without needing to set up a 
 - **Authentication**: (Coming soon) JWT-based authentication
 - **Middleware**: Express middleware for request processing
 
+### Backend Port Configuration & macOS Compatibility
+
+By default, the backend runs on:
+
+- **Port 5000** on Windows/Linux
+- **Port 5001** on macOS (to avoid conflict with AirPlay)
+
+You can override this by creating a `.env` file in `/backend`:
+
+```env
+PORT=5050
+```
+
 ### Getting Started
 
 #### Backend Setup
