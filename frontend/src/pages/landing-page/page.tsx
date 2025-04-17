@@ -38,8 +38,12 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto">
             <motion.div
               className="text-center space-y-8"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{
+                opacity: 0,
+                scale: 0.5,
+                transform: "translateY(200px)",
+              }}
+              animate={{ opacity: 1, scale: 1, transform: "translateY(0)" }}
               transition={{ duration: 0.8 }}
             >
               <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
@@ -74,8 +78,8 @@ export default function LandingPage() {
         <section className="py-20 px-6 bg-white">
           <motion.div
             className="max-w-6xl mx-auto"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.5, transform: "translateY(200px)" }}
+            animate={{ opacity: 1, scale: 1, transform: "translateY(0)" }}
             transition={{ duration: 1.2 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -125,8 +129,12 @@ export default function LandingPage() {
         <section className="py-20 px-6 bg-gradient-to-b from-pink-50 to-white">
           <motion.div
             className="max-w-4xl mx-auto text-center"
-            initial={{ opacity: 0, scale: 0.5 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.5, transform: "translateY(150px)" }}
+            whileInView={{
+              opacity: 1,
+              scale: 1,
+              transform: "translateY(0)",
+            }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
