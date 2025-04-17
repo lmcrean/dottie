@@ -58,21 +58,28 @@ Create the following tables in the Supabase dashboard:
 - content: text NOT NULL
 - created_at: timestamp with time zone DEFAULT NOW()
 
-#### Assessments Table
-- id: text PRIMARY KEY
-- user_id: text NOT NULL
-- created_at: text NOT NULL
-- age: text
-- cycle_length: text
-- period_duration: text
-- flow_heaviness: text
-- pain_level: text
-
-#### Symptoms Table
-- id: serial PRIMARY KEY
-- assessment_id: text NOT NULL REFERENCES assessments(id)
-- symptom_name: text NOT NULL
-- symptom_type: text NOT NULL
+### assessments table:
+- id: uuid or char(36) PRIMARY KEY
+- user_id: text NOT NULL (FK to users.id)
+- assessment_data: text NOT NULL (JSON string of all assessment fields)
+- created_at: timestamp NOT NULL (default now())
+- updated_at: timestamp NOT NULL (auto-updated on change)
+    
+#### assessment_data (JSON) structure
+- date: string (ISO format timestamp)
+- pattern: string 
+- age: string 
+- cycleLength: string 
+- periodDuration: string (e.g., "4-5")
+- flowHeaviness: string 
+- painLevel: string 
+- symptoms: object
+   - physical: string[] 
+   - emotional: string[] 
+- recommendations: array of objects
+   - Each object has:
+      - title: string
+      - description: string
 
 #### Temp Test CRUD Table (for testing)
 - id: uuid PRIMARY KEY

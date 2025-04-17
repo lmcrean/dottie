@@ -102,99 +102,97 @@ export default function SymptomsPage() {
         </p>
         </div></div>
 
-        <div className="flex flex-col md:flex-row gap-6 mb-6">
-          <div className="">
-            <h3 className="text-base text-center font-medium mb-3">Physical symptoms</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { id: "bloating", label: "Bloating", emoji: "🫃" },
-                {
-                  id: "breast-tenderness",
-                  label: "Breast tenderness",
-                  emoji: "🤱",
-                },
-                { id: "headaches", label: "Headaches", emoji: "🤕" },
-                { id: "back-pain", label: "Back pain", emoji: "⬇️" },
-                { id: "nausea", label: "Nausea", emoji: "🤢" },
-                { id: "fatigue", label: "Fatigue", emoji: "😴" },
-                { id: "dizziness", label: "Dizziness", emoji: "💫" },
-                { id: "acne", label: "Acne", emoji: "😖" },
-                {
-                  id: "digestive-issues",
-                  label: "Digestive issues",
-                  emoji: "🚽",
-                },
-                {
-                  id: "sleep-disturbances",
-                  label: "Sleep disturbances",
-                  emoji: "🛌",
-                },
-                { id: "hot-flashes", label: "Hot flashes", emoji: "🔥" },
-                { id: "joint-pain", label: "Joint pain", emoji: "🦴" },
-              ].map((symptom) => (
-                <div
-                  key={symptom.id}
-                  className={`flex flex-col items-center justify-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
-                    physicalSymptoms.includes(symptom.id)
-                      ? "bg-pink-50 border-pink-300"
-                      : ""
-                  }`}
-                  onClick={() => togglePhysicalSymptom(symptom.id)}
-                >
-                  <span className="text-2xl mb-1">{symptom.emoji}</span>
-                  <span className="text-sm text-center">{symptom.label}</span>
-                  <Checkbox
-                    id={`physical-${symptom.id}`}
-                    checked={physicalSymptoms.includes(symptom.id)}
-                    onCheckedChange={() => togglePhysicalSymptom(symptom.id)}
-                    className="sr-only"
-                  />
-                </div>
-              ))}
-            </div>
+        <div className="mb-6">
+          <h3 className="text-base text-center font-medium mb-3">Physical symptoms</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { id: "bloating", label: "Bloating", emoji: "🫃" },
+              {
+                id: "breast-tenderness",
+                label: "Breast tenderness",
+                emoji: "🤱",
+              },
+              { id: "headaches", label: "Headaches", emoji: "🤕" },
+              { id: "back-pain", label: "Back pain", emoji: "⬇️" },
+              { id: "nausea", label: "Nausea", emoji: "🤢" },
+              { id: "fatigue", label: "Fatigue", emoji: "😴" },
+              { id: "dizziness", label: "Dizziness", emoji: "💫" },
+              { id: "acne", label: "Acne", emoji: "😖" },
+              {
+                id: "digestive-issues",
+                label: "Digestive issues",
+                emoji: "🚽",
+              },
+              {
+                id: "sleep-disturbances",
+                label: "Sleep disturbances",
+                emoji: "🛌",
+              },
+              { id: "hot-flashes", label: "Hot flashes", emoji: "🔥" },
+              { id: "joint-pain", label: "Joint pain", emoji: "🦴" },
+            ].map((symptom) => (
+              <div
+                key={symptom.id}
+                className={`flex flex-col items-center justify-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+                  physicalSymptoms.includes(symptom.id)
+                    ? "bg-pink-50 border-pink-300"
+                    : ""
+                }`}
+                onClick={() => togglePhysicalSymptom(symptom.id)}
+              >
+                <span className="text-2xl mb-1">{symptom.emoji}</span>
+                <span className="text-sm text-center">{symptom.label}</span>
+                <Checkbox
+                  id={`physical-${symptom.id}`}
+                  checked={physicalSymptoms.includes(symptom.id)}
+                  onCheckedChange={() => togglePhysicalSymptom(symptom.id)}
+                  className="sr-only"
+                />
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div className="">
-            <h3 className="text-base text-center font-medium mb-3">Emotional/Mood symptoms</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { id: "irritability", label: "Irritability", emoji: "😠" },
-                { id: "mood-swings", label: "Mood swings", emoji: "🙂😢" },
-                { id: "anxiety", label: "Anxiety", emoji: "😰" },
-                { id: "depression", label: "Depression", emoji: "😔" },
-                {
-                  id: "difficulty-concentrating",
-                  label: "Difficulty concentrating",
-                  emoji: "🧠",
-                },
-                { id: "food-cravings", label: "Food cravings", emoji: "🍫" },
-                {
-                  id: "emotional-sensitivity",
-                  label: "Emotional sensitivity",
-                  emoji: "💔",
-                },
-                { id: "low-energy", label: "Low energy/motivation", emoji: "⚡" },
-              ].map((symptom) => (
-                <div
-                  key={symptom.id}
-                  className={`flex flex-col items-center justify-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
-                    emotionalSymptoms.includes(symptom.id)
-                      ? "bg-pink-50 border-pink-300"
-                      : ""
-                  }`}
-                  onClick={() => toggleEmotionalSymptom(symptom.id)}
-                >
-                  <span className="text-2xl mb-1">{symptom.emoji}</span>
-                  <span className="text-sm text-center">{symptom.label}</span>
-                  <Checkbox
-                    id={`emotional-${symptom.id}`}
-                    checked={emotionalSymptoms.includes(symptom.id)}
-                    onCheckedChange={() => toggleEmotionalSymptom(symptom.id)}
-                    className="sr-only"
-                  />
-                </div>
-              ))}
-            </div>
+        <div className="mb-6">
+          <h3 className="text-base text-center font-medium mb-3">Emotional/Mood symptoms</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { id: "irritability", label: "Irritability", emoji: "😠" },
+              { id: "mood-swings", label: "Mood swings", emoji: "🙂😢" },
+              { id: "anxiety", label: "Anxiety", emoji: "😰" },
+              { id: "depression", label: "Depression", emoji: "😔" },
+              {
+                id: "difficulty-concentrating",
+                label: "Difficulty concentrating",
+                emoji: "🧠",
+              },
+              { id: "food-cravings", label: "Food cravings", emoji: "🍫" },
+              {
+                id: "emotional-sensitivity",
+                label: "Emotional sensitivity",
+                emoji: "💔",
+              },
+              { id: "low-energy", label: "Low energy/motivation", emoji: "⚡" },
+            ].map((symptom) => (
+              <div
+                key={symptom.id}
+                className={`flex flex-col items-center justify-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+                  emotionalSymptoms.includes(symptom.id)
+                    ? "bg-pink-50 border-pink-300"
+                    : ""
+                }`}
+                onClick={() => toggleEmotionalSymptom(symptom.id)}
+              >
+                <span className="text-2xl mb-1">{symptom.emoji}</span>
+                <span className="text-sm text-center">{symptom.label}</span>
+                <Checkbox
+                  id={`emotional-${symptom.id}`}
+                  checked={emotionalSymptoms.includes(symptom.id)}
+                  onCheckedChange={() => toggleEmotionalSymptom(symptom.id)}
+                  className="sr-only"
+                />
+              </div>
+            ))}
           </div>
         </div>
         </div>

@@ -46,8 +46,8 @@ export default function PeriodDurationPage() {
             <p className="text-sm text-gray-500 mb-6">Count the days from when bleeding starts until it completely stops</p>
            </div>
           </div>
-
-          <Card className="w-full lg:w-1/2 lg:max-w-none md:mx-auto md:max-w-md shadow-md hover:shadow-lg transition-shadow duration-300">
+        
+          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
               <CardContent className="pt-8 pb-8">
                 <RadioGroup value={selectedDuration || ""} onValueChange={handleDurationChange} className="mb-6">
                   <div className="space-y-3">
@@ -111,6 +111,7 @@ export default function PeriodDurationPage() {
               </CardContent>
           </Card>
         </div>
+
 
         <Card className="w-full mb-8 bg-pink-50 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-6">

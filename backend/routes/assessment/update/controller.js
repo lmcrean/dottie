@@ -1,5 +1,7 @@
 import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
+import Assessment from '../../../models/Assessment.js';
+
 
 /**
  * Update a specific assessment by user ID / assessment ID
@@ -8,15 +10,22 @@ import db from "../../../db/index.js";
  */
 export const updateAssessment = async (req, res) => {
   try {
-    const { userId, assessmentId } = req.params;
+    const assessmentId = req.params.id;
+    // Get userId from JWT token only to prevent unauthorized access
+    const userId = req.user?.userId
     const { assessmentData } = req.body;
     
     // Validate input
     if (!assessmentData) {
       return res.status(400).json({ error: 'Assessment data is required' });
     }
+
+    const isOwner = await Assessment.validateOwnership(assessmentId, userId);
+    if (!isOwner) {
+      return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
+    }
     
-    // For test IDs, try to update in the database
+    // For test IDs, try to update in the database // ! To be removed
     if (assessmentId.startsWith('test-')) {
       try {
         // Check if assessment exists and belongs to user
@@ -112,29 +121,12 @@ export const updateAssessment = async (req, res) => {
         // Continue to in-memory update if database fails
       }
     }
-    
-    // Find and update in-memory assessment
-    const assessmentIndex = assessments.findIndex(a => 
-      a.id === assessmentId && a.userId === userId
-    );
-    
-    if (assessmentIndex === -1) {
+
+    const updatedAssessment = await Assessment.update(assessmentId, assessmentData);
+    if (!updatedAssessment) {
       return res.status(404).json({ error: 'Assessment not found' });
     }
-    
-    // Update the assessment
-    const updatedAssessment = {
-      ...assessments[assessmentIndex],
-      assessmentData: {
-        ...assessments[assessmentIndex].assessmentData,
-        ...assessmentData
-      },
-      updatedAt: new Date().toISOString()
-    };
-    
-    // Replace the old assessment with the updated one
-    assessments[assessmentIndex] = updatedAssessment;
-    
+    // Return the updated assessment  
     res.status(200).json(updatedAssessment);
   } catch (error) {
     console.error('Error updating assessment:', error);

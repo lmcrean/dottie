@@ -1,57 +1,75 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
-// Load environment variables (if .env exists)
-try {
-  dotenv.config();
-} catch (error) {
-  console.log('No .env file found, using defaults');
-}
-
-// Create a mock Supabase client for local development
-const createMockClient = () => {
-  console.log('Using mock Supabase client for local development');
-  
-  // Create a mock client with empty implementation of common methods
-  return {
-    from: (table) => ({
-      select: () => Promise.resolve({ data: [], error: null }),
-      insert: () => Promise.resolve({ data: [], error: null }),
-      update: () => Promise.resolve({ data: [], error: null }),
-      delete: () => Promise.resolve({ data: [], error: null }),
-      eq: () => this,
-      order: () => this,
-      limit: () => this,
-      range: () => this
-    }),
-    auth: {
-      signIn: () => Promise.resolve({ user: null, error: null }),
-      signOut: () => Promise.resolve({ error: null }),
-      onAuthStateChange: () => ({ data: null, error: null, unsubscribe: () => {} })
-    },
-    storage: {
-      from: () => ({
-        upload: () => Promise.resolve({ data: null, error: null }),
-        download: () => Promise.resolve({ data: null, error: null }),
-        list: () => Promise.resolve({ data: [], error: null })
-      })
-    }
-  };
-};
-
-// Determine if we should use a real or mock client
-const isLocalDev = process.env.LOCAL_DEV === 'true';
-const supabaseUrl = process.env.SUPABASE_URL || 'https://nooizeyjujtddtxkirof.supabase.co';
-const supabaseKey = process.env.SUPABASE_ANON_PUBLIC;
+// Load environment variables
+dotenv.config();
 
 let supabase;
 
-if (isLocalDev || !supabaseKey) {
-  // Use mock client for local development or when key is missing
-  supabase = createMockClient();
+const isDevelopment = process.env.NODE_ENV !== "production";
+// Check if we're in development mode without Supabase credentials
+if (isDevelopment && (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_PUBLIC)) {
+  console.log('Using mock Supabase client for development');
+  
+  // Create a mock Supabase client with the methods you need
+  supabase = {
+    from: (table) => {
+      return {
+        select: () => {
+          // Return mock data based on the table
+          const mockData = getMockDataForTable(table);
+          return { data: mockData, error: null };
+        },
+        insert: (data) => {
+          console.log(`Mock insert into ${table}:`, data);
+          return { data, error: null };
+        },
+        update: (data) => {
+          console.log(`Mock update in ${table}:`, data);
+          return { data, error: null };
+        },
+        delete: () => {
+          console.log(`Mock delete from ${table}`);
+          return { data: null, error: null };
+        },
+        eq: () => {
+          // Chain for more complex queries
+          return this;
+        }
+        // Add other methods as needed
+      };
+    },
+    auth: {
+      signIn: () => Promise.resolve({ user: { id: 'mock-user-id' }, error: null }),
+      signOut: () => Promise.resolve({ error: null }),
+      // Add other auth methods as needed
+    }
+  };
 } else {
-  // Use real Supabase client
-  supabase = createClient(supabaseUrl, supabaseKey);
+  // Create the real Supabase client
+  supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_PUBLIC
+  );
 }
 
-export default supabase; 
+// Helper function to return mock data based on the table
+function getMockDataForTable(table) {
+  switch (table) {
+    case 'users':
+      return [
+        { id: 1, name: 'Mock User 1', email: 'user1@example.com' },
+        { id: 2, name: 'Mock User 2', email: 'user2@example.com' }
+      ];
+    case 'products':
+      return [
+        { id: 1, name: 'Mock Product 1', price: 29.99 },
+        { id: 2, name: 'Mock Product 2', price: 49.99 }
+      ];
+    // Add cases for other tables
+    default:
+      return [];
+  }
+}
+
+export default supabase;

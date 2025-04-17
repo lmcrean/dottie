@@ -7,8 +7,8 @@ export default function EndpointRow() {
       method="GET"
       endpoint="/api/assessment/list"
       expectedOutput={[
-        { id: "assessment-1", date: "2023-06-15" },
-        { id: "assessment-2", date: "2023-06-20" }
+        { id: "assessment-id-1", "userId": "user-id", "assessment_data": "{}", "createdAt": "created-date", "updatedAt": "updated-date" },
+        { id: "assessment-id-2", "userId": "user-id", "assessment_data": "{}", "createdAt": "created-date", "updatedAt": "updated-date" },
       ]}
       requiresAuth={true}
     />

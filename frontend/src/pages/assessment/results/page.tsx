@@ -223,7 +223,7 @@ export default function ResultsPage() {
     const storedPainLevel = sessionStorage.getItem("painLevel");
     const storedSymptoms = sessionStorage.getItem("symptoms");
     const storedCyclePredictable = sessionStorage.getItem("cyclePredictable");
-
+  
     console.log("Stored values:", {
       age: storedAge,
       cycleLength: storedCycleLength,
@@ -233,7 +233,7 @@ export default function ResultsPage() {
       symptoms: storedSymptoms,
       cyclePredictable: storedCyclePredictable,
     });
-
+  
     if (storedAge) setAge(storedAge);
     if (storedCycleLength) setCycleLength(storedCycleLength);
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
@@ -246,92 +246,75 @@ export default function ResultsPage() {
         console.error("Error parsing symptoms:", e);
       }
     }
-
+  
     // Determine the pattern based on LogicTree logic
     // Following the exact decision tree from LogicTree.md
     let determinedPattern: MenstrualPattern;
     const decisionPath = [];
-
+  
     // Q1: Is cycle length between 21-45 days?
     const isCycleLengthNormal = !(
       containsAny(storedCycleLength, ["irregular"]) ||
-      containsAny(storedCycleLength, ["less than 21", "<21"]) ||
+      containsAny(storedCycleLength, ["less than 21", "<21", "less-than-21"]) ||
       containsAny(storedCycleLength, ["more than 45", ">45", "45+"])
     );
     decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
-
+  
     if (!isCycleLengthNormal) {
       // O1: Irregular Timing Pattern
       determinedPattern = "irregular";
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !(
-        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
+      const isPeriodDurationNormal = !containsAny(
+        storedPeriodDuration,
+        ["more than 7", ">7", "8+", "8 days", "8-plus"]
       );
       decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
-
+  
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
         determinedPattern = "heavy";
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !(
-          containsAny(storedFlowLevel, ["heavy", "very heavy"])
+        const isFlowNormal = !containsAny(
+          storedFlowLevel,
+          ["heavy", "very-heavy"]
         );
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
-
+  
         if (!isFlowNormal) {
           // O2: Heavy or Prolonged Flow Pattern
           determinedPattern = "heavy";
           decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
+        } else if (normalizeValue(storedPainLevel) === "severe") {
+          // O3: Pain Predominant
+          determinedPattern = "pain";
+          decisionPath.push(`O3: Assigning pattern = "pain"`);
+        } else if (
+          storedCycleLength &&
+          storedCycleLength.includes("days") &&
+          storedPeriodDuration &&
+          storedPeriodDuration.includes("days") &&
+          normalizeValue(storedFlowLevel) !== "heavy" &&
+          normalizeValue(storedPainLevel) !== "severe"
+        ) {
+          // O4: Regular Pattern
+          determinedPattern = "regular";
+          decisionPath.push(`O4: Assigning pattern = "regular"`);
         } else {
-          // Q4: Is menstrual pain none to moderate?
-          const isPainNormal = !(
-            containsAny(storedPainLevel, ["severe", "debilitating"])
-          );
-          decisionPath.push(`Q4: Pain normal? ${isPainNormal}`);
-
-          if (!isPainNormal) {
-            // O3: Pain-Predominant Pattern
-            determinedPattern = "pain";
-            decisionPath.push(`O3: Assigning pattern = "pain"`);
-          } else {
-            // Q5: Has cycle been predictable for at least 3 months?
-            // Check if we have explicit data on cycle predictability
-            decisionPath.push(`Q5: Checking cycle predictability...`);
-            if (containsAny(storedCyclePredictable, ["no", "false"])) {
-              // O5: Developing Pattern - cycles not predictable
-              determinedPattern = "developing";
-              decisionPath.push(`O5: Assigning pattern = "developing" (explicitly not predictable)`);
-            } else if (containsAny(storedCyclePredictable, ["yes", "true"])) {
-              // O4: Regular Menstrual Cycles - cycles are predictable
-              determinedPattern = "regular";
-              decisionPath.push(`O4: Assigning pattern = "regular" (explicitly predictable)`);
-            } else {
-              // We don't have explicit predictability data, so infer based on age
-              decisionPath.push(`No explicit predictability data, inferring from age: ${storedAge}`);
-              // If age is adolescent (12-17), assume developing, otherwise assume regular
-              if (storedAge && containsAny(storedAge, ["12-14", "15-17", "13-17", "12", "13", "14", "15", "16", "17", "teen", "adolescent"])) {
-                // O5: Developing Pattern
-                determinedPattern = "developing";
-                decisionPath.push(`O5: Assigning pattern = "developing" (based on adolescent age)`);
-              } else {
-                // O4: Regular Menstrual Cycles
-                determinedPattern = "regular";
-                decisionPath.push(`O4: Assigning pattern = "regular" (default for non-adolescent)`);
-              }
-            }
-          }
+          // O5: Default to Developing Pattern (fallback)
+          determinedPattern = "developing";
+          decisionPath.push(`O5: Assigning pattern = "developing" (fallback)`);
         }
       }
     }
-
-    console.log("Decision path:", decisionPath);
-    console.log("Determined pattern:", determinedPattern);
+  
+    console.log("Decision Path:", decisionPath);
     setPattern(determinedPattern);
   }, []);
+  
 
   const patternInfo = patternData[pattern];
 
@@ -429,29 +412,27 @@ export default function ResultsPage() {
       const assessment: Omit<Assessment, "id"> = {
         userId: "", // This will be set by the backend
         createdAt: new Date().toISOString(),
-        assessmentData: {
-          userId: "", // This will be set by the backend
-          createdAt: new Date().toISOString(),
-          assessmentData: {
-            date: new Date().toISOString(),
-            pattern,
-            age,
-            cycleLength,
-            periodDuration: periodDuration || "Not provided",
-            flowHeaviness: flowLevel,
-            painLevel: painLevel || "Not provided",
-            symptoms: {
-              physical: symptoms || [],
-              emotional: [],
-            },
-            recommendations:
-              patternInfo?.recommendations?.map((rec) => ({
-                title: rec.title,
-                description: rec.description,
-              })) || [],
+        assessment_data: {
+          date: new Date().toISOString(),
+          pattern,
+          age,
+          cycleLength,
+          periodDuration: periodDuration || "Not provided",
+          flowHeaviness: flowLevel,
+          painLevel: painLevel || "Not provided",
+          symptoms: {
+            physical: symptoms || [],
+            emotional: [],
           },
+          recommendations:
+            patternInfo?.recommendations?.map((rec) => ({
+              title: rec.title,
+              description: rec.description,
+            })) || [],
         },
       };
+
+      
 
       console.log("Sending assessment data:", assessment);
 
@@ -573,14 +554,14 @@ export default function ResultsPage() {
         </Card>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <Button 
+          <Button
             className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-6 text-lg"
             onClick={() => setIsChatOpen(true)}
           >
             <MessageCircle className="h-5 w-5" />
             Chat with Dottie
           </Button>
-          <Button 
+          <Button
             className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-500 px-6 py-6 text-lg"
             onClick={handleSaveResults}
             disabled={isSaving}
