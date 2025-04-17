@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { DotIcon, Calendar, Brain, BookOpen } from "lucide-react";
 import { Button } from "@/src/components/ui/!to-migrate/button";
+import DottieMascot3D from "@/src/components/DottieMascot3D";
+import ErrorBoundary from "@/src/components/ErrorBoundary";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="flex items-center justify-between p-4 border-b bg-white/80 backdrop-blur-sm z-50">
         <motion.div
           className="flex items-center gap-2"
           initial={{ scale: 0.8, opacity: 0 }}
@@ -36,41 +38,54 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <motion.div
-              className="text-center space-y-8"
-              initial={{
-                opacity: 0,
-                scale: 0.5,
-                transform: "translateY(200px)",
-              }}
-              animate={{ opacity: 1, scale: 1, transform: "translateY(0)" }}
-              transition={{ duration: 0.8 }}
-            >
-              <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
-                Your Personal
-                <span className="text-pink-500"> Menstrual Health </span>
-                Companion
-              </motion.h1>
-              <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-                Track, understand, and take control of your menstrual health
-                journey with AI-powered insights and personalized guidance.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                <Link to="/auth/sign-up">
-                  <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
-                    Start Your Journey
-                  </Button>
-                </Link>
-                <Link to="/auth/sign-in">
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto text-lg px-8 py-6"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <motion.div
+                className="text-left space-y-8"
+                initial={{
+                  opacity: 0,
+                  scale: 0.5,
+                  transform: "translateY(200px)",
+                }}
+                animate={{ opacity: 1, scale: 1, transform: "translateY(0)" }}
+                transition={{ duration: 0.8 }}
+              >
+                <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
+                  Your Personal
+                  <span className="text-pink-500"> Menstrual Health </span>
+                  Companion
+                </motion.h1>
+                <p className="text-xl md:text-2xl text-gray-600">
+                  Track, understand, and take control of your menstrual health
+                  journey with AI-powered insights and personalized guidance.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to="/auth/sign-up">
+                    <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                      Start Your Journey
+                    </Button>
+                  </Link>
+                  <Link to="/auth/sign-in">
+                    <Button
+                      variant="outline"
+                      className="w-full sm:w-auto text-lg px-8 py-6"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="w-full h-[500px]"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.2 }}
+              >
+                <ErrorBoundary>
+                  <DottieMascot3D />
+                </ErrorBoundary>
+              </motion.div>
+            </div>
           </div>
         </section>
 
