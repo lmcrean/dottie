@@ -11,8 +11,13 @@
 
 It may be worth reaching out to a peer in either of these categories to see if they have started. 
 
-# waiting for review
+# waiting for Pull Request review
 
 - at time of writing PR board is being checked once daily (17th April 2025)
 - from May 2025 this is will be sustained as a weekly occurence
 - be sure to include **include screenshots and or screen recordings** of new outcome to speed up this process
+
+# join our discord channel 
+
+if you haven't already:
+- https://discord.gg/FRxFFgU4cq
