@@ -9,9 +9,9 @@
 # what to check before contributing
 
 1. Issues Tab: check if someone commented on the issue already
-2. Pull Requests Tab: check for drafts of the Github Issue
+2. Pull Requests Tab: check the drafts
 
-It may be worth reaching out to a peer in either of these categories to see if they have started. 
+It may be worth reaching out to a peer in either of these categories and offering to contribute an isolated issue to their branch
 
 # waiting for Pull Request review
 
