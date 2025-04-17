@@ -1,25 +1,22 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/src/components/ui/!to-migrate/button";
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
 import { motion } from "framer-motion";
 import { DotIcon, Calendar, Brain, BookOpen } from "lucide-react";
+import { Button } from "@/src/components/ui/!to-migrate/button";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="flex items-center gap-2">
+        <motion.div
+          className="flex items-center gap-2"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
-          <motion.img
-            src="/chatb.png"
-            alt="Dottie Logo"
-            className="w-10 h-10"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          />
+          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
-        </div>
+        </motion.div>
         <nav className="hidden md:flex items-center gap-6">
           <Link
             to="/auth/sign-in"
@@ -39,12 +36,17 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center space-y-8">
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
+            <motion.div
+              className="text-center space-y-8"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Your Personal
                 <span className="text-pink-500"> Menstrual Health </span>
                 Companion
-              </h1>
+              </motion.h1>
               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
                 Track, understand, and take control of your menstrual health
                 journey with AI-powered insights and personalized guidance.
@@ -64,26 +66,37 @@ export default function LandingPage() {
                   </Button>
                 </Link>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* Features Section */}
         <section className="py-20 px-6 bg-white">
-          <div className="max-w-6xl mx-auto">
+          <motion.div
+            className="max-w-6xl mx-auto"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2 }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
               How Dottie Helps You
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors">
+              <motion.div
+                className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors"
+                whileHover={{ scale: 1.03 }}
+              >
                 <Calendar className="h-12 w-12 text-pink-500 mb-6" />
                 <h3 className="font-bold text-xl mb-4">Track Your Cycle</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Monitor your menstrual patterns with precision and predict
                   your next period with AI-powered insights.
                 </p>
-              </div>
-              <div className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors">
+              </motion.div>
+              <motion.div
+                className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors"
+                whileHover={{ scale: 1.03 }}
+              >
                 <Brain className="h-12 w-12 text-pink-500 mb-6" />
                 <h3 className="font-bold text-xl mb-4">
                   Get Personalized Insights
@@ -92,22 +105,31 @@ export default function LandingPage() {
                   Receive tailored recommendations and understand your unique
                   patterns through advanced analytics.
                 </p>
-              </div>
-              <div className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors">
+              </motion.div>
+              <motion.div
+                className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors"
+                whileHover={{ scale: 1.03 }}
+              >
                 <BookOpen className="h-12 w-12 text-pink-500 mb-6" />
                 <h3 className="font-bold text-xl mb-4">Stay Informed</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Access comprehensive educational resources and expert advice
                   about menstrual health.
                 </p>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* CTA Section */}
         <section className="py-20 px-6 bg-gradient-to-b from-pink-50 to-white">
-          <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, scale: 0.5 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
               Ready to Take Control?
             </h2>
@@ -120,13 +142,13 @@ export default function LandingPage() {
                 Get Started Now
               </Button>
             </Link>
-          </div>
+          </motion.div>
         </section>
       </main>
 
       <footer className="bg-white border-t py-8">
         <div className="max-w-6xl mx-auto px-6 text-center text-gray-600">
-          <p>© 2024 Dottie. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Dottie. All rights reserved.</p>
         </div>
       </footer>
     </div>
