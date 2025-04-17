@@ -1,5 +1,7 @@
 # contributing
 
+![image](https://github.com/user-attachments/assets/13669298-59e7-4622-ac5d-337bb94b928f)
+
 1. assert your presence by converting your pull request to `draft `
 2. be sure to **include screenshots and or screen recordings** of the new outcome
 3. convert the PR to an open pull request when ready.
