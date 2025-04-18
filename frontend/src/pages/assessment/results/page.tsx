@@ -1,13 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
-import { MessageCircle, Heart, ChevronRight, DotIcon, Save, Share2, Download } from "lucide-react";
+import { MessageCircle, Save, Share2, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
 import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
-import UserIcon from "@/src/components/navigation/UserIcon"
+import UserIcon from "@/src/components/navigation/UserIcon";
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern =
@@ -201,7 +201,7 @@ export default function ResultsPage() {
   // Helper function to normalize string values for more reliable comparisons
   const normalizeValue = (value: string | null): string => {
     if (!value) return "";
-    
+
     const normalized = value.trim().toLowerCase();
     return normalized;
   };
@@ -209,9 +209,9 @@ export default function ResultsPage() {
   // Helper function to check if a string contains any of the given keywords
   const containsAny = (value: string | null, keywords: string[]): boolean => {
     if (!value) return false;
-    
+
     const normalized = normalizeValue(value);
-    return keywords.some(keyword => normalized.includes(keyword));
+    return keywords.some((keyword) => normalized.includes(keyword));
   };
 
   useEffect(() => {
@@ -223,7 +223,7 @@ export default function ResultsPage() {
     const storedPainLevel = sessionStorage.getItem("painLevel");
     const storedSymptoms = sessionStorage.getItem("symptoms");
     const storedCyclePredictable = sessionStorage.getItem("cyclePredictable");
-  
+
     console.log("Stored values:", {
       age: storedAge,
       cycleLength: storedCycleLength,
@@ -233,7 +233,7 @@ export default function ResultsPage() {
       symptoms: storedSymptoms,
       cyclePredictable: storedCyclePredictable,
     });
-  
+
     if (storedAge) setAge(storedAge);
     if (storedCycleLength) setCycleLength(storedCycleLength);
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
@@ -246,12 +246,12 @@ export default function ResultsPage() {
         console.error("Error parsing symptoms:", e);
       }
     }
-  
+
     // Determine the pattern based on LogicTree logic
     // Following the exact decision tree from LogicTree.md
     let determinedPattern: MenstrualPattern;
     const decisionPath = [];
-  
+
     // Q1: Is cycle length between 21-45 days?
     const isCycleLengthNormal = !(
       containsAny(storedCycleLength, ["irregular"]) ||
@@ -259,31 +259,36 @@ export default function ResultsPage() {
       containsAny(storedCycleLength, ["more than 45", ">45", "45+"])
     );
     decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
-  
+
     if (!isCycleLengthNormal) {
       // O1: Irregular Timing Pattern
       determinedPattern = "irregular";
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !containsAny(
-        storedPeriodDuration,
-        ["more than 7", ">7", "8+", "8 days", "8-plus"]
+      const isPeriodDurationNormal = !containsAny(storedPeriodDuration, [
+        "more than 7",
+        ">7",
+        "8+",
+        "8 days",
+        "8-plus",
+      ]);
+      decisionPath.push(
+        `Q2: Period duration normal? ${isPeriodDurationNormal}`
       );
-      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
-  
+
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
         determinedPattern = "heavy";
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !containsAny(
-          storedFlowLevel,
-          ["heavy", "very-heavy"]
-        );
+        const isFlowNormal = !containsAny(storedFlowLevel, [
+          "heavy",
+          "very-heavy",
+        ]);
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
-  
+
         if (!isFlowNormal) {
           // O2: Heavy or Prolonged Flow Pattern
           determinedPattern = "heavy";
@@ -310,11 +315,10 @@ export default function ResultsPage() {
         }
       }
     }
-  
+
     console.log("Decision Path:", decisionPath);
     setPattern(determinedPattern);
   }, []);
-  
 
   const patternInfo = patternData[pattern];
 
@@ -432,8 +436,6 @@ export default function ResultsPage() {
         },
       };
 
-      
-
       console.log("Sending assessment data:", assessment);
 
       // Use the postSend function
@@ -453,7 +455,6 @@ export default function ResultsPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
           <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </div>
@@ -467,20 +468,27 @@ export default function ResultsPage() {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-3">Your Assessment Results</h1>
-          <p className="text-gray-600">Based on your responses, here's what we've found about your menstrual health.</p>
+          <p className="text-gray-600">
+            Based on your responses, here's what we've found about your
+            menstrual health.
+          </p>
         </div>
 
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-pink-500 mb-2">{patternData[pattern].title}</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">{patternData[pattern].description}</p>
+              <h2 className="text-2xl font-bold text-pink-500 mb-2">
+                {patternData[pattern].title}
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                {patternData[pattern].description}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/time.png" className="w-[55px] h-[55px]"/>
+                  <img src="/public/time.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Age Range</h3>
@@ -489,48 +497,67 @@ export default function ResultsPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/calendar.png" className="w-[55px] h-[55px]"/>
+                  <img
+                    src="/public/calendar.png"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div>
-                <h3 className="font-medium text-lg mb-2">Cycle Length</h3>
-                <p className="text-gray-600">{cycleLength || "Not specified"}</p>
-                </div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
-                <div>
-                  <img src="/public/drop.png" className="w-[55px] h-[55px]"/>
-                </div>
-                <div>
-                <h3 className="font-medium text-lg mb-2">Period Duration</h3>
-                <p className="text-gray-600">{periodDuration || "Not specified"}</p>
+                  <h3 className="font-medium text-lg mb-2">Cycle Length</h3>
+                  <p className="text-gray-600">
+                    {cycleLength || "Not specified"}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]"/>
+                  <img src="/public/drop.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
-                <h3 className="font-medium text-lg mb-2">Flow Level</h3>
-                <p className="text-gray-600">{flowLevel || "Not specified"}</p>
+                  <h3 className="font-medium text-lg mb-2">Period Duration</h3>
+                  <p className="text-gray-600">
+                    {periodDuration || "Not specified"}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/emotion.png" className="w-[55px] h-[55px]"/>
+                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
-                <h3 className="font-medium text-lg mb-2">Pain Level</h3>
-                <p className="text-gray-600">{painLevel || "Not specified"}</p>
+                  <h3 className="font-medium text-lg mb-2">Flow Level</h3>
+                  <p className="text-gray-600">
+                    {flowLevel || "Not specified"}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div>
+                  <img
+                    src="/public/emotion.png"
+                    className="w-[55px] h-[55px]"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg mb-2">Pain Level</h3>
+                  <p className="text-gray-600">
+                    {painLevel || "Not specified"}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3 w-full max-w-full">
                 <div>
-                  <img src="/public/tracktime.png" className="w-[55px] h-[55px]" />
+                  <img
+                    src="/public/tracktime.png"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="font-medium text-lg mb-2">Symptoms</h3>
                   <p className="text-gray-600 whitespace-normal break-words">
-                    {symptoms.length > 0 ? symptoms.join(", ") : "None reported"}
+                    {symptoms.length > 0
+                      ? symptoms.join(", ")
+                      : "None reported"}
                   </p>
                 </div>
               </div>
@@ -539,7 +566,10 @@ export default function ResultsPage() {
             <h3 className="text-xl font-bold mb-4">Recommendations</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {patternData[pattern].recommendations.map((rec, index) => (
-                <div key={index} className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300">
+                <div
+                  key={index}
+                  className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300"
+                >
                   <div className="flex items-start gap-3">
                     <div className="text-2xl">{rec.icon}</div>
                     <div>
@@ -573,17 +603,26 @@ export default function ResultsPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
           <Link to="/assessment/history">
-            <Button variant="outline" className="flex items-center px-6 py-6 text-lg">
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg"
+            >
               View History
             </Button>
           </Link>
 
-          <div className="flex gap-4">
-            <Button variant="outline" className="flex items-center gap-2 px-6 py-6 text-lg">
+          <div className="flex gap-4 hidden">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-6 text-lg"
+            >
               <Share2 className="h-5 w-5" />
               Share
             </Button>
-            <Button variant="outline" className="flex items-center gap-2 px-6 py-6 text-lg">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-6 text-lg"
+            >
               <Download className="h-5 w-5" />
               Download
             </Button>
