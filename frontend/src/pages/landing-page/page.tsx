@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { DotIcon, Calendar, Brain, BookOpen } from "lucide-react";
+import { Calendar, Brain, BookOpen } from "lucide-react";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import DottieMascot3D from "@/src/components/DottieMascot3D";
 import ErrorBoundary from "@/src/components/ErrorBoundary";
@@ -15,7 +15,6 @@ export default function LandingPage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
           <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </motion.div>
