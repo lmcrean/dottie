@@ -1,7 +1,8 @@
 import * as THREE from 'three'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { Suspense, useMemo } from 'react'
+import { Suspense, useMemo, useRef } from 'react'
+import { Group } from 'three'
 
 function TeardropBody() {
   const points = useMemo(() => {
@@ -19,8 +20,20 @@ function TeardropBody() {
     return shape
   }, [])
 
+  // Create a ref for the mascot's main group
+  const mascotRef = useRef<Group>(null)
+  
+  // Add floating animation
+  useFrame(({ clock }) => {
+    if (mascotRef.current) {
+      // Smooth floating motion with sine wave
+      const floatOffset = Math.sin(clock.getElapsedTime() * 0.6) * 0.1
+      mascotRef.current.position.y = 1 + floatOffset
+    }
+  })
+
   return (
-    <group scale={[1.2, 1.2, 1.2]} position={[0, 1, 0]}>
+    <group ref={mascotRef} scale={[1.2, 1.2, 1.2]} position={[0, 1, 0]}>
       {/* Main body */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <latheGeometry args={[points, 64]} />
