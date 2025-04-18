@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Types
-export type AgeRange = "under_12" | "12_14" | "15_17" | "18_24" | "over_24";
-export type CycleLength = "less_than_21" | "21_25" | "26_30" | "31_35" | "more_than_35" | "irregular";
-export type PeriodDuration = "1_3" | "4_5" | "6_7" | "more_than_7";
-export type FlowHeaviness = "light" | "moderate" | "heavy" | "very_heavy";
-export type PainLevel = "none" | "mild" | "moderate" | "severe" | "debilitating";
+export type AgeRange = "under-13" | "13-17" | "18-24" | "25-plus";
+export type CycleLength = "less-than-21" | "21-25" | "26-30" | "31-35" | "36-40" | "irregular" | "not-sure" | "other";
+export type PeriodDuration = "1-3" | "4-5" | "6-7" | "8-plus" | "varies"| "not-sure" | "other";
+export type FlowHeaviness = "light" | "moderate" | "heavy" | "very-heavy" | "varies" | "not-sure";
+export type PainLevel = "no-pain" | "mild" | "moderate" | "severe" | "debilitating" | "varies";
 
 export type MenstrualPattern = 
   | "regular" 
