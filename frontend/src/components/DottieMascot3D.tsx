@@ -28,8 +28,8 @@ function TeardropBody() {
           color="#A03C7D" 
           emissive="#ff4db8"
           emissiveIntensity={0.2}
-          roughness={0.3}
-          metalness={0.1}
+          roughness={1.0}
+          metalness={0}
         />
       </mesh>
 
@@ -43,7 +43,8 @@ function TeardropBody() {
               color="white" 
               emissive="white"
               emissiveIntensity={0.3}
-              roughness={0.2}
+              roughness={1.0}
+              metalness={0}
             />
           </mesh>
           <mesh position={[0, 0, 0.08]}>
@@ -60,7 +61,8 @@ function TeardropBody() {
               color="white" 
               emissive="white"
               emissiveIntensity={0.3}
-              roughness={0.2}
+              roughness={1.0}
+              metalness={0}
             />
           </mesh>
           <mesh position={[0, 0, 0.08]}>
