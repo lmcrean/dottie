@@ -13,7 +13,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
           <DotIcon className="h-5 w-5 text-pink-500 fill-pink-500" />
-          <img src="/chatb.png" alt="Dottie Logo" className="w-8 h-8" />
+          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-8" />
           <span className="font-semibold text-pink-500">Dottie</span>
         </div>
         <Link to="/" className="text-gray-500">
