@@ -1,7 +1,8 @@
 import * as THREE from 'three'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { Suspense, useMemo } from 'react'
+import { Suspense, useMemo, useRef } from 'react'
+import { Group } from 'three'
 
 function TeardropBody() {
   const points = useMemo(() => {
@@ -19,12 +20,30 @@ function TeardropBody() {
     return shape
   }, [])
 
+  // Create a ref for the mascot's main group
+  const mascotRef = useRef<Group>(null)
+  
+  // Add floating animation
+  useFrame(({ clock }) => {
+    if (mascotRef.current) {
+      // Smooth floating motion with sine wave
+      const floatOffset = Math.sin(clock.getElapsedTime() * 0.6) * 0.1
+      mascotRef.current.position.y = 1 + floatOffset
+    }
+  })
+
   return (
-    <group scale={[1.2, 1.2, 1.2]} position={[0, 1, 0]}>
+    <group ref={mascotRef} scale={[1.2, 1.2, 1.2]} position={[0, 1, 0]}>
       {/* Main body */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <latheGeometry args={[points, 64]} />
-        <meshStandardMaterial color="#A03C7D" />
+        <meshStandardMaterial 
+          color="#A03C7D" 
+          emissive="#ff4db8"
+          emissiveIntensity={0.2}
+          roughness={1.0}
+          metalness={0}
+        />
       </mesh>
 
       {/* Eyes */}
@@ -33,9 +52,15 @@ function TeardropBody() {
         <group position={[-0.25, 0, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
-            <meshStandardMaterial color="white" />
+            <meshStandardMaterial 
+              color="white" 
+              emissive="white"
+              emissiveIntensity={0.3}
+              roughness={1.0}
+              metalness={0}
+            />
           </mesh>
-          <mesh position={[0, 0, 0.08]}>
+          <mesh position={[0.02, -0.02, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
             <meshStandardMaterial color="black" />
           </mesh>
@@ -45,13 +70,46 @@ function TeardropBody() {
         <group position={[0.25, 0, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
-            <meshStandardMaterial color="white" />
+            <meshStandardMaterial 
+              color="white" 
+              emissive="white"
+              emissiveIntensity={0.3}
+              roughness={1.0}
+              metalness={0}
+            />
           </mesh>
-          <mesh position={[0, 0, 0.08]}>
+          <mesh position={[0.02, -0.02, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
             <meshStandardMaterial color="black" />
           </mesh>
         </group>
+      </group>
+
+      {/* Cheeks */}
+      <group position={[0, -0.9, 0.5]}>
+        {/* Left cheek */}
+        <mesh position={[-0.4, -0.05, 0.05]}>
+          <sphereGeometry args={[0.12, 32, 32]} />
+          <meshStandardMaterial 
+            color="#ff9dbb" 
+            transparent={true}
+            opacity={0.3}
+            roughness={1.0}
+            metalness={0}
+          />
+        </mesh>
+        
+        {/* Right cheek */}
+        <mesh position={[0.4, -0.05, 0.05]}>
+          <sphereGeometry args={[0.12, 32, 32]} />
+          <meshStandardMaterial 
+            color="#ff9dbb" 
+            transparent={true}
+            opacity={0.3}
+            roughness={1.0}
+            metalness={0}
+          />
+        </mesh>
       </group>
 
       {/* Smile */}
@@ -68,8 +126,20 @@ function TeardropBody() {
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.7} />
-      <pointLight position={[10, 10, 10]} intensity={1.5} />
+      <ambientLight intensity={2} />
+      <pointLight position={[10, 10, 10]} intensity={4} />
+      <pointLight position={[-10, 5, 10]} intensity={3} color="#ffffff" />
+      <directionalLight position={[0, 0, 5]} intensity={3} />
+      <spotLight 
+        position={[0, 5, 5]} 
+        angle={0.6} 
+        penumbra={1} 
+        intensity={2.5} 
+        castShadow 
+      />
+      <hemisphereLight 
+        args={["#ffffff", "#ff8ddb", 2]}
+      />
       <TeardropBody />
       <OrbitControls enableZoom={false} enablePan={false} />
     </>
