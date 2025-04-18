@@ -17,10 +17,13 @@ const getBaseUrl = () => {
   if (savedApiUrl) {
     return savedApiUrl;
   }
+
+  const isMac = process.platform === 'darwin';
+  const API_PORT = process.env.API_PORT ?? (isMac ? 5001 : 5000); 
   
   // Default fallback for local development
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return `http://${window.location.hostname}:5000`;
+    return `http://${window.location.hostname}:${API_PORT}`;
   }
   
   // Production fallback: assume API is at the same origin
