@@ -1,9 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
-import { MessageCircle, Save, Share2, Download } from "lucide-react";
+import {
+  MessageCircle,
+  Heart,
+  ChevronRight,
+  DotIcon,
+  Save,
+  Share2,
+  Download,
+} from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
+import { FullscreenChat } from "@/src/pages/chat/FullscreenChat";
 import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
@@ -188,6 +198,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
 export default function ResultsPage() {
   const navigate = useNavigate();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [pattern, setPattern] = useState<MenstrualPattern>("developing");
@@ -266,16 +277,11 @@ export default function ResultsPage() {
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !containsAny(storedPeriodDuration, [
-        "more than 7",
-        ">7",
-        "8+",
-        "8 days",
-        "8-plus",
-      ]);
-      decisionPath.push(
-        `Q2: Period duration normal? ${isPeriodDurationNormal}`
+      const isPeriodDurationNormal = !(
+        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
       );
+      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
+
 
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
@@ -283,42 +289,62 @@ export default function ResultsPage() {
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !containsAny(storedFlowLevel, [
-          "heavy",
-          "very-heavy",
-        ]);
+        const isFlowNormal = !(
+          containsAny(storedFlowLevel, ["heavy", "very heavy"])
+        );
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
 
         if (!isFlowNormal) {
           // O2: Heavy or Prolonged Flow Pattern
           determinedPattern = "heavy";
           decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
-        } else if (normalizeValue(storedPainLevel) === "severe") {
-          // O3: Pain Predominant
-          determinedPattern = "pain";
-          decisionPath.push(`O3: Assigning pattern = "pain"`);
-        } else if (
-          storedCycleLength &&
-          storedCycleLength.includes("days") &&
-          storedPeriodDuration &&
-          storedPeriodDuration.includes("days") &&
-          normalizeValue(storedFlowLevel) !== "heavy" &&
-          normalizeValue(storedPainLevel) !== "severe"
-        ) {
-          // O4: Regular Pattern
-          determinedPattern = "regular";
-          decisionPath.push(`O4: Assigning pattern = "regular"`);
         } else {
-          // O5: Default to Developing Pattern (fallback)
-          determinedPattern = "developing";
-          decisionPath.push(`O5: Assigning pattern = "developing" (fallback)`);
+          // Q4: Is menstrual pain none to moderate?
+          const isPainNormal = !(
+            containsAny(storedPainLevel, ["severe", "debilitating"])
+          );
+          decisionPath.push(`Q4: Pain normal? ${isPainNormal}`);
+
+          if (!isPainNormal) {
+            // O3: Pain-Predominant Pattern
+            determinedPattern = "pain";
+            decisionPath.push(`O3: Assigning pattern = "pain"`);
+          } else {
+            // Q5: Has cycle been predictable for at least 3 months?
+            // Check if we have explicit data on cycle predictability
+            decisionPath.push(`Q5: Checking cycle predictability...`);
+            if (containsAny(storedCyclePredictable, ["no", "false"])) {
+              // O5: Developing Pattern - cycles not predictable
+              determinedPattern = "developing";
+              decisionPath.push(`O5: Assigning pattern = "developing" (explicitly not predictable)`);
+            } else if (containsAny(storedCyclePredictable, ["yes", "true"])) {
+              // O4: Regular Menstrual Cycles - cycles are predictable
+              determinedPattern = "regular";
+              decisionPath.push(`O4: Assigning pattern = "regular" (explicitly predictable)`);
+            } else {
+              // We don't have explicit predictability data, so infer based on age
+              decisionPath.push(`No explicit predictability data, inferring from age: ${storedAge}`);
+              // If age is adolescent (12-17), assume developing, otherwise assume regular
+              if (storedAge && containsAny(storedAge, ["12-14", "15-17", "13-17", "12", "13", "14", "15", "16", "17", "teen", "adolescent"])) {
+                // O5: Developing Pattern
+                determinedPattern = "developing";
+                decisionPath.push(`O5: Assigning pattern = "developing" (based on adolescent age)`);
+              } else {
+                // O4: Regular Menstrual Cycles
+                determinedPattern = "regular";
+                decisionPath.push(`O4: Assigning pattern = "regular" (default for non-adolescent)`);
+              }
+            }
+          }
         }
       }
     }
 
-    console.log("Decision Path:", decisionPath);
+    console.log("Decision path:", decisionPath);
+    console.log("Determined pattern:", determinedPattern);
     setPattern(determinedPattern);
   }, []);
+
 
   const patternInfo = patternData[pattern];
 
@@ -435,7 +461,6 @@ export default function ResultsPage() {
             })) || [],
         },
       };
-
       console.log("Sending assessment data:", assessment);
 
       // Use the postSend function
@@ -460,7 +485,6 @@ export default function ResultsPage() {
         </div>
         <UserIcon />
       </header>
-
       <main className="flex-1 p-6 max-w-4xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-full transition-all duration-500"></div>
@@ -630,13 +654,21 @@ export default function ResultsPage() {
         </div>
       </main>
 
-      {isChatOpen && (
-        <ChatModal
-          isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
-          initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
-        />
-      )}
+      {isChatOpen &&
+        (isFullscreenChatOpen ? (
+          <FullscreenChat
+            onClose={() => setIsChatOpen(false)}
+            setIsFullscreen={setIsFullscreenChatOpen}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
+          />
+        ) : (
+          <ChatModal
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+            setIsFullscreen={setIsFullscreenChatOpen}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
+          />
+        ))}
     </div>
   );
 }
