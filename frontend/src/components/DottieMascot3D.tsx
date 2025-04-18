@@ -1,27 +1,48 @@
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { Suspense, useMemo, useRef } from 'react'
+import { Suspense, useMemo, useRef, useEffect } from 'react'
 import { Group } from 'three'
 
 function TeardropBody() {
   const points = useMemo(() => {
     const shape = []
     shape.push(new THREE.Vector2(0, 0))
+    shape.push(new THREE.Vector2(0.05, 0.05))
     shape.push(new THREE.Vector2(0.1, 0.1))
+    shape.push(new THREE.Vector2(0.18, 0.2))
     shape.push(new THREE.Vector2(0.25, 0.3))
-    shape.push(new THREE.Vector2(0.5, 0.68))
-    shape.push(new THREE.Vector2(0.65, 0.99))
-    shape.push(new THREE.Vector2(0.7, 1.35))
-    shape.push(new THREE.Vector2(0.65, 1.55))
-    shape.push(new THREE.Vector2(0.5, 1.7))
-    shape.push(new THREE.Vector2(0.3, 1.7))
+    shape.push(new THREE.Vector2(0.35, 0.45))
+    shape.push(new THREE.Vector2(0.42, 0.58))
+    shape.push(new THREE.Vector2(0.5, 0.72))
+    shape.push(new THREE.Vector2(0.56, 0.85))
+    shape.push(new THREE.Vector2(0.62, 0.99))
+    shape.push(new THREE.Vector2(0.67, 1.15))
+    shape.push(new THREE.Vector2(0.7, 1.33))
+    shape.push(new THREE.Vector2(0.7, 1.4))
+    shape.push(new THREE.Vector2(0.7, 1.44))
+    shape.push(new THREE.Vector2(0.69, 1.49))
+    shape.push(new THREE.Vector2(0.65, 1.56))
+    shape.push(new THREE.Vector2(0.6, 1.61))
+    shape.push(new THREE.Vector2(0.5, 1.65))
+    shape.push(new THREE.Vector2(0.4, 1.67))
+    shape.push(new THREE.Vector2(0.3, 1.69))
+    shape.push(new THREE.Vector2(0.15, 1.7))
     shape.push(new THREE.Vector2(0, 1.7))
     return shape
   }, [])
 
+  // Ref for the mesh
+  const latheRef = useRef<THREE.Mesh>(null)
+
   // Create a ref for the mascot's main group
   const mascotRef = useRef<Group>(null)
+
+  useEffect(() => {
+    if (latheRef.current && latheRef.current.geometry) {
+      latheRef.current.geometry.computeVertexNormals();
+    }
+  }, []);
   
   // Add floating animation
   useFrame(({ clock }) => {
@@ -35,14 +56,15 @@ function TeardropBody() {
   return (
     <group ref={mascotRef} scale={[1.2, 1.2, 1.2]} position={[0, 1, 0]}>
       {/* Main body */}
-      <mesh rotation={[Math.PI, 0, 0]}>
-        <latheGeometry args={[points, 64]} />
+      <mesh ref={latheRef} rotation={[Math.PI, 0, 0]}>
+        <latheGeometry args={[points, 128]} />
         <meshStandardMaterial 
-          color="#ff1494" 
+          color="#F50087" 
           emissive="#ff4db8"
           emissiveIntensity={0.2}
-          roughness={1.0}
+          roughness={0.8}
           metalness={0}
+          flatShading={false}
         />
       </mesh>
 
