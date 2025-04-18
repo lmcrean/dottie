@@ -10,13 +10,13 @@ function TeardropBody() {
     shape.push(new THREE.Vector2(0, 0))
     shape.push(new THREE.Vector2(0.1, 0.1))
     shape.push(new THREE.Vector2(0.25, 0.3))
-    shape.push(new THREE.Vector2(0.5, 0.6))
-    shape.push(new THREE.Vector2(0.65, 0.9))
-    shape.push(new THREE.Vector2(0.75, 1.2))
-    shape.push(new THREE.Vector2(0.7, 1.4))
-    shape.push(new THREE.Vector2(0.5, 1.6))
+    shape.push(new THREE.Vector2(0.5, 0.68))
+    shape.push(new THREE.Vector2(0.65, 0.99))
+    shape.push(new THREE.Vector2(0.7, 1.35))
+    shape.push(new THREE.Vector2(0.65, 1.55))
+    shape.push(new THREE.Vector2(0.5, 1.7))
     shape.push(new THREE.Vector2(0.3, 1.7))
-    shape.push(new THREE.Vector2(0, 1.75))
+    shape.push(new THREE.Vector2(0, 1.7))
     return shape
   }, [])
 
@@ -38,7 +38,7 @@ function TeardropBody() {
       <mesh rotation={[Math.PI, 0, 0]}>
         <latheGeometry args={[points, 64]} />
         <meshStandardMaterial 
-          color="#A03C7D" 
+          color="#ff1494" 
           emissive="#ff4db8"
           emissiveIntensity={0.2}
           roughness={1.0}
@@ -91,7 +91,7 @@ function TeardropBody() {
         <mesh position={[-0.4, -0.05, 0.05]}>
           <sphereGeometry args={[0.12, 32, 32]} />
           <meshStandardMaterial 
-            color="#ff9dbb" 
+            color="#ff90bb" 
             transparent={true}
             opacity={0.3}
             roughness={1.0}
@@ -103,7 +103,7 @@ function TeardropBody() {
         <mesh position={[0.4, -0.05, 0.05]}>
           <sphereGeometry args={[0.12, 32, 32]} />
           <meshStandardMaterial 
-            color="#ff9dbb" 
+            color="#ff90bb" 
             transparent={true}
             opacity={0.3}
             roughness={1.0}
