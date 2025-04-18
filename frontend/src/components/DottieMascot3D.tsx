@@ -47,7 +47,7 @@ function TeardropBody() {
               metalness={0}
             />
           </mesh>
-          <mesh position={[0, 0, 0.08]}>
+          <mesh position={[0.02, -0.02, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
             <meshStandardMaterial color="black" />
           </mesh>
@@ -65,7 +65,7 @@ function TeardropBody() {
               metalness={0}
             />
           </mesh>
-          <mesh position={[0, 0, 0.08]}>
+          <mesh position={[0.02, -0.02, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
             <meshStandardMaterial color="black" />
           </mesh>
