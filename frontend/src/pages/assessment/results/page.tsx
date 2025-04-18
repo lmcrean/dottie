@@ -583,7 +583,7 @@ export default function ResultsPage() {
           </CardContent>
         </Card>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 hidden">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Button
             className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-6 text-lg"
             onClick={() => setIsChatOpen(true)}
@@ -611,7 +611,7 @@ export default function ResultsPage() {
             </Button>
           </Link>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 hidden">
             <Button
               variant="outline"
               className="flex items-center gap-2 px-6 py-6 text-lg"
