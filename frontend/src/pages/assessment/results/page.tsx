@@ -10,6 +10,7 @@ import {
   Share2,
   Download,
 } from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
 import { FullscreenChat } from "@/src/pages/chat/FullscreenChat";
@@ -281,6 +282,7 @@ export default function ResultsPage() {
       );
       decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
 
+
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
         determinedPattern = "heavy";
@@ -459,9 +461,6 @@ export default function ResultsPage() {
             })) || [],
         },
       };
-
-
-
       console.log("Sending assessment data:", assessment);
 
       // Use the postSend function
@@ -481,7 +480,6 @@ export default function ResultsPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
           <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </div>
@@ -637,7 +635,7 @@ export default function ResultsPage() {
             </Button>
           </Link>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 hidden">
             <Button
               variant="outline"
               className="flex items-center gap-2 px-6 py-6 text-lg"
