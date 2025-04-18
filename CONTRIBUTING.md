@@ -34,6 +34,11 @@ It may be worth reaching out to that peer and offering to contribute an isolated
 - be sure to **include screenshots and or screen recordings** of the new outcome before opening the issue.
 - This will help the moderators quickly understand what progress has been made.
 
+
+example below with # feature and screenshot:
+
+![image](https://github.com/user-attachments/assets/2dda26a6-2306-4793-b4c9-51da1057d61f)
+
 # How to open a new issue
 
 if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/dottie/issues)
