@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
-import { MessageCircle, DotIcon, Save, Share2, Download } from "lucide-react";
+import { MessageCircle, Save, Share2, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
 import { toast } from "sonner";
@@ -455,7 +455,6 @@ export default function ResultsPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
           <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </div>
