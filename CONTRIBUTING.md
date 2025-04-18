@@ -1,25 +1,44 @@
-# contributing
+# Contributing
 
-![image](https://github.com/user-attachments/assets/50c77f47-aa35-4da3-b990-f4d7f50032a9)
+We use a Draft Pull Request workflow to manage ongoing contributions effectively
 
-![image](https://github.com/user-attachments/assets/13669298-59e7-4622-ac5d-337bb94b928f)
+![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
 
-1. assert your presence by converting your pull request to `draft `
-2. be sure to **include screenshots and or screen recordings** of the new outcome
-3. **convert the PR to an open pull request when ready.**
 
-# what to check before contributing
+# How to contribute a pull request
 
-1. Issues Tab: check if someone commented on the issue already
-2. Pull Requests Tab: check the drafts
+1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab
+2. submit an initial commit and convert to a `pull request`
+3. convert your pull request to `draft` (illustration below)
+4. reference the existing issue with the # feature e.g. `#134`.
+5. **convert the PR to an open pull request when ready!**
 
-It may be worth reaching out to a peer in either of these categories and offering to contribute an isolated issue to their branch
+<details>
+<summary>
+  click here: how to draft a pull request
+</summary>
 
-# waiting for Pull Request review
+  ![image](https://github.com/user-attachments/assets/50c77f47-aa35-4da3-b990-f4d7f50032a9)
 
-- at time of writing PR board is being checked once daily (17th April 2025)
-- from May 2025 this is will be sustained as a weekly occurence
-- be sure to include **include screenshots and or screen recordings** of new outcome to speed up this process
+</details>
+
+# What to check before contributing a pull request
+
+1. [Issues Tab](https://github.com/lmcrean/dottie/issues): check if someone commented on the issue already
+2. [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts
+
+It may be worth reaching out to that peer and offering to contribute an isolated issue to their branch
+
+# Including Screenshots
+
+- be sure to **include screenshots and or screen recordings** of the new outcome before opening the issue.
+- This will help the moderators quickly understand what progress has been made.
+
+# How to open a new issue
+
+if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/dottie/issues)
+
+- please add labels! This helps newcomers in particular understand the codebase
 
 # join our discord channel 
 
