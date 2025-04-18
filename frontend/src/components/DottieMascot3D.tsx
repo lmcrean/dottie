@@ -24,7 +24,13 @@ function TeardropBody() {
       {/* Main body */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <latheGeometry args={[points, 64]} />
-        <meshStandardMaterial color="#A03C7D" />
+        <meshStandardMaterial 
+          color="#A03C7D" 
+          emissive="#ff4db8"
+          emissiveIntensity={0.2}
+          roughness={0.3}
+          metalness={0.1}
+        />
       </mesh>
 
       {/* Eyes */}
@@ -33,7 +39,12 @@ function TeardropBody() {
         <group position={[-0.25, 0, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
-            <meshStandardMaterial color="white" />
+            <meshStandardMaterial 
+              color="white" 
+              emissive="white"
+              emissiveIntensity={0.3}
+              roughness={0.2}
+            />
           </mesh>
           <mesh position={[0, 0, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
@@ -45,7 +56,12 @@ function TeardropBody() {
         <group position={[0.25, 0, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
-            <meshStandardMaterial color="white" />
+            <meshStandardMaterial 
+              color="white" 
+              emissive="white"
+              emissiveIntensity={0.3}
+              roughness={0.2}
+            />
           </mesh>
           <mesh position={[0, 0, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
@@ -68,16 +84,19 @@ function TeardropBody() {
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <pointLight position={[10, 10, 10]} intensity={2} />
-      <pointLight position={[-10, 5, 10]} intensity={1.5} color="#ffffff" />
-      <directionalLight position={[0, 0, 5]} intensity={1.2} />
+      <ambientLight intensity={2} />
+      <pointLight position={[10, 10, 10]} intensity={4} />
+      <pointLight position={[-10, 5, 10]} intensity={3} color="#ffffff" />
+      <directionalLight position={[0, 0, 5]} intensity={3} />
       <spotLight 
         position={[0, 5, 5]} 
         angle={0.6} 
         penumbra={1} 
-        intensity={0.8} 
+        intensity={2.5} 
         castShadow 
+      />
+      <hemisphereLight 
+        args={["#ffffff", "#ff8ddb", 2]}
       />
       <TeardropBody />
       <OrbitControls enableZoom={false} enablePan={false} />
