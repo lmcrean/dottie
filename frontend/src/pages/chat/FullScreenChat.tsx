@@ -5,6 +5,7 @@ import { ScrollArea } from "@/src/components/ui/!to-migrate/scroll-area";
 import { Send, Loader2, X, Minimize2 } from "lucide-react";
 import { getAIFeedback } from "@/src/services/ai";
 import axios from "axios";
+import getHistory from "@/src/api/message/requests/getHistory";
 
 interface FullscreenChatProps {
   onClose: () => void;
@@ -36,21 +37,15 @@ export function FullscreenChat({
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get("/api/chat/history");
-        setMessages(response.data);
+        const response = await getHistory();
+        console.log(response);
+        setMessages(response);
       } catch (error) {
         console.error("Error fetching chat history:", error);
       }
     };
     fetchHistory();
   }, []);
-
-  // useEffect(() => {
-  //   if (initialMessage && messages.length === 0) {
-  //     setMessages([{ role: "user", content: initialMessage }]);
-  //     handleSend(initialMessage);
-  //   }
-  // }, [initialMessage]);
 
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
@@ -92,76 +87,76 @@ export function FullscreenChat({
   };
 
   return (
-    <div className="fixed top-24 bg-white flex flex-col w-full h-[90%] rounded-lg shadow-lg border border-gray-200 z-50 animate-fadeIn mx-auto">
-      <header className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white">
-        <h1 className="text-lg font-bold text-pink-500">
-          Chat with Dottie Full
-        </h1>
-        <div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsFullscreen(false)}
-            className="rounded-full hover:bg-pink-100"
-          >
-            <Minimize2 className="h-4 w-4 text-pink-500" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="rounded-full hover:bg-pink-100"
-          >
-            <X className="h-4 w-4 text-pink-500" />
-          </Button>
-        </div>
-      </header>
-      <div className="flex flex-col flex-1">
-        <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-          <div className="space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                } animate-fadeIn`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-xl p-3 ${
-                    message.role === "user"
-                      ? "bg-pink-500 text-white"
-                      : "bg-gray-50 text-gray-900 border border-gray-100"
-                  }`}
-                >
-                  {message.content}
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start animate-fadeIn">
-                <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                  <Loader2 className="h-4 w-4 animate-spin text-pink-500" />
-                </div>
-              </div>
-            )}
+    <div className="fixed inset-0 bg-white flex flex-col z-50 w-full ">
+      <div className="container max-w-6xl mx-auto flex flex-col h-full border border-gray-200 rounded-lg shadow-lg p-0">
+        <header className="flex items-center justify-between border-b bg-gradient-to-r from-pink-50 to-white p-4">
+          <h1 className="text-lg font-bold text-pink-500">Chat with Dottie</h1>
+          <div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsFullscreen(false)}
+              className="rounded-full hover:bg-pink-100"
+            >
+              <Minimize2 className="h-4 w-4 text-pink-500" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="rounded-full hover:bg-pink-100"
+            >
+              <X className="h-4 w-4 text-pink-500" />
+            </Button>
           </div>
-        </ScrollArea>
-        <div className="flex gap-2 p-4 border-t bg-white">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            disabled={isLoading}
-            className="rounded-full border-gray-200 focus:border-pink-300 focus:ring-pink-200"
-          />
-          <Button
-            onClick={() => handleSend()}
-            disabled={isLoading}
-            className="rounded-full bg-pink-500 hover:bg-pink-600 text-white"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
+        </header>
+        <div className="flex flex-col flex-1">
+          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+            <div className="space-y-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  } animate-fadeIn`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-xl p-3 ${
+                      message.role === "user"
+                        ? "bg-pink-500 text-white"
+                        : "bg-gray-50 text-gray-900 border border-gray-100"
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start animate-fadeIn">
+                  <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
+                    <Loader2 className="h-4 w-4 animate-spin text-pink-500" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+          <div className="flex gap-2 p-4 border-t bg-white">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              disabled={isLoading}
+              className="rounded-full border-gray-200 focus:border-pink-300 focus:ring-pink-200"
+            />
+            <Button
+              onClick={() => handleSend()}
+              disabled={isLoading}
+              className="rounded-full bg-pink-500 hover:bg-pink-600 text-white"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
