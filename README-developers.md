@@ -50,12 +50,15 @@ When integrating new API features, ensure consistency across the **backend route
 ### Example: `GET /user`
 
 **Backend**
+
 1. Route: `backend/routes/user/get-user/route.js`
 2. Controller: `backend/routes/user/get-user/controller.js`
 
 **Frontend**
+
 3. API Request: `frontend/src/api/user/requests/getCurrentUser/Request.ts`
 4. UI Test-Page: `frontend/src/test_page/test-endpoint-table/user/get-user-me/EndpointRow.tsx`
+
 
 > ✅ All successful backend requests will be reflected in the `Developer Mode` UI, accessible via the bottom-right button.
 
