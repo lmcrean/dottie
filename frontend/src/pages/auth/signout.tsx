@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/context/AuthContext';
@@ -6,9 +6,12 @@ import { useAuth } from '@/src/context/AuthContext';
 export default function SignOut() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const hasRun = useRef(false);
 
   useEffect(() => {
     const performSignOut = async () => {
+      if (hasRun.current) return;
+      hasRun.current = true;
       try {
         // Call the sign-out endpoint
         await logout();

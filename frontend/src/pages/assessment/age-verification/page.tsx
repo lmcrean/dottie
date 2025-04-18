@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import UserIcon from "@/src/components/navigation/UserIcon"
 import { Button } from "@/src/components/ui/!to-migrate/button"
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
 import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, DotIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
+import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
+import { ChevronLeft, ChevronRight, DotIcon } from "lucide-react"
+import { useState } from "react"
+import { Link } from "react-router-dom"
 import PageTransition from "../page-transitions"
 
 export default function AgeVerificationPage() {
@@ -94,8 +94,8 @@ export default function AgeVerificationPage() {
           </Link>
 
           <Link to={selectedAge ? "/assessment/cycle-length" : "#"}>
-            <Button 
-              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`} 
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${selectedAge ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
               disabled={!selectedAge}
             >
               Continue

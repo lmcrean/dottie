@@ -154,7 +154,7 @@ export function generateDefaultAssessment(): AssessmentData {
   return {
     age: '25_34',
     cycleLength: '26_30',
-    periodDuration: '4_5',
+    periodDuration: '4-5',
     flowHeaviness: 'moderate',
     painLevel: 'moderate',
     symptoms: {
@@ -171,8 +171,8 @@ export function generateDefaultAssessment(): AssessmentData {
 export function generateSevereAssessment(): AssessmentData {
   return {
     age: '25_34',
-    cycleLength: '21_25',
-    periodDuration: '6_7',
+    cycleLength: '21-25',
+    periodDuration: '6-7',
     flowHeaviness: 'heavy',
     painLevel: 'severe',
     symptoms: {

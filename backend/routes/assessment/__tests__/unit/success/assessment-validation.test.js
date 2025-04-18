@@ -9,7 +9,7 @@ describe('Assessment Validation - Success Cases', () => {
       assessmentData: {
         age: "18_24",
         cycleLength: "26_30",
-        periodDuration: "4_5",
+        periodDuration: "4-5",
         flowHeaviness: "moderate",
         painLevel: "moderate",
         symptoms: {

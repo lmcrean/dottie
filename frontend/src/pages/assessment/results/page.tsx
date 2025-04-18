@@ -265,7 +265,7 @@ export default function ResultsPage() {
     // Q1: Is cycle length between 21-45 days?
     const isCycleLengthNormal = !(
       containsAny(storedCycleLength, ["irregular"]) ||
-      containsAny(storedCycleLength, ["less than 21", "<21"]) ||
+      containsAny(storedCycleLength, ["less than 21", "<21", "less-than-21"]) ||
       containsAny(storedCycleLength, ["more than 45", ">45", "45+"])
     );
     decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
@@ -276,16 +276,10 @@ export default function ResultsPage() {
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !containsAny(storedPeriodDuration, [
-        "more than 7",
-        ">7",
-        "8+",
-        "8 days",
-        "8-plus",
-      ]);
-      decisionPath.push(
-        `Q2: Period duration normal? ${isPeriodDurationNormal}`
+      const isPeriodDurationNormal = !(
+        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
       );
+      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
 
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
@@ -293,10 +287,9 @@ export default function ResultsPage() {
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !containsAny(storedFlowLevel, [
-          "heavy",
-          "very heavy",
-        ]);
+        const isFlowNormal = !(
+          containsAny(storedFlowLevel, ["heavy", "very heavy"])
+        );
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
 
         if (!isFlowNormal) {
@@ -305,10 +298,9 @@ export default function ResultsPage() {
           decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
         } else {
           // Q4: Is menstrual pain none to moderate?
-          const isPainNormal = !containsAny(storedPainLevel, [
-            "severe",
-            "debilitating",
-          ]);
+          const isPainNormal = !(
+            containsAny(storedPainLevel, ["severe", "debilitating"])
+          );
           decisionPath.push(`Q4: Pain normal? ${isPainNormal}`);
 
           if (!isPainNormal) {
@@ -322,48 +314,23 @@ export default function ResultsPage() {
             if (containsAny(storedCyclePredictable, ["no", "false"])) {
               // O5: Developing Pattern - cycles not predictable
               determinedPattern = "developing";
-              decisionPath.push(
-                `O5: Assigning pattern = "developing" (explicitly not predictable)`
-              );
+              decisionPath.push(`O5: Assigning pattern = "developing" (explicitly not predictable)`);
             } else if (containsAny(storedCyclePredictable, ["yes", "true"])) {
               // O4: Regular Menstrual Cycles - cycles are predictable
               determinedPattern = "regular";
-              decisionPath.push(
-                `O4: Assigning pattern = "regular" (explicitly predictable)`
-              );
+              decisionPath.push(`O4: Assigning pattern = "regular" (explicitly predictable)`);
             } else {
               // We don't have explicit predictability data, so infer based on age
-              decisionPath.push(
-                `No explicit predictability data, inferring from age: ${storedAge}`
-              );
+              decisionPath.push(`No explicit predictability data, inferring from age: ${storedAge}`);
               // If age is adolescent (12-17), assume developing, otherwise assume regular
-              if (
-                storedAge &&
-                containsAny(storedAge, [
-                  "12-14",
-                  "15-17",
-                  "13-17",
-                  "12",
-                  "13",
-                  "14",
-                  "15",
-                  "16",
-                  "17",
-                  "teen",
-                  "adolescent",
-                ])
-              ) {
+              if (storedAge && containsAny(storedAge, ["12-14", "15-17", "13-17", "12", "13", "14", "15", "16", "17", "teen", "adolescent"])) {
                 // O5: Developing Pattern
                 determinedPattern = "developing";
-                decisionPath.push(
-                  `O5: Assigning pattern = "developing" (based on adolescent age)`
-                );
+                decisionPath.push(`O5: Assigning pattern = "developing" (based on adolescent age)`);
               } else {
                 // O4: Regular Menstrual Cycles
                 determinedPattern = "regular";
-                decisionPath.push(
-                  `O4: Assigning pattern = "regular" (default for non-adolescent)`
-                );
+                decisionPath.push(`O4: Assigning pattern = "regular" (default for non-adolescent)`);
               }
             }
           }
@@ -375,6 +342,7 @@ export default function ResultsPage() {
     console.log("Determined pattern:", determinedPattern);
     setPattern(determinedPattern);
   }, []);
+
 
   const patternInfo = patternData[pattern];
 
@@ -472,29 +440,27 @@ export default function ResultsPage() {
       const assessment: Omit<Assessment, "id"> = {
         userId: "", // This will be set by the backend
         createdAt: new Date().toISOString(),
-        assessmentData: {
-          userId: "", // This will be set by the backend
-          createdAt: new Date().toISOString(),
-          assessmentData: {
-            date: new Date().toISOString(),
-            pattern,
-            age,
-            cycleLength,
-            periodDuration: periodDuration || "Not provided",
-            flowHeaviness: flowLevel,
-            painLevel: painLevel || "Not provided",
-            symptoms: {
-              physical: symptoms || [],
-              emotional: [],
-            },
-            recommendations:
-              patternInfo?.recommendations?.map((rec) => ({
-                title: rec.title,
-                description: rec.description,
-              })) || [],
+        assessment_data: {
+          date: new Date().toISOString(),
+          pattern,
+          age,
+          cycleLength,
+          periodDuration: periodDuration || "Not provided",
+          flowHeaviness: flowLevel,
+          painLevel: painLevel || "Not provided",
+          symptoms: {
+            physical: symptoms || [],
+            emotional: [],
           },
+          recommendations:
+            patternInfo?.recommendations?.map((rec) => ({
+              title: rec.title,
+              description: rec.description,
+            })) || [],
         },
       };
+
+
 
       console.log("Sending assessment data:", assessment);
 

@@ -188,9 +188,9 @@ export async function deleteAssessment(request, token, userId, assessmentId) {
  */
 export function generateDefaultAssessment() {
   return {
-    age: '25_34',
-    cycleLength: '26_30',
-    periodDuration: '4_5',
+    age: '25-34',
+    cycleLength: '26-30',
+    periodDuration: '4-5',
     flowHeaviness: 'moderate',
     painLevel: 'moderate',
     symptoms: {
@@ -206,9 +206,9 @@ export function generateDefaultAssessment() {
  */
 export function generateSevereAssessment() {
   return {
-    age: '25_34',
-    cycleLength: '21_25',
-    periodDuration: '6_7',
+    age: '25-34',
+    cycleLength: '21-25',
+    periodDuration: '6-7',
     flowHeaviness: 'heavy',
     painLevel: 'severe',
     symptoms: {

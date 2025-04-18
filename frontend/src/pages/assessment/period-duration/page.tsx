@@ -112,6 +112,7 @@ export default function PeriodDurationPage() {
           </Card>
         </div>
 
+
         <Card className="w-full mb-8 bg-pink-50 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-6">
             <div className="flex gap-2">
