@@ -68,8 +68,17 @@ function TeardropBody() {
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.7} />
-      <pointLight position={[10, 10, 10]} intensity={1.5} />
+      <ambientLight intensity={0.8} />
+      <pointLight position={[10, 10, 10]} intensity={2} />
+      <pointLight position={[-10, 5, 10]} intensity={1.5} color="#ffffff" />
+      <directionalLight position={[0, 0, 5]} intensity={1.2} />
+      <spotLight 
+        position={[0, 5, 5]} 
+        angle={0.6} 
+        penumbra={1} 
+        intensity={0.8} 
+        castShadow 
+      />
       <TeardropBody />
       <OrbitControls enableZoom={false} enablePan={false} />
     </>
