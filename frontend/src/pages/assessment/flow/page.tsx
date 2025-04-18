@@ -44,6 +44,7 @@ export default function FlowPage() {
               <h1 className="text-xl font-bold mb-2">Question 4 of 6</h1>
               <h2 className="text-3xl font-semibold mb-1">How would you describe your menstrual flow?</h2>
               <p className="text-sm text-gray-500 mb-6">Select the option that best describes your typical flow heaviness</p>
+              <img src="/assessmentAssets/flow.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
             </div>
           </div>
 

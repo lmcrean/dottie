@@ -46,6 +46,7 @@ export default function CycleLengthPage() {
               <p className="text-sm text-gray-500 mb-6">
                 Count from the first day of one period to the first day of the next period
               </p>
+              <img src="/assessmentAssets/cycle.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
             </div>
           </div>
 

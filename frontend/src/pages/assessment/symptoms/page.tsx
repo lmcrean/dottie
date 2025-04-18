@@ -100,6 +100,7 @@ export default function SymptomsPage() {
           Select all that apply. These could occur before, during, or after your
           period.
         </p>
+        <img src="/assessmentAssets/othersymptoms.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
         </div></div>
 
         <div className="mb-6">
