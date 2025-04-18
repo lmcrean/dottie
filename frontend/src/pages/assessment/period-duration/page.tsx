@@ -44,6 +44,7 @@ export default function PeriodDurationPage() {
             <h1 className="text-xl font-bold mb-2">Question 3 of 6</h1>
             <h2 className="text-3xl font-semibold mb-1">How many days does your period typically last?</h2>
             <p className="text-sm text-gray-500 mb-6">Count the days from when bleeding starts until it completely stops</p>
+            <img src="/assessmentAssets/duration.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
            </div>
           </div>
         
