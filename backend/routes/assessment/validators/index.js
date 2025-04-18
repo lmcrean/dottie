@@ -6,7 +6,6 @@
 export function validateAssessmentData(assessment) {
   const errors = [];
   
-
   // Check for required fields
   // if (!assessment.userId) {
   //   errors.push('userId is required');
@@ -17,7 +16,14 @@ export function validateAssessmentData(assessment) {
     return { isValid: errors.length === 0, errors };
   }
   
-  const assessmentData = assessment.assessment_data;
+  // Handle both legacy and nested structures
+  let assessmentData = assessment.assessment_data;
+  
+  // Check if we have the new nested structure (assessment_data inside assessment_data)
+  if (typeof assessmentData === 'object' && assessmentData.assessment_data) {
+    assessmentData = assessmentData.assessment_data;
+  }
+  
   // console.log('Validating assessment data:', assessmentData);
   
   // Validate required assessment fields
@@ -44,6 +50,18 @@ export function validateAssessmentData(assessment) {
   
   if (assessmentData.painLevel && !isValidPainLevel(assessmentData.painLevel)) {
     errors.push('Invalid painLevel value');
+  }
+  
+  // Validate recommendations structure if present
+  if (assessmentData.recommendations && Array.isArray(assessmentData.recommendations)) {
+    for (const rec of assessmentData.recommendations) {
+      if (!rec.title || typeof rec.title !== 'string') {
+        errors.push('Each recommendation must have a title');
+      }
+      if (!rec.description || typeof rec.description !== 'string') {
+        errors.push('Each recommendation must have a description');
+      }
+    }
   }
   
   return {
