@@ -110,7 +110,7 @@ function TeardropBody() {
       {/* Cheeks */}
       <group position={[0, -0.9, 0.5]}>
         {/* Left cheek */}
-        <mesh position={[-0.4, -0.05, 0.05]}>
+        <mesh position={[-0.35, -0.07, 0.05]}>
           <sphereGeometry args={[0.12, 32, 32]} />
           <meshStandardMaterial 
             color="#ff90bb" 
@@ -122,7 +122,7 @@ function TeardropBody() {
         </mesh>
         
         {/* Right cheek */}
-        <mesh position={[0.4, -0.05, 0.05]}>
+        <mesh position={[0.35, -0.07, 0.05]}>
           <sphereGeometry args={[0.12, 32, 32]} />
           <meshStandardMaterial 
             color="#ff90bb" 
