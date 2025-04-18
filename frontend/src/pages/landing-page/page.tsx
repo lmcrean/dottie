@@ -16,7 +16,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
         >
           <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
-          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
+          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-auto" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </motion.div>
         <nav className="hidden md:flex items-center gap-6">
