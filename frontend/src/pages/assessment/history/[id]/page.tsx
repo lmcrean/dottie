@@ -82,8 +82,8 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = assessment?.assessment_data
-  if (!assessmentData) {
+  const assessmentDataWrapper = assessment?.assessment_data;
+  if (!assessmentDataWrapper) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -105,8 +105,32 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const physicalSymptoms = assessmentData.symptoms?.physical || [];
-  const emotionalSymptoms = assessmentData.symptoms?.emotional || [];
+  const assessmentData = assessmentDataWrapper.assessment_data || assessmentDataWrapper;
+  console.log("Final assessment data being used:", assessmentData);
+
+  const rawPhysicalSymptoms = assessmentData.symptoms?.physical || [];
+  const rawEmotionalSymptoms = assessmentData.symptoms?.emotional || [];
+  
+  const emotionalKeywords = ['emotional', 'mood', 'anxiety', 'depression', 'irritability', 'sensitivity'];
+  
+  const physicalSymptoms = rawPhysicalSymptoms.filter(symptom => 
+    !emotionalKeywords.some(keyword => symptom.toLowerCase().includes(keyword))
+  );
+  
+  const emotionalSymptoms = [
+    ...rawEmotionalSymptoms,
+    ...rawPhysicalSymptoms.filter(symptom => 
+      emotionalKeywords.some(keyword => symptom.toLowerCase().includes(keyword))
+    )
+  ];
+  
+  console.log("Recategorized symptoms:", {
+    originalPhysical: rawPhysicalSymptoms,
+    originalEmotional: rawEmotionalSymptoms,
+    fixedPhysical: physicalSymptoms,
+    fixedEmotional: emotionalSymptoms
+  });
+
   const recommendations = assessmentData.recommendations || [];
 
   return (
