@@ -599,7 +599,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3 w-full max-w-full">
                 <div>
                   <img
-                    src="/assets/tracktime.png"
+                    src="/assets/track-time.png"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
