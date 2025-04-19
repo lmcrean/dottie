@@ -13,7 +13,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
-import { FullscreenChat } from "@/src/pages/chat/FullscreenChat";
+import { FullscreenChat } from "@/src/pages/chat/FullScreenChat";
 import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
