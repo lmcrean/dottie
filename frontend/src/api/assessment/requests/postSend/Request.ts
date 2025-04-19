@@ -6,14 +6,22 @@ import { Assessment } from "../../types";
  * @endpoint /api/assessment/send (POST)
  */
 export const postSend = async (
-  assessmentData: Omit<Assessment, "id">
+  assessmentData: Omit<Assessment["assessmentData"]["assessment_data"], "date"> & { date?: string }
 ): Promise<Assessment> => {
   try {
-    // Send assessment data wrapped in an assessmentData property
-    // This matches the backend controller's expected structure
-    const response = await apiClient.post("/api/assessment/send", {
-      assessmentData: assessmentData,
-    });
+    // Format the data to match the backend's expected nested structure
+    const now = new Date().toISOString();
+    const formattedData = {
+      assessmentData: {
+        createdAt: now,
+        assessment_data: {
+          date: assessmentData.date || now,
+          ...assessmentData
+        }
+      }
+    };
+
+    const response = await apiClient.post("/api/assessment/send", formattedData);
     return response.data;
   } catch (error) {
     console.error("Failed to send assessment:", error);
