@@ -1,8 +1,10 @@
 // Simple script to test CORS preflight requests
 import fetch from 'node-fetch';
+import { URLS } from './test-utilities/urls.js';
 
-// Production endpoint
-const PROD_URL = 'https://dottie-backend-lmcreans-projects.vercel.app/api';
+// Production endpoints
+const PROD_URL = URLS.PROD;
+const FRONTEND_URL = URLS.PROD_FRONTEND;
 
 // Test OPTIONS preflight request
 async function testOptionsRequest(endpoint) {
@@ -12,7 +14,7 @@ async function testOptionsRequest(endpoint) {
     const response = await fetch(`${PROD_URL}${endpoint}`, {
       method: 'OPTIONS',
       headers: {
-        'Origin': 'https://dottie-lmcreans-projects.vercel.app',
+        'Origin': FRONTEND_URL,
         'Access-Control-Request-Method': 'POST',
         'Access-Control-Request-Headers': 'Content-Type, Authorization'
       }
@@ -59,6 +61,8 @@ async function testOptionsRequest(endpoint) {
 // Run tests for all critical endpoints
 async function runTests() {
   console.log('====== TESTING CORS PREFLIGHT REQUESTS ======');
+  console.log('Backend URL:', PROD_URL);
+  console.log('Frontend URL:', FRONTEND_URL);
   
   // Test authentication endpoints
   await testOptionsRequest('/auth/signup');

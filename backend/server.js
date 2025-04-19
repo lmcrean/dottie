@@ -64,9 +64,7 @@ const corsOptions = {
   origin: isDevelopment
     ? devOrigins
     : [
-        "https://dottie-health.vercel.app",
-        "https://dottie-lmcreans-projects.vercel.app",
-        "https://dottie-oi1fayiad-lmcreans-projects.vercel.app"
+        "https://dottie-lmcreans-projects.vercel.app"
       ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   credentials: true,

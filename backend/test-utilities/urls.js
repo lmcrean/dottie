@@ -1,8 +1,9 @@
 // API URLs for different test environments
 export const URLS = {
   DEV: 'http://localhost:5000',
-  PROD: 'https://dottie-backend-lmcreans-projects.vercel.app/api',
-  MOCK: 'http://localhost:5000' // Same as DEV but will trigger mock responses
+  PROD: 'https://dottie-backend.vercel.app/api',
+  MOCK: 'http://localhost:5000', // Same as DEV but will trigger mock responses
+  PROD_FRONTEND: 'https://dottie-lmcreans-projects.vercel.app' // this is the frontend url
 };
 
 // Get current environment (defaults to DEV)

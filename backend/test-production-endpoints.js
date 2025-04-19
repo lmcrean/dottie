@@ -1,8 +1,10 @@
 // Simple script to test production endpoints directly
 import fetch from 'node-fetch';
+import { URLS } from './test-utilities/urls.js';
 
-// Production endpoint
-const PROD_URL = 'https://dottie-backend-lmcreans-projects.vercel.app/api';
+// Production endpoints
+const PROD_URL = URLS.PROD;
+const FRONTEND_URL = URLS.PROD_FRONTEND;
 
 // Test signup
 async function testSignup() {
@@ -23,7 +25,7 @@ async function testSignup() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': 'https://dottie-lmcreans-projects.vercel.app'
+        'Origin': FRONTEND_URL
       },
       body: JSON.stringify(userData)
     });
@@ -69,7 +71,7 @@ async function testLogin(email, password) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': 'https://dottie-lmcreans-projects.vercel.app'
+        'Origin': FRONTEND_URL
       },
       body: JSON.stringify({ email, password })
     });
@@ -116,7 +118,7 @@ async function testGetUserDetails(token) {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Origin': 'https://dottie-lmcreans-projects.vercel.app'
+        'Origin': FRONTEND_URL
       }
     });
 
@@ -160,7 +162,7 @@ async function testOptionsRequest(endpoint) {
     const response = await fetch(`${PROD_URL}${endpoint}`, {
       method: 'OPTIONS',
       headers: {
-        'Origin': 'https://dottie-lmcreans-projects.vercel.app',
+        'Origin': FRONTEND_URL,
         'Access-Control-Request-Method': 'POST',
         'Access-Control-Request-Headers': 'Content-Type, Authorization'
       }
@@ -197,6 +199,8 @@ async function testOptionsRequest(endpoint) {
 // Run tests
 async function runTests() {
   console.log('====== TESTING PRODUCTION ENDPOINTS ======');
+  console.log('Backend URL:', PROD_URL);
+  console.log('Frontend URL:', FRONTEND_URL);
   
   // Test OPTIONS requests first
   await testOptionsRequest('/auth/signup');
