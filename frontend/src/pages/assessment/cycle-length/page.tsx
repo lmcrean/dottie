@@ -1,18 +1,52 @@
-
 "use client";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "@/src/components/ui/!to-migrate/button"
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
-import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
-import PageTransition from "../page-transitions"
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/src/components/ui/!to-migrate/button";
+import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/src/components/ui/!to-migrate/radio-group";
+import { Label } from "@/src/components/ui/!to-migrate/label";
+import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
+import UserIcon from "@/src/components/navigation/UserIcon";
+import { useQuickNavigate } from "@/src/hooks/useQuickNavigate";
 
 export default function CycleLengthPage() {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
+  const [refTarget, setRefTarget] = useState("");
+  const location = useLocation();
+  const radioRef = useRef(null);
+  const continueButtonRef = useRef(null);
+  const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (!isQuickResponse) return;
+    const options = [
+      "21-25",
+      "26-30",
+      "31-35",
+      "36-40",
+      "Irregular",
+      "I'm not sure",
+      "Other",
+    ];
+    const random = options[Math.floor(Math.random() * options.length)];
+    setRefTarget(random);
+
+    setTimeout(() => {
+      if (radioRef.current) {
+        radioRef.current.click(); // or: radioRef.current.checked = true;
+      }
+    }, 100);
+
+    setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.click();
+      }
+    }, 100);
+  }, [isQuickResponse]);
 
   const handleLengthChange = (value: string) => {
     setSelectedLength(value);
@@ -20,8 +54,7 @@ export default function CycleLengthPage() {
   };
 
   return (
-    <PageTransition>
-    <div className="flex min-h-screen flex-col  bg-gradient-to-b from-white to-pink-5">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
           <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
@@ -61,6 +94,109 @@ export default function CycleLengthPage() {
                       </Label>
                     </div>
 
+        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <CardContent className="pt-8 pb-8">
+            <RadioGroup
+              value={selectedLength || ""}
+              onValueChange={handleLengthChange}
+              className="mb-6"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="21-25"
+                    id="21-25"
+                    ref={refTarget === "21-25" ? radioRef : null}
+                  />
+                  <Label htmlFor="21-25" className="flex-1 cursor-pointer">
+                    <div className="font-medium">21-25 days</div>
+                    <p className="text-sm text-gray-500">
+                      Shorter than average
+                    </p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="26-30"
+                    id="26-30"
+                    ref={refTarget === "26-30" ? radioRef : null}
+                  />
+                  <Label htmlFor="26-30" className="flex-1 cursor-pointer">
+                    <div className="font-medium">26-30 days</div>
+                    <p className="text-sm text-gray-500">Average length</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="31-35"
+                    id="31-35"
+                    ref={refTarget === "31-35" ? radioRef : null}
+                  />
+                  <Label htmlFor="31-35" className="flex-1 cursor-pointer">
+                    <div className="font-medium">31-35 days</div>
+                    <p className="text-sm text-gray-500">Longer than average</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="36-40"
+                    id="36-40"
+                    ref={refTarget === "36-40" ? radioRef : null}
+                  />
+                  <Label htmlFor="36-40" className="flex-1 cursor-pointer">
+                    <div className="font-medium">36-40 days</div>
+                    <p className="text-sm text-gray-500">Extended cycle</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="irregular"
+                    id="irregular"
+                    ref={refTarget === "Irregular" ? radioRef : null}
+                  />
+                  <Label htmlFor="irregular" className="flex-1 cursor-pointer">
+                    <div className="font-medium">Irregular</div>
+                    <p className="text-sm text-gray-500">
+                      Varies by more than 7 days
+                    </p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="not-sure"
+                    id="not-sure"
+                    ref={refTarget === "I'm not sure" ? radioRef : null}
+                  />
+                  <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
+                    <div className="font-medium">I'm not sure</div>
+                    <p className="text-sm text-gray-500">Need help tracking</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="other"
+                    id="other"
+                    ref={refTarget === "Other" ? radioRef : null}
+                  />
+                  <Label htmlFor="other" className="flex-1 cursor-pointer">
+                    <div className="font-medium">Other</div>
+                    <p className="text-sm text-gray-500">
+                      Specify your own cycle length
+                    </p>
+                  </Label>
+                </div>
+              </div>
+            </RadioGroup>
+          </CardContent>
+        </Card>
+
+        <Card className="w-full mb-8 bg-pink-50 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
                     <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem value="26-30" id="26-30" />
                       <Label htmlFor="26-30" className="flex-1 cursor-pointer">
@@ -147,7 +283,17 @@ export default function CycleLengthPage() {
             </Button>
           </Link>
 
-          <Link to={selectedLength ? "/assessment/period-duration" : "#"}>
+          <Link
+            to={
+              selectedLength
+                ? `/assessment/period-duration${
+                    location.search.includes("mode=quickresponse")
+                      ? "?mode=quickresponse"
+                      : ""
+                  }`
+                : "#"
+            }
+          >
             <Button
               className={`flex items-center px-6 py-6 text-lg ${
                 selectedLength
@@ -155,6 +301,7 @@ export default function CycleLengthPage() {
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
               disabled={!selectedLength}
+              ref={continueButtonRef}
             >
               Continue
               <ChevronRight className="h-5 w-5 ml-2" />
@@ -163,6 +310,5 @@ export default function CycleLengthPage() {
         </div>
       </main>
     </div>
-   </PageTransition>
-  )
+  );
 }
