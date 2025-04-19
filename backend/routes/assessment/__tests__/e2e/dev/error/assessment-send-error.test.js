@@ -89,7 +89,7 @@ describe("Assessment Send Endpoint - Error Cases", { tags: ['assessment', 'dev']
       assessmentData: {
         age: 25, // Numeric instead of string
         cycleLength: "invalid_value",
-        periodDuration: "4_5",
+        periodDuration: "4-5",
         flowHeaviness: "moderate",
         painLevel: "moderate"
       }

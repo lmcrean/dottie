@@ -29,7 +29,8 @@ export default function AgeVerificationPage() {
           <div className="bg-pink-500 h-2 rounded-full w-[16%]"></div>
         </div>
 
-        <h1 className="text-xl font-bold mb-6">What is your age range?</h1>
+        <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
+        <h2 className="text-xl font-bold mb-6">What is your age range?</h2>
 
         <Card className="w-full mb-8">
           <CardContent className="pt-6">

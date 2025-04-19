@@ -28,15 +28,15 @@ export function useAssessmentResult() {
 
     // Irregular Timing Pattern (O1)
     if (cycleLength === 'irregular' || 
-        cycleLength === 'less_than_21' || 
-        cycleLength === 'more_than_35') {
+        cycleLength === 'less-than-21' || 
+        cycleLength === 'more-than-35') {
       return 'irregular';
     }
 
     // Heavy Flow Pattern (O2)
     if (flowHeaviness === 'heavy' || 
-        flowHeaviness === 'very_heavy' || 
-        periodDuration === 'more_than_7') {
+        flowHeaviness === 'very-heavy' || 
+        periodDuration === '8-plus') {
       return 'heavy';
     }
 

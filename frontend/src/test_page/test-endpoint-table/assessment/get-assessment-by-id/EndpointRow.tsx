@@ -6,18 +6,10 @@ export default function EndpointRow() {
     <BaseEndpointRow 
       method="GET"
       endpoint="/api/assessment/:id"
-      expectedOutput={{ 
-        id: "assessment-id", 
-        data: { 
-          age: "18_24", 
-          symptoms: {
-            physical: ["Bloating"],
-            emotional: ["Mood swings"]
-          }
-        }
-      }}
+      expectedOutput={{ id: "assessment-id", "userId": "user-id", "assessment_data": "{}", "createdAt": "created-date", "updatedAt": "updated-date" }}
       requiresAuth={true}
       pathParams={["id"]}
     />
   );
 } 
+

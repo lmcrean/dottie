@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import AuthLayout from "@/src/components/AuthLayout";
 import { useEffect, useState } from "react";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
+import { AxiosError } from "axios";
 
 export default function SignInPage() {
   const navigate = useNavigate();
@@ -53,25 +54,33 @@ export default function SignInPage() {
       toast.success("Successfully signed in!");
 
       // Debug: Log authentication token and user data
-      console.log('[Auth Debug] After login - localStorage items:', {
-        authToken: localStorage.getItem('authToken'),
-        refresh_token: localStorage.getItem('refresh_token'),
-        user: localStorage.getItem('user'),
-        auth_user: localStorage.getItem('auth_user')
+      console.log("[Auth Debug] After login - localStorage items:", {
+        authToken: localStorage.getItem("authToken"),
+        refresh_token: localStorage.getItem("refresh_token"),
+        user: localStorage.getItem("user"),
+        auth_user: localStorage.getItem("auth_user"),
       });
 
       // Log context values
       setTimeout(() => {
         // Log auth state after login
-        console.log('[Auth Debug] Auth context after login:', {
+        console.log("[Auth Debug] Auth context after login:", {
           isAuthenticated,
-          user
+          user,
         });
       }, 100);
 
       navigate("/assessment/age-verification");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to sign in");
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          toast.error("Unable to sign in: This user is not in our database");
+        }
+      } else if (error instanceof Error) {
+        toast.error(`Unable to sign in: ${error.message}`);
+      } else {
+        toast.error("Unable to sign in: An unknown error occurred");
+      }
     }
   };
 
@@ -112,11 +121,13 @@ export default function SignInPage() {
             isVisible={passwordVisible}
             toggleVisibility={togglePasswordVisibility}
           />
-
         </div>
 
-        <div className="flex items-center justify-end">
-          <Link to="/auth/forgot-password" className="text-sm text-pink-500 hover:text-pink-600">
+        <div className="flex items-center justify-end hidden">
+          <Link
+            to="/auth/forgot-password"
+            className="text-sm text-pink-500 hover:text-pink-600"
+          >
             Forgot your password?
           </Link>
         </div>
@@ -130,7 +141,10 @@ export default function SignInPage() {
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
           Don't have an account?{" "}
-          <Link to="/auth/sign-up" className="text-pink-500 hover:text-pink-600">
+          <Link
+            to="/auth/sign-up"
+            className="text-pink-500 hover:text-pink-600"
+          >
             Sign up
           </Link>
         </p>

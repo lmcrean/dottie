@@ -34,7 +34,7 @@ export default function PainPage() {
         </div>
 
         <h1 className="text-xl font-bold mb-2">Question 5 of 6</h1>
-        <h2 className="text-lg font-semibold mb-1">How would you rate your menstrual pain?</h2>
+        <h2 className="text-3xl font-semibold mb-1">How would you rate your menstrual pain?</h2>
         <p className="text-sm text-gray-500 mb-6">
           Select the option that best describes your typical pain level during your period
         </p>

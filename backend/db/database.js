@@ -20,41 +20,47 @@ const isVercel = process.env.VERCEL === '1';
 // Choose database based on environment
 let db;
 
-if (isProduction && isVercel) {
-  // Production environment - use Supabase
-  console.log('Using Supabase database in production');
-  
-  // Import Supabase shim
-  try {
-    const supabase = createClient(
-      'https://nooizeyjujtddtxkirof.supabase.co',
-      process.env.SUPABASE_ANON_PUBLIC
-    );
-    
-    // Import the Supabase shim
-    const supabaseModule = await import('./supabaseShim.js');
-    db = supabaseModule.default;
-  } catch (error) {
-    console.error('Error initializing Supabase:', error);
-    throw error;
-  }
-} else {
-  // Development environment - use SQLite
-  console.log('Using SQLite database in development');
-  db = knex({
-    client: 'sqlite3',
-    connection: {
-      filename: dbPath
-    },
-    useNullAsDefault: true,
-    pool: {
-      afterCreate: (conn, done) => {
-        // Enable foreign keys in SQLite
-        conn.run('PRAGMA foreign_keys = ON', done);
-      }
+async function initDB() {
+
+  if (isProduction && isVercel) {
+    // Production environment - use Supabase
+    console.log('Using Supabase database in production');
+
+    // Import Supabase shim
+    try {
+      const supabase = createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_ANON_PUBLIC
+      );
+
+      // Import the Supabase shim
+      const supabaseModule = await import('./supabaseShim.js');
+      db = supabaseModule.default;
+    } catch (error) {
+      console.error('Error initializing Supabase:', error);
+      throw error;
     }
-  });
+  } else {
+    // Development environment - use SQLite
+    console.log('Using SQLite database in development');
+    db = knex({
+      client: 'sqlite3',
+      connection: {
+        filename: dbPath
+      },
+      useNullAsDefault: true,
+      pool: {
+        afterCreate: (conn, done) => {
+          // Enable foreign keys in SQLite
+          conn.run('PRAGMA foreign_keys = ON', done);
+        }
+      }
+    });
+  }
+  return db;
 }
 
-export { db };
-export default db; 
+
+const dbInstance = await initDB();
+export { dbInstance as db }
+export default dbInstance;

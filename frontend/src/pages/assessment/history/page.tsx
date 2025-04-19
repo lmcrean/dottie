@@ -7,7 +7,11 @@ import { toast } from "sonner";
 import PageTransition from "../page-transitions";
 
 export default function HistoryPage() {
+  // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
+  // hack for type script errors
+  // const [assessments, setAssessments] = useState<any[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +26,7 @@ export default function HistoryPage() {
     return value
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+      .join("-");
   };
 
   const formatDate = (dateString: string | undefined): string => {
@@ -42,6 +46,7 @@ export default function HistoryPage() {
       try {
         const data = await assessmentApi.list();
         setAssessments(data);
+        console.log("Fetched assessments:", data);
         setError(null);
       } catch (error) {
         console.error("Error fetching assessments:", error);
@@ -75,7 +80,7 @@ export default function HistoryPage() {
             Assessment History
           </h1>
           <Link
-            to="/assessment"
+            to="/assessment/age-verification"
             className="inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
           >
             New Assessment
@@ -116,7 +121,7 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-4">
             {assessments.map((assessment) => {
-              const data = assessment?.assessmentData?.assessmentData;
+              const data = assessment?.assessment_data; 
 
               return (
                 <Link

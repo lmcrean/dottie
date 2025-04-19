@@ -72,9 +72,9 @@ At this point, recommendations are handled on the frontend with `if-else` statem
 {
   "userId": "user-id",
   "assessmentData": {
-    "age": "15_17",  // Options: "under_12", "12_14", "15_17", "18_24", "over_24"
+    "age": "15-17",  // Options: "under_12", "12_14", "15_17", "18_24", "over_24"
     "cycleLength": "26_30",  // Options: "less_than_21", "21_25", "26_30", "31_35", "more_than_35", "irregular"
-    "periodDuration": "4_5",  // Options: "1_3", "4_5", "6_7", "more_than_7"
+    "periodDuration": "4-5",  // Options: "1_3", "4_5", "6_7", "more_than_7"
     "flowHeaviness": "moderate",  // Options: "light", "moderate", "heavy", "very_heavy"
     "painLevel": "moderate",  // Options: "none", "mild", "moderate", "severe", "debilitating"
     "symptoms": {

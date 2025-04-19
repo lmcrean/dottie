@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/fb1640d0-8b7c-4bc9-9310-eb2c1905acc2)
+
+
 # Dottie: Your Period Bestie
 
 ## Mission
@@ -8,6 +11,41 @@ A world where young people understand their bodies, recognize menstrual health a
 
 ## What is Dottie?
 Dottie is an AI-powered symptom checker designed specifically for adolescent girls and their caregivers to distinguish between normal and abnormal menstruation patterns, delivered through a friendly, approachable digital mascot.
+
+# UI Screenshots
+
+## Authentication
+**Login Screen**  
+![Login Screen](https://github.com/user-attachments/assets/3d5e66b9-c662-497a-a03e-eded06cf9259)
+
+**Signup Screen**  
+![Signup Screen](https://github.com/user-attachments/assets/c22703d5-5cde-493c-b4fa-2be42252e3fe)
+
+
+## Assessment
+**Question Flow**  
+![Question 1](https://github.com/user-attachments/assets/4d201526-47c6-4742-a1dc-8bf469e25372)
+![Question 2](https://github.com/user-attachments/assets/218177ba-bf0d-47a0-9c01-472439934567)
+![Question 3](https://github.com/user-attachments/assets/b567f30e-ab18-41f6-bca4-feab96ab5d7d)
+![Question 4](https://github.com/user-attachments/assets/e2d6184a-4868-4a78-b6ad-b539114fae6d)
+![Question 5](https://github.com/user-attachments/assets/190892a0-f62d-403a-9f03-506c979a493a)
+![Question 6](https://github.com/user-attachments/assets/2e96b4e1-b35a-4576-a256-3d44650aaa33)
+
+**Results Page**  
+![Assessment Results](https://github.com/user-attachments/assets/de364e8a-16ea-4881-a136-e75d532068e5)
+
+## AI Chat
+**Chat with Dottie**  
+![Chat Conversation](https://github.com/user-attachments/assets/59756778-2cfc-48fc-b864-a933b1af49cf)
+
+
+## User (Profile Icon)
+**Profile Overview**  
+![Profile Main](https://github.com/user-attachments/assets/d1141958-a3fa-4c50-aa97-47f8e8dd7d72)
+
+**Settings**  
+![Profile Settings](https://github.com/user-attachments/assets/39378412-b8b0-4321-a8c1-57919c7cf706)
+
 
 ## Problem Statement
 
@@ -104,29 +142,20 @@ PORT=5050
 ### Getting Started
 
 #### Backend Setup
-1. Navigate to the backend directory:
+
+1. Navigate to the backend directory and install dependencies, return to root:
    ```
-   cd backend
+   cd backend; npm install; cd ..
    ```
 
-2. Install dependencies:
+2. Navigated to the frontend directory and build dependencies:
    ```
-   npm install
-   ```
-
-3. Initialize the database:
-   ```
-   npm run db:init
+   cd frontend; npm install; npm run build
    ```
 
-4. Run the development server:
+3. Run frontend (activates backend by itself with concurrently)
    ```
    npm run dev
-   ```
-
-5. Run tests:
-   ```
-   npm test
    ```
 
 ### Technologies Used

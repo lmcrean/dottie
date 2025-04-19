@@ -62,7 +62,7 @@ export default function FlowPage() {
         <UserIcon />
       </header>
 
-      <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
+      <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm text-gray-500">67% Complete</div>
         </div>
@@ -195,9 +195,90 @@ export default function FlowPage() {
                   lighter flow.
                 </p>
               </div>
+        <div className="flex flex-col lg:flex-row gap-8 mb-8">
+          <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
+            <div className="flex flex-col gap-3">
+              <h1 className="text-xl font-bold mb-2">Question 4 of 6</h1>
+              <h2 className="text-3xl font-semibold mb-1">How would you describe your menstrual flow?</h2>
+              <p className="text-sm text-gray-500 mb-6">Select the option that best describes your typical flow heaviness</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="pt-8 pb-8">
+                <RadioGroup value={selectedFlow || ""} onValueChange={handleFlowChange} className="mb-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                      <RadioGroupItem value="light" id="light" />
+                      <Label htmlFor="light" className="flex-1 cursor-pointer">
+                        <div className="font-medium">Light</div>
+                        <p className="text-sm text-gray-500">Minimal bleeding, may only need panty liners</p>
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                      <RadioGroupItem value="moderate" id="moderate" />
+                      <Label htmlFor="moderate" className="flex-1 cursor-pointer">
+                        <div className="font-medium">Moderate</div>
+                        <p className="text-sm text-gray-500">Regular bleeding, requires normal protection</p>
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                      <RadioGroupItem value="heavy" id="heavy" />
+                      <Label htmlFor="heavy" className="flex-1 cursor-pointer">
+                        <div className="font-medium">Heavy</div>
+                        <p className="text-sm text-gray-500">Substantial bleeding, requires frequent changes</p>
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                      <RadioGroupItem value="very-heavy" id="very-heavy" />
+                      <Label htmlFor="very-heavy" className="flex-1 cursor-pointer">
+                        <div className="font-medium">Very Heavy</div>
+                        <p className="text-sm text-gray-500">Excessive bleeding, may soak through protection</p>
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                      <RadioGroupItem value="varies" id="varies" />
+                      <Label htmlFor="varies" className="flex-1 cursor-pointer">
+                        <div className="font-medium">It varies</div>
+                        <p className="text-sm text-gray-500">Changes throughout your period or between cycles</p>
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                      <RadioGroupItem value="not-sure" id="not-sure" />
+                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
+                        <div className="font-medium">I'm not sure</div>
+                        <p className="text-sm text-gray-500">Need help determining flow heaviness</p>
+                      </Label>
+                    </div>
+                  </div>
+                </RadioGroup>
+              </CardContent>
+            </Card>
+        </div>
+
+          <Card className="w-full mb-8 bg-pink-50 border-pink-100">
+            <CardContent className="pt-6">
+              <div className="flex gap-2">
+                <InfoIcon className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">About Flow Heaviness</h3>
+                  <p className="text-sm text-gray-600">
+                    Most people lose 30-80ml of blood during their period. Menstrual flow that consistently soaks through
+                    a pad/tampon every hour for several hours may indicate heavy menstrual bleeding (menorrhagia).
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Flow often varies throughout your period, typically starting lighter, becoming heavier in the middle,
+                    and ending with lighter flow.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
         <p className="text-xs text-center text-gray-500 mb-4">
           Your data is private and secure. Dottie does not store your personal
@@ -242,5 +323,6 @@ export default function FlowPage() {
         </div>
       </main>
     </div>
+  </PageTransition>
   );
 }
