@@ -16,6 +16,7 @@ export default function HistoryPage() {
   const [error, setError] = useState<string | null>(null);
 
   const formatValue = (value: string | undefined): string => {
+    console.log("formatValue called with:", value);
     if (!value) return "Not provided";
 
     if (value === "not-sure") return "Not sure";
@@ -30,6 +31,7 @@ export default function HistoryPage() {
   };
 
   const formatDate = (dateString: string | undefined): string => {
+    console.log("formatDate called with:", dateString);
     if (!dateString) return "Unknown date";
 
     try {
@@ -37,6 +39,7 @@ export default function HistoryPage() {
       if (!isValid(date)) return "Invalid date";
       return format(date, "MMM d, yyyy");
     } catch (error) {
+      console.error("Error parsing date:", dateString, error);
       return "Invalid date";
     }
   };
@@ -45,8 +48,22 @@ export default function HistoryPage() {
     const fetchAssessments = async () => {
       try {
         const data = await assessmentApi.list();
+        console.log("Fetched assessments (raw):", data);
+        
+        // Debug each assessment's structure
+        if (data && data.length > 0) {
+          data.forEach((assessment, index) => {
+            console.log(`Assessment ${index + 1} structure:`, {
+              id: assessment.id,
+              user_id: assessment.user_id,
+              created_at: assessment.created_at,
+              hasAssessmentData: !!assessment.assessment_data,
+              assessmentDataKeys: assessment.assessment_data ? Object.keys(assessment.assessment_data) : 'none'
+            });
+          });
+        }
+        
         setAssessments(data);
-        console.log("Fetched assessments:", data);
         setError(null);
       } catch (error) {
         console.error("Error fetching assessments:", error);
@@ -120,8 +137,17 @@ export default function HistoryPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {assessments.map((assessment) => {
-              const data = assessment?.assessment_data; 
+            {assessments.map((assessment, index) => {
+              const data = assessment?.assessment_data;
+              console.log(`Rendering assessment ${index + 1}:`, {
+                id: assessment.id,
+                data: data,
+                hasAssessmentData: !!data,
+                pattern: data?.pattern,
+                date: data?.date,
+                age: data?.age,
+                cycleLength: data?.cycleLength
+              });
 
               return (
                 <Link
