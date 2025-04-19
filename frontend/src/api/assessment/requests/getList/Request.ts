@@ -1,6 +1,7 @@
 import { apiClient } from "../../../core/apiClient";
 import { Assessment } from "../../types";
 import axios, { AxiosError } from "axios";
+import { snakeToCamel } from "../../../utils";
 
 /**
  * Get list of all assessments for the current user
@@ -13,7 +14,12 @@ export const getList = async (): Promise<Assessment[]> => {
     const response = await apiClient.get("/api/assessment/list");
     console.log("Raw assessment response data:", response.data);
     console.log("Assessment response status:", response.status);
-    return response.data;
+    
+    // Transform the response to match the expected format
+    const transformedData = snakeToCamel(response.data);
+    console.log("Transformed assessment list data:", transformedData);
+    
+    return transformedData;
   } catch (error) {
     console.error("Failed to get assessments:", error);
     if (axios.isAxiosError(error)) {

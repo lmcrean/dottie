@@ -1,6 +1,7 @@
 import { apiClient } from "../../../core/apiClient";
 import { Assessment } from "../../types";
 import { getUserData } from "../../../core/tokenManager";
+import { snakeToCamel } from "../../../utils";
 
 /**
  * Get assessment by ID
@@ -27,7 +28,18 @@ export const getById = async (id: string): Promise<Assessment> => {
       assessmentDataKeys: response.data.assessment_data ? Object.keys(response.data.assessment_data) : 'none'
     });
     
-    return response.data;
+    // Transform the response to match the expected format
+    const transformedData = snakeToCamel(response.data);
+    
+    console.log("Transformed assessment data:", transformedData);
+    console.log("Transformed data structure:", {
+      keys: Object.keys(transformedData),
+      hasAssessmentData: !!transformedData.assessmentData,
+      assessmentDataType: typeof transformedData.assessmentData,
+      assessmentDataKeys: transformedData.assessmentData ? Object.keys(transformedData.assessmentData) : 'none'
+    });
+    
+    return transformedData;
   } catch (error: any) {
     console.error('Failed to get assessment:', error);
     console.log("Error details:", error.response ? {
