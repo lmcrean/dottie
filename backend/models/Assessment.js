@@ -108,13 +108,16 @@ class Assessment {
    * @returns {Promise<Array>} Array of assessment objects
    */
   static async listByUser(userId) {
+    console.log('Assessment.listByUser called for userId:', userId);
     try {
       // Use in-memory store for tests
       if (isTestMode) {
+        console.log('Using in-memory test assessments store');
         return Object.values(testAssessments)
           .filter(assessment => assessment.userId === userId);
       }
       
+      console.log('Fetching assessments from database for userId:', userId);
       const assessments = await DbService.findByFieldWithJson(
         'assessments',
         'user_id',
@@ -123,14 +126,41 @@ class Assessment {
         'created_at'
       );
       
+      console.log('Raw DB assessments count:', assessments.length);
+      if (assessments.length > 0) {
+        console.log('First assessment raw structure:', {
+          keys: Object.keys(assessments[0]),
+          hasAssessmentData: !!assessments[0].assessment_data,
+          assessmentDataType: typeof assessments[0].assessment_data
+        });
+      }
+      
       // Format the response to ensure consistent structure
-      return assessments.map(assessment => ({
-        id: assessment.id,
-        userId: assessment.user_id,
-        assessmentData: assessment.assessment_data,
-        createdAt: assessment.created_at,
-        updatedAt: assessment.updated_at
-      }));
+      const formattedAssessments = assessments.map(assessment => {
+        console.log(`Formatting assessment ${assessment.id}:`, {
+          hasAssessmentData: !!assessment.assessment_data
+        });
+        
+        return {
+          id: assessment.id,
+          userId: assessment.user_id,
+          assessmentData: assessment.assessment_data,
+          createdAt: assessment.created_at,
+          updatedAt: assessment.updated_at
+        };
+      });
+      
+      console.log('Formatted assessments count:', formattedAssessments.length);
+      if (formattedAssessments.length > 0) {
+        console.log('First formatted assessment structure:', {
+          keys: Object.keys(formattedAssessments[0]),
+          hasAssessmentData: !!formattedAssessments[0].assessmentData,
+          assessmentDataType: typeof formattedAssessments[0].assessmentData,
+          assessmentDataKeys: formattedAssessments[0].assessmentData ? Object.keys(formattedAssessments[0].assessmentData) : 'none'
+        });
+      }
+      
+      return formattedAssessments;
     } catch (error) {
       console.error('Error listing assessments by user:', error);
       throw error;
