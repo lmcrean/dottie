@@ -83,10 +83,17 @@ app.options('*', cors(corsOptions));
 // Specific handler for problematic endpoints
 app.options('/api/user/me', (req, res) => {
   res.sendStatus(204);
+  return;
 });
 
-app.options('/api/auth/signup', (req, res) => {
-  res.sendStatus(204);
+// Health check for Vercel and CORS test
+app.get("/api/health/cors", (req, res) => {
+  res.status(200).json({ 
+    status: "ok", 
+    message: "CORS is working",
+    cors: true,
+    time: new Date().toISOString()
+  });
 });
 
 // Routes
