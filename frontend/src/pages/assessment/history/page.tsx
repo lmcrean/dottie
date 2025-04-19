@@ -16,7 +16,6 @@ export default function HistoryPage() {
   const [error, setError] = useState<string | null>(null);
 
   const formatValue = (value: string | undefined): string => {
-    console.log("formatValue called with:", value);
     if (!value) return "Not provided";
 
     if (value === "not-sure") return "Not sure";
@@ -31,7 +30,6 @@ export default function HistoryPage() {
   };
 
   const formatDate = (dateString: string | undefined): string => {
-    console.log("formatDate called with:", dateString);
     if (!dateString) return "Unknown date";
 
     try {
@@ -48,20 +46,6 @@ export default function HistoryPage() {
     const fetchAssessments = async () => {
       try {
         const data = await assessmentApi.list();
-        console.log("Fetched assessments (raw):", data);
-        
-        // Debug each assessment's structure
-        if (data && data.length > 0) {
-          data.forEach((assessment, index) => {
-            console.log(`Assessment ${index + 1} structure:`, {
-              id: assessment.id,
-              user_id: assessment.user_id,
-              created_at: assessment.created_at,
-              hasAssessmentData: !!assessment.assessment_data,
-              assessmentDataKeys: assessment.assessment_data ? Object.keys(assessment.assessment_data) : 'none'
-            });
-          });
-        }
         
         setAssessments(data);
         setError(null);
@@ -141,16 +125,6 @@ export default function HistoryPage() {
               const assessmentDataWrapper = assessment?.assessment_data;
               // Get the actual assessment data from the nested structure
               const data = assessmentDataWrapper?.assessment_data || assessmentDataWrapper;
-              console.log(`Rendering assessment ${index + 1}:`, {
-                id: assessment.id,
-                wrapperKeys: assessmentDataWrapper ? Object.keys(assessmentDataWrapper) : [],
-                dataKeys: data ? Object.keys(data) : [],
-                hasNestedData: !!assessmentDataWrapper?.assessment_data,
-                pattern: data?.pattern,
-                date: data?.date,
-                age: data?.age,
-                cycleLength: data?.cycleLength
-              });
 
               return (
                 <Link
