@@ -103,39 +103,45 @@ export default function SymptomsPage() {
   };
 
   const handleContinue = () => {
-    // Combine all symptoms
+    // Combine all symptoms with proper categorization for backend format
+    const physicalSymptomsWithPrefix = physicalSymptoms.map((id) => {
+      const symptom = [
+        { id: "bloating", label: "Bloating" },
+        { id: "breast-tenderness", label: "Breast tenderness" },
+        { id: "headaches", label: "Headaches" },
+        { id: "back-pain", label: "Back pain" },
+        { id: "nausea", label: "Nausea" },
+        { id: "fatigue", label: "Fatigue" },
+        { id: "dizziness", label: "Dizziness" },
+        { id: "acne", label: "Acne" },
+        { id: "digestive-issues", label: "Digestive issues" },
+        { id: "sleep-disturbances", label: "Sleep disturbances" },
+        { id: "hot-flashes", label: "Hot flashes" },
+        { id: "joint-pain", label: "Joint pain" },
+      ].find((s) => s.id === id);
+      return `physical:${symptom?.label || id}`;
+    });
+
+    const emotionalSymptomsWithPrefix = emotionalSymptoms.map((id) => {
+      const symptom = [
+        { id: "irritability", label: "Irritability" },
+        { id: "mood-swings", label: "Mood swings" },
+        { id: "anxiety", label: "Anxiety" },
+        { id: "depression", label: "Depression" },
+        { id: "difficulty-concentrating", label: "Difficulty concentrating" },
+        { id: "food-cravings", label: "Food cravings" },
+        { id: "emotional-sensitivity", label: "Emotional sensitivity" },
+        { id: "low-energy", label: "Low energy/motivation" },
+      ].find((s) => s.id === id);
+      return `emotional:${symptom?.label || id}`;
+    });
+
+    const otherSymptomsWithPrefix = otherSymptoms ? [`physical:${otherSymptoms}`] : [];
+
     const allSymptoms = [
-      ...physicalSymptoms.map((id) => {
-        const symptom = [
-          { id: "bloating", label: "Bloating" },
-          { id: "breast-tenderness", label: "Breast tenderness" },
-          { id: "headaches", label: "Headaches" },
-          { id: "back-pain", label: "Back pain" },
-          { id: "nausea", label: "Nausea" },
-          { id: "fatigue", label: "Fatigue" },
-          { id: "dizziness", label: "Dizziness" },
-          { id: "acne", label: "Acne" },
-          { id: "digestive-issues", label: "Digestive issues" },
-          { id: "sleep-disturbances", label: "Sleep disturbances" },
-          { id: "hot-flashes", label: "Hot flashes" },
-          { id: "joint-pain", label: "Joint pain" },
-        ].find((s) => s.id === id);
-        return symptom?.label || id;
-      }),
-      ...emotionalSymptoms.map((id) => {
-        const symptom = [
-          { id: "irritability", label: "Irritability" },
-          { id: "mood-swings", label: "Mood swings" },
-          { id: "anxiety", label: "Anxiety" },
-          { id: "depression", label: "Depression" },
-          { id: "difficulty-concentrating", label: "Difficulty concentrating" },
-          { id: "food-cravings", label: "Food cravings" },
-          { id: "emotional-sensitivity", label: "Emotional sensitivity" },
-          { id: "low-energy", label: "Low energy/motivation" },
-        ].find((s) => s.id === id);
-        return symptom?.label || id;
-      }),
-      ...(otherSymptoms ? [otherSymptoms] : []),
+      ...physicalSymptomsWithPrefix,
+      ...emotionalSymptomsWithPrefix,
+      ...otherSymptomsWithPrefix,
     ];
 
     // Save to sessionStorage

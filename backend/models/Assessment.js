@@ -39,11 +39,23 @@ class Assessment {
       const id = uuidv4();
       const now = new Date();
 
+      // Handle in-memory test mode separately
       if (isTestMode) {
+        let formattedData = assessmentData.assessmentData || assessmentData.assessment_data;
+      
+        // If assessmentData is not an object with nested assessmentData structure, create it
+        if (!formattedData || typeof formattedData !== 'object' || 
+            (!formattedData.assessmentData && !formattedData.assessment_data)) {
+          formattedData = {
+            createdAt: now.toISOString(),
+            assessmentData: assessmentData.assessmentData || assessmentData.assessment_data || assessmentData
+          };
+        }
+        
         const assessment = {
           id,
           userId,
-          assessmentData,
+          assessmentData: formattedData,
           createdAt: now,
           updatedAt: now
         };
@@ -51,26 +63,57 @@ class Assessment {
         return assessment;
       }
 
-      const payload = {
+      // Extract assessment data from nested structure
+      let data = assessmentData;
+      
+      // First level: extract assessmentData if it exists
+      if (data.assessmentData) {
+        data = data.assessmentData;
+      } else if (data.assessment_data) {
+        data = data.assessment_data;
+      }
+      
+      // Second level: extract nested assessmentData if it exists
+      if (data.assessmentData) {
+        data = data.assessmentData;
+      } else if (data.assessment_data) {
+        data = data.assessment_data;
+      }
+      
+      console.log("Extracted assessment data for DB:", data);
+
+      // Store the data as JSON in the assessment_data column
+      const dbPayload = {
         id,
         user_id: userId,
-        assessment_data: assessmentData.assessment_data,
+        assessment_data: JSON.stringify(data),
         created_at: now,
         updated_at: now
       };
       
-
-      const inserted = await DbService.createWithJson(
-        'assessments',
-        payload,
-        ['assessment_data']
-      );
+      console.log("Inserting into database:", dbPayload);
+      
+      // Insert into database with JSON field
+      const inserted = await db('assessments').insert(dbPayload);
+      
+      // Fetch the inserted assessment to return
+      const assessmentRow = await db('assessments').where('id', id).first();
+      
+      // Parse the JSON string from the database
+      let parsedData = {};
+      try {
+        parsedData = JSON.parse(assessmentRow.assessment_data);
+      } catch (error) {
+        console.error("Error parsing assessment_data JSON:", error);
+      }
+      
+      // Format the response consistently with camelCase
       return {
-        id: inserted.id,
-        userId: inserted.user_id,
-        assessmentData: inserted.assessment_data,
-        createdAt: inserted.created_at,
-        updatedAt: inserted.updated_at
+        id: assessmentRow.id,
+        userId: assessmentRow.user_id,
+        createdAt: assessmentRow.created_at,
+        updatedAt: assessmentRow.updated_at,
+        assessmentData: parsedData
       };
     } catch (error) {
       console.error('Error creating assessment:', error);
@@ -85,19 +128,59 @@ class Assessment {
    * @returns {Promise<Array>} Array of assessment objects
    */
   static async listByUser(userId) {
+    console.log('Assessment.listByUser called for userId:', userId);
     try {
       // Use in-memory store for tests
       if (isTestMode) {
+        console.log('Using in-memory test assessments store');
         return Object.values(testAssessments)
           .filter(assessment => assessment.userId === userId);
       }
-      return await DbService.findByFieldWithJson(
+      
+      console.log('Fetching assessments from database for userId:', userId);
+      const assessments = await DbService.findByFieldWithJson(
         'assessments',
         'user_id',
         userId,
         ['assessment_data'],
         'created_at'
       );
+      
+      console.log('Raw DB assessments count:', assessments.length);
+      if (assessments.length > 0) {
+        console.log('First assessment raw structure:', {
+          keys: Object.keys(assessments[0]),
+          hasAssessmentData: !!assessments[0].assessment_data,
+          assessmentDataType: typeof assessments[0].assessment_data
+        });
+      }
+      
+      // Format the response to ensure consistent structure
+      const formattedAssessments = assessments.map(assessment => {
+        console.log(`Formatting assessment ${assessment.id}:`, {
+          hasAssessmentData: !!assessment.assessment_data
+        });
+        
+        return {
+          id: assessment.id,
+          userId: assessment.user_id,
+          assessmentData: assessment.assessment_data,
+          createdAt: assessment.created_at,
+          updatedAt: assessment.updated_at
+        };
+      });
+      
+      console.log('Formatted assessments count:', formattedAssessments.length);
+      if (formattedAssessments.length > 0) {
+        console.log('First formatted assessment structure:', {
+          keys: Object.keys(formattedAssessments[0]),
+          hasAssessmentData: !!formattedAssessments[0].assessmentData,
+          assessmentDataType: typeof formattedAssessments[0].assessmentData,
+          assessmentDataKeys: formattedAssessments[0].assessmentData ? Object.keys(formattedAssessments[0].assessmentData) : 'none'
+        });
+      }
+      
+      return formattedAssessments;
     } catch (error) {
       console.error('Error listing assessments by user:', error);
       throw error;
@@ -120,18 +203,62 @@ class Assessment {
           throw new Error(`Assessment with ID ${id} not found`);
         }
 
+        const existingAssessment = testAssessments[id];
+        let updatedData = existingAssessment.assessmentData;
+        
+        // Handle nested structure in test mode
+        if (updatedData && updatedData.assessment_data) {
+          // Update the inner assessment_data
+          updatedData.assessment_data = {
+            ...updatedData.assessment_data,
+            ...(assessmentData.assessment_data || assessmentData)
+          };
+        } else {
+          // Legacy format or simple structure, just update directly
+          updatedData = assessmentData;
+        }
+
         testAssessments[id] = {
-          ...testAssessments[id],
-          assessmentData,
+          ...existingAssessment,
+          assessmentData: updatedData,
           updatedAt: now
         };
 
-        return testAssessments[id];
+        // Return in the same format as the DB response would be
+        return {
+          id,
+          assessment_data: updatedData
+        };
       }
+      
+      // Get the existing assessment to preserve structure
+      const existingAssessment = await this.findById(id);
+      if (!existingAssessment) {
+        throw new Error(`Assessment with ID ${id} not found`);
+      }
+      
+      // Prepare updated data maintaining the structure
+      let updatedData = existingAssessment.assessmentData;
+      
+      // If we have the nested structure
+      if (updatedData && updatedData.assessment_data) {
+        // Update the inner assessment_data
+        updatedData.assessment_data = {
+          ...updatedData.assessment_data,
+          ...(assessmentData.assessment_data || assessmentData)
+        };
+      } else {
+        // Legacy format or simple structure, just update directly
+        updatedData = assessmentData;
+      }
+      
       return await DbService.updateWithJson(
         'assessments',
         id,
-        { assessment_data: assessmentData, updated_at: new Date() },
+        { 
+          assessment_data: updatedData, 
+          updated_at: now 
+        },
         ['assessment_data']
       );
     } catch (error) {
@@ -143,20 +270,23 @@ class Assessment {
   /**
    * Delete an assessment
    * @param {string} id - Assessment ID
-   * @returns {Promise<boolean>} True if successful
+   * @returns {Promise<boolean>} Success indicator
    */
   static async delete(id) {
     try {
-      // Use in-memory store for tests
       if (isTestMode) {
-        if (!testAssessments[id]) {
-          throw new Error(`Assessment with ID ${id} not found`);
+        if (testAssessments[id]) {
+          delete testAssessments[id];
+          return true;
         }
-
-        delete testAssessments[id];
-        return true;
+        return false;
       }
-      return await DbService.delete('assessments', id);
+
+      await db('assessments')
+        .where('id', id)
+        .delete();
+
+      return true;
     } catch (error) {
       console.error('Error deleting assessment:', error);
       throw error;

@@ -13,7 +13,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
-import { FullscreenChat } from "@/src/pages/chat/FullScreenChat";
+import { FullscreenChat } from "@/src/pages/chat/FullscreenChat";
 import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
@@ -235,16 +235,6 @@ export default function ResultsPage() {
     const storedSymptoms = sessionStorage.getItem("symptoms");
     const storedCyclePredictable = sessionStorage.getItem("cyclePredictable");
 
-    console.log("Stored values:", {
-      age: storedAge,
-      cycleLength: storedCycleLength,
-      periodDuration: storedPeriodDuration,
-      flowLevel: storedFlowLevel,
-      painLevel: storedPainLevel,
-      symptoms: storedSymptoms,
-      cyclePredictable: storedCyclePredictable,
-    });
-
     if (storedAge) setAge(storedAge);
     if (storedCycleLength) setCycleLength(storedCycleLength);
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
@@ -398,21 +388,11 @@ export default function ResultsPage() {
     if (val.includes("less than")) return "20%";
     if (val.includes("more than")) return "80%";
 
-    console.log("Using default width for value:", val);
     return "50%"; // Default value
   };
 
   // Force progress bars to update when values change
   useEffect(() => {
-    // Debug logging
-    console.log("Calculated widths:", {
-      age: getProgressWidth(age),
-      cycleLength: getProgressWidth(cycleLength),
-      periodDuration: getProgressWidth(periodDuration),
-      flowLevel: getProgressWidth(flowLevel),
-      painLevel: getProgressWidth(painLevel),
-    });
-
     // Trigger a re-render when these values change
     const progressElements = document.querySelectorAll(
       ".bg-pink-500.h-2.rounded-full"
@@ -429,42 +409,36 @@ export default function ResultsPage() {
   // Function to handle saving assessment results
   const handleSaveResults = async () => {
     setIsSaving(true);
-
     try {
-      // Make sure all required fields have values
-      if (!pattern || !age || !cycleLength) {
-        toast.error("Missing required assessment data");
-        setIsSaving(false);
-        return;
-      }
-
-      // Create assessment data object according to the Assessment interface structure
-      const assessment: Omit<Assessment, "id"> = {
-        userId: "", // This will be set by the backend
-        createdAt: new Date().toISOString(),
-        assessment_data: {
-          date: new Date().toISOString(),
-          pattern,
-          age,
-          cycleLength,
-          periodDuration: periodDuration || "Not provided",
-          flowHeaviness: flowLevel,
-          painLevel: painLevel || "Not provided",
-          symptoms: {
-            physical: symptoms || [],
-            emotional: [],
-          },
-          recommendations:
-            patternInfo?.recommendations?.map((rec) => ({
-              title: rec.title,
-              description: rec.description,
-            })) || [],
-        },
+      // Prepare assessment data
+      const assessment = {
+        assessmentData: {
+          createdAt: new Date().toISOString(),
+          assessmentData: {
+            date: new Date().toISOString(),
+            pattern,
+            age,
+            cycleLength,
+            periodDuration,
+            flowHeaviness: flowLevel, // Ensure correct camelCase property name
+            painLevel,
+            symptoms: {
+              physical: symptoms.filter(s => s.startsWith('physical:')).map(s => s.replace('physical:', '')),
+              emotional: symptoms.filter(s => s.startsWith('emotional:')).map(s => s.replace('emotional:', ''))
+            },
+            recommendations:
+              patternData[pattern]?.recommendations.map((rec) => ({
+                title: rec.title,
+                description: rec.description,
+              })) || [],
+          }
+        }
       };
-      console.log("Sending assessment data:", assessment);
+
+      console.log("Sending assessment data:", JSON.stringify(assessment, null, 2));
 
       // Use the postSend function
-      const savedAssessment = await postSend(assessment);
+      const savedAssessment = await postSend(assessment.assessmentData.assessmentData);
 
       toast.success("Assessment saved successfully!");
       navigate(`/assessment/history/${savedAssessment.id}`);
@@ -657,9 +631,10 @@ export default function ResultsPage() {
       {isChatOpen &&
         (isFullscreenChatOpen ? (
           <FullscreenChat
-            onClose={() => setIsChatOpen(false)}
+            isOpen={isFullscreenChatOpen}
+            onClose={() => setIsFullscreenChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
+            initialMessage="Hello! I'm here to help you understand your assessment results. What would you like to know?"
           />
         ) : (
           <ChatModal

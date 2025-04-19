@@ -1,5 +1,6 @@
 import db from './index.js';
 import { createTables } from './migrations/initialSchema.js';
+import { updateAssessmentToJsonSchema } from './migrations/updateAssessmentToJsonSchema.js';
 
 /**
  * Initialize SQLite database with required tables
@@ -8,6 +9,18 @@ async function initializeSQLiteDatabase() {
   try {
     console.log('Initializing SQLite database...');
     await createTables(db);
+    
+    // Ensure assessment table uses JSON schema
+    console.log('Ensuring assessment table uses JSON schema...');
+    const columnInfo = await db('assessments').columnInfo();
+    if (!columnInfo.hasOwnProperty('assessment_data')) {
+      console.log('Applying JSON schema to assessments table...');
+      await updateAssessmentToJsonSchema(db);
+      console.log('JSON schema applied successfully.');
+    } else {
+      console.log('Assessment table already using JSON schema.');
+    }
+    
     console.log('SQLite database initialized successfully!');
   } catch (error) {
     console.error('Error initializing SQLite database:', error);

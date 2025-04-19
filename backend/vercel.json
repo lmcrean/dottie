@@ -10,7 +10,7 @@
     {
       "src": "/(.*)",
       "methods": ["OPTIONS"],
-      "dest": "/server.js",
+      "status": 204,
       "headers": {
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Origin": "https://dottie-lmcreans-projects.vercel.app",

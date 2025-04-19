@@ -1,17 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { format, isValid, parseISO } from "date-fns";
-import {
-  ArrowLeft,
-  Calendar,
-  Activity,
-  Droplet,
-  Heart,
-  Brain,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
 import { toast } from "sonner";
+
+// Define type for assessment data structure
+interface AssessmentData {
+  date?: string;
+  pattern?: string;
+  age?: string;
+  cycleLength?: string;
+  periodDuration?: string;
+  flowHeaviness?: string;
+  painLevel?: string;
+  symptoms?: {
+    physical: string[];
+    emotional: string[];
+  };
+  recommendations?: {
+    title: string;
+    description: string;
+  }[];
+}
 
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
@@ -27,7 +39,15 @@ export default function AssessmentDetailsPage() {
       }
 
       try {
+        console.log(`Fetching assessment with ID: ${id}`);
         const data = await assessmentApi.getById(id);
+        console.log("Retrieved assessment data:", data);
+        console.log("Assessment data structure:", {
+          keys: Object.keys(data),
+          hasAssessmentData: !!data.assessmentData,
+          assessmentDataType: typeof data.assessmentData,
+          assessmentDataKeys: data.assessmentData ? Object.keys(data.assessmentData) : 'none'
+        });
         setAssessment(data);
       } catch (error) {
         console.error("Failed to fetch assessment:", error);
@@ -74,8 +94,8 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = assessment?.assessment_data
-  if (!assessmentData) {
+  const assessmentDataWrapper = assessment?.assessmentData as AssessmentData | undefined;
+  if (!assessmentDataWrapper) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -97,9 +117,84 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const physicalSymptoms = assessmentData.symptoms?.physical || [];
-  const emotionalSymptoms = assessmentData.symptoms?.emotional || [];
+  const assessmentData = (assessmentDataWrapper as any).assessmentData || assessmentDataWrapper;
+  console.log("Final assessment data being used:", assessmentData);
+
+  const rawPhysicalSymptoms = assessmentData.symptoms?.physical || [];
+  const rawEmotionalSymptoms = assessmentData.symptoms?.emotional || [];
+  
+  const emotionalKeywords = ['emotional', 'mood', 'anxiety', 'depression', 'irritability', 'sensitivity'];
+  
+  const physicalSymptoms = rawPhysicalSymptoms.filter((symptom: string) => 
+    !emotionalKeywords.some(keyword => symptom.toLowerCase().includes(keyword))
+  );
+  
+  const emotionalSymptoms = [
+    ...rawEmotionalSymptoms,
+    ...rawPhysicalSymptoms.filter((symptom: string) => 
+      emotionalKeywords.some(keyword => symptom.toLowerCase().includes(keyword))
+    )
+  ];
+  
+  console.log("Recategorized symptoms:", {
+    originalPhysical: rawPhysicalSymptoms,
+    originalEmotional: rawEmotionalSymptoms,
+    fixedPhysical: physicalSymptoms,
+    fixedEmotional: emotionalSymptoms
+  });
+
   const recommendations = assessmentData.recommendations || [];
+
+  const getEmojiForRecommendation = (title: string) => {
+    // Map specific title patterns to emojis based on the results page patterns
+    const titleLower = title.toLowerCase();
+    
+    if (titleLower.includes("iron") || titleLower.includes("food") || titleLower.includes("diet") || titleLower.includes("nutrition")) {
+      return "🍳";
+    }
+    if (titleLower.includes("water") || titleLower.includes("hydrat")) {
+      return "💧";
+    }
+    if (titleLower.includes("heat") || titleLower.includes("warm")) {
+      return "🔥";
+    }
+    if (titleLower.includes("pain")) {
+      return "💊";
+    }
+    if (titleLower.includes("exercise") || titleLower.includes("walk") || titleLower.includes("gentle")) {
+      return "🧘‍♀️";
+    }
+    if (titleLower.includes("medical") || titleLower.includes("doctor") || titleLower.includes("healthcare") || titleLower.includes("provider")) {
+      return "👩‍⚕️";
+    }
+    if (titleLower.includes("plan") || titleLower.includes("ahead") || titleLower.includes("supply")) {
+      return "⏰";
+    }
+    if (titleLower.includes("track") || titleLower.includes("calendar")) {
+      return "📅";
+    }
+    if (titleLower.includes("sleep")) {
+      return "🌙";
+    }
+    if (titleLower.includes("stress") || titleLower.includes("meditat")) {
+      return "🧘‍♀️";
+    }
+    if (titleLower.includes("patient") || titleLower.includes("time")) {
+      return "⏱️";
+    }
+    if (titleLower.includes("learn") || titleLower.includes("educate") || titleLower.includes("body")) {
+      return "🧠";
+    }
+    if (titleLower.includes("talk") || titleLower.includes("trust") || titleLower.includes("parent")) {
+      return "👩‍👧";
+    }
+    if (titleLower.includes("balance") || titleLower.includes("diet")) {
+      return "❤️";
+    }
+    
+    // Default emoji if no match is found
+    return "💡";
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,7 +225,7 @@ export default function AssessmentDetailsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-gray-400" />
+                <img src="/public/calendar.png" className="w-[25px] h-[25px]" />
                 <span className="text-sm font-medium text-gray-900">
                   Cycle Information
                 </span>
@@ -153,7 +248,7 @@ export default function AssessmentDetailsPage() {
 
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-gray-400" />
+                <img src="/public/d-drop.png" className="w-[25px] h-[25px]" />
                 <span className="text-sm font-medium text-gray-900">
                   Flow & Pain
                 </span>
@@ -174,7 +269,7 @@ export default function AssessmentDetailsPage() {
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Droplet className="h-5 w-5 text-gray-400" />
+                <img src="/public/drop.png" className="w-[25px] h-[25px]" />
                 <h2 className="text-lg font-medium text-gray-900">
                   Physical Symptoms
                 </h2>
@@ -199,7 +294,7 @@ export default function AssessmentDetailsPage() {
 
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Brain className="h-5 w-5 text-gray-400" />
+                <img src="/public/emotion.png" className="w-[25px] h-[25px]" />
                 <h2 className="text-lg font-medium text-gray-900">
                   Emotional Symptoms
                 </h2>
@@ -224,25 +319,32 @@ export default function AssessmentDetailsPage() {
 
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Heart className="h-5 w-5 text-gray-400" />
-                <h2 className="text-lg font-medium text-gray-900">
-                  Recommendations
-                </h2>
+                <h2 className="text-xl font-bold">Recommendations</h2>
               </div>
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {recommendations.length > 0 ? (
                   recommendations.map(
                     (
                       rec: { title: string; description: string },
                       index: number
                     ) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-4">
-                        <h3 className="font-medium text-gray-900">
-                          {rec.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {rec.description}
-                        </p>
+                      <div 
+                        key={index} 
+                        className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="text-2xl">
+                            {getEmojiForRecommendation(rec.title)}
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-lg">
+                              {rec.title}
+                            </h3>
+                            <p className="text-gray-600">
+                              {rec.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     )
                   )

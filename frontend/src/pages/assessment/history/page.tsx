@@ -6,6 +6,25 @@ import { assessmentApi, type Assessment } from "@/src/api/assessment";
 import { toast } from "sonner";
 import PageTransition from "../page-transitions";
 
+// Define type for assessment data structure
+interface AssessmentData {
+  date?: string;
+  pattern?: string;
+  age?: string;
+  cycleLength?: string;
+  periodDuration?: string;
+  flowHeaviness?: string;
+  painLevel?: string;
+  symptoms?: {
+    physical: string[];
+    emotional: string[];
+  };
+  recommendations?: {
+    title: string;
+    description: string;
+  }[];
+}
+
 export default function HistoryPage() {
   // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -37,6 +56,7 @@ export default function HistoryPage() {
       if (!isValid(date)) return "Invalid date";
       return format(date, "MMM d, yyyy");
     } catch (error) {
+      console.error("Error parsing date:", dateString, error);
       return "Invalid date";
     }
   };
@@ -45,8 +65,8 @@ export default function HistoryPage() {
     const fetchAssessments = async () => {
       try {
         const data = await assessmentApi.list();
+        
         setAssessments(data);
-        console.log("Fetched assessments:", data);
         setError(null);
       } catch (error) {
         console.error("Error fetching assessments:", error);
@@ -120,8 +140,10 @@ export default function HistoryPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {assessments.map((assessment) => {
-              const data = assessment?.assessment_data; 
+            {assessments.map((assessment, index) => {
+              const assessmentDataWrapper = assessment?.assessmentData as AssessmentData | undefined;
+              // Get the actual assessment data from the nested structure
+              const data = (assessmentDataWrapper as any)?.assessmentData || assessmentDataWrapper;
 
               return (
                 <Link

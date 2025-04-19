@@ -14,4 +14,4 @@ router.use('/user', userRoutes);
 router.use('/setup', setupRoutes);
 router.use('/chat', chatRoutes)
 
-export default router; 
+export default router;

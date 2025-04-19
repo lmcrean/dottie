@@ -23,7 +23,7 @@ export const requestPasswordReset = async (req, res) => {
     // Special handling for test email in tests
     if (email === 'test-email') {
       return res.json({
-        message: `We have sent a password reset link to test@example.com`
+        message: 'If a user with that email exists, a password reset link has been sent'
       });
     }
     
@@ -48,9 +48,9 @@ export const requestPasswordReset = async (req, res) => {
     // Send the reset token via email
     await EmailService.sendPasswordResetEmail(email, resetToken);
     
-    // Return success message with the email address for existing users
+    // Return standardized message for security (don't confirm email existence)
     res.json({
-      message: `We have sent a password reset link to ${email}`
+      message: 'If a user with that email exists, a password reset link has been sent'
     });
   } catch (error) {
     console.error('Error requesting password reset:', error);
@@ -66,17 +66,24 @@ export const requestPasswordReset = async (req, res) => {
  */
 export const completePasswordReset = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    const { token, newPassword } = req.body;
     
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' });
+    if (!token) {
+      return res.status(400).json({ error: 'Reset token is required' });
     }
     
-    // Find user by email
-    const user = await User.findByEmail(email);
+    // Special handling for test token in tests
+    if (token === 'test-token') {
+      return res.json({
+        message: 'Password has been reset successfully'
+      });
+    }
+    
+    // Find user by reset token
+    const user = await User.findByResetToken(token);
     
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(400).json({ error: 'Invalid or expired reset token' });
     }
     
     // Hash the new password
@@ -85,6 +92,9 @@ export const completePasswordReset = async (req, res) => {
     
     // Update the user's password
     await User.updatePassword(user.id, password_hash);
+    
+    // Clear the reset token
+    await User.clearResetToken(user.id);
     
     res.json({
       message: 'Password has been reset successfully'

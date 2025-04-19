@@ -6,17 +6,33 @@ import { Assessment } from "../../types";
  * @endpoint /api/assessment/send (POST)
  */
 export const postSend = async (
-  assessmentData: Omit<Assessment, "id">
+  assessmentData: Omit<Assessment["assessmentData"]["assessmentData"], "date"> & { date?: string }
 ): Promise<Assessment> => {
   try {
-    // Send assessment data wrapped in an assessmentData property
-    // This matches the backend controller's expected structure
-    const response = await apiClient.post("/api/assessment/send", {
-      assessmentData: assessmentData,
-    });
+    console.log("postSend received:", JSON.stringify(assessmentData, null, 2));
+    
+    // Format the data to match the backend's expected nested structure using camelCase consistently
+    const now = new Date().toISOString();
+    const formattedData = {
+      assessmentData: {
+        createdAt: now,
+        assessmentData: {
+          date: assessmentData.date || now,
+          ...assessmentData
+        }
+      }
+    };
+    
+    console.log("Formatted data to send:", JSON.stringify(formattedData, null, 2));
+
+    const response = await apiClient.post("/api/assessment/send", formattedData);
+    console.log("Response from assessment send:", response.status, response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to send assessment:", error);
+    if (error.response) {
+      console.error("Error response:", error.response.status, error.response.data);
+    }
     throw error;
   }
 };
