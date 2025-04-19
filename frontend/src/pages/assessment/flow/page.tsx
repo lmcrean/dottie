@@ -1,18 +1,51 @@
-
 "use client";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "@/src/components/ui/!to-migrate/button"
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
-import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
-import PageTransition from "../page-transitions"
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/src/components/ui/!to-migrate/button";
+import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/src/components/ui/!to-migrate/radio-group";
+import { Label } from "@/src/components/ui/!to-migrate/label";
+import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
+import UserIcon from "@/src/components/navigation/UserIcon";
+import { useQuickNavigate } from "@/src/hooks/useQuickNavigate";
 
 export default function FlowPage() {
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
+  const [refTarget, setRefTarget] = useState("");
+  const location = useLocation();
+  const radioRef = useRef(null);
+  const continueButtonRef = useRef(null);
+  const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (!isQuickResponse) return;
+    const options = [
+      "light",
+      "moderate",
+      "heavy",
+      "very heavy",
+      "It varies",
+      "I'm not sure",
+    ];
+    const random = options[Math.floor(Math.random() * options.length)];
+    setRefTarget(random);
+
+    setTimeout(() => {
+      if (radioRef.current) {
+        radioRef.current.click(); // or: radioRef.current.checked = true;
+      }
+    }, 100);
+
+    setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.click();
+      }
+    }, 100);
+  }, [isQuickResponse]);
 
   const handleFlowChange = (value: string) => {
     setSelectedFlow(value);
@@ -20,7 +53,6 @@ export default function FlowPage() {
   };
 
   return (
-    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -56,7 +88,11 @@ export default function FlowPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="light" id="light" />
+                  <RadioGroupItem
+                    value="light"
+                    id="light"
+                    ref={refTarget === "light" ? radioRef : null}
+                  />
                   <Label htmlFor="light" className="flex-1 cursor-pointer">
                     <div className="font-medium">Light</div>
                     <p className="text-sm text-gray-500">
@@ -66,7 +102,11 @@ export default function FlowPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="moderate" id="moderate" />
+                  <RadioGroupItem
+                    value="moderate"
+                    id="moderate"
+                    ref={refTarget === "moderate" ? radioRef : null}
+                  />
                   <Label htmlFor="moderate" className="flex-1 cursor-pointer">
                     <div className="font-medium">Moderate</div>
                     <p className="text-sm text-gray-500">
@@ -76,7 +116,11 @@ export default function FlowPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="heavy" id="heavy" />
+                  <RadioGroupItem
+                    value="heavy"
+                    id="heavy"
+                    ref={refTarget === "heavy" ? radioRef : null}
+                  />
                   <Label htmlFor="heavy" className="flex-1 cursor-pointer">
                     <div className="font-medium">Heavy</div>
                     <p className="text-sm text-gray-500">
@@ -86,7 +130,11 @@ export default function FlowPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="very-heavy" id="very-heavy" />
+                  <RadioGroupItem
+                    value="very-heavy"
+                    id="very-heavy"
+                    ref={refTarget === "very heavy" ? radioRef : null}
+                  />
                   <Label htmlFor="very-heavy" className="flex-1 cursor-pointer">
                     <div className="font-medium">Very Heavy</div>
                     <p className="text-sm text-gray-500">
@@ -96,7 +144,11 @@ export default function FlowPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="varies" id="varies" />
+                  <RadioGroupItem
+                    value="varies"
+                    id="varies"
+                    ref={refTarget === "It varies" ? radioRef : null}
+                  />
                   <Label htmlFor="varies" className="flex-1 cursor-pointer">
                     <div className="font-medium">It varies</div>
                     <p className="text-sm text-gray-500">
@@ -106,7 +158,11 @@ export default function FlowPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="not-sure" id="not-sure" />
+                  <RadioGroupItem
+                    value="not-sure"
+                    id="not-sure"
+                    ref={refTarget === "I'm not sure" ? radioRef : null}
+                  />
                   <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
                     <div className="font-medium">I'm not sure</div>
                     <p className="text-sm text-gray-500">
@@ -159,13 +215,24 @@ export default function FlowPage() {
             </Button>
           </Link>
 
-          <Link to={selectedFlow ? "/assessment/pain" : "#"}>
+          <Link
+            to={
+              selectedFlow
+                ? `/assessment/pain${
+                    location.search.includes("mode=quickresponse")
+                      ? "?mode=quickresponse"
+                      : ""
+                  }`
+                : "#"
+            }
+          >
             <Button
               className={`flex items-center px-6 py-6 text-lg ${
                 selectedFlow
                   ? "bg-pink-500 hover:bg-pink-600 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
+              ref={continueButtonRef}
               disabled={!selectedFlow}
             >
               Continue
