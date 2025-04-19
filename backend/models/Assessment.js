@@ -41,13 +41,14 @@ class Assessment {
 
       if (isTestMode) {
         // Fix for test mode: correctly handle nested assessment_data structure
-        let formattedData = assessmentData.assessment_data;
+        let formattedData = assessmentData.assessmentData || assessmentData.assessment_data;
       
-        // If assessment_data is not an object with nested assessment_data structure, create it
-        if (!formattedData || typeof formattedData !== 'object' || !formattedData.assessment_data) {
+        // If assessmentData is not an object with nested assessmentData structure, create it
+        if (!formattedData || typeof formattedData !== 'object' || 
+            (!formattedData.assessmentData && !formattedData.assessment_data)) {
           formattedData = {
             createdAt: now.toISOString(),
-            assessment_data: assessmentData.assessment_data || assessmentData
+            assessmentData: assessmentData.assessmentData || assessmentData.assessment_data || assessmentData
           };
         }
         
@@ -64,16 +65,18 @@ class Assessment {
 
       // Prepare the assessment data for storage
       // Ensure we have the right structure for the new JSON format
-      let formattedData = assessmentData.assessment_data;
+      let formattedData = assessmentData.assessmentData || assessmentData.assessment_data;
       
-      // If assessment_data is not an object with nested assessment_data structure, create it
-      if (!formattedData || typeof formattedData !== 'object' || !formattedData.assessment_data) {
+      // If assessmentData is not an object with nested assessmentData structure, create it
+      if (!formattedData || typeof formattedData !== 'object' || 
+          (!formattedData.assessmentData && !formattedData.assessment_data)) {
         formattedData = {
           createdAt: now.toISOString(),
-          assessment_data: assessmentData.assessment_data || assessmentData
+          assessmentData: assessmentData.assessmentData || assessmentData.assessment_data || assessmentData
         };
       }
 
+      // Convert to camelCase for the database
       const payload = {
         id,
         user_id: userId,
@@ -88,6 +91,7 @@ class Assessment {
         ['assessment_data']
       );
       
+      // Return in camelCase format
       return {
         id: inserted.id,
         userId: inserted.user_id,

@@ -18,23 +18,28 @@ export function validateAssessmentData(assessment) {
     errors.push('userId is required');
   }
   
-  // Handle both camelCase and snake_case naming
-  if (!assessment.assessmentData && !assessment.assessment_data) {
-    errors.push('assessment_data is required');
-    return { isValid: errors.length === 0, errors };
+  // Use camelCase consistently
+  if (!assessment.assessmentData) {
+    // For backward compatibility, try to convert snake_case to camelCase
+    if (assessment.assessment_data) {
+      assessment.assessmentData = assessment.assessment_data;
+    } else {
+      errors.push('assessmentData is required');
+      return { isValid: errors.length === 0, errors };
+    }
   }
   
   // Handle both legacy and nested structures
-  let assessmentData = assessment.assessmentData || assessment.assessment_data;
+  let assessmentData = assessment.assessmentData;
   
   // Handle deeply nested structures - first level
-  if (typeof assessmentData === 'object' && (assessmentData.assessment_data || assessmentData.assessmentData)) {
+  if (typeof assessmentData === 'object' && (assessmentData.assessmentData || assessmentData.assessment_data)) {
     // We found a nested structure - go one level deeper
-    const innerData = assessmentData.assessment_data || assessmentData.assessmentData;
+    const innerData = assessmentData.assessmentData || assessmentData.assessment_data;
     
     // Check if we need to go one more level deep
-    if (typeof innerData === 'object' && (innerData.assessment_data || innerData.assessmentData)) {
-      assessmentData = innerData.assessment_data || innerData.assessmentData;
+    if (typeof innerData === 'object' && (innerData.assessmentData || innerData.assessment_data)) {
+      assessmentData = innerData.assessmentData || innerData.assessment_data;
     } else {
       assessmentData = innerData;
     }
@@ -86,30 +91,30 @@ export function validateAssessmentData(assessment) {
   };
 }
 
-// Helper validation functions
+// Helper validation functions - Convert to consistent camelCase
 function isValidAge(age) {
-  // Use hyphen and underscore versions
+  // Use camelCase versions and maintain compatibility with hypen/underscore
   const validAges = [
-    'under-13', 'under_13',
-    '13-17', '13_17',
-    '18-24', '18_24',
-    '25-29', '25_29',
-    '30-plus', '30_plus',
-    'under-18', 'under_18',
-    '25-plus', '25_plus'
+    'under-13', 'under_13', 'under13',
+    '13-17', '13_17', '1317',
+    '18-24', '18_24', '1824',
+    '25-29', '25_29', '2529',
+    '30-plus', '30_plus', '30plus',
+    'under-18', 'under_18', 'under18',
+    '25-plus', '25_plus', '25plus'
   ];
   return validAges.includes(age);
 }
 
 function isValidCycleLength(cycleLength) {
   const validCycleLengths = [
-    'less-than-21', 'less_than_21',
-    '21-25', '21_25',
-    '26-30', '26_30',
-    '31-35', '31_35',
-    '36-40', '36_40',
+    'less-than-21', 'less_than_21', 'lessThan21',
+    '21-25', '21_25', '2125',
+    '26-30', '26_30', '2630',
+    '31-35', '31_35', '3135',
+    '36-40', '36_40', '3640',
     'irregular',
-    'not-sure', 'not_sure',
+    'not-sure', 'not_sure', 'notSure',
     'other'
   ];
   return validCycleLengths.includes(cycleLength);
@@ -117,12 +122,12 @@ function isValidCycleLength(cycleLength) {
 
 function isValidPeriodDuration(duration) {
   const validDurations = [
-    '1-3', '1_3',
-    '4-5', '4_5',
-    '6-7', '6_7',
-    '8-plus', '8_plus',
+    '1-3', '1_3', '13',
+    '4-5', '4_5', '45',
+    '6-7', '6_7', '67',
+    '8-plus', '8_plus', '8plus',
     'varies', 
-    'not-sure', 'not_sure',
+    'not-sure', 'not_sure', 'notSure',
     'other'
   ];
   return validDurations.includes(duration);
@@ -133,16 +138,16 @@ function isValidFlowHeaviness(flow) {
     'light', 
     'moderate', 
     'heavy', 
-    'very-heavy', 'very_heavy',
+    'very-heavy', 'very_heavy', 'veryHeavy',
     'varies',
-    'not-sure', 'not_sure'
+    'not-sure', 'not_sure', 'notSure'
   ];
   return validFlows.includes(flow);
 }
 
 function isValidPainLevel(pain) {
   const validPainLevels = [
-    'no-pain', 'no_pain',
+    'no-pain', 'no_pain', 'noPain',
     'mild', 
     'moderate', 
     'severe', 

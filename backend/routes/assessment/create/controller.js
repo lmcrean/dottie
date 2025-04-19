@@ -15,8 +15,11 @@ export const createAssessment = async (req, res) => {
     const userId = req.user.userId;
     const { assessmentData } = req.body;
 
+    console.log("Received assessment data:", JSON.stringify(req.body, null, 2));
+
     // Validate assessment data
     if (!assessmentData) {
+      console.log("Missing assessmentData in request body");
       return res.status(400).json({ error: 'Assessment data is required' });
     }
     // For test users, save to database
@@ -96,12 +99,13 @@ export const createAssessment = async (req, res) => {
     // assessments.push(assessment);
     // console.log('Assessment data:', assessmentData);
 
-    const validationError = validateAssessmentData(assessmentData);
+    const validationError = validateAssessmentData(req.body);
 
     if (!validationError.isValid){
+      console.log("Validation failed:", JSON.stringify(validationError, null, 2));
       return res.status(400).json({ error: validationError });
     }
-    const newAssessment = await Assessment.create(assessmentData, userId);
+    const newAssessment = await Assessment.create(req.body, userId);
 
     res.status(201).json(newAssessment);
   } catch (error) {

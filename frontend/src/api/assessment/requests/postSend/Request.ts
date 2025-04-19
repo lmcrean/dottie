@@ -9,7 +9,7 @@ export const postSend = async (
   assessmentData: Omit<Assessment["assessmentData"]["assessmentData"], "date"> & { date?: string }
 ): Promise<Assessment> => {
   try {
-    // Format the data to match the backend's expected nested structure
+    // Format the data to match the backend's expected nested structure using camelCase consistently
     const now = new Date().toISOString();
     const formattedData = {
       assessmentData: {
