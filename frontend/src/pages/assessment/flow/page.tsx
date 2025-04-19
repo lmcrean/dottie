@@ -58,7 +58,12 @@ export default function FlowPage() {
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
         <header className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
-            <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+            <img
+              src="/assets/chatb.png"
+              alt="Dottie Logo"
+              width={32}
+              height={32}
+            />
             <span className="font-semibold text-pink-500">Dottie</span>
           </div>
           <UserIcon />
@@ -81,7 +86,8 @@ export default function FlowPage() {
                   How would you describe your menstrual flow?
                 </h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  Select the option that best describes your typical flow heaviness
+                  Select the option that best describes your typical flow
+                  heaviness
                 </p>
               </div>
             </div>
@@ -114,7 +120,10 @@ export default function FlowPage() {
                         id="moderate"
                         ref={refTarget === "moderate" ? radioRef : null}
                       />
-                      <Label htmlFor="moderate" className="flex-1 cursor-pointer">
+                      <Label
+                        htmlFor="moderate"
+                        className="flex-1 cursor-pointer"
+                      >
                         <div className="font-medium">Moderate</div>
                         <p className="text-sm text-gray-500">
                           Regular bleeding, requires normal protection
@@ -142,7 +151,10 @@ export default function FlowPage() {
                         id="very-heavy"
                         ref={refTarget === "very heavy" ? radioRef : null}
                       />
-                      <Label htmlFor="very-heavy" className="flex-1 cursor-pointer">
+                      <Label
+                        htmlFor="very-heavy"
+                        className="flex-1 cursor-pointer"
+                      >
                         <div className="font-medium">Very Heavy</div>
                         <p className="text-sm text-gray-500">
                           Excessive bleeding, may soak through protection
@@ -170,7 +182,10 @@ export default function FlowPage() {
                         id="not-sure"
                         ref={refTarget === "I'm not sure" ? radioRef : null}
                       />
-                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
+                      <Label
+                        htmlFor="not-sure"
+                        className="flex-1 cursor-pointer"
+                      >
                         <div className="font-medium">I'm not sure</div>
                         <p className="text-sm text-gray-500">
                           Need help determining flow heaviness
@@ -188,14 +203,19 @@ export default function FlowPage() {
               <div className="flex gap-2">
                 <InfoIcon className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-gray-800 mb-1">About Flow Heaviness</h3>
+                  <h3 className="font-semibold text-gray-800 mb-1">
+                    About Flow Heaviness
+                  </h3>
                   <p className="text-sm text-gray-600">
-                    Most people lose 30-80ml of blood during their period. Menstrual flow that consistently soaks through
-                    a pad/tampon every hour for several hours may indicate heavy menstrual bleeding (menorrhagia).
+                    Most people lose 30-80ml of blood during their period.
+                    Menstrual flow that consistently soaks through a pad/tampon
+                    every hour for several hours may indicate heavy menstrual
+                    bleeding (menorrhagia).
                   </p>
                   <p className="text-sm text-gray-600 mt-2">
-                    Flow often varies throughout your period, typically starting lighter, becoming heavier in the middle,
-                    and ending with lighter flow.
+                    Flow often varies throughout your period, typically starting
+                    lighter, becoming heavier in the middle, and ending with
+                    lighter flow.
                   </p>
                 </div>
               </div>

@@ -11,7 +11,12 @@ export default function ResourcesPage() {
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
         <header className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
-            <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+            <img
+              src="/assets/chatb.png"
+              alt="Dottie Logo"
+              width={32}
+              height={32}
+            />
             <span className="font-semibold text-pink-500">Dottie</span>
           </div>
           <UserIcon />

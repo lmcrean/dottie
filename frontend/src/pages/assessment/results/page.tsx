@@ -1,23 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
-import {
-  MessageCircle,
-  Heart,
-  ChevronRight,
-  DotIcon,
-  Save,
-  Share2,
-  Download,
-} from "lucide-react";
+import { Download, MessageCircle, Save, Share2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useEffect, useState } from "react";
-import { ChatModal } from "@/src/pages/chat/page";
-import { FullscreenChat } from "@/src/pages/chat/FullScreenChat";
-import { toast } from "sonner";
-import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
+import { Assessment } from "@/src/api/assessment/types";
 import UserIcon from "@/src/components/navigation/UserIcon";
+import { FullscreenChat } from "@/src/pages/chat/FullScreenChat";
+import { ChatModal } from "@/src/pages/chat/page";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern =
@@ -277,11 +269,16 @@ export default function ResultsPage() {
       decisionPath.push(`O1: Assigning pattern = "irregular"`);
     } else {
       // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !(
-        containsAny(storedPeriodDuration, ["more than 7", ">7", "8+", "8 days", "8-plus"])
+      const isPeriodDurationNormal = !containsAny(storedPeriodDuration, [
+        "more than 7",
+        ">7",
+        "8+",
+        "8 days",
+        "8-plus",
+      ]);
+      decisionPath.push(
+        `Q2: Period duration normal? ${isPeriodDurationNormal}`
       );
-      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
-
 
       if (!isPeriodDurationNormal) {
         // O2: Heavy or Prolonged Flow Pattern
@@ -289,9 +286,10 @@ export default function ResultsPage() {
         decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
       } else {
         // Q3: Is flow light to moderate?
-        const isFlowNormal = !(
-          containsAny(storedFlowLevel, ["heavy", "very heavy"])
-        );
+        const isFlowNormal = !containsAny(storedFlowLevel, [
+          "heavy",
+          "very heavy",
+        ]);
         decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
 
         if (!isFlowNormal) {
@@ -300,9 +298,10 @@ export default function ResultsPage() {
           decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
         } else {
           // Q4: Is menstrual pain none to moderate?
-          const isPainNormal = !(
-            containsAny(storedPainLevel, ["severe", "debilitating"])
-          );
+          const isPainNormal = !containsAny(storedPainLevel, [
+            "severe",
+            "debilitating",
+          ]);
           decisionPath.push(`Q4: Pain normal? ${isPainNormal}`);
 
           if (!isPainNormal) {
@@ -316,23 +315,48 @@ export default function ResultsPage() {
             if (containsAny(storedCyclePredictable, ["no", "false"])) {
               // O5: Developing Pattern - cycles not predictable
               determinedPattern = "developing";
-              decisionPath.push(`O5: Assigning pattern = "developing" (explicitly not predictable)`);
+              decisionPath.push(
+                `O5: Assigning pattern = "developing" (explicitly not predictable)`
+              );
             } else if (containsAny(storedCyclePredictable, ["yes", "true"])) {
               // O4: Regular Menstrual Cycles - cycles are predictable
               determinedPattern = "regular";
-              decisionPath.push(`O4: Assigning pattern = "regular" (explicitly predictable)`);
+              decisionPath.push(
+                `O4: Assigning pattern = "regular" (explicitly predictable)`
+              );
             } else {
               // We don't have explicit predictability data, so infer based on age
-              decisionPath.push(`No explicit predictability data, inferring from age: ${storedAge}`);
+              decisionPath.push(
+                `No explicit predictability data, inferring from age: ${storedAge}`
+              );
               // If age is adolescent (12-17), assume developing, otherwise assume regular
-              if (storedAge && containsAny(storedAge, ["12-14", "15-17", "13-17", "12", "13", "14", "15", "16", "17", "teen", "adolescent"])) {
+              if (
+                storedAge &&
+                containsAny(storedAge, [
+                  "12-14",
+                  "15-17",
+                  "13-17",
+                  "12",
+                  "13",
+                  "14",
+                  "15",
+                  "16",
+                  "17",
+                  "teen",
+                  "adolescent",
+                ])
+              ) {
                 // O5: Developing Pattern
                 determinedPattern = "developing";
-                decisionPath.push(`O5: Assigning pattern = "developing" (based on adolescent age)`);
+                decisionPath.push(
+                  `O5: Assigning pattern = "developing" (based on adolescent age)`
+                );
               } else {
                 // O4: Regular Menstrual Cycles
                 determinedPattern = "regular";
-                decisionPath.push(`O4: Assigning pattern = "regular" (default for non-adolescent)`);
+                decisionPath.push(
+                  `O4: Assigning pattern = "regular" (default for non-adolescent)`
+                );
               }
             }
           }
@@ -344,7 +368,6 @@ export default function ResultsPage() {
     console.log("Determined pattern:", determinedPattern);
     setPattern(determinedPattern);
   }, []);
-
 
   const patternInfo = patternData[pattern];
 
@@ -480,7 +503,11 @@ export default function ResultsPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
+          <img
+            src="/assets/chatb.png"
+            alt="Dottie Logo"
+            className="w-10 h-10"
+          />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </div>
         <UserIcon />
@@ -512,7 +539,7 @@ export default function ResultsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/time.png" className="w-[55px] h-[55px]" />
+                  <img src="/assets/time.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Age Range</h3>
@@ -522,7 +549,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
                   <img
-                    src="/public/calendar.png"
+                    src="/assets/calendar.png"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
@@ -535,7 +562,7 @@ export default function ResultsPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/drop.png" className="w-[55px] h-[55px]" />
+                  <img src="/assets/drop.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Period Duration</h3>
@@ -546,7 +573,7 @@ export default function ResultsPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]" />
+                  <img src="/assets/d-drop.png" className="w-[55px] h-[55px]" />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Flow Level</h3>
@@ -558,7 +585,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
                   <img
-                    src="/public/emotion.png"
+                    src="/assets/emotion.png"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
@@ -572,7 +599,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3 w-full max-w-full">
                 <div>
                   <img
-                    src="/public/tracktime.png"
+                    src="/assets/tracktime.png"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
