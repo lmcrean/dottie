@@ -235,16 +235,6 @@ export default function ResultsPage() {
     const storedSymptoms = sessionStorage.getItem("symptoms");
     const storedCyclePredictable = sessionStorage.getItem("cyclePredictable");
 
-    console.log("Stored values:", {
-      age: storedAge,
-      cycleLength: storedCycleLength,
-      periodDuration: storedPeriodDuration,
-      flowLevel: storedFlowLevel,
-      painLevel: storedPainLevel,
-      symptoms: storedSymptoms,
-      cyclePredictable: storedCyclePredictable,
-    });
-
     if (storedAge) setAge(storedAge);
     if (storedCycleLength) setCycleLength(storedCycleLength);
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
@@ -398,21 +388,11 @@ export default function ResultsPage() {
     if (val.includes("less than")) return "20%";
     if (val.includes("more than")) return "80%";
 
-    console.log("Using default width for value:", val);
     return "50%"; // Default value
   };
 
   // Force progress bars to update when values change
   useEffect(() => {
-    // Debug logging
-    console.log("Calculated widths:", {
-      age: getProgressWidth(age),
-      cycleLength: getProgressWidth(cycleLength),
-      periodDuration: getProgressWidth(periodDuration),
-      flowLevel: getProgressWidth(flowLevel),
-      painLevel: getProgressWidth(painLevel),
-    });
-
     // Trigger a re-render when these values change
     const progressElements = document.querySelectorAll(
       ".bg-pink-500.h-2.rounded-full"
@@ -440,8 +420,9 @@ export default function ResultsPage() {
 
       // Create assessment data object according to the Assessment interface structure
       const assessment: Omit<Assessment, "id"> = {
-        userId: "", // This will be set by the backend
-        createdAt: new Date().toISOString(),
+        user_id: "", // This will be set by the backend
+        created_at: Date.now(),
+        updated_at: Date.now(),
         assessment_data: {
           date: new Date().toISOString(),
           pattern,
@@ -461,7 +442,6 @@ export default function ResultsPage() {
             })) || [],
         },
       };
-      console.log("Sending assessment data:", assessment);
 
       // Use the postSend function
       const savedAssessment = await postSend(assessment);
