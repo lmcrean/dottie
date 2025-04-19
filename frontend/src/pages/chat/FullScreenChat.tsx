@@ -1,21 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/src/components/ui/!to-migrate/dialog";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Input } from "@/src/components/ui/!to-migrate/input";
 import { ScrollArea } from "@/src/components/ui/!to-migrate/scroll-area";
-import { Send, Loader2, X, MessageCircle, Maximize2 } from "lucide-react";
+import { Send, Loader2, X, Minimize2 } from "lucide-react";
 import { getAIFeedback } from "@/src/services/ai";
+import axios from "axios";
+import getHistory from "@/src/api/message/requests/getHistory";
+import { Conversation, ApiMessage } from "@/src/api/message/utils/types";
 
-interface ChatModalProps {
-  isOpen: boolean;
+interface FullscreenChatProps {
   onClose: () => void;
   initialMessage?: string;
-  setIsFullscreen?: (isFullscreen: boolean) => void;
+  setIsFullscreen: (isFullscreen: boolean) => void;
 }
 
 interface Message {
@@ -23,31 +19,46 @@ interface Message {
   content: string;
 }
 
-export function ChatModal({
-  isOpen,
+export function FullscreenChat({
   onClose,
   initialMessage,
   setIsFullscreen,
-}: ChatModalProps) {
+}: FullscreenChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Send initial message if provided
   useEffect(() => {
-    if (isOpen && initialMessage && messages.length === 0) {
-      setMessages([{ role: "user", content: initialMessage }]);
-      handleSend(initialMessage);
-    }
-  }, [isOpen, initialMessage]);
+    const fetchHistory = async () => {
+      try {
+        const response = await getHistory();
+        console.log(response);
+        
+        // Map the conversation data to the Message format
+        const allMessages: Message[] = [];
+        response.forEach((conversation: Conversation) => {
+          conversation.messages.forEach((msg: ApiMessage) => {
+            allMessages.push({
+              role: msg.role,
+              content: msg.content
+            });
+          });
+        });
+        
+        setMessages(allMessages);
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+    fetchHistory();
+  }, []);
 
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
@@ -59,7 +70,6 @@ export function ChatModal({
     setIsLoading(true);
 
     try {
-      // Get user data from session storage
       const userData = {
         age: sessionStorage.getItem("age") || "",
         cycleLength: sessionStorage.getItem("cycleLength") || "",
@@ -90,48 +100,32 @@ export function ChatModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 shadow-lg">
-        <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white">
-          <div className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-pink-500" />
-            <DialogTitle className="text-lg font-bold text-pink-500">
-              Chat with Dottie
-            </DialogTitle>
-          </div>
+    <div className="fixed inset-0 bg-white flex flex-col z-50 w-full ">
+      <div className="container max-w-6xl mx-auto flex flex-col h-full border border-gray-200 rounded-lg shadow-lg p-0">
+        <header className="flex items-center justify-between border-b bg-gradient-to-r from-pink-50 to-white p-4">
+          <h1 className="text-lg font-bold text-pink-500">Chat with Dottie</h1>
           <div>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsFullscreen && setIsFullscreen(true)}
+              onClick={() => setIsFullscreen(false)}
               className="rounded-full hover:bg-pink-100"
             >
-              <Maximize2 className="h-4 w-4 text-pink-500" />
+              <Minimize2 className="h-4 w-4 text-pink-500" />
             </Button>
-            {/* <Button
+            <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
               className="rounded-full hover:bg-pink-100"
             >
               <X className="h-4 w-4 text-pink-500" />
-            </Button> */}
+            </Button>
           </div>
-        </DialogHeader>
-        <div className="flex flex-col h-[500px]">
+        </header>
+        <div className="flex flex-col flex-1">
           <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             <div className="space-y-4">
-              {messages.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-full text-center p-8 text-gray-500">
-                  <MessageCircle className="h-12 w-12 text-pink-200 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">
-                    Ask Dottie anything
-                  </h3>
-                  <p className="text-sm">
-                    I'm here to help with your menstrual health questions
-                  </p>
-                </div>
-              )}
               {messages.map((message, index) => (
                 <div
                   key={index}
@@ -177,9 +171,7 @@ export function ChatModal({
             </Button>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
-
-export default ChatModal;

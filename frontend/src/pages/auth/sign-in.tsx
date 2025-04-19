@@ -123,7 +123,7 @@ export default function SignInPage() {
           />
         </div>
 
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end hidden">
           <Link
             to="/auth/forgot-password"
             className="text-sm text-pink-500 hover:text-pink-600"
