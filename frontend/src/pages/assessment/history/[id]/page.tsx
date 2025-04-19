@@ -27,7 +27,15 @@ export default function AssessmentDetailsPage() {
       }
 
       try {
+        console.log(`Fetching assessment with ID: ${id}`);
         const data = await assessmentApi.getById(id);
+        console.log("Retrieved assessment data:", data);
+        console.log("Assessment data structure:", {
+          keys: Object.keys(data),
+          hasAssessmentData: !!data.assessment_data,
+          assessmentDataType: typeof data.assessment_data,
+          assessmentDataKeys: data.assessment_data ? Object.keys(data.assessment_data) : 'none'
+        });
         setAssessment(data);
       } catch (error) {
         console.error("Failed to fetch assessment:", error);
