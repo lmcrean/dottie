@@ -66,9 +66,7 @@ const corsOptions = {
     : [
         "https://dottie-health.vercel.app",
         "https://dottie-lmcreans-projects.vercel.app",
-        "https://dottie-oi1fayiad-lmcreans-projects.vercel.app",
-        // Allow all origins in production temporarily to debug CORS
-        "*"
+        "https://dottie-oi1fayiad-lmcreans-projects.vercel.app"
       ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   credentials: true,
@@ -80,9 +78,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Enable pre-flight for all routes with explicit OPTIONS handler
-app.options("*", (req, res) => {
-  res.sendStatus(204);
-});
+app.options("*", cors(corsOptions));
 
 // Routes
 app.use("/api", routes);

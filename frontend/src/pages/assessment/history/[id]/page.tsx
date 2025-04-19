@@ -13,6 +13,25 @@ import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
 import { toast } from "sonner";
 
+// Define type for assessment data structure
+interface AssessmentData {
+  date?: string;
+  pattern?: string;
+  age?: string;
+  cycleLength?: string;
+  periodDuration?: string;
+  flowHeaviness?: string;
+  painLevel?: string;
+  symptoms?: {
+    physical: string[];
+    emotional: string[];
+  };
+  recommendations?: {
+    title: string;
+    description: string;
+  }[];
+}
+
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
   const [assessment, setAssessment] = useState<Assessment | null>(null);
@@ -82,7 +101,7 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentDataWrapper = assessment?.assessment_data;
+  const assessmentDataWrapper = assessment?.assessment_data as AssessmentData | undefined;
   if (!assessmentDataWrapper) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -105,7 +124,7 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = assessmentDataWrapper.assessment_data || assessmentDataWrapper;
+  const assessmentData = (assessmentDataWrapper as any).assessment_data || assessmentDataWrapper;
   console.log("Final assessment data being used:", assessmentData);
 
   const rawPhysicalSymptoms = assessmentData.symptoms?.physical || [];
@@ -113,13 +132,13 @@ export default function AssessmentDetailsPage() {
   
   const emotionalKeywords = ['emotional', 'mood', 'anxiety', 'depression', 'irritability', 'sensitivity'];
   
-  const physicalSymptoms = rawPhysicalSymptoms.filter(symptom => 
+  const physicalSymptoms = rawPhysicalSymptoms.filter((symptom: string) => 
     !emotionalKeywords.some(keyword => symptom.toLowerCase().includes(keyword))
   );
   
   const emotionalSymptoms = [
     ...rawEmotionalSymptoms,
-    ...rawPhysicalSymptoms.filter(symptom => 
+    ...rawPhysicalSymptoms.filter((symptom: string) => 
       emotionalKeywords.some(keyword => symptom.toLowerCase().includes(keyword))
     )
   ];

@@ -1,5 +1,6 @@
 import { apiClient } from "../../../core/apiClient";
 import { Assessment } from "../../types";
+import axios, { AxiosError } from "axios";
 
 /**
  * Get list of all assessments for the current user
@@ -15,11 +16,16 @@ export const getList = async (): Promise<Assessment[]> => {
     return response.data;
   } catch (error) {
     console.error("Failed to get assessments:", error);
-    console.log("Error details:", error.response ? {
-      status: error.response.status,
-      statusText: error.response.statusText,
-      data: error.response.data
-    } : "No response data");
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      console.log("Error details:", axiosError.response ? {
+        status: axiosError.response.status,
+        statusText: axiosError.response.statusText,
+        data: axiosError.response.data
+      } : "No response data");
+    } else {
+      console.log("Error details: Non-Axios error");
+    }
     throw error;
   }
 };

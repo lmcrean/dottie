@@ -6,6 +6,25 @@ import { assessmentApi, type Assessment } from "@/src/api/assessment";
 import { toast } from "sonner";
 import PageTransition from "../page-transitions";
 
+// Define type for assessment data structure
+interface AssessmentData {
+  date?: string;
+  pattern?: string;
+  age?: string;
+  cycleLength?: string;
+  periodDuration?: string;
+  flowHeaviness?: string;
+  painLevel?: string;
+  symptoms?: {
+    physical: string[];
+    emotional: string[];
+  };
+  recommendations?: {
+    title: string;
+    description: string;
+  }[];
+}
+
 export default function HistoryPage() {
   // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -122,9 +141,9 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-4">
             {assessments.map((assessment, index) => {
-              const assessmentDataWrapper = assessment?.assessment_data;
+              const assessmentDataWrapper = assessment?.assessment_data as AssessmentData | undefined;
               // Get the actual assessment data from the nested structure
-              const data = assessmentDataWrapper?.assessment_data || assessmentDataWrapper;
+              const data = (assessmentDataWrapper as any)?.assessment_data || assessmentDataWrapper;
 
               return (
                 <Link
