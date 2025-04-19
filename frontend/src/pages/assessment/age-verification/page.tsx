@@ -1,6 +1,7 @@
 "use client";
 
-import UserIcon from "@/src/components/navigation/UserIcon";
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
 import { Label } from "@/src/components/ui/!to-migrate/label";
@@ -8,13 +9,38 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/src/components/ui/!to-migrate/radio-group";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { ChevronRight, ChevronLeft, DotIcon } from "lucide-react";
+import UserIcon from "@/src/components/navigation/UserIcon";
+import { useQuickNavigate } from "@/src/hooks/useQuickNavigate";
 import PageTransition from "../page-transitions";
 
 export default function AgeVerificationPage() {
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
+  const [refTarget, setRefTarget] = useState("");
+  const location = useLocation();
+  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (!isQuickResponse) return;
+
+    const options = ["under-13", "13-17", "18-24", "25-plus"];
+    const random = options[Math.floor(Math.random() * options.length)];
+    setRefTarget(random);
+
+    setTimeout(() => {
+      if (radioRef.current) {
+        radioRef.current.click();
+      }
+    }, 100);
+
+    setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.click();
+      }
+    }, 100);
+  }, [isQuickResponse]);
 
   const handleAgeChange = (value: string) => {
     setSelectedAge(value);
@@ -26,6 +52,7 @@ export default function AgeVerificationPage() {
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
         <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
           <div className="flex items-center gap-2">
+            <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
             <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
             <span className="font-bold text-xl text-pink-500">Dottie</span>
           </div>
@@ -69,6 +96,7 @@ export default function AgeVerificationPage() {
                         value="under-13"
                         id="under-13"
                         className="text-pink-500"
+                        ref={refTarget === "under-13" ? radioRef : null}
                       />
                       <Label
                         htmlFor="under-13"
@@ -94,6 +122,7 @@ export default function AgeVerificationPage() {
                         value="13-17"
                         id="13-17"
                         className="text-pink-500"
+                        ref={refTarget === "13-17" ? radioRef : null}
                       />
                       <Label htmlFor="13-17" className="flex-1 cursor-pointer">
                         <div className="font-medium text-lg">13-17 years</div>
@@ -114,6 +143,7 @@ export default function AgeVerificationPage() {
                         value="18-24"
                         id="18-24"
                         className="text-pink-500"
+                        ref={refTarget === "18-24" ? radioRef : null}
                       />
                       <Label htmlFor="18-24" className="flex-1 cursor-pointer">
                         <div className="font-medium text-lg">18-24 years</div>
@@ -134,6 +164,7 @@ export default function AgeVerificationPage() {
                         value="25-plus"
                         id="25-plus"
                         className="text-pink-500"
+                        ref={refTarget === "25-plus" ? radioRef : null}
                       />
                       <Label
                         htmlFor="25-plus"
@@ -160,13 +191,24 @@ export default function AgeVerificationPage() {
               </Button>
             </Link>
 
-            <Link to={selectedAge ? "/assessment/cycle-length" : "#"}>
+            <Link
+              to={
+                selectedAge
+                  ? `/assessment/cycle-length${
+                      location.search.includes("mode=quickresponse")
+                        ? "?mode=quickresponse"
+                        : ""
+                    }`
+                  : "#"
+              }
+            >
               <Button
                 className={`flex items-center px-6 py-6 text-lg ${
                   selectedAge
                     ? "bg-pink-500 hover:bg-pink-600 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
+                ref={continueButtonRef}
                 disabled={!selectedAge}
               >
                 Continue
