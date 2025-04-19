@@ -8,6 +8,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-jwt-secret';
  * Checks Authorization header for Bearer token or token in cookies
  */
 export const verifyToken = (req, res, next) => {
+  // Skip token verification for OPTIONS requests (CORS preflight)
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+
   try {
     // Get token from Authorization header or cookies
     const authHeader = req.headers.authorization;

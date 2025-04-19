@@ -77,8 +77,17 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Enable pre-flight for all routes with explicit OPTIONS handler
-app.options("*", cors(corsOptions));
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
+
+// Specific handler for problematic endpoints
+app.options('/api/user/me', (req, res) => {
+  res.sendStatus(204);
+});
+
+app.options('/api/auth/signup', (req, res) => {
+  res.sendStatus(204);
+});
 
 // Routes
 app.use("/api", routes);
