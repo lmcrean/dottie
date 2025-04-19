@@ -137,14 +137,19 @@ let testAssessmentId;
 let testAssessmentData = {
   userId: 'test-user-id',
   assessmentData: {
-    age: "18-24",
-    cycleLength: "26-30",
-    periodDuration: "4-5",
-    flowHeaviness: "moderate",
-    painLevel: "moderate",
-    symptoms: {
-      physical: ["Bloating", "Headaches"],
-      emotional: ["Mood swings"]
+    createdAt: new Date().toISOString(),
+    assessment_data: {
+      date: new Date().toISOString(),
+      pattern: "Regular",
+      age: "18-24",
+      cycleLength: "26-30",
+      periodDuration: "4-5",
+      flowHeaviness: "moderate",
+      painLevel: "moderate",
+      symptoms: {
+        physical: ["Bloating", "Headaches"],
+        emotional: ["Mood swings"]
+      }
     }
   }
 };
@@ -183,14 +188,19 @@ describe("Assessment Success Integration Tests", () => {
           testAssessmentData = {
             userId: testUserId,
             assessmentData: {
-              age: "18-24",
-              cycleLength: "26-30",
-              periodDuration: "4-5",
-              flowHeaviness: "moderate",
-              painLevel: "moderate",
-              symptoms: {
-                physical: ["Bloating", "Headaches"],
-                emotional: ["Mood swings"]
+              createdAt: new Date().toISOString(),
+              assessment_data: {
+                date: new Date().toISOString(),
+                pattern: "Regular",
+                age: "18-24",
+                cycleLength: "26-30",
+                periodDuration: "4-5",
+                flowHeaviness: "moderate",
+                painLevel: "moderate",
+                symptoms: {
+                  physical: ["Bloating", "Headaches"],
+                  emotional: ["Mood swings"]
+                }
               }
             }
           };
@@ -311,11 +321,13 @@ describe("Assessment Success Integration Tests", () => {
       
       const updateData = {
         assessmentData: {
-          ...testAssessmentData.assessmentData,
-          painLevel: "severe", // Change from moderate to severe
-          symptoms: {
-            ...testAssessmentData.assessmentData.symptoms,
-            physical: [...testAssessmentData.assessmentData.symptoms.physical, "Insomnia"]
+          assessment_data: {
+            ...testAssessmentData.assessmentData.assessment_data,
+            painLevel: "severe", // Change from moderate to severe
+            symptoms: {
+              ...testAssessmentData.assessmentData.assessment_data.symptoms,
+              physical: [...testAssessmentData.assessmentData.assessment_data.symptoms.physical, "Insomnia"]
+            }
           }
         }
       };
