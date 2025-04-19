@@ -71,7 +71,7 @@ function TeardropBody() {
       {/* Eyes */}
       <group position={[0, -0.8, 0.6]}>
         {/* Left eye */}
-        <group position={[-0.25, 0, 0]}>
+        <group position={[-0.22, -0.1, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
             <meshStandardMaterial 
@@ -82,14 +82,19 @@ function TeardropBody() {
               metalness={0}
             />
           </mesh>
-          <mesh position={[0.02, -0.02, 0.08]}>
+          <mesh position={[0.03, -0.01, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
-            <meshStandardMaterial color="black" />
+            <meshStandardMaterial color="#111827" />
+          </mesh>
+          {/* Small white highlight dot */}
+          <mesh position={[0.024, 0, 0.125]}>
+            <sphereGeometry args={[0.02, 32, 32]} />
+            <meshStandardMaterial color="white" />
           </mesh>
         </group>
         
         {/* Right eye */}
-        <group position={[0.25, 0, 0]}>
+        <group position={[0.22, -0.1, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
             <meshStandardMaterial 
@@ -100,9 +105,14 @@ function TeardropBody() {
               metalness={0}
             />
           </mesh>
-          <mesh position={[0.02, -0.02, 0.08]}>
+          <mesh position={[0.02, -0.01, 0.08]}>
             <sphereGeometry args={[0.06, 32, 32]} />
-            <meshStandardMaterial color="black" />
+            <meshStandardMaterial color="#111827" />
+          </mesh>
+          {/* Add small white highlight dot */}
+          <mesh position={[0.012, 0, 0.125]}>
+            <sphereGeometry args={[0.02, 32, 32]} />
+            <meshStandardMaterial color="white" />
           </mesh>
         </group>
       </group>
@@ -138,7 +148,7 @@ function TeardropBody() {
       <group position={[0, -1.1, 0.8]} rotation={[0, 0, Math.PI]}>
         <mesh>
           <ringGeometry args={[0.15, 0.17, 32, 1, 0, Math.PI]} />
-          <meshStandardMaterial color="black" side={THREE.DoubleSide} emissive="black" emissiveIntensity={1} />
+          <meshStandardMaterial color="#111827" side={THREE.DoubleSide} emissive="#111827" emissiveIntensity={1} />
         </mesh>
       </group>
     </group>
