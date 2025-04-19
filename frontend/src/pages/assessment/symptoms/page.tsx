@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
@@ -8,12 +8,82 @@ import { Checkbox } from "@/src/components/ui/!to-migrate/checkbox";
 import { Input } from "@/src/components/ui/!to-migrate/input";
 import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
 import UserIcon from "@/src/components/navigation/UserIcon";
-import PageTransition from "../page-transitions";
+import { useQuickNavigate } from "@/src/hooks/useQuickNavigate";
 
 export default function SymptomsPage() {
   const [physicalSymptoms, setPhysicalSymptoms] = useState<string[]>([]);
   const [emotionalSymptoms, setEmotionalSymptoms] = useState<string[]>([]);
   const [otherSymptoms, setOtherSymptoms] = useState("");
+  const [refTarget, setRefTarget] = useState("");
+  const symptomRef = useRef(null);
+  const continueButtonRef = useRef(null);
+  const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (!isQuickResponse) return;
+    const symptomsList = [
+      { id: "bloating", label: "Bloating", emoji: "🫃" },
+      { id: "breast-tenderness", label: "Breast tenderness", emoji: "🤱" },
+      { id: "headaches", label: "Headaches", emoji: "🤕" },
+      { id: "back-pain", label: "Back pain", emoji: "⬇️" },
+      { id: "nausea", label: "Nausea", emoji: "🤢" },
+      { id: "fatigue", label: "Fatigue", emoji: "😴" },
+      { id: "dizziness", label: "Dizziness", emoji: "💫" },
+      { id: "acne", label: "Acne", emoji: "😖" },
+      { id: "digestive-issues", label: "Digestive issues", emoji: "🚽" },
+      { id: "sleep-disturbances", label: "Sleep disturbances", emoji: "🛌" },
+      { id: "hot-flashes", label: "Hot flashes", emoji: "🔥" },
+      { id: "joint-pain", label: "Joint pain", emoji: "🦴" },
+      { id: "irritability", label: "Irritability", emoji: "😠" },
+      { id: "mood-swings", label: "Mood swings", emoji: "🙂😢" },
+      { id: "anxiety", label: "Anxiety", emoji: "😰" },
+      { id: "depression", label: "Depression", emoji: "😔" },
+      {
+        id: "difficulty-concentrating",
+        label: "Difficulty concentrating",
+        emoji: "🧠",
+      },
+      { id: "food-cravings", label: "Food cravings", emoji: "🍫" },
+      {
+        id: "emotional-sensitivity",
+        label: "Emotional sensitivity",
+        emoji: "💔",
+      },
+      { id: "low-energy", label: "Low energy/motivation", emoji: "⚡" },
+    ];
+
+    const random =
+      symptomsList[Math.floor(Math.random() * symptomsList.length)].id;
+    setRefTarget(random);
+
+    console.log("Auto-select triggered", random);
+  }, [isQuickResponse]);
+
+  useEffect(() => {
+    if (!refTarget) return;
+
+    const timeout = setTimeout(() => {
+      if (symptomRef.current) {
+        symptomRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+
+      togglePhysicalSymptom(refTarget);
+    }, 100); // or 1000
+
+    const continueTimeout = setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.click();
+      }
+    }, 200);
+
+    return () => {
+      clearTimeout(timeout);
+      clearTimeout(continueTimeout);
+    };
+  }, [refTarget]);
 
   const togglePhysicalSymptom = (symptom: string) => {
     setPhysicalSymptoms((prev) =>
@@ -72,8 +142,6 @@ export default function SymptomsPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -137,6 +205,7 @@ export default function SymptomsPage() {
                     ? "bg-pink-50 border-pink-300"
                     : ""
                 }`}
+                ref={refTarget === symptom.id ? symptomRef : null}
                 onClick={() => togglePhysicalSymptom(symptom.id)}
               >
                 <span className="text-2xl mb-1">{symptom.emoji}</span>
@@ -180,6 +249,7 @@ export default function SymptomsPage() {
                     ? "bg-pink-50 border-pink-300"
                     : ""
                 }`}
+                ref={refTarget === symptom.id ? symptomRef : null}
                 onClick={() => toggleEmotionalSymptom(symptom.id)}
               >
                 <span className="text-2xl mb-1">{symptom.emoji}</span>
@@ -248,8 +318,11 @@ export default function SymptomsPage() {
             </Button>
           </Link>
 
-          <Link to="/assessment/results" onClick={handleContinue}>
-            <Button className="flex items-center px-6 py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white">
+          <Link to={"/assessment/results"} onClick={handleContinue}>
+            <Button
+              className="flex items-center px-6 py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white"
+              ref={continueButtonRef}
+            >
               Complete Assessment
               <ChevronRight className="h-5 w-5 ml-2" />
             </Button>
@@ -257,6 +330,5 @@ export default function SymptomsPage() {
         </div>
       </main>
     </div>
-    </PageTransition>
   );
 }
