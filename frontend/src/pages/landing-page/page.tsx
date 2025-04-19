@@ -15,7 +15,7 @@ export default function LandingPage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
+          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-auto" />
           <span className="font-bold text-xl text-pink-500">Dottie</span>
         </motion.div>
         <nav className="hidden md:flex items-center gap-6">
