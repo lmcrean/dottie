@@ -39,8 +39,8 @@ class Assessment {
       const id = uuidv4();
       const now = new Date();
 
+      // Handle in-memory test mode separately
       if (isTestMode) {
-        // Fix for test mode: correctly handle nested assessment_data structure
         let formattedData = assessmentData.assessmentData || assessmentData.assessment_data;
       
         // If assessmentData is not an object with nested assessmentData structure, create it
@@ -63,41 +63,57 @@ class Assessment {
         return assessment;
       }
 
-      // Prepare the assessment data for storage
-      // Ensure we have the right structure for the new JSON format
-      let formattedData = assessmentData.assessmentData || assessmentData.assessment_data;
+      // Extract assessment data from nested structure
+      let data = assessmentData;
       
-      // If assessmentData is not an object with nested assessmentData structure, create it
-      if (!formattedData || typeof formattedData !== 'object' || 
-          (!formattedData.assessmentData && !formattedData.assessment_data)) {
-        formattedData = {
-          createdAt: now.toISOString(),
-          assessmentData: assessmentData.assessmentData || assessmentData.assessment_data || assessmentData
-        };
+      // First level: extract assessmentData if it exists
+      if (data.assessmentData) {
+        data = data.assessmentData;
+      } else if (data.assessment_data) {
+        data = data.assessment_data;
       }
+      
+      // Second level: extract nested assessmentData if it exists
+      if (data.assessmentData) {
+        data = data.assessmentData;
+      } else if (data.assessment_data) {
+        data = data.assessment_data;
+      }
+      
+      console.log("Extracted assessment data for DB:", data);
 
-      // Convert to camelCase for the database
-      const payload = {
+      // Store the data as JSON in the assessment_data column
+      const dbPayload = {
         id,
         user_id: userId,
-        assessment_data: formattedData,
+        assessment_data: JSON.stringify(data),
         created_at: now,
         updated_at: now
       };
       
-      const inserted = await DbService.createWithJson(
-        'assessments',
-        payload,
-        ['assessment_data']
-      );
+      console.log("Inserting into database:", dbPayload);
       
-      // Return in camelCase format
+      // Insert into database with JSON field
+      const inserted = await db('assessments').insert(dbPayload);
+      
+      // Fetch the inserted assessment to return
+      const assessmentRow = await db('assessments').where('id', id).first();
+      
+      // Parse the JSON string from the database
+      let parsedData = {};
+      try {
+        parsedData = JSON.parse(assessmentRow.assessment_data);
+      } catch (error) {
+        console.error("Error parsing assessment_data JSON:", error);
+      }
+      
+      // Format the response consistently with camelCase
       return {
-        id: inserted.id,
-        userId: inserted.user_id,
-        assessmentData: inserted.assessment_data,
-        createdAt: inserted.created_at,
-        updatedAt: inserted.updated_at
+        id: assessmentRow.id,
+        userId: assessmentRow.user_id,
+        createdAt: assessmentRow.created_at,
+        updatedAt: assessmentRow.updated_at,
+        assessmentData: parsedData
       };
     } catch (error) {
       console.error('Error creating assessment:', error);

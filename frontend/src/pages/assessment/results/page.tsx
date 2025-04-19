@@ -409,30 +409,19 @@ export default function ResultsPage() {
   // Function to handle saving assessment results
   const handleSaveResults = async () => {
     setIsSaving(true);
-
     try {
-      // Make sure all required fields have values
-      if (!pattern || !age || !cycleLength) {
-        toast.error("Missing required assessment data");
-        setIsSaving(false);
-        return;
-      }
-
-      // Create assessment data object according to the Assessment interface structure
-      const assessment: Omit<Assessment, "id"> = {
-        userId: "", // This will be set by the backend
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+      // Prepare assessment data
+      const assessment = {
         assessmentData: {
           createdAt: new Date().toISOString(),
           assessmentData: {
             date: new Date().toISOString(),
-            pattern: pattern || "not-determined",
-            age: age || "Not provided",
-            cycleLength: cycleLength || "Not provided",
-            periodDuration: periodDuration || "Not provided",
-            flowHeaviness: flowLevel || "Not provided",
-            painLevel: painLevel || "Not provided",
+            pattern,
+            age,
+            cycleLength,
+            periodDuration,
+            flowHeaviness: flowLevel, // Ensure correct camelCase property name
+            painLevel,
             symptoms: {
               physical: symptoms.filter(s => s.startsWith('physical:')).map(s => s.replace('physical:', '')),
               emotional: symptoms.filter(s => s.startsWith('emotional:')).map(s => s.replace('emotional:', ''))
@@ -445,6 +434,8 @@ export default function ResultsPage() {
           }
         }
       };
+
+      console.log("Sending assessment data:", JSON.stringify(assessment, null, 2));
 
       // Use the postSend function
       const savedAssessment = await postSend(assessment.assessmentData.assessmentData);

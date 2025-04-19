@@ -6,15 +6,13 @@
 export function validateAssessmentData(assessment) {
   const errors = [];
   
-  // Only require userId for certain types of tests (backwards compatibility)
-  // Skip userId validation for the nested-format test
-  const isNestedFormatTest = assessment.assessment_data && 
-    typeof assessment.assessment_data === 'object' && 
-    assessment.assessment_data.createdAt && 
-    assessment.assessment_data.assessment_data;
+  console.log("validateAssessmentData received:", JSON.stringify(assessment, null, 2));
   
-  // Check for userId unless it's the special nested format test case
-  if (!isNestedFormatTest && !assessment.userId) {
+  // Skip userId validation when it's coming from the controller (where userId is in req.user)
+  const isFromController = !assessment.userId && assessment.assessmentData;
+
+  // Only validate userId if it's not coming from the controller
+  if (!isFromController && !assessment.userId) {
     errors.push('userId is required');
   }
   
@@ -23,54 +21,67 @@ export function validateAssessmentData(assessment) {
     // For backward compatibility, try to convert snake_case to camelCase
     if (assessment.assessment_data) {
       assessment.assessmentData = assessment.assessment_data;
+      console.log("Converted snake_case to camelCase");
     } else {
       errors.push('assessmentData is required');
+      console.log("Missing assessmentData field");
       return { isValid: errors.length === 0, errors };
     }
   }
   
   // Handle both legacy and nested structures
   let assessmentData = assessment.assessmentData;
+  console.log("Initial assessmentData:", JSON.stringify(assessmentData, null, 2));
   
   // Handle deeply nested structures - first level
   if (typeof assessmentData === 'object' && (assessmentData.assessmentData || assessmentData.assessment_data)) {
     // We found a nested structure - go one level deeper
     const innerData = assessmentData.assessmentData || assessmentData.assessment_data;
+    console.log("Found nested structure, innerData:", JSON.stringify(innerData, null, 2));
     
     // Check if we need to go one more level deep
     if (typeof innerData === 'object' && (innerData.assessmentData || innerData.assessment_data)) {
       assessmentData = innerData.assessmentData || innerData.assessment_data;
+      console.log("Found double-nested structure, final assessmentData:", JSON.stringify(assessmentData, null, 2));
     } else {
       assessmentData = innerData;
+      console.log("Using innerData as assessmentData");
     }
   }
   
-  // console.log('Validating assessment data:', assessmentData);
+  console.log("Final assessmentData to validate:", JSON.stringify(assessmentData, null, 2));
   
   // Validate required assessment fields
   if (!assessmentData.age) {
     errors.push('age is required');
+    console.log("Missing required field: age");
   } else if (!isValidAge(assessmentData.age)) {
     errors.push('Invalid age value');
+    console.log(`Invalid age value: ${assessmentData.age}`);
   }
   
   if (!assessmentData.cycleLength) {
     errors.push('cycleLength is required');
+    console.log("Missing required field: cycleLength");
   } else if (!isValidCycleLength(assessmentData.cycleLength)) {
     errors.push('Invalid cycleLength value');
+    console.log(`Invalid cycleLength value: ${assessmentData.cycleLength}`);
   }
   
   // Validate optional fields if they exist
   if (assessmentData.periodDuration && !isValidPeriodDuration(assessmentData.periodDuration)) {
     errors.push('Invalid periodDuration value');
+    console.log(`Invalid periodDuration value: ${assessmentData.periodDuration}`);
   }
   
   if (assessmentData.flowHeaviness && !isValidFlowHeaviness(assessmentData.flowHeaviness)) {
     errors.push('Invalid flowHeaviness value');
+    console.log(`Invalid flowHeaviness value: ${assessmentData.flowHeaviness}`);
   }
   
   if (assessmentData.painLevel && !isValidPainLevel(assessmentData.painLevel)) {
     errors.push('Invalid painLevel value');
+    console.log(`Invalid painLevel value: ${assessmentData.painLevel}`);
   }
   
   // Validate recommendations structure if present
@@ -78,15 +89,20 @@ export function validateAssessmentData(assessment) {
     for (const rec of assessmentData.recommendations) {
       if (!rec.title || typeof rec.title !== 'string') {
         errors.push('Each recommendation must have a title');
+        console.log("Recommendation missing title");
       }
       if (!rec.description || typeof rec.description !== 'string') {
         errors.push('Each recommendation must have a description');
+        console.log("Recommendation missing description");
       }
     }
   }
   
+  const isValid = errors.length === 0;
+  console.log(`Validation result: ${isValid ? 'VALID' : 'INVALID'}, Errors:`, errors);
+  
   return {
-    isValid: errors.length === 0,
+    isValid,
     errors
   };
 }
