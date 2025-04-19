@@ -40,10 +40,21 @@ class Assessment {
       const now = new Date();
 
       if (isTestMode) {
+        // Fix for test mode: correctly handle nested assessment_data structure
+        let formattedData = assessmentData.assessment_data;
+      
+        // If assessment_data is not an object with nested assessment_data structure, create it
+        if (!formattedData || typeof formattedData !== 'object' || !formattedData.assessment_data) {
+          formattedData = {
+            createdAt: now.toISOString(),
+            assessment_data: assessmentData.assessment_data || assessmentData
+          };
+        }
+        
         const assessment = {
           id,
           userId,
-          assessmentData,
+          assessmentData: formattedData,
           createdAt: now,
           updatedAt: now
         };
@@ -142,13 +153,32 @@ class Assessment {
           throw new Error(`Assessment with ID ${id} not found`);
         }
 
+        const existingAssessment = testAssessments[id];
+        let updatedData = existingAssessment.assessmentData;
+        
+        // Handle nested structure in test mode
+        if (updatedData && updatedData.assessment_data) {
+          // Update the inner assessment_data
+          updatedData.assessment_data = {
+            ...updatedData.assessment_data,
+            ...(assessmentData.assessment_data || assessmentData)
+          };
+        } else {
+          // Legacy format or simple structure, just update directly
+          updatedData = assessmentData;
+        }
+
         testAssessments[id] = {
-          ...testAssessments[id],
-          assessmentData,
+          ...existingAssessment,
+          assessmentData: updatedData,
           updatedAt: now
         };
 
-        return testAssessments[id];
+        // Return in the same format as the DB response would be
+        return {
+          id,
+          assessment_data: updatedData
+        };
       }
       
       // Get the existing assessment to preserve structure
