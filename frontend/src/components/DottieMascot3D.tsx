@@ -43,7 +43,7 @@ function TeardropBody() {
       latheRef.current.geometry.computeVertexNormals();
     }
   }, []);
-  
+
   // Add floating animation
   useFrame(({ clock }) => {
     if (mascotRef.current) {
@@ -58,8 +58,8 @@ function TeardropBody() {
       {/* Main body */}
       <mesh ref={latheRef} rotation={[Math.PI, 0, 0]}>
         <latheGeometry args={[points, 128]} />
-        <meshStandardMaterial 
-          color="#F50087" 
+        <meshStandardMaterial
+          color="#F50087"
           emissive="#ff4db8"
           emissiveIntensity={0.2}
           roughness={0.8}
@@ -74,8 +74,8 @@ function TeardropBody() {
         <group position={[-0.22, -0.1, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
-            <meshStandardMaterial 
-              color="white" 
+            <meshStandardMaterial
+              color="white"
               emissive="white"
               emissiveIntensity={0.3}
               roughness={1.0}
@@ -92,13 +92,13 @@ function TeardropBody() {
             <meshStandardMaterial color="white" />
           </mesh>
         </group>
-        
+
         {/* Right eye */}
         <group position={[0.22, -0.1, 0]}>
           <mesh>
             <sphereGeometry args={[0.12, 32, 32]} />
-            <meshStandardMaterial 
-              color="white" 
+            <meshStandardMaterial
+              color="white"
               emissive="white"
               emissiveIntensity={0.3}
               roughness={1.0}
@@ -122,20 +122,20 @@ function TeardropBody() {
         {/* Left cheek */}
         <mesh position={[-0.35, -0.07, 0.05]}>
           <sphereGeometry args={[0.12, 32, 32]} />
-          <meshStandardMaterial 
-            color="#ff90bb" 
+          <meshStandardMaterial
+            color="#ff90bb"
             transparent={true}
             opacity={0.3}
             roughness={1.0}
             metalness={0}
           />
         </mesh>
-        
+
         {/* Right cheek */}
         <mesh position={[0.35, -0.07, 0.05]}>
           <sphereGeometry args={[0.12, 32, 32]} />
-          <meshStandardMaterial 
-            color="#ff90bb" 
+          <meshStandardMaterial
+            color="#ff90bb"
             transparent={true}
             opacity={0.3}
             roughness={1.0}
@@ -145,12 +145,27 @@ function TeardropBody() {
       </group>
 
       {/* Smile */}
-      <group position={[0, -1.1, 0.8]} rotation={[0, 0, Math.PI]}>
-        <mesh>
-          <ringGeometry args={[0.15, 0.17, 32, 1, 0, Math.PI]} />
-          <meshStandardMaterial color="#111827" side={THREE.DoubleSide} emissive="#111827" emissiveIntensity={1} />
-        </mesh>
-      </group>
+      <group position={[0, -1.15, 0]} rotation={[0, 0, Math.PI]}>
+  {/* Use a custom curve that follows the teardrop surface */}
+  <mesh>
+    <tubeGeometry 
+      args={[
+        new THREE.CatmullRomCurve3([
+          new THREE.Vector3(-0.2, 0, 0.62),  // Left end
+          new THREE.Vector3(-0.1, 0.05, 0.68),  // Left middle
+          new THREE.Vector3(0, 0.07, 0.7),  // Center (further out)
+          new THREE.Vector3(0.1, 0.05, 0.68),  // Right middle
+          new THREE.Vector3(0.2, 0, 0.62)  // Right end
+        ]),
+        32,  // tubular segments
+        0.02,  // radius of the tube
+        8,  // radial segments
+        false
+      ]} 
+    />
+    <meshStandardMaterial color="#111827" />
+  </mesh>
+</group>
     </group>
   )
 }
@@ -162,14 +177,14 @@ function Scene() {
       <pointLight position={[10, 10, 10]} intensity={4} />
       <pointLight position={[-10, 5, 10]} intensity={3} color="#ffffff" />
       <directionalLight position={[0, 0, 5]} intensity={3} />
-      <spotLight 
-        position={[0, 5, 5]} 
-        angle={0.6} 
-        penumbra={1} 
-        intensity={2.5} 
-        castShadow 
+      <spotLight
+        position={[0, 5, 5]}
+        angle={0.6}
+        penumbra={1}
+        intensity={2.5}
+        castShadow
       />
-      <hemisphereLight 
+      <hemisphereLight
         args={["#ffffff", "#ff8ddb", 2]}
       />
       <TeardropBody />
