@@ -118,26 +118,26 @@ function TeardropBody() {
       </group>
 
       {/* Cheeks */}
-      <group position={[0, -0.9, 0.5]}>
+      <group position={[0, -0.99, 0.48]}>
         {/* Left cheek */}
-        <mesh position={[-0.35, -0.07, 0.05]}>
-          <sphereGeometry args={[0.12, 32, 32]} />
+        <mesh position={[-0.32, -0.1, 0.07]}>
+          <sphereGeometry args={[0.11, 32, 32]} />
           <meshStandardMaterial
             color="#ff90bb"
             transparent={true}
-            opacity={0.3}
+            opacity={0.4}
             roughness={1.0}
             metalness={0}
           />
         </mesh>
 
         {/* Right cheek */}
-        <mesh position={[0.35, -0.07, 0.05]}>
-          <sphereGeometry args={[0.12, 32, 32]} />
+        <mesh position={[0.32, -0.1, 0.07]}>
+          <sphereGeometry args={[0.11, 32, 32]} />
           <meshStandardMaterial
             color="#ff90bb"
             transparent={true}
-            opacity={0.3}
+            opacity={0.4}
             roughness={1.0}
             metalness={0}
           />
