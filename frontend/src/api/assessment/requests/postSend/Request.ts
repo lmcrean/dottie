@@ -6,7 +6,7 @@ import { Assessment } from "../../types";
  * @endpoint /api/assessment/send (POST)
  */
 export const postSend = async (
-  assessmentData: Omit<Assessment["assessmentData"]["assessment_data"], "date"> & { date?: string }
+  assessmentData: Omit<Assessment["assessmentData"]["assessmentData"], "date"> & { date?: string }
 ): Promise<Assessment> => {
   try {
     // Format the data to match the backend's expected nested structure
@@ -14,7 +14,7 @@ export const postSend = async (
     const formattedData = {
       assessmentData: {
         createdAt: now,
-        assessment_data: {
+        assessmentData: {
           date: assessmentData.date || now,
           ...assessmentData
         }

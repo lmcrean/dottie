@@ -141,9 +141,9 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-4">
             {assessments.map((assessment, index) => {
-              const assessmentDataWrapper = assessment?.assessment_data as AssessmentData | undefined;
+              const assessmentDataWrapper = assessment?.assessmentData as AssessmentData | undefined;
               // Get the actual assessment data from the nested structure
-              const data = (assessmentDataWrapper as any)?.assessment_data || assessmentDataWrapper;
+              const data = (assessmentDataWrapper as any)?.assessmentData || assessmentDataWrapper;
 
               return (
                 <Link

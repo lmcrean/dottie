@@ -3,7 +3,7 @@ export interface Assessment {
   userId: string;
   assessmentData: {
     createdAt: string;
-    assessment_data: {
+    assessmentData: {
       date: string;
       pattern: string;
       age: string;

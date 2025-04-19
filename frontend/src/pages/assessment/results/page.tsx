@@ -13,7 +13,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/src/pages/chat/page";
-import { FullscreenChat } from "@/src/pages/chat/FullScreenChat";
+import { FullscreenChat } from "@/src/pages/chat/FullscreenChat";
 import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
@@ -420,31 +420,34 @@ export default function ResultsPage() {
 
       // Create assessment data object according to the Assessment interface structure
       const assessment: Omit<Assessment, "id"> = {
-        user_id: "", // This will be set by the backend
-        created_at: Date.now(),
-        updated_at: Date.now(),
-        assessment_data: {
-          date: new Date().toISOString(),
-          pattern,
-          age,
-          cycleLength,
-          periodDuration: periodDuration || "Not provided",
-          flowHeaviness: flowLevel,
-          painLevel: painLevel || "Not provided",
-          symptoms: {
-            physical: symptoms || [],
-            emotional: [],
-          },
-          recommendations:
-            patternInfo?.recommendations?.map((rec) => ({
-              title: rec.title,
-              description: rec.description,
-            })) || [],
-        },
+        userId: "", // This will be set by the backend
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        assessmentData: {
+          createdAt: new Date().toISOString(),
+          assessmentData: {
+            date: new Date().toISOString(),
+            pattern: pattern || "not-determined",
+            age: age || "Not provided",
+            cycleLength: cycleLength || "Not provided",
+            periodDuration: periodDuration || "Not provided",
+            flowHeaviness: flowLevel || "Not provided",
+            painLevel: painLevel || "Not provided",
+            symptoms: {
+              physical: symptoms.filter(s => s.startsWith('physical:')).map(s => s.replace('physical:', '')),
+              emotional: symptoms.filter(s => s.startsWith('emotional:')).map(s => s.replace('emotional:', ''))
+            },
+            recommendations:
+              patternData[pattern]?.recommendations.map((rec) => ({
+                title: rec.title,
+                description: rec.description,
+              })) || [],
+          }
+        }
       };
 
       // Use the postSend function
-      const savedAssessment = await postSend(assessment);
+      const savedAssessment = await postSend(assessment.assessmentData.assessmentData);
 
       toast.success("Assessment saved successfully!");
       navigate(`/assessment/history/${savedAssessment.id}`);
@@ -637,9 +640,10 @@ export default function ResultsPage() {
       {isChatOpen &&
         (isFullscreenChatOpen ? (
           <FullscreenChat
-            onClose={() => setIsChatOpen(false)}
+            isOpen={isFullscreenChatOpen}
+            onClose={() => setIsFullscreenChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[pattern].title}. Can you tell me more about what this means?`}
+            initialMessage="Hello! I'm here to help you understand your assessment results. What would you like to know?"
           />
         ) : (
           <ChatModal

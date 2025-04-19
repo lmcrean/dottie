@@ -51,9 +51,9 @@ export default function AssessmentDetailsPage() {
         console.log("Retrieved assessment data:", data);
         console.log("Assessment data structure:", {
           keys: Object.keys(data),
-          hasAssessmentData: !!data.assessment_data,
-          assessmentDataType: typeof data.assessment_data,
-          assessmentDataKeys: data.assessment_data ? Object.keys(data.assessment_data) : 'none'
+          hasAssessmentData: !!data.assessmentData,
+          assessmentDataType: typeof data.assessmentData,
+          assessmentDataKeys: data.assessmentData ? Object.keys(data.assessmentData) : 'none'
         });
         setAssessment(data);
       } catch (error) {
@@ -101,7 +101,7 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentDataWrapper = assessment?.assessment_data as AssessmentData | undefined;
+  const assessmentDataWrapper = assessment?.assessmentData as AssessmentData | undefined;
   if (!assessmentDataWrapper) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -124,7 +124,7 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = (assessmentDataWrapper as any).assessment_data || assessmentDataWrapper;
+  const assessmentData = (assessmentDataWrapper as any).assessmentData || assessmentDataWrapper;
   console.log("Final assessment data being used:", assessmentData);
 
   const rawPhysicalSymptoms = assessmentData.symptoms?.physical || [];
