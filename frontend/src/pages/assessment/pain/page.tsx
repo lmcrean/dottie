@@ -1,18 +1,51 @@
-
 "use client";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "@/src/components/ui/!to-migrate/button"
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
-import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
-import PageTransition from "../page-transitions"
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/src/components/ui/!to-migrate/button";
+import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/src/components/ui/!to-migrate/radio-group";
+import { Label } from "@/src/components/ui/!to-migrate/label";
+import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
+import UserIcon from "@/src/components/navigation/UserIcon";
+import { useQuickNavigate } from "@/src/hooks/useQuickNavigate";
 
 export default function PainPage() {
   const [selectedPain, setSelectedPain] = useState<string | null>(null);
+  const [refTarget, setRefTarget] = useState("");
+  const location = useLocation();
+  const radioRef = useRef(null);
+  const continueButtonRef = useRef(null);
+  const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (!isQuickResponse) return;
+    const options = [
+      "no pain",
+      "mild",
+      "moderate",
+      "severe",
+      "debilitating",
+      "It varies",
+    ];
+    const random = options[Math.floor(Math.random() * options.length)];
+    setRefTarget(random);
+
+    setTimeout(() => {
+      if (radioRef.current) {
+        radioRef.current.click(); // or: radioRef.current.checked = true;
+      }
+    }, 100);
+
+    setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.click();
+      }
+    }, 100);
+  }, [isQuickResponse]);
 
   const handlePainChange = (value: string) => {
     setSelectedPain(value);
@@ -20,7 +53,6 @@ export default function PainPage() {
   };
 
   return (
-    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
@@ -57,7 +89,11 @@ export default function PainPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="no-pain" id="no-pain" />
+                  <RadioGroupItem
+                    value="no-pain"
+                    id="no-pain"
+                    ref={refTarget === "no pain" ? radioRef : null}
+                  />
                   <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
                     <div className="font-medium">No Pain</div>
                     <p className="text-sm text-gray-500">
@@ -67,7 +103,11 @@ export default function PainPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="mild" id="mild" />
+                  <RadioGroupItem
+                    value="mild"
+                    id="mild"
+                    ref={refTarget === "mild" ? radioRef : null}
+                  />
                   <Label htmlFor="mild" className="flex-1 cursor-pointer">
                     <div className="font-medium">Mild</div>
                     <p className="text-sm text-gray-500">
@@ -77,7 +117,11 @@ export default function PainPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="moderate" id="moderate" />
+                  <RadioGroupItem
+                    value="moderate"
+                    id="moderate"
+                    ref={refTarget === "moderate" ? radioRef : null}
+                  />
                   <Label htmlFor="moderate" className="flex-1 cursor-pointer">
                     <div className="font-medium">Moderate</div>
                     <p className="text-sm text-gray-500">
@@ -87,7 +131,11 @@ export default function PainPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="severe" id="severe" />
+                  <RadioGroupItem
+                    value="severe"
+                    id="severe"
+                    ref={refTarget === "severe" ? radioRef : null}
+                  />
                   <Label htmlFor="severe" className="flex-1 cursor-pointer">
                     <div className="font-medium">Severe</div>
                     <p className="text-sm text-gray-500">
@@ -97,7 +145,11 @@ export default function PainPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="debilitating" id="debilitating" />
+                  <RadioGroupItem
+                    value="debilitating"
+                    id="debilitating"
+                    ref={refTarget === "debilitating" ? radioRef : null}
+                  />
                   <Label
                     htmlFor="debilitating"
                     className="flex-1 cursor-pointer"
@@ -110,7 +162,11 @@ export default function PainPage() {
                 </div>
 
                 <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem value="varies" id="varies" />
+                  <RadioGroupItem
+                    value="varies"
+                    id="varies"
+                    ref={refTarget === "It varies" ? radioRef : null}
+                  />
                   <Label htmlFor="varies" className="flex-1 cursor-pointer">
                     <div className="font-medium">It varies</div>
                     <p className="text-sm text-gray-500">
@@ -163,7 +219,17 @@ export default function PainPage() {
             </Button>
           </Link>
 
-          <Link to={selectedPain ? "/assessment/symptoms" : "#"}>
+          <Link
+            to={
+              selectedPain
+                ? `/assessment/symptoms${
+                    location.search.includes("mode=quickresponse")
+                      ? "?mode=quickresponse"
+                      : ""
+                  }`
+                : "#"
+            }
+          >
             <Button
               className={`flex items-center px-6 py-6 text-lg ${
                 selectedPain
@@ -171,6 +237,7 @@ export default function PainPage() {
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
               disabled={!selectedPain}
+              ref={continueButtonRef}
             >
               Continue
               <ChevronRight className="h-5 w-5 ml-2" />
@@ -179,6 +246,5 @@ export default function PainPage() {
         </div>
       </main>
     </div>
-    </PageTransition>
   );
 }
