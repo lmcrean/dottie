@@ -138,11 +138,14 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-4">
             {assessments.map((assessment, index) => {
-              const data = assessment?.assessment_data;
+              const assessmentDataWrapper = assessment?.assessment_data;
+              // Get the actual assessment data from the nested structure
+              const data = assessmentDataWrapper?.assessment_data || assessmentDataWrapper;
               console.log(`Rendering assessment ${index + 1}:`, {
                 id: assessment.id,
-                data: data,
-                hasAssessmentData: !!data,
+                wrapperKeys: assessmentDataWrapper ? Object.keys(assessmentDataWrapper) : [],
+                dataKeys: data ? Object.keys(data) : [],
+                hasNestedData: !!assessmentDataWrapper?.assessment_data,
                 pattern: data?.pattern,
                 date: data?.date,
                 age: data?.age,
