@@ -68,7 +68,8 @@ export const listAssessments = async (req, res) => {
     if (userAssessments && userAssessments.length > 0) {
       return res.status(200).json(userAssessments);
     } else {
-      return res.status(404).json({ message: 'No assessments found for this user' });
+      // Return 200 OK with an empty array if no assessments found
+      return res.status(200).json([]);
     }
   } catch (error) {
     console.error('Error fetching assessments:', error);
