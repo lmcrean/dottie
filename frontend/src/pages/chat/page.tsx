@@ -103,7 +103,7 @@ export function ChatModal({
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsFullscreen(true)}
+              onClick={() => setIsFullscreen && setIsFullscreen(true)}
               className="rounded-full hover:bg-pink-100"
             >
               <Maximize2 className="h-4 w-4 text-pink-500" />
