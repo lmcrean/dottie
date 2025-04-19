@@ -1,7 +1,8 @@
 export interface Assessment {
   id: string;
-  userId: string;
-  createdAt: string;
+  user_id: string;
+  created_at: number;
+  updated_at: number;
   assessment_data: {
     date: string;
     pattern: string;
