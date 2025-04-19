@@ -13,7 +13,7 @@ function TeardropBody() {
     shape.push(new THREE.Vector2(0.18, 0.2))
     shape.push(new THREE.Vector2(0.25, 0.3))
     shape.push(new THREE.Vector2(0.35, 0.45))
-    shape.push(new THREE.Vector2(0.42, 0.58))
+    shape.push(new THREE.Vector2(0.42, 0.566))
     shape.push(new THREE.Vector2(0.5, 0.72))
     shape.push(new THREE.Vector2(0.56, 0.85))
     shape.push(new THREE.Vector2(0.62, 0.99))
@@ -25,7 +25,7 @@ function TeardropBody() {
     shape.push(new THREE.Vector2(0.65, 1.56))
     shape.push(new THREE.Vector2(0.6, 1.61))
     shape.push(new THREE.Vector2(0.5, 1.65))
-    shape.push(new THREE.Vector2(0.4, 1.67))
+    shape.push(new THREE.Vector2(0.3, 1.69))
     shape.push(new THREE.Vector2(0.3, 1.69))
     shape.push(new THREE.Vector2(0.15, 1.7))
     shape.push(new THREE.Vector2(0, 1.7))
@@ -62,7 +62,7 @@ function TeardropBody() {
           color="#F50087"
           emissive="#ff4db8"
           emissiveIntensity={0.2}
-          roughness={0.8}
+          roughness={0.6}
           metalness={0}
           flatShading={false}
         />
