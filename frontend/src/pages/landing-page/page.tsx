@@ -8,31 +8,6 @@ import ErrorBoundary from "@/src/components/ErrorBoundary";
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-4 border-b bg-white/80 backdrop-blur-sm z-50">
-        <motion.div
-          className="flex items-center gap-2"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-auto" />
-          <span className="font-bold text-xl text-pink-500">Dottie</span>
-        </motion.div>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link
-            to="/auth/sign-in"
-            className="text-gray-600 hover:text-pink-500 transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link to="/auth/sign-up">
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white">
-              Get Started
-            </Button>
-          </Link>
-        </nav>
-      </header>
-
       <main className="flex-1">
         {/* Hero Section */}
         <section className="py-20 px-6">

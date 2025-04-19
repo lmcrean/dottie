@@ -26,6 +26,8 @@ import ScrollToTop from "./components/scroll-to-top";
 import LandingPage from "./pages/landing-page/page";
 import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 
+import Header from "./components/navigation/Header";
+
 function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
@@ -43,6 +45,7 @@ function App() {
       />
       <BrowserRouter>
         <ScrollToTop />
+        <Header />
         <main className="flex min-h-screen flex-col">
           <Routes>
             <Route index element={<LandingPage />} />
