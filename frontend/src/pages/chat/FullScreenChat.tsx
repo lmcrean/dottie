@@ -6,6 +6,7 @@ import { Send, Loader2, X, Minimize2 } from "lucide-react";
 import { getAIFeedback } from "@/src/services/ai";
 import axios from "axios";
 import getHistory from "@/src/api/message/requests/getHistory";
+import { Conversation } from "@/src/api/message/utils/types";
 
 interface FullscreenChatProps {
   onClose: () => void;
@@ -39,7 +40,14 @@ export function FullscreenChat({
       try {
         const response = await getHistory();
         console.log(response);
-        setMessages(response);
+        // Transform the conversation data to match the Message type
+        const transformedMessages: Message[] = response.flatMap(conversation => 
+          conversation.messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        );
+        setMessages(transformedMessages);
       } catch (error) {
         console.error("Error fetching chat history:", error);
       }
