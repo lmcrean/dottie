@@ -17,8 +17,8 @@ export default function CycleLengthPage() {
   const [selectedLength, setSelectedLength] = useState<string | null>(null);
   const [refTarget, setRefTarget] = useState("");
   const location = useLocation();
-  const radioRef = useRef(null);
-  const continueButtonRef = useRef(null);
+  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function CycleLengthPage() {
 
     setTimeout(() => {
       if (radioRef.current) {
-        radioRef.current.click(); // or: radioRef.current.checked = true;
+        radioRef.current.click();
       }
     }, 100);
 
@@ -71,6 +71,7 @@ export default function CycleLengthPage() {
         <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
           <div className="bg-pink-500 h-2 rounded-full w-[33%]"></div>
         </div>
+        
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
@@ -83,170 +84,105 @@ export default function CycleLengthPage() {
           </div>
 
           <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="pt-8 pb-8">
-                <RadioGroup value={selectedLength || ""} onValueChange={handleLengthChange} className="mb-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="21-25" id="21-25" />
-                      <Label htmlFor="21-25" className="flex-1 cursor-pointer">
-                        <div className="font-medium">21-25 days</div>
-                        <p className="text-sm text-gray-500">Shorter than average</p>
-                      </Label>
-                    </div>
-
-        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-8 pb-8">
-            <RadioGroup
-              value={selectedLength || ""}
-              onValueChange={handleLengthChange}
-              className="mb-6"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="21-25"
-                    id="21-25"
-                    ref={refTarget === "21-25" ? radioRef : null}
-                  />
-                  <Label htmlFor="21-25" className="flex-1 cursor-pointer">
-                    <div className="font-medium">21-25 days</div>
-                    <p className="text-sm text-gray-500">
-                      Shorter than average
-                    </p>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="26-30"
-                    id="26-30"
-                    ref={refTarget === "26-30" ? radioRef : null}
-                  />
-                  <Label htmlFor="26-30" className="flex-1 cursor-pointer">
-                    <div className="font-medium">26-30 days</div>
-                    <p className="text-sm text-gray-500">Average length</p>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="31-35"
-                    id="31-35"
-                    ref={refTarget === "31-35" ? radioRef : null}
-                  />
-                  <Label htmlFor="31-35" className="flex-1 cursor-pointer">
-                    <div className="font-medium">31-35 days</div>
-                    <p className="text-sm text-gray-500">Longer than average</p>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="36-40"
-                    id="36-40"
-                    ref={refTarget === "36-40" ? radioRef : null}
-                  />
-                  <Label htmlFor="36-40" className="flex-1 cursor-pointer">
-                    <div className="font-medium">36-40 days</div>
-                    <p className="text-sm text-gray-500">Extended cycle</p>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="irregular"
-                    id="irregular"
-                    ref={refTarget === "Irregular" ? radioRef : null}
-                  />
-                  <Label htmlFor="irregular" className="flex-1 cursor-pointer">
-                    <div className="font-medium">Irregular</div>
-                    <p className="text-sm text-gray-500">
-                      Varies by more than 7 days
-                    </p>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="not-sure"
-                    id="not-sure"
-                    ref={refTarget === "I'm not sure" ? radioRef : null}
-                  />
-                  <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                    <div className="font-medium">I'm not sure</div>
-                    <p className="text-sm text-gray-500">Need help tracking</p>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                  <RadioGroupItem
-                    value="other"
-                    id="other"
-                    ref={refTarget === "Other" ? radioRef : null}
-                  />
-                  <Label htmlFor="other" className="flex-1 cursor-pointer">
-                    <div className="font-medium">Other</div>
-                    <p className="text-sm text-gray-500">
-                      Specify your own cycle length
-                    </p>
-                  </Label>
-                </div>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        <Card className="w-full mb-8 bg-pink-50 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="26-30" id="26-30" />
-                      <Label htmlFor="26-30" className="flex-1 cursor-pointer">
-                        <div className="font-medium">26-30 days</div>
-                        <p className="text-sm text-gray-500">Average length</p>
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="31-35" id="31-35" />
-                      <Label htmlFor="31-35" className="flex-1 cursor-pointer">
-                        <div className="font-medium">31-35 days</div>
-                        <p className="text-sm text-gray-500">Longer than average</p>
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="36-40" id="36-40" />
-                      <Label htmlFor="36-40" className="flex-1 cursor-pointer">
-                        <div className="font-medium">36-40 days</div>
-                        <p className="text-sm text-gray-500">Extended cycle</p>
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="irregular" id="irregular" />
-                      <Label htmlFor="irregular" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Irregular</div>
-                        <p className="text-sm text-gray-500">Varies by more than 7 days</p>
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="not-sure" id="not-sure" />
-                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                        <div className="font-medium">I'm not sure</div>
-                        <p className="text-sm text-gray-500">Need help tracking</p>
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="other" id="other" />
-                      <Label htmlFor="other" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Other</div>
-                        <p className="text-sm text-gray-500">Specify your own cycle length</p>
-                      </Label>
-                    </div>
+            <CardContent className="pt-8 pb-8">
+              <RadioGroup
+                value={selectedLength || ""}
+                onValueChange={handleLengthChange}
+                className="mb-6"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="21-25"
+                      id="21-25"
+                      ref={refTarget === "21-25" ? radioRef : null}
+                    />
+                    <Label htmlFor="21-25" className="flex-1 cursor-pointer">
+                      <div className="font-medium">21-25 days</div>
+                      <p className="text-sm text-gray-500">
+                        Shorter than average
+                      </p>
+                    </Label>
                   </div>
-                </RadioGroup>
-              </CardContent>
+
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="26-30"
+                      id="26-30"
+                      ref={refTarget === "26-30" ? radioRef : null}
+                    />
+                    <Label htmlFor="26-30" className="flex-1 cursor-pointer">
+                      <div className="font-medium">26-30 days</div>
+                      <p className="text-sm text-gray-500">Average length</p>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="31-35"
+                      id="31-35"
+                      ref={refTarget === "31-35" ? radioRef : null}
+                    />
+                    <Label htmlFor="31-35" className="flex-1 cursor-pointer">
+                      <div className="font-medium">31-35 days</div>
+                      <p className="text-sm text-gray-500">Longer than average</p>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="36-40"
+                      id="36-40"
+                      ref={refTarget === "36-40" ? radioRef : null}
+                    />
+                    <Label htmlFor="36-40" className="flex-1 cursor-pointer">
+                      <div className="font-medium">36-40 days</div>
+                      <p className="text-sm text-gray-500">Extended cycle</p>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="irregular"
+                      id="irregular"
+                      ref={refTarget === "Irregular" ? radioRef : null}
+                    />
+                    <Label htmlFor="irregular" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Irregular</div>
+                      <p className="text-sm text-gray-500">
+                        Varies by more than 7 days
+                      </p>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="not-sure"
+                      id="not-sure"
+                      ref={refTarget === "I'm not sure" ? radioRef : null}
+                    />
+                    <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
+                      <div className="font-medium">I'm not sure</div>
+                      <p className="text-sm text-gray-500">Need help tracking</p>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <RadioGroupItem
+                      value="other"
+                      id="other"
+                      ref={refTarget === "Other" ? radioRef : null}
+                    />
+                    <Label htmlFor="other" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Other</div>
+                      <p className="text-sm text-gray-500">
+                        Specify your own cycle length
+                      </p>
+                    </Label>
+                  </div>
+                </div>
+              </RadioGroup>
+            </CardContent>
           </Card>
         </div>
 

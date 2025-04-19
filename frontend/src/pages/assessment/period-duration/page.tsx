@@ -17,8 +17,8 @@ export default function PeriodDurationPage() {
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [refTarget, setRefTarget] = useState("");
   const location = useLocation();
-  const radioRef = useRef(null);
-  const continueButtonRef = useRef(null);
+  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function PeriodDurationPage() {
 
     setTimeout(() => {
       if (radioRef.current) {
-        radioRef.current.click(); // or: radioRef.current.checked = true;
+        radioRef.current.click();
       }
     }, 100);
 
