@@ -147,7 +147,12 @@ export default function SymptomsPage() {
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
         <header className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
-            <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+            <img
+              src="/assets/chatb.png"
+              alt="Dottie Logo"
+              width={32}
+              height={32}
+            />
             <span className="font-semibold text-pink-500">Dottie</span>
           </div>
           <UserIcon />
@@ -166,17 +171,21 @@ export default function SymptomsPage() {
             <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
               <div className="flex flex-col gap-3">
                 <h1 className="text-xl font-bold mb-2">Question 6 of 6</h1>
-                <h2 className="text-3xl font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
+                <h2 className="text-3xl font-semibold mb-1">
+                  Do you experience any other symptoms with your period?
+                </h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  Select all that apply. These could occur before, during, or after your
-                  period.
+                  Select all that apply. These could occur before, during, or
+                  after your period.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="mb-6">
-            <h3 className="text-base text-center font-medium mb-3">Physical symptoms</h3>
+            <h3 className="text-base text-center font-medium mb-3">
+              Physical symptoms
+            </h3>
             <div className="grid grid-cols-2 gap-3">
               {[
                 { id: "bloating", label: "Bloating", emoji: "🫃" },
@@ -228,7 +237,9 @@ export default function SymptomsPage() {
           </div>
 
           <div className="mb-6">
-            <h3 className="text-base text-center font-medium mb-3">Emotional/Mood symptoms</h3>
+            <h3 className="text-base text-center font-medium mb-3">
+              Emotional/Mood symptoms
+            </h3>
             <div className="grid grid-cols-2 gap-3">
               {[
                 { id: "irritability", label: "Irritability", emoji: "😠" },
@@ -246,7 +257,11 @@ export default function SymptomsPage() {
                   label: "Emotional sensitivity",
                   emoji: "💔",
                 },
-                { id: "low-energy", label: "Low energy/motivation", emoji: "⚡" },
+                {
+                  id: "low-energy",
+                  label: "Low energy/motivation",
+                  emoji: "⚡",
+                },
               ].map((symptom) => (
                 <div
                   key={symptom.id}
@@ -290,18 +305,18 @@ export default function SymptomsPage() {
                   </h3>
                   <p className="text-sm text-gray-600">
                     It's normal to experience several symptoms during your
-                    menstrual cycle. Hormonal fluctuations can affect your body in
-                    many ways beyond just bleeding.
+                    menstrual cycle. Hormonal fluctuations can affect your body
+                    in many ways beyond just bleeding.
                   </p>
                   <p className="text-sm text-gray-600 mt-2">
-                    However, symptoms that significantly interfere with daily life
-                    are not normal and may indicate conditions like PMDD
-                    (Premenstrual Dysphoric Disorder) or other reproductive health
-                    issues.
+                    However, symptoms that significantly interfere with daily
+                    life are not normal and may indicate conditions like PMDD
+                    (Premenstrual Dysphoric Disorder) or other reproductive
+                    health issues.
                   </p>
                   <p className="text-sm text-gray-600 mt-2">
-                    Tracking these symptoms can help your healthcare provider make
-                    better assessments.
+                    Tracking these symptoms can help your healthcare provider
+                    make better assessments.
                   </p>
                 </div>
               </div>

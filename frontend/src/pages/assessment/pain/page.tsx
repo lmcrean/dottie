@@ -58,7 +58,12 @@ export default function PainPage() {
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
         <header className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
-            <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+            <img
+              src="/assets/chatb.png"
+              alt="Dottie Logo"
+              width={32}
+              height={32}
+            />
             <span className="font-semibold text-pink-500">Dottie</span>
           </div>
           <UserIcon />
@@ -77,9 +82,12 @@ export default function PainPage() {
             <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
               <div className="flex flex-col gap-3">
                 <h1 className="text-xl font-bold mb-2">Question 5 of 6</h1>
-                <h2 className="text-3xl font-semibold mb-1">How would you rate your menstrual pain?</h2>
+                <h2 className="text-3xl font-semibold mb-1">
+                  How would you rate your menstrual pain?
+                </h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  Select the option that best describes your typical pain level during your period
+                  Select the option that best describes your typical pain level
+                  during your period
                 </p>
               </div>
             </div>
@@ -98,7 +106,10 @@ export default function PainPage() {
                         id="no-pain"
                         ref={refTarget === "no pain" ? radioRef : null}
                       />
-                      <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
+                      <Label
+                        htmlFor="no-pain"
+                        className="flex-1 cursor-pointer"
+                      >
                         <div className="font-medium">No Pain</div>
                         <p className="text-sm text-gray-500">
                           I don't experience any discomfort during my period
@@ -126,7 +137,10 @@ export default function PainPage() {
                         id="moderate"
                         ref={refTarget === "moderate" ? radioRef : null}
                       />
-                      <Label htmlFor="moderate" className="flex-1 cursor-pointer">
+                      <Label
+                        htmlFor="moderate"
+                        className="flex-1 cursor-pointer"
+                      >
                         <div className="font-medium">Moderate</div>
                         <p className="text-sm text-gray-500">
                           Uncomfortable and may require pain relief
@@ -201,7 +215,8 @@ export default function PainPage() {
                   <p className="text-sm text-gray-600 mt-2">
                     Severe pain that disrupts your life may be a sign of
                     conditions like endometriosis, adenomyosis, or uterine
-                    fibroids, and should be discussed with a healthcare provider.
+                    fibroids, and should be discussed with a healthcare
+                    provider.
                   </p>
                 </div>
               </div>

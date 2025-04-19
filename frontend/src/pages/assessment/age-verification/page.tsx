@@ -53,7 +53,11 @@ export default function AgeVerificationPage() {
         <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
           <div className="flex items-center gap-2">
             <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
-            <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
+            <img
+              src="/assets/chatb.png"
+              alt="Dottie Logo"
+              className="w-10 h-10"
+            />
             <span className="font-bold text-xl text-pink-500">Dottie</span>
           </div>
           <UserIcon />

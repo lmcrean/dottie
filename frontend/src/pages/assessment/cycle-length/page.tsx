@@ -57,7 +57,12 @@ export default function CycleLengthPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <header className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
+          <img
+            src="/assets/chatb.png"
+            alt="Dottie Logo"
+            width={32}
+            height={32}
+          />
           <span className="font-semibold text-pink-500">Dottie</span>
         </div>
         <UserIcon />
@@ -71,14 +76,17 @@ export default function CycleLengthPage() {
         <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
           <div className="bg-pink-500 h-2 rounded-full w-[33%]"></div>
         </div>
-        
+
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
               <h1 className="text-xl font-bold mb-2">Question 2 of 6</h1>
-              <h2 className="text-3xl font-semibold mb-1">How long is your menstrual cycle?</h2>
+              <h2 className="text-3xl font-semibold mb-1">
+                How long is your menstrual cycle?
+              </h2>
               <p className="text-sm text-gray-500 mb-6">
-                Count from the first day of one period to the first day of the next period
+                Count from the first day of one period to the first day of the
+                next period
               </p>
             </div>
           </div>
@@ -125,7 +133,9 @@ export default function CycleLengthPage() {
                     />
                     <Label htmlFor="31-35" className="flex-1 cursor-pointer">
                       <div className="font-medium">31-35 days</div>
-                      <p className="text-sm text-gray-500">Longer than average</p>
+                      <p className="text-sm text-gray-500">
+                        Longer than average
+                      </p>
                     </Label>
                   </div>
 
@@ -147,7 +157,10 @@ export default function CycleLengthPage() {
                       id="irregular"
                       ref={refTarget === "Irregular" ? radioRef : null}
                     />
-                    <Label htmlFor="irregular" className="flex-1 cursor-pointer">
+                    <Label
+                      htmlFor="irregular"
+                      className="flex-1 cursor-pointer"
+                    >
                       <div className="font-medium">Irregular</div>
                       <p className="text-sm text-gray-500">
                         Varies by more than 7 days
@@ -163,7 +176,9 @@ export default function CycleLengthPage() {
                     />
                     <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
                       <div className="font-medium">I'm not sure</div>
-                      <p className="text-sm text-gray-500">Need help tracking</p>
+                      <p className="text-sm text-gray-500">
+                        Need help tracking
+                      </p>
                     </Label>
                   </div>
 
