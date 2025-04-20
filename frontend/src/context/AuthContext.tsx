@@ -212,35 +212,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updatePassword = async (
     currentPassword: string,
     newPassword: string
-  ) => {
+  ): Promise<boolean> => {
     try {
-      console.log("[AuthContext Debug] Password update attempt");
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
       const response = await userApi.updatePassword({
         currentPassword,
         newPassword,
       });
-
-      console.log("[AuthContext Debug] Password update successful");
-
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: null,
-      }));
-
-      return response.success === true;
+      return true;
     } catch (error) {
-      console.error("[AuthContext Debug] Password update error:", error);
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error:
-          error instanceof Error ? error.message : "Password update failed",
-      }));
-      throw error;
-    } finally {
-      setState((prev) => ({ ...prev, isLoading: false }));
+      console.error("Failed to update password", error);
+      return false;
     }
   };
 
