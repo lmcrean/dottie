@@ -1,18 +1,52 @@
-
 "use client";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "@/src/components/ui/!to-migrate/button"
-import { Card, CardContent } from "@/src/components/ui/!to-migrate/card"
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/!to-migrate/radio-group"
-import { Label } from "@/src/components/ui/!to-migrate/label"
-import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react"
-import UserIcon from "@/src/components/navigation/UserIcon"
-import PageTransition from "../page-transitions"
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/src/components/ui/!to-migrate/button";
+import { Card, CardContent } from "@/src/components/ui/!to-migrate/card";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/src/components/ui/!to-migrate/radio-group";
+import { Label } from "@/src/components/ui/!to-migrate/label";
+import { ChevronRight, ChevronLeft, InfoIcon } from "lucide-react";
+import UserIcon from "@/src/components/navigation/UserIcon";
+import { useQuickNavigate } from "@/src/hooks/useQuickNavigate";
 
 export default function PeriodDurationPage() {
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
+  const [refTarget, setRefTarget] = useState("");
+  const location = useLocation();
+  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (!isQuickResponse) return;
+    const options = [
+      "1-3",
+      "4-5",
+      "6-7",
+      "8+",
+      "It varies",
+      "I'm not sure",
+      "Other",
+    ];
+    const random = options[Math.floor(Math.random() * options.length)];
+    setRefTarget(random);
+
+    setTimeout(() => {
+      if (radioRef.current) {
+        radioRef.current.click();
+      }
+    }, 100);
+
+    setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.click();
+      }
+    }, 100);
+  }, [isQuickResponse]);
 
   const handleDurationChange = (value: string) => {
     setSelectedDuration(value);
@@ -20,15 +54,7 @@ export default function PeriodDurationPage() {
   };
 
   return (
-    <PageTransition>
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
-          <span className="font-semibold text-pink-500">Dottie</span>
-        </div>
-        <UserIcon />
-      </header>
 
       <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
@@ -68,6 +94,105 @@ export default function PeriodDurationPage() {
                       </Label>
                     </div>
 
+        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <CardContent className="pt-8 pb-8">
+            <RadioGroup
+              value={selectedDuration || ""}
+              onValueChange={handleDurationChange}
+              className="mb-6"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="1-3"
+                    id="1-3"
+                    ref={refTarget === "1-3" ? radioRef : null}
+                  />
+                  <Label htmlFor="1-3" className="flex-1 cursor-pointer">
+                    <div className="font-medium">1-3 days</div>
+                    <p className="text-sm text-gray-500">Shorter duration</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="4-5"
+                    id="4-5"
+                    ref={refTarget === "4-5" ? radioRef : null}
+                  />
+                  <Label htmlFor="4-5" className="flex-1 cursor-pointer">
+                    <div className="font-medium">4-5 days</div>
+                    <p className="text-sm text-gray-500">Average duration</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="6-7"
+                    id="6-7"
+                    ref={refTarget === "6-7" ? radioRef : null}
+                  />
+                  <Label htmlFor="6-7" className="flex-1 cursor-pointer">
+                    <div className="font-medium">6-7 days</div>
+                    <p className="text-sm text-gray-500">Longer duration</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="8-plus"
+                    id="8-plus"
+                    ref={refTarget === "8+" ? radioRef : null}
+                  />
+                  <Label htmlFor="8-plus" className="flex-1 cursor-pointer">
+                    <div className="font-medium">8+ days</div>
+                    <p className="text-sm text-gray-500">Extended duration</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="varies"
+                    id="varies"
+                    ref={refTarget === "It varies" ? radioRef : null}
+                  />
+                  <Label htmlFor="varies" className="flex-1 cursor-pointer">
+                    <div className="font-medium">It varies</div>
+                    <p className="text-sm text-gray-500">
+                      Changes from cycle to cycle
+                    </p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="not-sure"
+                    id="not-sure"
+                    ref={refTarget === "I'm not sure" ? radioRef : null}
+                  />
+                  <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
+                    <div className="font-medium">I'm not sure</div>
+                    <p className="text-sm text-gray-500">Need help tracking</p>
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="other"
+                    id="other"
+                    ref={refTarget === "Other" ? radioRef : null}
+                  />
+                  <Label htmlFor="other" className="flex-1 cursor-pointer">
+                    <div className="font-medium">Other</div>
+                    <p className="text-sm text-gray-500">
+                      Specify your own period duration
+                    </p>
+                  </Label>
+                </div>
+              </div>
+            </RadioGroup>
+          </CardContent>
+        </Card>
                     <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem value="6-7" id="6-7" />
                       <Label htmlFor="6-7" className="flex-1 cursor-pointer">
@@ -152,13 +277,24 @@ export default function PeriodDurationPage() {
             </Button>
           </Link>
 
-          <Link to={selectedDuration ? "/assessment/flow" : "#"}>
+          <Link
+            to={
+              selectedDuration
+                ? `/assessment/flow${
+                    location.search.includes("mode=quickresponse")
+                      ? "?mode=quickresponse"
+                      : ""
+                  }`
+                : "#"
+            }
+          >
             <Button
               className={`flex items-center px-6 py-6 text-lg ${
                 selectedDuration
                   ? "bg-pink-500 hover:bg-pink-600 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
+              ref={continueButtonRef}
               disabled={!selectedDuration}
             >
               Continue
@@ -168,6 +304,5 @@ export default function PeriodDurationPage() {
         </div>
       </main>
     </div>
-    </PageTransition>
   );
 }

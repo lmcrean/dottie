@@ -51,15 +51,18 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 app.use(express.json());
 app.use(cookieParser());
 
+
+const devPorts = [3000, 3001, 5001, 5173];
+
+const devOrigins = devPorts.flatMap(port => [
+  `http://localhost:${port}`,
+  `http://127.0.0.1:${port}`
+]);
+
 // Configure CORS
 const corsOptions = {
   origin: isDevelopment
-    ? [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-      ]
+    ? devOrigins
     : [
         "https://dottie-health.vercel.app",
         "https://dottie-lmcreans-projects.vercel.app",
