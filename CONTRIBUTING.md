@@ -41,8 +41,9 @@ template provided [here](/pull_request_template.md).
 # Roles
 
 - Everyone is a contributor.
-- The Code owners have the additional role to review + merge the pull requests. Our current code owners are Laurie, Joseph, Aznim and Viola -- feel free to reach out to us on the Discord channel :)
-- Only 1 code owner approval is sufficent to merge a Pull Request according to the branch rules.
+- The Code owners have the additional role to review + merge the pull requests.
+- Our current code owners are Laurie, Joseph, Aznim and Viola -- feel free to reach out to us on the Discord channel :)
+- As per the branch rules, 1 code owner approval is sufficent to merge a Pull Request.
 
 # Code owner guidance for reviewing Pull Requests.
 
