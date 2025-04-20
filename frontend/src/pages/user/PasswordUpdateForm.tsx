@@ -16,13 +16,13 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
 import { useToast } from "@/src/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { useAuth } from "@/src/hooks/use-auth";
+import { useAuth } from "@/src/context/AuthContext";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
+import { useNavigate } from "react-router-dom";
 
 const passwordUpdateSchema = z
   .object({
@@ -55,7 +55,8 @@ export function PasswordForm({ userId }: PasswordFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
-  const { updatePassword } = useAuth();
+  const { updatePassword, logout } = useAuth();
+  const navigate = useNavigate();
 
   const [passwordVisibility, setPasswordVisibility] = useState({
     current: false,
@@ -93,6 +94,15 @@ export function PasswordForm({ userId }: PasswordFormProps) {
         title: "Password updated",
         description: "Your password has been updated successfully.",
       });
+
+      await logout(); // Logout after password update
+      toast({
+        title: "Logged out",
+        description:
+          "You have been logged out due to a password change. Please log in again.",
+      });
+      navigate("/auth/sign-in"); // Redirect to sign-in page
+      
     } catch (error) {
       console.error(error);
       toast({
