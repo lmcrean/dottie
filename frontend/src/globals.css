@@ -131,12 +131,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ec4899;
+  background: #db2777;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #db2777;
+  background: #be185d;
 }
 
 /* Smooth transitions */
@@ -156,7 +156,7 @@ body {
 
 /* Button styles */
 .btn-primary {
-  @apply bg-pink-500 text-white hover:bg-pink-600;
+  @apply bg-pink-600 text-white hover:bg-pink-700;
   transition: background-color 0.3s ease-in-out;
 }
 
@@ -167,7 +167,7 @@ body {
 
 /* Form styles */
 .form-input {
-  @apply w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50;
+  @apply w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-600 focus:ring-2 focus:ring-pink-600 focus:ring-opacity-50;
   transition: all 0.3s ease-in-out;
 }
 

@@ -126,7 +126,7 @@ export default function SignInPage() {
         <div className="flex items-center justify-end hidden">
           <Link
             to="/auth/forgot-password"
-            className="text-sm text-pink-500 hover:text-pink-600"
+            className="text-sm text-pink-600 hover:text-pink-700"
           >
             Forgot your password?
           </Link>
@@ -143,7 +143,7 @@ export default function SignInPage() {
           Don't have an account?{" "}
           <Link
             to="/auth/sign-up"
-            className="text-pink-500 hover:text-pink-600"
+            className="text-pink-600 hover:text-pink-700"
           >
             Sign up
           </Link>

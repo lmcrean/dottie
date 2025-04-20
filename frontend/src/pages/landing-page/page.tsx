@@ -28,7 +28,7 @@ export default function LandingPage(): JSX.Element {
               >
                 <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                   Your Personal
-                  <span className="text-pink-500"> Menstrual Health </span>
+                  <span className="text-pink-600"> Menstrual Health </span>
                   Companion
                 </motion.h1>
                 <p className="text-xl md:text-2xl text-gray-600">
@@ -39,7 +39,7 @@ export default function LandingPage(): JSX.Element {
                 {!isAuthenticated && (
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link to="/auth/sign-up">
-                      <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                      <Button className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white text-lg px-8 py-6">
                         Start Your Journey
                       </Button>
                     </Link>
@@ -57,7 +57,7 @@ export default function LandingPage(): JSX.Element {
                 {isAuthenticated && (
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link to="/assessment/age-verification">
-                      <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                      <Button className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white text-lg px-8 py-6">
                         Go to Assessment
                       </Button>
                     </Link>
@@ -95,7 +95,7 @@ export default function LandingPage(): JSX.Element {
                 className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors"
                 whileHover={{ scale: 1.03 }}
               >
-                <Calendar className="h-12 w-12 text-pink-500 mb-6" />
+                <Calendar className="h-12 w-12 text-pink-600 mb-6" />
                 <h3 className="font-bold text-xl mb-4">Track Your Cycle</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Monitor your menstrual patterns with precision and predict
@@ -106,7 +106,7 @@ export default function LandingPage(): JSX.Element {
                 className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors"
                 whileHover={{ scale: 1.03 }}
               >
-                <Brain className="h-12 w-12 text-pink-500 mb-6" />
+                <Brain className="h-12 w-12 text-pink-600 mb-6" />
                 <h3 className="font-bold text-xl mb-4">
                   Get Personalized Insights
                 </h3>
@@ -119,7 +119,7 @@ export default function LandingPage(): JSX.Element {
                 className="p-8 rounded-2xl bg-pink-50 hover:bg-pink-100 transition-colors"
                 whileHover={{ scale: 1.03 }}
               >
-                <BookOpen className="h-12 w-12 text-pink-500 mb-6" />
+                <BookOpen className="h-12 w-12 text-pink-600 mb-6" />
                 <h3 className="font-bold text-xl mb-4">Stay Informed</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Access comprehensive educational resources and expert advice
@@ -152,7 +152,7 @@ export default function LandingPage(): JSX.Element {
                 health journey.
               </p>
               <Link to="/auth/sign-up">
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                <Button className="bg-pink-600 hover:bg-pink-700 text-white text-lg px-8 py-6">
                   Get Started Now
                 </Button>
               </Link>
