@@ -149,7 +149,8 @@ body {
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
     transform: translateY(-4px);
   }
 }
@@ -192,4 +193,62 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Animated half-circles for the logo */
+.animate-spin-left {
+  animation: spin-left 1.5s linear infinite;
+}
+
+.animate-spin-right {
+  animation: spin-right 1.5s linear infinite;
+}
+
+@keyframes spin-left {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes spin-right {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Button styles */
+
+.btn-disabled {
+  @apply bg-gray-300 text-gray-500 cursor-not-allowed;
+}
+
+/* Input field styles */
+.input-field {
+  @apply w-full rounded-md border border-gray-300 px-4 py-2 focus:border-pink-500 focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50;
+  transition: all 0.3s ease-in-out;
+}
+
+.input-error {
+  @apply border-red-500 text-red-600;
+}
+
+/* Link styles */
+.link {
+  @apply text-pink-500 hover:text-pink-600 transition-colors;
+}
+
+/* Form container */
+.form-container {
+  @apply mt-8 space-y-6;
+}
+
+/* Password visibility toggle */
+.password-toggle {
+  @apply absolute right-3 top-3 text-gray-500 hover:text-gray-700 cursor-pointer;
 }
