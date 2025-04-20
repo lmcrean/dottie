@@ -51,10 +51,15 @@ if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/
 - please add labels! This helps newcomers in particular understand the codebase
 - ensure issues are labelled `must have` or `nice to have`
 
+![image](https://github.com/user-attachments/assets/cd23ef6b-43e7-4548-817a-0ceb89984dbf)
+![image](https://github.com/user-attachments/assets/d1059148-4eb6-433a-bad9-141b1127b104)
+
+
 <details>
 <summary>
 click to open: example issue with best practise of labelling documentation and screenshots:
 </summary>
+
 ![image](https://github.com/user-attachments/assets/7833d04a-c163-4e2e-8d08-f8bcc5d172ad)
 
 </details>
