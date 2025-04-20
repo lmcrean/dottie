@@ -27,8 +27,12 @@ import LandingPage from "./pages/landing-page/page";
 import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 
 import Header from "./components/navigation/Header";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-function App() {
+// Create a wrapper component to access auth context
+const AppContent: React.FC = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
       <Toaster
@@ -45,7 +49,7 @@ function App() {
       />
       <BrowserRouter>
         <ScrollToTop />
-        <Header />
+        <Header isLoggedIn={isAuthenticated} />
         <main className="flex min-h-screen flex-col">
           <Routes>
             <Route index element={<LandingPage />} />
@@ -83,6 +87,14 @@ function App() {
       </BrowserRouter>
     </div>
   );
-}
+};
+
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+};
 
 export default App;

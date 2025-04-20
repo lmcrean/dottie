@@ -55,13 +55,6 @@ export default function PeriodDurationPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
-          <span className="font-semibold text-pink-500">Dottie</span>
-        </div>
-        <UserIcon />
-      </header>
 
       <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">

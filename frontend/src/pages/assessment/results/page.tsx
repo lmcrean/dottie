@@ -478,13 +478,6 @@ export default function ResultsPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
-          <span className="font-bold text-xl text-pink-500">Dottie</span>
-        </div>
-        <UserIcon />
-      </header>
       <main className="flex-1 p-6 max-w-4xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-full transition-all duration-500"></div>

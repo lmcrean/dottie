@@ -4,8 +4,11 @@ import { Calendar, Brain, BookOpen } from "lucide-react";
 import { Button } from "@/src/components/ui/!to-migrate/button";
 import DottieMascot3D from "@/src/components/DottieMascot3D";
 import ErrorBoundary from "@/src/components/ErrorBoundary";
+import { useAuth } from "@/src/context/AuthContext";
 
-export default function LandingPage() {
+const LandingPage: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
       <main className="flex-1">
@@ -32,21 +35,34 @@ export default function LandingPage() {
                   Track, understand, and take control of your menstrual health
                   journey with AI-powered insights and personalized guidance.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/auth/sign-up">
-                    <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
-                      Start Your Journey
-                    </Button>
-                  </Link>
-                  <Link to="/auth/sign-in">
-                    <Button
-                      variant="outline"
-                      className="w-full sm:w-auto text-lg px-8 py-6"
-                    >
-                      Sign In
-                    </Button>
-                  </Link>
-                </div>
+
+                {!isAuthenticated && (
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Link to="/auth/sign-up">
+                      <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                        Start Your Journey
+                      </Button>
+                    </Link>
+                    <Link to="/auth/sign-in">
+                      <Button
+                        variant="outline"
+                        className="w-full sm:w-auto text-lg px-8 py-6"
+                      >
+                        Sign In
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+
+                {isAuthenticated && (
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Link to="/assessment/age-verification">
+                      <Button className="w-full sm:w-auto bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                        Go to Assessment
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </motion.div>
 
               <motion.div
@@ -114,33 +130,35 @@ export default function LandingPage() {
           </motion.div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-20 px-6 bg-gradient-to-b from-pink-50 to-white">
-          <motion.div
-            className="max-w-4xl mx-auto text-center"
-            initial={{ opacity: 0, scale: 0.5, transform: "translateY(150px)" }}
-            whileInView={{
-              opacity: 1,
-              scale: 1,
-              transform: "translateY(0)",
-            }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">
-              Ready to Take Control?
-            </h2>
-            <p className="text-xl text-gray-600 mb-12">
-              Join thousands of users who trust Dottie for their menstrual
-              health journey.
-            </p>
-            <Link to="/auth/sign-up">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
-                Get Started Now
-              </Button>
-            </Link>
-          </motion.div>
-        </section>
+        {/* CTA Section - Only show when not authenticated */}
+        {!isAuthenticated && (
+          <section className="py-20 px-6 bg-gradient-to-b from-pink-50 to-white">
+            <motion.div
+              className="max-w-4xl mx-auto text-center"
+              initial={{ opacity: 0, scale: 0.5, transform: "translateY(150px)" }}
+              whileInView={{
+                opacity: 1,
+                scale: 1,
+                transform: "translateY(0)",
+              }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-8">
+                Ready to Take Control?
+              </h2>
+              <p className="text-xl text-gray-600 mb-12">
+                Join thousands of users who trust Dottie for their menstrual
+                health journey.
+              </p>
+              <Link to="/auth/sign-up">
+                <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-6">
+                  Get Started Now
+                </Button>
+              </Link>
+            </motion.div>
+          </section>
+        )}
       </main>
 
       <footer className="bg-white border-t py-8">
@@ -150,4 +168,6 @@ export default function LandingPage() {
       </footer>
     </div>
   );
-}
+};
+
+export default LandingPage;
