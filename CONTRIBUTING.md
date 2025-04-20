@@ -4,7 +4,6 @@ We use a Draft Pull Request workflow to manage contributions effectively
 
 ![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
 
-
 # How to contribute a pull request
 
 1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab
@@ -22,26 +21,35 @@ We use a Draft Pull Request workflow to manage contributions effectively
 
 </details>
 
-# What to check before contributing a pull request
+# What to check before starting a pull request
 
 1. [Issues Tab](https://github.com/lmcrean/dottie/issues): check if someone commented on the issue already
 2. [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts
 
 It may be worth reaching out to that peer and offering to contribute an isolated issue to their branch
 
-# Including Screenshots
+# What to include before completing a pull request
 
-- be sure to **include screenshots and or screen recordings** of the new outcome before opening the issue.
-- This will help the moderators quickly understand what progress has been made.
+1. pull from `main` branch to ensure no merge conflicts between `branch` and `main`
+2. run `cd frontend; npm run build` causing no typescript errors
+3. issue # included in description
+4. add **screenshots and or screen recordings** of the new outcome
 
-<details>
-<summary>
-click to open: example pull request with # feature and screenshot:
-</summary>
+Optional: to request the admin team to manually test the branch in their IDE, you can add the label `action required: manual testing`
 
-![image](https://github.com/user-attachments/assets/2dda26a6-2306-4793-b4c9-51da1057d61f)
+template provided [here]($$$$$$$$$$)
 
-</details>
+# Code Owner guidance for reviewing PRs.
+
+If steps 1-4 have been followed it is be sufficient to review the files changed without manual testing.
+
+If steps 1-4 have not been followed then a relevant `action required` label can be added.
+
+If contributor has included `action required: manual testing` then the PR will need to be manually reproduced and tested in the IDE. Understandably, this can take longer to approve than a standard Pull Request.
+
+labels:
+
+![image](https://github.com/user-attachments/assets/094c94b7-ed90-4211-997b-116dc70ba3fa)
 
 
 # How to open a new issue
