@@ -50,14 +50,6 @@ export default function AgeVerificationPage() {
   return (
     <PageTransition>
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-        <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-          <div className="flex items-center gap-2">
-            <DotIcon className="h-6 w-6 text-pink-500 fill-pink-500" />
-            <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
-            <span className="font-bold text-xl text-pink-500">Dottie</span>
-          </div>
-          <UserIcon />
-        </header>
 
         <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
           <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
@@ -86,11 +78,10 @@ export default function AgeVerificationPage() {
                 >
                   <div className="space-y-4">
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${
-                        selectedAge === "under-13"
+                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       <RadioGroupItem
                         value="under-13"
@@ -112,11 +103,10 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${
-                        selectedAge === "13-17"
+                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "13-17"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       <RadioGroupItem
                         value="13-17"
@@ -133,11 +123,10 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${
-                        selectedAge === "18-24"
+                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "18-24"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       <RadioGroupItem
                         value="18-24"
@@ -154,11 +143,10 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${
-                        selectedAge === "25-plus"
+                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "25-plus"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       <RadioGroupItem
                         value="25-plus"
@@ -194,20 +182,18 @@ export default function AgeVerificationPage() {
             <Link
               to={
                 selectedAge
-                  ? `/assessment/cycle-length${
-                      location.search.includes("mode=quickresponse")
-                        ? "?mode=quickresponse"
-                        : ""
-                    }`
+                  ? `/assessment/cycle-length${location.search.includes("mode=quickresponse")
+                    ? "?mode=quickresponse"
+                    : ""
+                  }`
                   : "#"
               }
             >
               <Button
-                className={`flex items-center px-6 py-6 text-lg ${
-                  selectedAge
+                className={`flex items-center px-6 py-6 text-lg ${selectedAge
                     ? "bg-pink-500 hover:bg-pink-600 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                  }`}
                 ref={continueButtonRef}
                 disabled={!selectedAge}
               >
