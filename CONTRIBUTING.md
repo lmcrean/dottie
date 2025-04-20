@@ -36,7 +36,7 @@ We use a Draft Pull Request workflow to manage contributions effectively.
 
 Optional: to request the code owner team to manually test the branch in their IDE, you can add the label `action required: manual testing`
 
-template provided [here]($$$$$$$$$$)
+template provided [here](/pull_request_template.md).
 
 # Roles
 
