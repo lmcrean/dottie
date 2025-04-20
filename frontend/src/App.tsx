@@ -3,9 +3,6 @@ import "./App.css";
 import SignIn from "./pages/auth/sign-in";
 import SignUp from "./pages/auth/sign-up";
 import SignOut from "./pages/auth/signout";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-
-import Header from "./components/navigation/Header";
 
 // Import account management pages
 import ProfilePage from "./pages/user/profile";
@@ -29,9 +26,13 @@ import ScrollToTop from "./components/scroll-to-top";
 import LandingPage from "./pages/landing-page/page";
 import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 
+import Header from "./components/navigation/Header";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-function AppContent() {
-  const { isAuthenticated } = useAuth();
+// Create a wrapper component to access auth context
+const AppContent: React.FC = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
       <Toaster
@@ -86,14 +87,14 @@ function AppContent() {
       </BrowserRouter>
     </div>
   );
-}
+};
 
-function App() {
+const App: React.FC = () => {
   return (
     <AuthProvider>
       <AppContent />
     </AuthProvider>
   );
-}
+};
 
 export default App;
