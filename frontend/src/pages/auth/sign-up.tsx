@@ -17,8 +17,8 @@ export default function SignUpPage() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [cnfrmPasswordVisible, setCnfrmPasswordVisible] = useState(false);
 
-  const togglePasswordVisibility = () => setPasswordVisible((prev) => !prev);
-  const toggleCnfrmPasswordVisibility = () => setCnfrmPasswordVisible((prev) => !prev);
+  const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
+  const toggleCnfrmPasswordVisibility = () => setCnfrmPasswordVisible((prev: boolean) => !prev);
 
   const {
     register,
