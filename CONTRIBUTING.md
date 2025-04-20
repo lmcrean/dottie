@@ -48,11 +48,10 @@ click to open: example pull request with # feature and screenshot:
 
 if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/dottie/issues)
 
-- please add labels! This helps newcomers in particular understand the codebase
-- ensure issues are labelled `must have` or `nice to have`
+- please add labels! 🏷️ This helps newcomers in particular understand the codebase
+- ensure issues are labelled with either `must have`, `should have` or `nice to have`
 
-![image](https://github.com/user-attachments/assets/cd23ef6b-43e7-4548-817a-0ceb89984dbf)
-![image](https://github.com/user-attachments/assets/d1059148-4eb6-433a-bad9-141b1127b104)
+![image](https://github.com/user-attachments/assets/cd23ef6b-43e7-4548-817a-0ceb89984dbf) ![image](https://github.com/user-attachments/assets/afad2ca9-5447-48e2-b7aa-0399e3e95bb3) ![image](https://github.com/user-attachments/assets/d1059148-4eb6-433a-bad9-141b1127b104)
 
 
 <details>
@@ -65,6 +64,8 @@ click to open: example issue with best practise of labelling documentation and s
 </details>
 
 # join our discord channel 
+
+![image](https://github.com/user-attachments/assets/a48395c9-d892-440b-9882-537a16f8531e)
 
 if you haven't already:
 - https://discord.gg/FRxFFgU4cq
