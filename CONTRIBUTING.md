@@ -1,6 +1,6 @@
 # Contributing
 
-We use a Draft Pull Request workflow to manage ongoing contributions effectively
+We use a Draft Pull Request workflow to manage contributions effectively
 
 ![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
 
@@ -34,18 +34,38 @@ It may be worth reaching out to that peer and offering to contribute an isolated
 - be sure to **include screenshots and or screen recordings** of the new outcome before opening the issue.
 - This will help the moderators quickly understand what progress has been made.
 
-
-example below with # feature and screenshot:
+<details>
+<summary>
+click to open: example pull request with # feature and screenshot:
+</summary>
 
 ![image](https://github.com/user-attachments/assets/2dda26a6-2306-4793-b4c9-51da1057d61f)
+
+</details>
+
 
 # How to open a new issue
 
 if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/dottie/issues)
 
-- please add labels! This helps newcomers in particular understand the codebase
+- please add labels! 🏷️ This helps newcomers in particular understand the codebase
+- ensure issues are labelled with either `must have`, `should have` or `nice to have`
+
+![image](https://github.com/user-attachments/assets/cd23ef6b-43e7-4548-817a-0ceb89984dbf) ![image](https://github.com/user-attachments/assets/afad2ca9-5447-48e2-b7aa-0399e3e95bb3) ![image](https://github.com/user-attachments/assets/d1059148-4eb6-433a-bad9-141b1127b104)
+
+
+<details>
+<summary>
+click to open: example issue with best practise of labelling documentation and screenshots:
+</summary>
+
+![image](https://github.com/user-attachments/assets/7833d04a-c163-4e2e-8d08-f8bcc5d172ad)
+
+</details>
 
 # join our discord channel 
+
+![image](https://github.com/user-attachments/assets/a48395c9-d892-440b-9882-537a16f8531e)
 
 if you haven't already:
 - https://discord.gg/FRxFFgU4cq
