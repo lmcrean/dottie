@@ -1,13 +1,13 @@
 # Contributing Pull Requests
 
-We use a Draft Pull Request workflow to manage contributions effectively
+We use a Draft Pull Request workflow to manage contributions effectively.
 
 ![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
 
 # How to contribute a pull request
 
-1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab
-2. submit an initial commit and convert to a `pull request`
+1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab.
+2. submit an initial commit and convert to a `pull request`.
 3. convert your pull request to `draft` (illustration below)
 4. reference the existing issue with the # feature e.g. `#134`.
 5. **convert the PR to an open pull request when ready!**
@@ -23,31 +23,36 @@ We use a Draft Pull Request workflow to manage contributions effectively
 
 # What to check before starting a pull request
 
-1. [Issues Tab](https://github.com/lmcrean/dottie/issues): check if someone commented on the issue already
-2. [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts
+- [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts. *This is the central space for being aware of current progress.*
 
-It may be worth reaching out to that peer and offering to contribute an isolated issue to their branch
+*It may be worth reaching out to that peer in the PR comments and offering to contribute an isolated issue to their branch.*
 
 # What to include before completing a pull request
 
 1. pull from `main` branch to ensure no merge conflicts between `branch` and `main`
 2. run `cd frontend; npm run build` causing no typescript errors
-3. issue # included in description
+3. include # in description e.g. #243. This links the pull request to issue(s) solved
 4. add **screenshots and or screen recordings** of the new outcome
 
-Optional: to request the admin team to manually test the branch in their IDE, you can add the label `action required: manual testing`
+Optional: to request the code owner team to manually test the branch in their IDE, you can add the label `action required: manual testing`
 
 template provided [here]($$$$$$$$$$)
 
-# Code Owner guidance for reviewing PRs.
+# Roles
 
-If steps 1-4 have been followed it is be sufficient to review the files changed without manual testing.
+- Everyone is a contributor.
+- The Code owners have the additional role to review + merge the pull requests. Our current code owners are Laurie, Joseph, Aznim and Viola -- feel free to reach out to us on the Discord channel :)
+- Only 1 code owner approval is sufficent to merge a Pull Request according to the branch rules.
 
-If steps 1-4 have not been followed then a relevant `action required` label can be added.
+# Code owner guidance for reviewing Pull Requests.
 
-If contributor has included `action required: manual testing` then the PR will need to be manually reproduced and tested in the IDE. Understandably, this can take longer to approve than a standard Pull Request.
+1. Review description of PR, check for steps 1-4 mentioned above.
+2. Assign a relevant label if necessary for `action required`.
+3. Review the `files changed` tab.
+5. Approve when ready.
+6. Merge.
 
-labels:
+example labels:
 
 ![image](https://github.com/user-attachments/assets/094c94b7-ed90-4211-997b-116dc70ba3fa)
 
