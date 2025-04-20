@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -74,25 +85,37 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
   }
+
   h1 {
     @apply text-4xl md:text-5xl lg:text-6xl;
   }
+
   h2 {
     @apply text-3xl md:text-4xl;
   }
+
   h3 {
     @apply text-2xl md:text-3xl;
   }
+
   p {
     @apply leading-relaxed;
   }
+
   a {
     @apply text-primary hover:text-primary/90 transition-colors;
   }
@@ -124,6 +147,7 @@
 /* Card hover effects */
 .hover-card {
   transition: all 0.3s ease-in-out;
+
   &:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     transform: translateY(-4px);
@@ -157,6 +181,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -167,4 +192,4 @@
   .text-balance {
     text-wrap: balance;
   }
-} 
+}
