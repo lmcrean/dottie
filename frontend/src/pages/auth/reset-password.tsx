@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
         <div className="mt-8 text-center">
           <Link 
             to="/auth/forgot-password" 
-            className="text-pink-500 hover:text-pink-600"
+            className="text-pink-600 hover:text-pink-700"
           >
             Request a new password reset link
           </Link>

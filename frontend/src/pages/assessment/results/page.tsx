@@ -415,7 +415,7 @@ export default function ResultsPage() {
 
     // Trigger a re-render when these values change
     const progressElements = document.querySelectorAll(
-      ".bg-pink-500.h-2.rounded-full"
+      ".bg-pink-600.h-2.rounded-full"
     );
     if (progressElements.length > 0) {
       // This forces a style recalculation
@@ -494,7 +494,7 @@ export default function ResultsPage() {
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-pink-500 mb-2">
+              <h2 className="text-2xl font-bold text-pink-600 mb-2">
                 {patternData[pattern].title}
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -609,7 +609,7 @@ export default function ResultsPage() {
             Chat with Dottie
           </Button>
           <Button
-            className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-500 px-6 py-6 text-lg"
+            className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-600 px-6 py-6 text-lg"
             onClick={handleSaveResults}
             disabled={isSaving}
           >

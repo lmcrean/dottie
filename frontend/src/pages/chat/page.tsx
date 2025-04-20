@@ -94,8 +94,8 @@ export function ChatModal({
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 shadow-lg">
         <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white">
           <div className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-pink-500" />
-            <DialogTitle className="text-lg font-bold text-pink-500">
+            <MessageCircle className="h-5 w-5 text-pink-600" />
+            <DialogTitle className="text-lg font-bold text-pink-600">
               Chat with Dottie
             </DialogTitle>
           </div>
@@ -106,7 +106,7 @@ export function ChatModal({
               onClick={() => setIsFullscreen && setIsFullscreen(true)}
               className="rounded-full hover:bg-pink-100"
             >
-              <Maximize2 className="h-4 w-4 text-pink-500" />
+              <Maximize2 className="h-4 w-4 text-pink-600" />
             </Button>
             {/* <Button
               variant="ghost"
@@ -114,7 +114,7 @@ export function ChatModal({
               onClick={onClose}
               className="rounded-full hover:bg-pink-100"
             >
-              <X className="h-4 w-4 text-pink-500" />
+              <X className="h-4 w-4 text-pink-600" />
             </Button> */}
           </div>
         </DialogHeader>
@@ -153,7 +153,7 @@ export function ChatModal({
               {isLoading && (
                 <div className="flex justify-start animate-fadeIn">
                   <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                    <Loader2 className="h-4 w-4 animate-spin text-pink-500" />
+                    <Loader2 className="h-4 w-4 animate-spin text-pink-600" />
                   </div>
                 </div>
               )}

@@ -41,7 +41,7 @@ const UserIcon: React.FC = () => {
         <Link
           to="/assessment/history"
           title="Assessment History"
-          className="hover:text-pink-500 text-sm font-medium"
+          className="hover:text-pink-600 text-sm font-medium"
         >
           <List className="h-5 w-5" />
         </Link>
@@ -49,7 +49,7 @@ const UserIcon: React.FC = () => {
       <Link
         to="/account/profile"
         title="Profile"
-        className="hover:text-pink-500"
+        className="hover:text-pink-600"
       >
         <User className="h-5 w-5" />
       </Link>

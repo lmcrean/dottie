@@ -37,7 +37,7 @@ const Header = ({
                             whileTap={{ scale: 0.95 }}
                         >
                             <img src={logoSrc} alt={`${appName} Logo`} className="w-6 h-auto" />
-                            <span className="font-bold text-xl text-pink-500 pl-2">{appName}</span>
+                            <span className="font-bold text-xl text-pink-600 pl-2">{appName}</span>
                         </motion.div>
                     </Link>
                     {/* Desktop Navigation - shown when not mobile */}
@@ -47,7 +47,7 @@ const Header = ({
                                 <>
                                     <Link
                                         to="/auth/sign-in"
-                                        className="text-gray-600 hover:text-pink-500 transition-colors"
+                                        className="text-gray-600 hover:text-pink-600 transition-colors"
                                     >
                                         Sign In
                                     </Link>
@@ -94,7 +94,7 @@ const Header = ({
                                 <div className="flex flex-col py-2 justify-center items-center">
                                     <Link
                                         to="/auth/sign-in"
-                                        className="text-gray-600 hover:text-pink-500 transition-colors py-2"
+                                        className="text-gray-600 hover:text-pink-600 transition-colors py-2"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         Sign In

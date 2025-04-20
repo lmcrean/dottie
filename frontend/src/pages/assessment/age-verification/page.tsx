@@ -86,7 +86,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="under-13"
                         id="under-13"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "under-13" ? radioRef : null}
                       />
                       <Label
@@ -111,7 +111,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="13-17"
                         id="13-17"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "13-17" ? radioRef : null}
                       />
                       <Label htmlFor="13-17" className="flex-1 cursor-pointer">
@@ -131,7 +131,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="18-24"
                         id="18-24"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "18-24" ? radioRef : null}
                       />
                       <Label htmlFor="18-24" className="flex-1 cursor-pointer">
@@ -151,7 +151,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="25-plus"
                         id="25-plus"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "25-plus" ? radioRef : null}
                       />
                       <Label
