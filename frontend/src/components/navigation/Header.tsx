@@ -11,11 +11,11 @@ interface HeaderProps {
     isLoggedIn?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({
+const Header = ({
     logoSrc = "/logo-mascot.png",
     appName = "Dottie",
     isLoggedIn = false
-}) => {
+}: HeaderProps) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const isMobile = useIsMobile();
 

@@ -6,7 +6,7 @@ import DottieMascot3D from "@/src/components/DottieMascot3D";
 import ErrorBoundary from "@/src/components/ErrorBoundary";
 import { useAuth } from "@/src/context/AuthContext";
 
-const LandingPage: React.FC = () => {
+export default function LandingPage(): JSX.Element {
   const { isAuthenticated } = useAuth();
 
   return (
@@ -168,6 +168,4 @@ const LandingPage: React.FC = () => {
       </footer>
     </div>
   );
-};
-
-export default LandingPage;
+}
