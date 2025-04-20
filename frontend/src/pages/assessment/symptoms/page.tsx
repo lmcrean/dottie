@@ -319,7 +319,7 @@ export default function SymptomsPage() {
 
             <Link to="/assessment/results" onClick={handleContinue}>
               <Button
-                className="flex items-center px-6 py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white"
+                className="flex items-center px-6 py-6 text-lg bg-pink-600 hover:bg-pink-700 text-white"
                 ref={continueButtonRef}
               >
                 Finish Assessment

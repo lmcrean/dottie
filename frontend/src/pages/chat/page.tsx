@@ -142,7 +142,7 @@ export function ChatModal({
                   <div
                     className={`max-w-[80%] rounded-xl p-3 ${
                       message.role === "user"
-                        ? "bg-pink-500 text-white"
+                        ? "bg-pink-600 text-white"
                         : "bg-gray-50 text-gray-900 border border-gray-100"
                     }`}
                   >
@@ -171,7 +171,7 @@ export function ChatModal({
             <Button
               onClick={() => handleSend()}
               disabled={isLoading}
-              className="rounded-full bg-pink-500 hover:bg-pink-600 text-white"
+              className="rounded-full bg-pink-600 hover:bg-pink-700 text-white"
             >
               <Send className="h-4 w-4" />
             </Button>

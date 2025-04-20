@@ -290,7 +290,7 @@ export default function PeriodDurationPage() {
             <Button
               className={`flex items-center px-6 py-6 text-lg ${
                 selectedDuration
-                  ? "bg-pink-500 hover:bg-pink-600 text-white"
+                  ? "bg-pink-600 hover:bg-pink-700 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
               ref={continueButtonRef}

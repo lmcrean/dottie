@@ -602,7 +602,7 @@ export default function ResultsPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Button
-            className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-6 text-lg"
+            className="flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-6 py-6 text-lg"
             onClick={() => setIsChatOpen(true)}
           >
             <MessageCircle className="h-5 w-5" />

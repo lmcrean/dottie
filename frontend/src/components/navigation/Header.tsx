@@ -52,7 +52,7 @@ const Header = ({
                                         Sign In
                                     </Link>
                                     <Link to="/auth/sign-up">
-                                        <Button className="bg-pink-500 hover:bg-pink-600 text-white">
+                                        <Button className="bg-pink-600 hover:bg-pink-700 text-white">
                                             Get Started
                                         </Button>
                                     </Link>
@@ -104,7 +104,7 @@ const Header = ({
                                         className="py-2"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
-                                        <Button className="bg-pink-500 hover:bg-pink-600 text-white">
+                                        <Button className="bg-pink-600 hover:bg-pink-700 text-white">
                                             Get Started
                                         </Button>
                                     </Link>
