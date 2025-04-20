@@ -151,6 +151,7 @@ export default function SymptomsPage() {
             <div className="text-sm text-gray-500">100% Complete</div>
           </div>
 
+
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
             <div className="bg-pink-500 h-2 rounded-full w-full"></div>
           </div>
@@ -164,6 +165,8 @@ export default function SymptomsPage() {
                   Select all that apply. These could occur before, during, or after your
                   period.
                 </p>
+                <img src="/assessmentAssets/othersymptoms.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
+
               </div>
             </div>
           </div>

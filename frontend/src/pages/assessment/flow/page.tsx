@@ -76,6 +76,7 @@ export default function FlowPage() {
                 <p className="text-sm text-gray-500 mb-6">
                   Select the option that best describes your typical flow heaviness
                 </p>
+                <img src="/assessmentAssets/flow.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
               </div>
             </div>
 

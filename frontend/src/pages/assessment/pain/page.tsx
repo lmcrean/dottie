@@ -74,6 +74,7 @@ export default function PainPage() {
                 <p className="text-sm text-gray-500 mb-6">
                   Select the option that best describes your typical pain level during your period
                 </p>
+                <img src="/assessmentAssets/pain.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
               </div>
             </div>
 
@@ -100,6 +101,7 @@ export default function PainPage() {
                     </div>
 
                     <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+
                       <RadioGroupItem
                         value="mild"
                         id="mild"
