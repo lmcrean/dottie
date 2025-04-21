@@ -28,11 +28,10 @@ import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 
 import Header from "./components/navigation/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 function AppContent(): JSX.Element {
   const { isAuthenticated, isLoading } = useAuth();
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
       <Toaster
@@ -56,20 +55,18 @@ function AppContent(): JSX.Element {
             <Route path="/test-page" element={<TestPage />} />
 
             {/* Assessment routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/assessment">
-                <Route index element={<LandingPage />} />
-                <Route path="age-verification" element={<AgeVerification />} />
-                <Route path="cycle-length" element={<CycleLength />} />
-                <Route path="period-duration" element={<PeriodDuration />} />
-                <Route path="flow" element={<FlowLevel />} />
-                <Route path="pain" element={<PainLevel />} />
-                <Route path="symptoms" element={<Symptoms />} />
-                <Route path="results" element={<Results />} />
-                <Route path="resources" element={<ResourcesPage />} />
-                <Route path="history" element={<HistoryPage />} />
-                <Route path="history/:id" element={<DetailsPage />} />
-              </Route>
+            <Route path="/assessment">
+              <Route index element={<LandingPage />} />
+              <Route path="age-verification" element={<AgeVerification />} />
+              <Route path="cycle-length" element={<CycleLength />} />
+              <Route path="period-duration" element={<PeriodDuration />} />
+              <Route path="flow" element={<FlowLevel />} />
+              <Route path="pain" element={<PainLevel />} />
+              <Route path="symptoms" element={<Symptoms />} />
+              <Route path="results" element={<Results />} />
+              <Route path="resources" element={<ResourcesPage />} />
+              <Route path="history" element={<HistoryPage />} />
+              <Route path="history/:id" element={<DetailsPage />} />
             </Route>
 
             {/* Other routes */}
@@ -81,19 +78,15 @@ function AppContent(): JSX.Element {
             <Route path="/auth/signout" element={<SignOut />} />
 
             {/* Account management routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/account/profile" element={<ProfilePage />} />
-            </Route>
-            <Route element={<ProtectedRoute />}>
-              <Route path="/account/password" element={<PasswordPage />} />
-            </Route>
+            <Route path="/account/profile" element={<ProfilePage />} />
+            <Route path="/account/password" element={<PasswordPage />} />
           </Routes>
           <UITestPageSwitch />
         </main>
       </BrowserRouter>
     </div>
   );
-}
+};
 
 export default function App(): JSX.Element {
   return (
