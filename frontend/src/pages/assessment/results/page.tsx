@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
 import UserIcon from "@/src/components/navigation/UserIcon";
+import { apiClient } from "@/src/api/core/apiClient";
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern =
@@ -441,8 +442,6 @@ export default function ResultsPage() {
       console.log("Manually formatted data to send:", JSON.stringify(formattedData, null, 2));
 
       // Bypass the postSend function and use the apiClient directly
-      const { apiClient } = await import("@/src/api/core/apiClient");
-      
       const response = await apiClient.post("/api/assessment/send", formattedData);
       console.log("Direct API response:", response.status, response.data);
 
