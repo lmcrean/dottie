@@ -91,7 +91,7 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Welcome Back</h1>
-       <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc={'/logo-mascot.png'}/>
+       <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput

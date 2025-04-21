@@ -1,19 +1,33 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
 
-{/* Logo with animation */}
-const AnimatedLogo = ({
+interface AnimatedLogoProps {
+  size?: number;
+  className?: string;
+  borderColor?: string;
+  logoSrc?: string;
+  logoSize?: number;
+}
+
+/* Logo with animation */
+const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   size = 80,
-  className = '',
-  borderColor = 'border-pink-600',
-  logoSrc = '/logo-mascot.png',
+  className = "",
+  borderColor = "border-pink-600",
+  logoSrc = "/logo-mascot.png",
   logoSize = 48,
 }) => {
   return (
     <div className={`flex justify-center items-center mb-6 ${className} `}>
-      <div className="relative flex justify-center items-center" style={{ width: size, height: size }}>
-        <div className={`absolute w-full h-full border-t-4 rounded-full animate-spin-left ${borderColor}`}></div>
-        <div className={`absolute w-full h-full border-b-4 rounded-full animate-spin-right ${borderColor}`}></div>
+      <div
+        className="relative flex justify-center items-center"
+        style={{ width: size, height: size }}
+      >
+        <div
+          className={`absolute w-full h-full border-t-4 rounded-full animate-spin-left ${borderColor}`}
+        ></div>
+        <div
+          className={`absolute w-full h-full border-b-4 rounded-full animate-spin-right ${borderColor}`}
+        ></div>
 
         {/* Logo */}
         <img
