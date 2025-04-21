@@ -62,7 +62,7 @@ export default function AgeVerificationPage() {
                 <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
                 <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
                 <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
-                <img src="/assessmentAssets/age" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
+                <img src="/assessmentAssets/age.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
               </div>
               <div>
               </div>
