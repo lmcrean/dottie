@@ -22,11 +22,11 @@ export default function ForgotPasswordPage() {
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
           Remembered your password?{" "}
-          <Link to="/auth/sign-in" className="text-pink-500 hover:text-pink-600">
+          <Link to="/auth/sign-in" className="text-sm text-accent-foreground hover:text-accent-foreground/80">
             Back to sign in
           </Link>
         </p>
       </div>
     </AuthLayout>
   );
-} 
+}

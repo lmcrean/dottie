@@ -6,11 +6,12 @@ import { apiClient } from "../../../core/apiClient";
  */
 export const deleteUser = async (userId: string): Promise<void> => {
   try {
-    await apiClient.delete(`/api/user/${userId}`);
+    // Reafctoring /api/user/${userId}to /api/user/me
+    await apiClient.delete(`/api/user/me`);
   } catch (error) {
     console.error(`Failed to delete user with ID ${userId}:`, error);
     throw error;
   }
 };
 
-export default deleteUser; 
+export default deleteUser;

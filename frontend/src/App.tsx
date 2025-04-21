@@ -26,7 +26,12 @@ import ScrollToTop from "./components/scroll-to-top";
 import LandingPage from "./pages/landing-page/page";
 import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 
-function App() {
+import Header from "./components/navigation/Header";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+
+function AppContent(): JSX.Element {
+  const { isAuthenticated, isLoading } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
       <Toaster
@@ -43,6 +48,7 @@ function App() {
       />
       <BrowserRouter>
         <ScrollToTop />
+        <Header isLoggedIn={isAuthenticated} />
         <main className="flex min-h-screen flex-col">
           <Routes>
             <Route index element={<LandingPage />} />
@@ -80,6 +86,12 @@ function App() {
       </BrowserRouter>
     </div>
   );
-}
+};
 
-export default App;
+export default function App(): JSX.Element {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
