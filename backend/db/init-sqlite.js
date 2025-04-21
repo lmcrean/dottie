@@ -13,7 +13,7 @@ async function initializeSQLiteDatabase() {
     // Ensure assessment table uses JSON schema
     console.log('Ensuring assessment table uses JSON schema...');
     const columnInfo = await db('assessments').columnInfo();
-    if (!columnInfo.hasOwnProperty('assessment_data')) {
+    if (!columnInfo.hasOwnProperty('assessmentData')) {
       console.log('Applying JSON schema to assessments table...');
       await updateAssessmentToJsonSchema(db);
       console.log('JSON schema applied successfully.');

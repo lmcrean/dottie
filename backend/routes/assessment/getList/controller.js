@@ -46,8 +46,8 @@ export const listAssessments = async (req, res) => {
             };
             
             console.log(`Formatting assessment ${assessment.id}:`, {
-              hasAssessmentData: !!assessment.assessment_data,
-              assessmentDataType: typeof assessment.assessment_data
+              hasAssessmentData: !!assessment.assessmentData,
+              assessmentDataType: typeof assessment.assessmentData
             });
             
             return {
@@ -98,7 +98,7 @@ export const listAssessments = async (req, res) => {
         user_id: assessment.userId,
         created_at: assessment.createdAt,
         updated_at: assessment.updatedAt,
-        assessment_data: assessment.assessmentData
+        assessmentData: assessment.assessmentData
       }));
       
       console.log('Sending formatted assessments, count:', formattedAssessments.length);

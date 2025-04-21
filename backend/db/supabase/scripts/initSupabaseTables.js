@@ -78,11 +78,11 @@ async function verifyConnection() {
     6. assessments table:
        - id: uuid or char(36) PRIMARY KEY
        - user_id: text NOT NULL (FK to users.id)
-       - assessment_data: text NOT NULL (JSON string of all assessment fields)
+       - assessmentData: text NOT NULL (JSON string of all assessment fields)
        - created_at: timestamp NOT NULL (default now())
        - updated_at: timestamp NOT NULL (auto-updated on change)
     
-    7. assessment_data (JSON) structure
+    7. assessmentData (JSON) structure
        - date: string (ISO format timestamp)
        - pattern: string 
        - age: string 

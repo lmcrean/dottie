@@ -20,7 +20,7 @@ class Assessment {
       if (isTestMode && testAssessments[id]) {
         return testAssessments[id];
       }
-      return await DbService.findByIdWithJson('assessments', id, ['assessment_data']);
+      return await DbService.findByIdWithJson('assessments', id, ['assessmentData']);
     } catch (error) {
       console.error('Error finding assessment by ID:', error);
       throw error;
@@ -41,14 +41,14 @@ class Assessment {
 
       // Handle in-memory test mode separately
       if (isTestMode) {
-        let formattedData = assessmentData.assessmentData || assessmentData.assessment_data;
+        let formattedData = assessmentData.assessmentData || assessmentData.assessmentData;
       
         // If assessmentData is not an object with nested assessmentData structure, create it
         if (!formattedData || typeof formattedData !== 'object' || 
-            (!formattedData.assessmentData && !formattedData.assessment_data)) {
+            (!formattedData.assessmentData && !formattedData.assessmentData)) {
           formattedData = {
             createdAt: now.toISOString(),
-            assessmentData: assessmentData.assessmentData || assessmentData.assessment_data || assessmentData
+            assessmentData: assessmentData.assessmentData || assessmentData.assessmentData || assessmentData
           };
         }
         
@@ -69,24 +69,24 @@ class Assessment {
       // First level: extract assessmentData if it exists
       if (data.assessmentData) {
         data = data.assessmentData;
-      } else if (data.assessment_data) {
-        data = data.assessment_data;
+      } else if (data.assessmentData) {
+        data = data.assessmentData;
       }
       
       // Second level: extract nested assessmentData if it exists
       if (data.assessmentData) {
         data = data.assessmentData;
-      } else if (data.assessment_data) {
-        data = data.assessment_data;
+      } else if (data.assessmentData) {
+        data = data.assessmentData;
       }
       
       console.log("Extracted assessment data for DB:", data);
 
-      // Store the data as JSON in the assessment_data column
+      // Store the data as JSON in the assessmentData column
       const dbPayload = {
         id,
         user_id: userId,
-        assessment_data: JSON.stringify(data),
+        assessmentData: JSON.stringify(data),
         created_at: now,
         updated_at: now
       };
@@ -102,9 +102,9 @@ class Assessment {
       // Parse the JSON string from the database
       let parsedData = {};
       try {
-        parsedData = JSON.parse(assessmentRow.assessment_data);
+        parsedData = JSON.parse(assessmentRow.assessmentData);
       } catch (error) {
-        console.error("Error parsing assessment_data JSON:", error);
+        console.error("Error parsing assessmentData JSON:", error);
       }
       
       // Format the response consistently with camelCase
@@ -142,7 +142,7 @@ class Assessment {
         'assessments',
         'user_id',
         userId,
-        ['assessment_data'],
+        ['assessmentData'],
         'created_at'
       );
       
@@ -150,21 +150,21 @@ class Assessment {
       if (assessments.length > 0) {
         console.log('First assessment raw structure:', {
           keys: Object.keys(assessments[0]),
-          hasAssessmentData: !!assessments[0].assessment_data,
-          assessmentDataType: typeof assessments[0].assessment_data
+          hasAssessmentData: !!assessments[0].assessmentData,
+          assessmentDataType: typeof assessments[0].assessmentData
         });
       }
       
       // Format the response to ensure consistent structure
       const formattedAssessments = assessments.map(assessment => {
         console.log(`Formatting assessment ${assessment.id}:`, {
-          hasAssessmentData: !!assessment.assessment_data
+          hasAssessmentData: !!assessment.assessmentData
         });
         
         return {
           id: assessment.id,
           userId: assessment.user_id,
-          assessmentData: assessment.assessment_data,
+          assessmentData: assessment.assessmentData,
           createdAt: assessment.created_at,
           updatedAt: assessment.updated_at
         };
@@ -207,11 +207,11 @@ class Assessment {
         let updatedData = existingAssessment.assessmentData;
         
         // Handle nested structure in test mode
-        if (updatedData && updatedData.assessment_data) {
-          // Update the inner assessment_data
-          updatedData.assessment_data = {
-            ...updatedData.assessment_data,
-            ...(assessmentData.assessment_data || assessmentData)
+        if (updatedData && updatedData.assessmentData) {
+          // Update the inner assessmentData
+          updatedData.assessmentData = {
+            ...updatedData.assessmentData,
+            ...(assessmentData.assessmentData || assessmentData)
           };
         } else {
           // Legacy format or simple structure, just update directly
@@ -227,7 +227,7 @@ class Assessment {
         // Return in the same format as the DB response would be
         return {
           id,
-          assessment_data: updatedData
+          assessmentData: updatedData
         };
       }
       
@@ -241,11 +241,11 @@ class Assessment {
       let updatedData = existingAssessment.assessmentData;
       
       // If we have the nested structure
-      if (updatedData && updatedData.assessment_data) {
-        // Update the inner assessment_data
-        updatedData.assessment_data = {
-          ...updatedData.assessment_data,
-          ...(assessmentData.assessment_data || assessmentData)
+      if (updatedData && updatedData.assessmentData) {
+        // Update the inner assessmentData
+        updatedData.assessmentData = {
+          ...updatedData.assessmentData,
+          ...(assessmentData.assessmentData || assessmentData)
         };
       } else {
         // Legacy format or simple structure, just update directly
@@ -256,10 +256,10 @@ class Assessment {
         'assessments',
         id,
         { 
-          assessment_data: updatedData, 
+          assessmentData: updatedData, 
           updated_at: now 
         },
-        ['assessment_data']
+        ['assessmentData']
       );
     } catch (error) {
       console.error('Error updating assessment:', error);

@@ -17,16 +17,16 @@ async function fixAssessmentSchema() {
       const columnInfo = await db('assessments').columnInfo();
       console.log('Current columns in assessments table:', Object.keys(columnInfo));
       
-      // Check if assessment_data column exists
-      const hasJsonColumn = columnInfo.hasOwnProperty('assessment_data');
-      console.log(`Has assessment_data column: ${hasJsonColumn}`);
+      // Check if assessmentData column exists
+      const hasJsonColumn = columnInfo.hasOwnProperty('assessmentData');
+      console.log(`Has assessmentData column: ${hasJsonColumn}`);
       
       if (!hasJsonColumn) {
         console.log('Applying assessment JSON schema migration...');
         await updateAssessmentToJsonSchema(db);
         console.log('Migration completed successfully!');
       } else {
-        console.log('Schema already has assessment_data column, no migration needed.');
+        console.log('Schema already has assessmentData column, no migration needed.');
       }
     } else {
       console.log('Creating assessments table with JSON schema...');

@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS public.chat_messages (
 CREATE TABLE IF NOT EXISTS public.assessments (
   id UUID PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES public.users(id),
-  assessment_data JSONB NOT NULL,
+  assessmentData JSONB NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

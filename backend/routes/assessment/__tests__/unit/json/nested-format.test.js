@@ -12,9 +12,9 @@ describe('Assessment with Nested JSON Format', () => {
 
   // Sample assessment with new nested format
   const nestedAssessmentData = {
-    assessment_data: {
+    assessmentData: {
       createdAt: '2025-04-17T09:31:10.925Z',
-      assessment_data: {
+      assessmentData: {
         date: '2025-04-17T09:31:10.925Z',
         pattern: 'Regular',
         age: '18-24',
@@ -56,10 +56,10 @@ describe('Assessment with Nested JSON Format', () => {
     
     // Check that the nested format is preserved
     expect(created.assessmentData).toBeDefined();
-    expect(created.assessmentData.assessment_data).toBeDefined();
-    expect(created.assessmentData.assessment_data.age).toBe('18-24');
-    expect(created.assessmentData.assessment_data.cycleLength).toBe('26-30');
-    expect(created.assessmentData.assessment_data.recommendations).toHaveLength(2);
+    expect(created.assessmentData.assessmentData).toBeDefined();
+    expect(created.assessmentData.assessmentData.age).toBe('18-24');
+    expect(created.assessmentData.assessmentData.cycleLength).toBe('26-30');
+    expect(created.assessmentData.assessmentData.recommendations).toHaveLength(2);
   });
 
   test('should retrieve assessment with nested format', async () => {
@@ -71,15 +71,15 @@ describe('Assessment with Nested JSON Format', () => {
     
     // Check that the nested format is preserved
     expect(retrieved.assessmentData).toBeDefined();
-    expect(retrieved.assessmentData.assessment_data).toBeDefined();
-    expect(retrieved.assessmentData.assessment_data.age).toBe('18-24');
-    expect(retrieved.assessmentData.assessment_data.symptoms.physical).toContain('Bloating');
+    expect(retrieved.assessmentData.assessmentData).toBeDefined();
+    expect(retrieved.assessmentData.assessmentData.age).toBe('18-24');
+    expect(retrieved.assessmentData.assessmentData.symptoms.physical).toContain('Bloating');
   });
 
   test('should update assessment with nested format', async () => {
     // Update just one field in the nested structure
     const updateData = {
-      assessment_data: {
+      assessmentData: {
         age: '25-plus',
         symptoms: {
           physical: ['Bloating', 'Headaches', 'Cramps'],
@@ -94,12 +94,12 @@ describe('Assessment with Nested JSON Format', () => {
     expect(updated.id).toBe(assessmentId);
     
     // Check that the nested format is preserved but updated
-    expect(updated.assessment_data).toBeDefined();
-    expect(updated.assessment_data.assessment_data).toBeDefined();
-    expect(updated.assessment_data.assessment_data.age).toBe('25-plus');
-    expect(updated.assessment_data.assessment_data.cycleLength).toBe('26-30'); // Unchanged
-    expect(updated.assessment_data.assessment_data.symptoms.physical).toContain('Cramps');
-    expect(updated.assessment_data.assessment_data.symptoms.emotional).toContain('Mood swings');
+    expect(updated.assessmentData).toBeDefined();
+    expect(updated.assessmentData.assessmentData).toBeDefined();
+    expect(updated.assessmentData.assessmentData.age).toBe('25-plus');
+    expect(updated.assessmentData.assessmentData.cycleLength).toBe('26-30'); // Unchanged
+    expect(updated.assessmentData.assessmentData.symptoms.physical).toContain('Cramps');
+    expect(updated.assessmentData.assessmentData.symptoms.emotional).toContain('Mood swings');
   });
 
   test('should delete assessment with nested format', async () => {

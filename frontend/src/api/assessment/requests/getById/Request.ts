@@ -23,9 +23,9 @@ export const getById = async (id: string): Promise<Assessment> => {
     console.log("Assessment response status:", response.status);
     console.log("Assessment data structure:", {
       keys: Object.keys(response.data as object),
-      hasAssessmentData: !!(response.data as any).assessment_data,
-      assessmentDataType: typeof (response.data as any).assessment_data,
-      assessmentDataKeys: (response.data as any).assessment_data ? Object.keys((response.data as any).assessment_data as object) : 'none'
+      hasAssessmentData: !!(response.data as any).assessmentData,
+      assessmentDataType: typeof (response.data as any).assessmentData,
+      assessmentDataKeys: (response.data as any).assessmentData ? Object.keys((response.data as any).assessmentData as object) : 'none'
     });
     
     // Transform the response to match the expected format

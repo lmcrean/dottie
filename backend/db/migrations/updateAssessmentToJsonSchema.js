@@ -21,7 +21,7 @@ export async function updateAssessmentToJsonSchema(db) {
     await db.schema.createTable('assessments', (table) => {
       table.uuid('id').primary();
       table.uuid('user_id').notNullable();
-      table.text('assessment_data').notNullable(); // JSON stored as text
+      table.text('assessmentData').notNullable(); // JSON stored as text
       table.timestamps(true, true);
       
       // Foreign key handling based on database type

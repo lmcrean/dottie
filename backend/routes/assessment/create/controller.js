@@ -17,7 +17,7 @@ export const createAssessment = async (req, res) => {
     console.log("Received request body:", JSON.stringify(req.body, null, 2));
 
     // Ensure we have some form of assessment data
-    if (!req.body || (!req.body.assessmentData && !req.body.assessment_data)) {
+    if (!req.body || (!req.body.assessmentData && !req.body.assessmentData)) {
       console.log("Request missing assessment data", req.body);
       return res.status(400).json({ error: 'Assessment data is required' });
     }

@@ -16,7 +16,7 @@ The new assessment JSON structure is:
   "userId": "ddba3fc9-2d44-4191-a93e-16b6e358b39e",
   "assessmentData": {
     "createdAt": "2025-04-17T09:31:10.925Z",
-    "assessment_data": {
+    "assessmentData": {
       "date": "2025-04-17T09:31:10.925Z",
       "pattern": "Regular",
       "age": "18-24",
@@ -46,7 +46,7 @@ The new assessment JSON structure is:
 ## Changes Made
 
 1. **Database Schema Updates**:
-   - Updated the Supabase schema to use JSONB for the `assessment_data` column
+   - Updated the Supabase schema to use JSONB for the `assessmentData` column
    - Added a GIN index for improved JSON query performance
    - Added validation to ensure data integrity
 
@@ -91,7 +91,7 @@ These changes maintain backward compatibility with the older format. The system 
 
 If you encounter the "Invalid assessment data format" error, it could be due to:
 
-1. Missing the nested `assessment_data` structure
+1. Missing the nested `assessmentData` structure
 2. Invalid or missing required fields
 3. Issues with the database connection
 

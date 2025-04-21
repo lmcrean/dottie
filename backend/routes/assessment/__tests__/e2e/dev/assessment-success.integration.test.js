@@ -101,7 +101,7 @@ describe("Assessment Success Integration Tests", () => {
       
       const testAssessmentData = {
         userId: testUserId,
-        assessment_data: {
+        assessmentData: {
           date: new Date().toISOString(),
           pattern: "Regular",
           age: "18-24",
@@ -189,7 +189,7 @@ describe("Assessment Success Integration Tests", () => {
       console.log(`Updating assessment ID: ${testAssessmentId}`);
       
       const updateData = {
-        assessment_data: {
+        assessmentData: {
           painLevel: "severe", // Change from moderate to severe
           symptoms: {
             physical: ["Bloating", "Headaches", "Insomnia"],

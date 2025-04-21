@@ -9,7 +9,7 @@ export default function EndpointRow() {
       expectedOutput={{
         "id": "assessment-id",
         "userId": "user-id",
-        "assessment_data": "{updated-assessment-data}",
+        "assessmentData": "{updated-assessment-data}",
         "createdAt": "created-date",
         "updatedAt": "updated-date"
       }}

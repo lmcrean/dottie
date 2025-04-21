@@ -9,7 +9,7 @@ export default function EndpointRow() {
       expectedOutput={{ 
         id: "assessment-id",
         userId: "user-id",
-        assessment_data: {
+        assessmentData: {
           date: "date created",
           pattern: "Regular",
           age: "18-24",
@@ -46,7 +46,7 @@ export default function EndpointRow() {
           defaultValue: JSON.stringify({
             userId: "", // set by backend
             createdAt: new Date().toISOString(),
-            assessment_data: {
+            assessmentData: {
               date: new Date().toISOString(),
               pattern: "Regular",
               age: "18-24",

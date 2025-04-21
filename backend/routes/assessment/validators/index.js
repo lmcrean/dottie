@@ -19,8 +19,8 @@ export function validateAssessmentData(assessment) {
   // Use camelCase consistently
   if (!assessment.assessmentData) {
     // For backward compatibility, try to convert snake_case to camelCase
-    if (assessment.assessment_data) {
-      assessment.assessmentData = assessment.assessment_data;
+    if (assessment.assessmentData) {
+      assessment.assessmentData = assessment.assessmentData;
       console.log("Converted snake_case to camelCase");
     } else {
       errors.push('assessmentData is required');
@@ -34,14 +34,14 @@ export function validateAssessmentData(assessment) {
   console.log("Initial assessmentData:", JSON.stringify(assessmentData, null, 2));
   
   // Handle deeply nested structures - first level
-  if (typeof assessmentData === 'object' && (assessmentData.assessmentData || assessmentData.assessment_data)) {
+  if (typeof assessmentData === 'object' && (assessmentData.assessmentData || assessmentData.assessmentData)) {
     // We found a nested structure - go one level deeper
-    const innerData = assessmentData.assessmentData || assessmentData.assessment_data;
+    const innerData = assessmentData.assessmentData || assessmentData.assessmentData;
     console.log("Found nested structure, innerData:", JSON.stringify(innerData, null, 2));
     
     // Check if we need to go one more level deep
-    if (typeof innerData === 'object' && (innerData.assessmentData || innerData.assessment_data)) {
-      assessmentData = innerData.assessmentData || innerData.assessment_data;
+    if (typeof innerData === 'object' && (innerData.assessmentData || innerData.assessmentData)) {
+      assessmentData = innerData.assessmentData || innerData.assessmentData;
       console.log("Found double-nested structure, final assessmentData:", JSON.stringify(assessmentData, null, 2));
     } else {
       assessmentData = innerData;
