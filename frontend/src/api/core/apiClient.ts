@@ -71,7 +71,7 @@ apiClient.interceptors.request.use(
       // Get token using our token manager
       const token = getAuthToken();
 
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {

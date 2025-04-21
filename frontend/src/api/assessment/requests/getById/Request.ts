@@ -22,21 +22,21 @@ export const getById = async (id: string): Promise<Assessment> => {
     console.log("Raw assessment response data:", response.data);
     console.log("Assessment response status:", response.status);
     console.log("Assessment data structure:", {
-      keys: Object.keys(response.data),
-      hasAssessmentData: !!response.data.assessment_data,
-      assessmentDataType: typeof response.data.assessment_data,
-      assessmentDataKeys: response.data.assessment_data ? Object.keys(response.data.assessment_data) : 'none'
+      keys: Object.keys(response.data as object),
+      hasAssessmentData: !!(response.data as any).assessment_data,
+      assessmentDataType: typeof (response.data as any).assessment_data,
+      assessmentDataKeys: (response.data as any).assessment_data ? Object.keys((response.data as any).assessment_data as object) : 'none'
     });
     
     // Transform the response to match the expected format
-    const transformedData = snakeToCamel(response.data);
+    const transformedData = snakeToCamel(response.data) as Assessment;
     
     console.log("Transformed assessment data:", transformedData);
     console.log("Transformed data structure:", {
       keys: Object.keys(transformedData),
       hasAssessmentData: !!transformedData.assessmentData,
       assessmentDataType: typeof transformedData.assessmentData,
-      assessmentDataKeys: transformedData.assessmentData ? Object.keys(transformedData.assessmentData) : 'none'
+      assessmentDataKeys: transformedData.assessmentData ? Object.keys(transformedData.assessmentData as object) : 'none'
     });
     
     return transformedData;

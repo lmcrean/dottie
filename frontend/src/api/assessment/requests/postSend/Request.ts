@@ -27,7 +27,7 @@ export const postSend = async (
 
     const response = await apiClient.post("/api/assessment/send", formattedData);
     console.log("Response from assessment send:", response.status, response.data);
-    return response.data;
+    return response.data as Assessment;
   } catch (error: any) {
     console.error("Failed to send assessment:", error);
     if (error.response) {
