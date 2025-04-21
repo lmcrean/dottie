@@ -1,61 +1,6 @@
 # Dottie - Menstrual Health Assessment API
 
-## Overview
-
-Dottie is a user-friendly application designed to help individuals understand their menstrual health better. Through a series of simple questions, Dottie collects information about your menstrual cycle and provides personalized analysis and recommendations.
-
-## How It Works
-
-### Assessment Process
-
-1. **Start an Assessment**: Begin by answering questions about your menstrual health
-2. **Answer Questions**: Complete a series of 6 questions about your cycle
-3. **Get Personalized Results**: Receive analysis and recommendations based on your answers
-
-### Questions Covered
-
-- Age group
-- Menstrual cycle length
-- Period duration
-- Flow heaviness
-- Pain level
-- Physical and emotional symptoms
-
-## Features
-
-- **Progressive Assessment**: Questions appear one at a time for a better user experience
-- **Age-Appropriate Guidance**: Tailored information based on your age group
-- **Symptom Analysis**: Identifies patterns in your reported symptoms
-- **Personalized Recommendations**: Practical advice based on your specific situation
-- **Educational Content**: Learn more about what's normal and when to seek help
-
-## Technical Information
-
-### API Endpoints
-
-API endpoints cover 3 key functionalities:
-
-1. Testing endpoints (hello and db-status)
-2. User Authentication
-3. Assessment
-
-| Endpoint                                | Method | Description                                       |
-| --------------------------------------- | ------ | ------------------------------------------------- |
-| `/api/hello`                            | GET    | Test endpoint to verify API is working            |
-| `/api/db-status`                        | GET    | Check database connection status                  |
-| `/api/auth/signup`                      | POST   | Register a new user account, create new user                       |
-| `/api/auth/login`                       | POST   | Authenticate user and get access token           |
-| `/api/auth/logout`                      | POST   | Logout user and invalidate token                 |
-| `/api/auth/users`                            | GET    | Get list of all users                             |
-| `/api/auth/users/:id`                        | GET    | Get user by ID                                    |
-| `/api/auth/users/:id`                        | PUT    | Update a user                                     |
-| `/api/auth/users/:id`                        | DELETE | Delete a user                                     |
-| `/api/assessment/send`               | POST   | Send assessment results from frontend context     |
-| `/api/assessment/list`                  | GET    | Get list of all assessments for current user      |
-| `/api/assessment/:id`                   | GET    | Get detailed view of a specific assessment        |
-
-
-### Data Flow
+## Data Flow
 
 1. Client gathers assessment data from frontend context
 2. Client sends complete assessment data in one request
