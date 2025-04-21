@@ -1,5 +1,9 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, Minimize2, Send, Loader2 } from 'lucide-react';
+import { Button } from "@/src/components/ui/!to-migrate/button";
+import { Input } from "@/src/components/ui/!to-migrate/input";
+import { ScrollArea } from "@/src/components/ui/!to-migrate/scroll-area";
+import { useState, useRef } from 'react';
 
 interface FullscreenChatProps {
   isOpen: boolean;
@@ -14,6 +18,31 @@ export const FullscreenChat: React.FC<FullscreenChatProps> = ({
   setIsFullscreen,
   initialMessage = "Hello! I'm Dottie. How can I help you understand your assessment results today?"
 }) => {
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: initialMessage }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef(null);
+
+  const handleSend = () => {
+    if (input.trim() === '' || isLoading) return;
+    
+    const newMessages = [...messages, { role: 'user', content: input }];
+    setMessages(newMessages);
+    setInput('');
+    setIsLoading(true);
+    
+    // Simulate AI response
+    setTimeout(() => {
+      setMessages([...newMessages, { 
+        role: 'assistant', 
+        content: "I'm just a frontend component right now. Soon I'll be connected to a real AI assistant!" 
+      }]);
+      setIsLoading(false);
+    }, 1000);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -80,7 +109,7 @@ export const FullscreenChat: React.FC<FullscreenChatProps> = ({
               className="rounded-full border-gray-200 focus:border-pink-300 focus:ring-pink-200"
             />
             <Button
-              onClick={() => handleSend()}
+              onClick={handleSend}
               disabled={isLoading}
               className="rounded-full bg-pink-600 hover:bg-pink-700 text-white"
             >
