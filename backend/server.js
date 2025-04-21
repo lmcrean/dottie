@@ -23,7 +23,7 @@ const isVercel = process.env.VERCEL === "1";
 
 // Check for required environment variables in production
 if (isProduction && isVercel) {
-  const requiredEnvVars = ["SUPABASE_ANON_PUBLIC"];
+  const requiredEnvVars = ["SUPABASE_URL", "SUPABASE_ANON_PUBLIC"];
 
   const missingEnvVars = requiredEnvVars.filter(
     (envVar) => !process.env[envVar]

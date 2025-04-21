@@ -18,11 +18,11 @@ export default function PasswordForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev: typeof formData) => ({ ...prev, [name]: value }));
     
     // Clear errors when typing
     if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+      setErrors((prev: typeof errors) => ({ ...prev, [name]: undefined }));
     }
   };
 
@@ -96,12 +96,12 @@ export default function PasswordForm() {
           name="currentPassword"
           value={formData.currentPassword}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 ${
-            errors.currentPassword ? 'border-red-500' : ''
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-ring ${
+            errors.currentPassword ? 'border-destructive' : ''
           }`}
         />
         {errors.currentPassword && (
-          <p className="text-sm text-red-500">{errors.currentPassword}</p>
+          <p className="text-sm text-destructive">{errors.currentPassword}</p>
         )}
       </div>
 
@@ -115,12 +115,12 @@ export default function PasswordForm() {
           name="newPassword"
           value={formData.newPassword}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 ${
-            errors.newPassword ? 'border-red-500' : ''
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-ring ${
+            errors.newPassword ? 'border-destructive' : ''
           }`}
         />
         {errors.newPassword && (
-          <p className="text-sm text-red-500">{errors.newPassword}</p>
+          <p className="text-sm text-destructive">{errors.newPassword}</p>
         )}
       </div>
 
@@ -134,19 +134,19 @@ export default function PasswordForm() {
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 ${
-            errors.confirmPassword ? 'border-red-500' : ''
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-ring ${
+            errors.confirmPassword ? 'border-destructive' : ''
           }`}
         />
         {errors.confirmPassword && (
-          <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+          <p className="text-sm text-destructive">{errors.confirmPassword}</p>
         )}
       </div>
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-2 px-4 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 disabled:opacity-50"
+        className="w-full py-2 px-4 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50"
       >
         {isLoading ? 'Updating...' : 'Change Password'}
       </button>

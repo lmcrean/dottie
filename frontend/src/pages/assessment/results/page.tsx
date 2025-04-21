@@ -415,7 +415,7 @@ export default function ResultsPage() {
 
     // Trigger a re-render when these values change
     const progressElements = document.querySelectorAll(
-      ".bg-pink-500.h-2.rounded-full"
+      ".bg-pink-600.h-2.rounded-full"
     );
     if (progressElements.length > 0) {
       // This forces a style recalculation
@@ -478,13 +478,6 @@ export default function ResultsPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" className="w-10 h-10" />
-          <span className="font-bold text-xl text-pink-500">Dottie</span>
-        </div>
-        <UserIcon />
-      </header>
       <main className="flex-1 p-6 max-w-4xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-full transition-all duration-500"></div>
@@ -501,7 +494,7 @@ export default function ResultsPage() {
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-pink-500 mb-2">
+              <h2 className="text-2xl font-bold text-pink-600 mb-2">
                 {patternData[pattern].title}
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -609,14 +602,14 @@ export default function ResultsPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Button
-            className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-6 text-lg"
+            className="flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-6 py-6 text-lg"
             onClick={() => setIsChatOpen(true)}
           >
             <MessageCircle className="h-5 w-5" />
             Chat with Dottie
           </Button>
           <Button
-            className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-500 px-6 py-6 text-lg"
+            className="flex items-center justify-center gap-2 bg-white border border-pink-200 hover:bg-pink-50 text-pink-600 px-6 py-6 text-lg"
             onClick={handleSaveResults}
             disabled={isSaving}
           >

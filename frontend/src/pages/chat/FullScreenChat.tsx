@@ -103,7 +103,7 @@ export function FullscreenChat({
     <div className="fixed inset-0 bg-white flex flex-col z-50 w-full ">
       <div className="container max-w-6xl mx-auto flex flex-col h-full border border-gray-200 rounded-lg shadow-lg p-0">
         <header className="flex items-center justify-between border-b bg-gradient-to-r from-pink-50 to-white p-4">
-          <h1 className="text-lg font-bold text-pink-500">Chat with Dottie</h1>
+          <h1 className="text-lg font-bold text-pink-600">Chat with Dottie</h1>
           <div>
             <Button
               variant="ghost"
@@ -111,7 +111,7 @@ export function FullscreenChat({
               onClick={() => setIsFullscreen(false)}
               className="rounded-full hover:bg-pink-100"
             >
-              <Minimize2 className="h-4 w-4 text-pink-500" />
+              <Minimize2 className="h-4 w-4 text-pink-600" />
             </Button>
             <Button
               variant="ghost"
@@ -119,7 +119,7 @@ export function FullscreenChat({
               onClick={onClose}
               className="rounded-full hover:bg-pink-100"
             >
-              <X className="h-4 w-4 text-pink-500" />
+              <X className="h-4 w-4 text-pink-600" />
             </Button>
           </div>
         </header>
@@ -136,7 +136,7 @@ export function FullscreenChat({
                   <div
                     className={`max-w-[80%] rounded-xl p-3 ${
                       message.role === "user"
-                        ? "bg-pink-500 text-white"
+                        ? "bg-pink-600 text-white"
                         : "bg-gray-50 text-gray-900 border border-gray-100"
                     }`}
                   >
@@ -147,7 +147,7 @@ export function FullscreenChat({
               {isLoading && (
                 <div className="flex justify-start animate-fadeIn">
                   <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                    <Loader2 className="h-4 w-4 animate-spin text-pink-500" />
+                    <Loader2 className="h-4 w-4 animate-spin text-pink-600" />
                   </div>
                 </div>
               )}
@@ -165,7 +165,7 @@ export function FullscreenChat({
             <Button
               onClick={() => handleSend()}
               disabled={isLoading}
-              className="rounded-full bg-pink-500 hover:bg-pink-600 text-white"
+              className="rounded-full bg-pink-600 hover:bg-pink-700 text-white"
             >
               <Send className="h-4 w-4" />
             </Button>

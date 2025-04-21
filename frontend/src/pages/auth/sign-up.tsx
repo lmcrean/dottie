@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import AuthLayout from "@/src/components/AuthLayout";
 import { useState } from "react";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
+import AnimatedLogo  from "@/src/components/AnimatedLogo";
 
 
 export default function SignUpPage() {
@@ -17,8 +18,8 @@ export default function SignUpPage() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [cnfrmPasswordVisible, setCnfrmPasswordVisible] = useState(false);
 
-  const togglePasswordVisibility = () => setPasswordVisible((prev) => !prev);
-  const toggleCnfrmPasswordVisibility = () => setCnfrmPasswordVisible((prev) => !prev);
+  const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
+  const toggleCnfrmPasswordVisibility = () => setCnfrmPasswordVisible((prev: boolean) => !prev);
 
   const {
     register,
@@ -52,6 +53,7 @@ export default function SignUpPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Create Account</h1>
+      <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput
@@ -130,7 +132,7 @@ export default function SignUpPage() {
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/auth/sign-in" className="text-pink-500 hover:text-pink-600">
+          <Link to="/auth/sign-in" className="text-pink-600 hover:text-pink-700">
             Sign in
           </Link>
         </p>

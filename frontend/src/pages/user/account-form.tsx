@@ -21,7 +21,7 @@ export default function AccountForm({ user }: AccountFormProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev: typeof formData) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,45 +40,58 @@ export default function AccountForm({ user }: AccountFormProps) {
   };
 
   const handleDeleteAccount = async () => {
-    toast.custom((t) => (
-      <div className="bg-white p-4 rounded-lg shadow-lg border border-red-200 w-full max-w-md">
-        <h3 className="font-medium text-lg text-red-800">
-          Confirm Account Deletion
-        </h3>
-        <p className="mt-2 text-gray-700">
-          Are you sure you want to delete your account? This action cannot be
-          undone.
-        </p>
-        <div className="mt-4 flex justify-end space-x-2">
-          <button
-            onClick={() => toast.dismiss(t)}
-            className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={async () => {
-              toast.dismiss(t);
-              setIsLoading(true);
-              try {
-                await userApi.delete(user.id);
-                toast.success("Account deleted successfully");
-                await logout();
-                navigate("/");
-              } catch (error) {
-                console.error("Error deleting account:", error);
-                toast.error("Failed to delete account");
-              } finally {
-                setIsLoading(false);
-              }
-            }}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
-          >
-            Delete Account
-          </button>
+    if (showDeleteConfirmation || isLoading) return;
+    setShowDeleteConfirmation(true);
+    toast.custom(
+      (t: string | number) => (
+        <div className="bg-white p-4 rounded-lg shadow-lg border border-red-200 w-full max-w-md">
+          <h3 className="font-medium text-lg text-red-800">
+            Confirm Account Deletion
+          </h3>
+          <p className="mt-2 text-gray-700">
+            Are you sure you want to delete your account? This action cannot be
+            undone.
+          </p>
+          <div className="mt-4 flex justify-end space-x-2">
+            <button
+              onClick={() => {
+                toast.dismiss(t);
+                setShowDeleteConfirmation(false);
+              }}
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                toast.dismiss(t);
+                setIsLoading(true);
+                setShowDeleteConfirmation(false);
+                try {
+                  await userApi.delete(user.id);
+                  toast.success("Account deleted successfully");
+                  await logout();
+                  navigate("/");
+                } catch (error) {
+                  console.error("Error deleting account:", error);
+                  toast.error("Failed to delete account");
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
+            >
+              Delete Account
+            </button>
+          </div>
         </div>
-      </div>
-    ));
+      ),
+      {
+        onAutoClose: () => setShowDeleteConfirmation(false),
+        onDismiss: () => setShowDeleteConfirmation(false),
+        duration: Infinity,
+      }
+    );
   };
 
   return (
@@ -115,7 +128,7 @@ export default function AccountForm({ user }: AccountFormProps) {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 disabled:opacity-50"
+          className="w-full py-2 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50"
         >
           {isLoading ? "Updating..." : "Update Account"}
         </button>

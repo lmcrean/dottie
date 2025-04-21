@@ -9,13 +9,14 @@ import { toast } from "sonner";
 import AuthLayout from "@/src/components/AuthLayout";
 import { useEffect, useState } from "react";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
-import { AxiosError } from "axios";
+import axios from "axios";
+import AnimatedLogo from "@/src/components/AnimatedLogo";
 
 export default function SignInPage() {
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const togglePasswordVisibility = () => setPasswordVisible((prev) => !prev);
+  const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
 
   const {
     register,
@@ -71,9 +72,12 @@ export default function SignInPage() {
       }, 100);
 
       navigate("/assessment/age-verification");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
+    } catch (error: unknown) {
+      // Check if it looks like an Axios error
+      if (error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError) {
+        // Now we can reasonably assume it's an AxiosError-like object
+        const axiosError = error as { response?: { status?: number } }; // Cast to access response
+        if (axiosError.response?.status === 401) {
           toast.error("Unable to sign in: This user is not in our database");
         }
       } else if (error instanceof Error) {
@@ -87,7 +91,8 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Welcome Back</h1>
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+       <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
+       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput
             id="email"
@@ -126,7 +131,7 @@ export default function SignInPage() {
         <div className="flex items-center justify-end hidden">
           <Link
             to="/auth/forgot-password"
-            className="text-sm text-pink-500 hover:text-pink-600"
+            className="text-sm text-accent-foreground hover:text-accent-foreground/80"
           >
             Forgot your password?
           </Link>
@@ -143,7 +148,7 @@ export default function SignInPage() {
           Don't have an account?{" "}
           <Link
             to="/auth/sign-up"
-            className="text-pink-500 hover:text-pink-600"
+            className="text-sm text-accent-foreground hover:text-accent-foreground/80"
           >
             Sign up
           </Link>

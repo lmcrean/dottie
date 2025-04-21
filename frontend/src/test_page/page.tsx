@@ -25,7 +25,7 @@ export default function TestPage() {
   };
 
   const handleLogout = () => {
-    authApi.logout();
+    authApi.logout("");
   };
 
   return (

@@ -9,13 +9,6 @@ export default function ResourcesPage() {
   return (
     <PageTransition>
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-        <header className="flex items-center justify-between p-4 border-b">
-          <div className="flex items-center gap-2">
-            <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
-            <span className="font-semibold text-pink-500">Dottie</span>
-          </div>
-          <UserIcon />
-        </header>
 
         <main className="flex-1 flex flex-col p-6 max-w-2xl mx-auto w-full">
           <h1 className="text-2xl font-bold mb-6">Resources & Next Steps</h1>
@@ -75,7 +68,7 @@ export default function ResourcesPage() {
                 <CardContent className="pt-8 pb-8">
                   <div className="flex items-start gap-3">
                     <div className="bg-pink-100 h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-pink-500 font-medium">1</span>
+                      <span className="text-pink-600 font-medium">1</span>
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium">Start Tracking Your Cycle</h3>
@@ -95,7 +88,7 @@ export default function ResourcesPage() {
                 <CardContent className="pt-8 pb-8">
                   <div className="flex items-start gap-3">
                     <div className="bg-pink-100 h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-pink-500 font-medium">2</span>
+                      <span className="text-pink-600 font-medium">2</span>
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium">Learn About Your Body</h3>
@@ -115,7 +108,7 @@ export default function ResourcesPage() {
                 <CardContent className="pt-8 pb-8">
                   <div className="flex items-start gap-3">
                     <div className="bg-pink-100 h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-pink-500 font-medium">3</span>
+                      <span className="text-pink-600 font-medium">3</span>
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium">Talk To Someone</h3>
@@ -136,7 +129,7 @@ export default function ResourcesPage() {
           <Card className="w-full mb-8 bg-pink-50 border-pink-100 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
             <CardContent className="p-6">
               <div className="flex gap-3">
-                <Heart className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                <Heart className="h-5 w-5 text-pink-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-2">
                     A Note on Teen Menstrual Health
@@ -160,7 +153,7 @@ export default function ResourcesPage() {
 
           <footer className="mt-auto text-center">
             <div className="flex items-center justify-center mb-3">
-              <span className="font-semibold text-pink-500">Dottie</span>
+              <span className="font-semibold text-pink-600">Dottie</span>
             </div>
             <div className="text-xs text-gray-500 mb-2">
               Your health information is private and secure.

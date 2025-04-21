@@ -55,13 +55,6 @@ export default function CycleLengthPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
-      <header className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-2">
-          <img src="/chatb.png" alt="Dottie Logo" width={32} height={32} />
-          <span className="font-semibold text-pink-500">Dottie</span>
-        </div>
-        <UserIcon />
-      </header>
 
       <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
@@ -71,7 +64,7 @@ export default function CycleLengthPage() {
         <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
           <div className="bg-pink-500 h-2 rounded-full w-[33%]"></div>
         </div>
-        
+
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
@@ -80,6 +73,7 @@ export default function CycleLengthPage() {
               <p className="text-sm text-gray-500 mb-6">
                 Count from the first day of one period to the first day of the next period
               </p>
+              <img src="/assessmentAssets/cycle.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
             </div>
           </div>
 
@@ -189,7 +183,7 @@ export default function CycleLengthPage() {
         <Card className="w-full mb-8 bg-pink-50 border-pink-100">
           <CardContent className="pt-6">
             <div className="flex gap-2">
-              <InfoIcon className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
+              <InfoIcon className="h-5 w-5 text-pink-600 flex-shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-semibold text-gray-800 mb-1">
                   About Menstrual Cycles
@@ -222,20 +216,18 @@ export default function CycleLengthPage() {
           <Link
             to={
               selectedLength
-                ? `/assessment/period-duration${
-                    location.search.includes("mode=quickresponse")
-                      ? "?mode=quickresponse"
-                      : ""
-                  }`
+                ? `/assessment/period-duration${location.search.includes("mode=quickresponse")
+                  ? "?mode=quickresponse"
+                  : ""
+                }`
                 : "#"
             }
           >
             <Button
-              className={`flex items-center px-6 py-6 text-lg ${
-                selectedLength
-                  ? "bg-pink-500 hover:bg-pink-600 text-white"
+              className={`flex items-center px-6 py-6 text-lg ${selectedLength
+                  ? "bg-pink-600 hover:bg-pink-700 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
+                }`}
               disabled={!selectedLength}
               ref={continueButtonRef}
             >
