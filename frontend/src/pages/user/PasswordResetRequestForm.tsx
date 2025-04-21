@@ -117,7 +117,7 @@ export const PasswordResetRequestForm: React.FC = () => {
       </CardContent>
       <CardFooter>
         <Button 
-          variant="link" 
+          variant="link"
           className="w-full"
           onClick={() => navigate("/auth/login")}
         >

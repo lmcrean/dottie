@@ -92,13 +92,13 @@ export default function ForgotPasswordPage() {
               {isLoading ? 'Resetting...' : 'Reset Password'}
             </Button>
             <div className="text-center text-sm">
-              <button
+              <Button
+                variant="link"
                 type="button"
                 onClick={() => navigate('/auth/sign-in')}
-                className="text-primary hover:underline"
               >
                 Back to Sign In
-              </button>
+              </Button>
             </div>
           </form>
         </CardContent>

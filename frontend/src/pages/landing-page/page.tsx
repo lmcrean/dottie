@@ -39,7 +39,7 @@ export default function LandingPage(): JSX.Element {
                 {!isAuthenticated && (
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link to="/auth/sign-up">
-                      <Button className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white text-lg px-8 py-6">
+                      <Button className="w-full sm:w-auto text-lg px-8 py-6">
                         Start Your Journey
                       </Button>
                     </Link>
@@ -152,7 +152,7 @@ export default function LandingPage(): JSX.Element {
                 health journey.
               </p>
               <Link to="/auth/sign-up">
-                <Button className="bg-pink-600 hover:bg-pink-700 text-white text-lg px-8 py-6">
+                <Button className="text-lg px-8 py-6">
                   Get Started Now
                 </Button>
               </Link>

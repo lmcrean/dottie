@@ -4,6 +4,7 @@ import { userApi } from "@/src/api/user";
 import { User } from "@/src/api/auth/types";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/src/context/AuthContext";
+import { Button } from "@/src/components/ui/!to-migrate/button";
 
 interface AccountFormProps {
   user: User;
@@ -53,16 +54,17 @@ export default function AccountForm({ user }: AccountFormProps) {
             undone.
           </p>
           <div className="mt-4 flex justify-end space-x-2">
-            <button
+            <Button
+              variant="default"
               onClick={() => {
                 toast.dismiss(t);
                 setShowDeleteConfirmation(false);
               }}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="default"
               onClick={async () => {
                 toast.dismiss(t);
                 setIsLoading(true);
@@ -79,10 +81,10 @@ export default function AccountForm({ user }: AccountFormProps) {
                   setIsLoading(false);
                 }
               }}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
+              disabled={isLoading}
             >
               Delete Account
-            </button>
+            </Button>
           </div>
         </div>
       ),
@@ -125,13 +127,13 @@ export default function AccountForm({ user }: AccountFormProps) {
           />
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50"
+          className="w-full"
         >
           {isLoading ? "Updating..." : "Update Account"}
-        </button>
+        </Button>
       </form>
 
       <div className="border-t pt-6">
@@ -142,13 +144,14 @@ export default function AccountForm({ user }: AccountFormProps) {
             Once you delete your account, there is no going back. Please be
             certain.
           </p>
-          <button
+          <Button
+            variant="default"
             onClick={handleDeleteAccount}
             disabled={isLoading}
-            className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
+            className="mt-4"
           >
             {isLoading ? "Deleting..." : "Delete Account"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
