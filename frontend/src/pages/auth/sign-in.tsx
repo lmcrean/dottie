@@ -10,6 +10,7 @@ import AuthLayout from "@/src/components/AuthLayout";
 import { useEffect, useState } from "react";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
 import axios from "axios";
+import AnimatedLogo from "@/src/components/AnimatedLogo";
 
 export default function SignInPage() {
   const navigate = useNavigate();
@@ -90,24 +91,8 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Welcome Back</h1>
-
-      {/* Logo with animation */}
-      <div className="flex justify-center items-center mb-6">
-        <div className="relative flex justify-center items-center h-20 w-20">
-          {/* Animated half-circles */}
-          <div className="absolute w-full h-full border-t-4 border-pink-500 rounded-full animate-spin-left"></div>
-          <div className="absolute w-full h-full border-b-4 border-pink-500 rounded-full animate-spin-right"></div>
-
-          {/* Logo */}
-          <img
-            src="/logo-mascot.png" // Replace with your logo's path
-            alt="Landing Logo"
-            className="h-12 w-12 relative z-10 object-contain" // Adjust size and ensure it fits
-          />
-        </div>
-      </div>
-
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+       <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
+       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput
             id="email"

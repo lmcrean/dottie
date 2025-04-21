@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import AuthLayout from "@/src/components/AuthLayout";
 import { useState } from "react";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
+import AnimatedLogo  from "@/src/components/AnimatedLogo";
 
 
 export default function SignUpPage() {
@@ -52,6 +53,7 @@ export default function SignUpPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Create Account</h1>
+      <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput
