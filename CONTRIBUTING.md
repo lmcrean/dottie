@@ -1,14 +1,13 @@
-# Contributing
+# Contributing Pull Requests
 
-We use a Draft Pull Request workflow to manage contributions effectively
+We use a Draft Pull Request workflow to manage contributions effectively.
 
 ![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
 
-
 # How to contribute a pull request
 
-1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab
-2. submit an initial commit and convert to a `pull request`
+1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab.
+2. submit an initial commit and convert to a `pull request`.
 3. convert your pull request to `draft` (illustration below)
 4. reference the existing issue with the # feature e.g. `#134`.
 5. **convert the PR to an open pull request when ready!**
@@ -22,46 +21,41 @@ We use a Draft Pull Request workflow to manage contributions effectively
 
 </details>
 
-# What to check before contributing a pull request
+# What to check before starting a pull request
 
-1. [Issues Tab](https://github.com/lmcrean/dottie/issues): check if someone commented on the issue already
-2. [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts
+- [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts. *This is the central space for being aware of current progress.*
 
-It may be worth reaching out to that peer and offering to contribute an isolated issue to their branch
+*It may be worth reaching out to that peer in the PR comments and offering to contribute an isolated issue to their branch.*
 
-# Including Screenshots
+# What to include before completing a pull request
 
-- be sure to **include screenshots and or screen recordings** of the new outcome before opening the issue.
-- This will help the moderators quickly understand what progress has been made.
+1. pull from `main` branch to ensure no merge conflicts between `branch` and `main`
+2. run `cd frontend; npm run build` causing no typescript errors
+3. include # in description e.g. #243. This links the pull request to issue(s) solved
+4. add **screenshots and or screen recordings** of the new outcome
 
-<details>
-<summary>
-click to open: example pull request with # feature and screenshot:
-</summary>
+Optional: to request the code owner team to manually test the branch in their IDE, you can add the label `action required: manual testing`
 
-![image](https://github.com/user-attachments/assets/2dda26a6-2306-4793-b4c9-51da1057d61f)
+template provided [here](/pull_request_template.md).
 
-</details>
+# Roles
 
+- Everyone is a contributor.
+- The Code owners have the additional role to review + merge the pull requests.
+- Our current code owners are Laurie, Joseph, Aznim and Viola -- feel free to reach out to us on the Discord channel :)
+- As per the branch rules, 1 code owner approval is sufficent to merge a Pull Request.
 
-# How to open a new issue
+# Code owner guidance for reviewing Pull Requests.
 
-if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/dottie/issues)
+1. Review description of PR, check for steps 1-4 mentioned above.
+2. Assign a relevant label if necessary for `action required`.
+3. Review the `files changed` tab.
+5. Approve when ready.
+6. Merge.
 
-- please add labels! 🏷️ This helps newcomers in particular understand the codebase
-- ensure issues are labelled with either `must have`, `should have` or `nice to have`
+example labels:
 
-![image](https://github.com/user-attachments/assets/cd23ef6b-43e7-4548-817a-0ceb89984dbf) ![image](https://github.com/user-attachments/assets/afad2ca9-5447-48e2-b7aa-0399e3e95bb3) ![image](https://github.com/user-attachments/assets/d1059148-4eb6-433a-bad9-141b1127b104)
-
-
-<details>
-<summary>
-click to open: example issue with best practise of labelling documentation and screenshots:
-</summary>
-
-![image](https://github.com/user-attachments/assets/7833d04a-c163-4e2e-8d08-f8bcc5d172ad)
-
-</details>
+![image](https://github.com/user-attachments/assets/094c94b7-ed90-4211-997b-116dc70ba3fa)
 
 # join our discord channel 
 
