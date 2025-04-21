@@ -73,6 +73,9 @@ apiClient.interceptors.request.use(
 
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
+        console.log("[API Client] Added token to request headers");
+      } else if (!token) {
+        console.warn("[API Client] No auth token available for request to:", config.url);
       }
     } catch (error) {
       console.error("[API Client] Error in request interceptor:", error);
@@ -92,12 +95,31 @@ apiClient.interceptors.response.use(
     if (error.response) {
       // Server responded with an error status
       console.error(`API Error: ${error.response.status}`, error.response.data);
+      
+      // Log more details about the error for debugging
+      console.error("API Error Details:", {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+        headers: error.response.headers
+      });
 
       // Handle 401 Unauthorized - redirect to login
       if (error.response.status === 401) {
+        console.warn("[API Client] Authentication failed - user may need to log in");
         // Remove token and redirect to login
         localStorage.removeItem("authToken");
         // Redirect logic would go here for a real app
+      } else if (error.response.status === 400) {
+        console.warn("[API Client] Bad request - server rejected the data format");
+        // Log the request data for debugging
+        try {
+          console.error("Request data that caused 400 error:", JSON.parse(error.config.data));
+        } catch (e) {
+          console.error("Request data (not valid JSON):", error.config.data);
+        }
       }
     } else if (error.request) {
       // Request was made but no response received (network error)

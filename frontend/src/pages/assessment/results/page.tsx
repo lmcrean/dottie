@@ -410,41 +410,63 @@ export default function ResultsPage() {
   const handleSaveResults = async () => {
     setIsSaving(true);
     try {
-      // Prepare assessment data
-      const assessment = {
-        assessmentData: {
-          createdAt: new Date().toISOString(),
-          assessmentData: {
-            date: new Date().toISOString(),
-            pattern,
-            age,
-            cycleLength,
-            periodDuration,
-            flowHeaviness: flowLevel, // Ensure correct camelCase property name
-            painLevel,
-            symptoms: {
-              physical: symptoms.filter(s => s.startsWith('physical:')).map(s => s.replace('physical:', '')),
-              emotional: symptoms.filter(s => s.startsWith('emotional:')).map(s => s.replace('emotional:', ''))
-            },
-            recommendations:
-              patternData[pattern]?.recommendations.map((rec) => ({
-                title: rec.title,
-                description: rec.description,
-              })) || [],
-          }
-        }
+      // Prepare assessment data - using snake_case for direct API compatibility
+      const rawAssessmentData = {
+        date: new Date().toISOString(),
+        pattern,
+        age,
+        cycleLength,
+        periodDuration,
+        flowHeaviness: flowLevel, // Ensure correct camelCase property name
+        painLevel,
+        symptoms: {
+          physical: symptoms.filter(s => s.startsWith('physical:')).map(s => s.replace('physical:', '')),
+          emotional: symptoms.filter(s => s.startsWith('emotional:')).map(s => s.replace('emotional:', ''))
+        },
+        recommendations:
+          patternData[pattern]?.recommendations.map((rec) => ({
+            title: rec.title,
+            description: rec.description,
+          })) || [],
       };
 
-      console.log("Sending assessment data:", JSON.stringify(assessment, null, 2));
+      console.log("Sending assessment data:", JSON.stringify(rawAssessmentData, null, 2));
 
-      // Use the postSend function
-      const savedAssessment = await postSend(assessment.assessmentData.assessmentData);
+      // IMPORTANT: The key is to use assessment_data (snake_case) at the top level
+      // This is what the backend database expects
+      const formattedData = {
+        assessment_data: rawAssessmentData
+      };
+
+      console.log("Manually formatted data to send:", JSON.stringify(formattedData, null, 2));
+
+      // Bypass the postSend function and use the apiClient directly
+      const { apiClient } = await import("@/src/api/core/apiClient");
+      
+      const response = await apiClient.post("/api/assessment/send", formattedData);
+      console.log("Direct API response:", response.status, response.data);
 
       toast.success("Assessment saved successfully!");
-      navigate(`/assessment/history/${savedAssessment.id}`);
+      navigate(`/assessment/history/${response.data.id}`);
     } catch (error) {
       console.error("Failed to save assessment:", error);
-      toast.error("Failed to save assessment. Please try again.");
+      
+      // Extract the error message
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      
+      // Check for specific error types
+      if (errorMessage.includes("Authentication required")) {
+        toast.error("You need to be logged in to save assessments. Please log in and try again.");
+      } else if (errorMessage.includes("Failed to save assessment")) {
+        // Show the specific error from the backend
+        toast.error(errorMessage);
+        
+        // For debugging in console
+        console.error("Backend error details:", errorMessage);
+      } else {
+        // Generic error
+        toast.error("Could not save your assessment. Please try again later.");
+      }
     } finally {
       setIsSaving(false);
     }
