@@ -151,6 +151,7 @@ export default function SymptomsPage() {
             <div className="text-sm text-gray-500">100% Complete</div>
           </div>
 
+
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
             <div className="bg-pink-500 h-2 rounded-full w-full"></div>
           </div>
@@ -164,6 +165,8 @@ export default function SymptomsPage() {
                   Select all that apply. These could occur before, during, or after your
                   period.
                 </p>
+                <img src="/assessmentAssets/othersymptoms.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
+
               </div>
             </div>
           </div>
@@ -276,7 +279,7 @@ export default function SymptomsPage() {
           <Card className="w-full mb-8 bg-pink-50 border-pink-100 shadow-md hover:shadow-lg transition-shadow duration-300">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                <InfoIcon className="h-5 w-5 text-pink-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">
                     About Period Symptoms
@@ -319,7 +322,7 @@ export default function SymptomsPage() {
 
             <Link to="/assessment/results" onClick={handleContinue}>
               <Button
-                className="flex items-center px-6 py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white"
+                className="flex items-center px-6 py-6 text-lg bg-pink-600 hover:bg-pink-700 text-white"
                 ref={continueButtonRef}
               >
                 Finish Assessment

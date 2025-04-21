@@ -60,16 +60,13 @@ export default function AgeVerificationPage() {
             <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
               <div className="flex flex-col gap-3">
                 <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
-                <h2 className="text-3xl font-semibold mb-1">
-                  What is your age range?
-                </h2>
-                <p className="text-gray-600">
-                  This helps us provide age-appropriate information and
-                  recommendations.
-                </p>
+                <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
+                <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
+                <img src="/assessmentAssets/age" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
+              </div>
+              <div>
               </div>
             </div>
-
             <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
               <CardContent className="pt-8 pb-8">
                 <RadioGroup
@@ -86,7 +83,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="under-13"
                         id="under-13"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "under-13" ? radioRef : null}
                       />
                       <Label
@@ -111,7 +108,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="13-17"
                         id="13-17"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "13-17" ? radioRef : null}
                       />
                       <Label htmlFor="13-17" className="flex-1 cursor-pointer">
@@ -131,7 +128,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="18-24"
                         id="18-24"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "18-24" ? radioRef : null}
                       />
                       <Label htmlFor="18-24" className="flex-1 cursor-pointer">
@@ -151,7 +148,7 @@ export default function AgeVerificationPage() {
                       <RadioGroupItem
                         value="25-plus"
                         id="25-plus"
-                        className="text-pink-500"
+                        className="text-pink-600"
                         ref={refTarget === "25-plus" ? radioRef : null}
                       />
                       <Label
@@ -179,6 +176,7 @@ export default function AgeVerificationPage() {
               </Button>
             </Link>
 
+
             <Link
               to={
                 selectedAge
@@ -191,7 +189,7 @@ export default function AgeVerificationPage() {
             >
               <Button
                 className={`flex items-center px-6 py-6 text-lg ${selectedAge
-                    ? "bg-pink-500 hover:bg-pink-600 text-white"
+                    ? "bg-pink-600 hover:bg-pink-700 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 ref={continueButtonRef}

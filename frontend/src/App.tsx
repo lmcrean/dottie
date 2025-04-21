@@ -29,8 +29,7 @@ import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
 import Header from "./components/navigation/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
-// Create a wrapper component to access auth context
-const AppContent: React.FC = () => {
+function AppContent(): JSX.Element {
   const { isAuthenticated, isLoading } = useAuth();
   
   return (
@@ -89,12 +88,10 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
+export default function App(): JSX.Element {
   return (
     <AuthProvider>
       <AppContent />
     </AuthProvider>
   );
-};
-
-export default App;
+}

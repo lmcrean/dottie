@@ -81,7 +81,7 @@ export default function HistoryPage() {
           </h1>
           <Link
             to="/assessment/age-verification"
-            className="inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
           >
             New Assessment
           </Link>
@@ -94,7 +94,7 @@ export default function HistoryPage() {
             <div className="mt-6">
               <button
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
               >
                 Retry
               </button>
@@ -112,7 +112,7 @@ export default function HistoryPage() {
             <div className="mt-6">
               <Link
                 to="/assessment"
-                className="inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
               >
                 Start Assessment
               </Link>

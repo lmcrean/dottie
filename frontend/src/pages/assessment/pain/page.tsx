@@ -74,6 +74,7 @@ export default function PainPage() {
                 <p className="text-sm text-gray-500 mb-6">
                   Select the option that best describes your typical pain level during your period
                 </p>
+                <img src="/assessmentAssets/pain.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
               </div>
             </div>
 
@@ -100,6 +101,7 @@ export default function PainPage() {
                     </div>
 
                     <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+
                       <RadioGroupItem
                         value="mild"
                         id="mild"
@@ -181,7 +183,7 @@ export default function PainPage() {
           <Card className="w-full mb-8 bg-pink-50 border-pink-100">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="h-5 w-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                <InfoIcon className="h-5 w-5 text-pink-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">
                     About Menstrual Pain
@@ -231,7 +233,7 @@ export default function PainPage() {
               <Button
                 className={`flex items-center px-6 py-6 text-lg ${
                   selectedPain
-                    ? "bg-pink-500 hover:bg-pink-600 text-white"
+                    ? "bg-pink-600 hover:bg-pink-700 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!selectedPain}
