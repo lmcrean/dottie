@@ -500,7 +500,7 @@ export default function ResultsPage() {
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
-              <img src={patternData[pattern].icon} className="h-24 mx-auto mb-2 w-full flex justify-content-center items-center"></img>
+              <img src={patternData[pattern].icon} className="h-24 mx-auto mb-2 w-24"></img>
               <h2 className="text-2xl font-bold text-pink-600 mb-2">
                 {patternData[pattern].title}
               </h2>
