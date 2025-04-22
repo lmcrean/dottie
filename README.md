@@ -165,8 +165,25 @@ PORT=5050
 - **Testing**: Vitest, Supertest
 - **Documentation**: Docusaurus (see `/docs` directory)
 
-## Contributing
-We welcome contributions to the Dottie project! Please see our [contributing guidelines](CONTRIBUTING.md) for more information.
+---
+
+## 🤝 Contributing
+
+We welcome contributions to the Dottie project!
+
+### 🪜 How to Start:
+
+1. Fork the repository  
+2. Create a new branch: `git checkout -b feature/your-feature`  
+3. Make your changes  
+4. Commit: `git commit -m "Add: your feature"`  
+5. Push: `git push origin feature/your-feature`  
+6. Open a Pull Request 🚀
+
+Please read our [contributing guidelines](CONTRIBUTING.md) before submitting PRs.  
+> If you're new, check out [`good first issue`](https://github.com/lmcrean/dottie/labels/good%20first%20issue) to get started.
+
+---
 
 ## License
 [ISC License](LICENSE)
