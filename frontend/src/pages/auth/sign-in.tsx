@@ -16,7 +16,8 @@ export default function SignInPage() {
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
+  const togglePasswordVisibility = () =>
+    setPasswordVisible((prev: boolean) => !prev);
 
   const {
     register,
@@ -54,27 +55,15 @@ export default function SignInPage() {
       await login(data);
       toast.success("Successfully signed in!");
 
-      // Debug: Log authentication token and user data
-      console.log("[Auth Debug] After login - localStorage items:", {
-        authToken: localStorage.getItem("authToken"),
-        refresh_token: localStorage.getItem("refresh_token"),
-        user: localStorage.getItem("user"),
-        auth_user: localStorage.getItem("auth_user"),
-      });
-
-      // Log context values
-      setTimeout(() => {
-        // Log auth state after login
-        console.log("[Auth Debug] Auth context after login:", {
-          isAuthenticated,
-          user,
-        });
-      }, 100);
-
       navigate("/assessment/age-verification");
     } catch (error: unknown) {
       // Check if it looks like an Axios error
-      if (error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "isAxiosError" in error &&
+        error.isAxiosError
+      ) {
         // Now we can reasonably assume it's an AxiosError-like object
         const axiosError = error as { response?: { status?: number } }; // Cast to access response
         if (axiosError.response?.status === 401) {
@@ -91,8 +80,13 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Welcome Back</h1>
-       <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
-       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <AnimatedLogo
+        borderColor="border-pink-600"
+        size={80}
+        logoSize={48}
+        logoSrc="/logo-mascot.png"
+      />
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput
             id="email"

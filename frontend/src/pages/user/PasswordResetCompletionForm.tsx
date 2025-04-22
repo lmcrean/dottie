@@ -3,7 +3,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "../../components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +18,12 @@ import { useNavigate } from "react-router-dom";
 // Define a schema directly here for simplicity
 const PasswordResetCompletionSchema = z
   .object({
-    newPassword: z.string().min(6, "New password must be at least 6 characters"),
-    confirmNewPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
+    newPassword: z
+      .string()
+      .min(6, "New password must be at least 6 characters"),
+    confirmNewPassword: z
+      .string()
+      .min(6, "Confirm password must be at least 6 characters"),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "The passwords do not match",
@@ -20,13 +31,17 @@ const PasswordResetCompletionSchema = z
   });
 
 // Get type from the schema
-type PasswordResetCompletionFormInputs = z.infer<typeof PasswordResetCompletionSchema>;
+type PasswordResetCompletionFormInputs = z.infer<
+  typeof PasswordResetCompletionSchema
+>;
 
 interface PasswordResetCompletionFormProps {
   token: string;
 }
 
-export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormProps> = ({ token }) => {
+export const PasswordResetCompletionForm: React.FC<
+  PasswordResetCompletionFormProps
+> = ({ token }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResetComplete, setIsResetComplete] = useState(false);
   const navigate = useNavigate();
@@ -35,7 +50,7 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm<PasswordResetCompletionFormInputs>({
     resolver: zodResolver(PasswordResetCompletionSchema),
     defaultValues: {
@@ -44,7 +59,9 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
     },
   });
 
-  const onSubmit: SubmitHandler<PasswordResetCompletionFormInputs> = async (data) => {
+  const onSubmit: SubmitHandler<PasswordResetCompletionFormInputs> = async (
+    data
+  ) => {
     setIsLoading(true);
     try {
       // Combine form data with token
@@ -52,14 +69,11 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
         ...data,
         token,
       };
-      
-      // Mock API call
-      console.log("Resetting password with:", resetData);
-      
+
       // Simulate API success
       setIsResetComplete(true);
       reset();
-      
+
       // Redirect to login after a short delay
       setTimeout(() => {
         navigate("/auth/login");
@@ -82,14 +96,12 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            You will be redirected to the login page in a moment. Please log in with your new password.
+            You will be redirected to the login page in a moment. Please log in
+            with your new password.
           </p>
         </CardContent>
         <CardFooter>
-          <Button 
-            className="w-full"
-            onClick={() => navigate("/auth/login")}
-          >
+          <Button className="w-full" onClick={() => navigate("/auth/login")}>
             Go to Login
           </Button>
         </CardFooter>
@@ -101,9 +113,7 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
     <Card className="max-w-md w-full mx-auto">
       <CardHeader>
         <CardTitle>Create New Password</CardTitle>
-        <CardDescription>
-          Enter a new password for your account
-        </CardDescription>
+        <CardDescription>Enter a new password for your account</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -116,7 +126,9 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
               {...register("newPassword")}
             />
             {errors.newPassword && (
-              <p className="text-sm text-red-500">{errors.newPassword.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.newPassword.message}
+              </p>
             )}
           </div>
 
@@ -144,4 +156,4 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
   );
 };
 
-export default PasswordResetCompletionForm; 
+export default PasswordResetCompletionForm;
