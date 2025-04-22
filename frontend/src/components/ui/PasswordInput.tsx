@@ -37,7 +37,7 @@ export const PasswordInput = ({
           placeholder={placeholder}
           {...register(id)}
           error={error}
-          className="pr-10"
+          className="pr-10 border dark:border-slate-800"
           iconRight={
             <span onClick={toggleVisibility}>
               {icon}

@@ -96,7 +96,7 @@ export default function LandingPage(): JSX.Element {
                 whileHover={{ scale: 1.03 }}
               >
                 <Calendar className="h-12 w-12 text-pink-600 mb-6" />
-                <h3 className="font-bold text-xl mb-4">Track Your Cycle</h3>
+                <h3 className="font-bold dark:text-gray-900 text-xl mb-4">Track Your Cycle</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Monitor your menstrual patterns with precision and predict
                   your next period with AI-powered insights.
@@ -107,7 +107,7 @@ export default function LandingPage(): JSX.Element {
                 whileHover={{ scale: 1.03 }}
               >
                 <Brain className="h-12 w-12 text-pink-600 mb-6" />
-                <h3 className="font-bold text-xl mb-4">
+                <h3 className="font-bold dark:text-gray-900 text-xl mb-4">
                   Get Personalized Insights
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -120,7 +120,7 @@ export default function LandingPage(): JSX.Element {
                 whileHover={{ scale: 1.03 }}
               >
                 <BookOpen className="h-12 w-12 text-pink-600 mb-6" />
-                <h3 className="font-bold text-xl mb-4">Stay Informed</h3>
+                <h3 className="font-bold dark:text-gray-900 text-xl mb-4">Stay Informed</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Access comprehensive educational resources and expert advice
                   about menstrual health.
@@ -161,7 +161,7 @@ export default function LandingPage(): JSX.Element {
         )}
       </main>
 
-      <footer className="border-t py-8 dark:border-t-slate-600">
+      <footer className="border-t py-8 dark:border-t-slate-700">
         <div className="max-w-6xl mx-auto px-6 text-center text-gray-600 dark:text-slate-200">
           <p>© {new Date().getFullYear()} Dottie. All rights reserved.</p>
         </div>
