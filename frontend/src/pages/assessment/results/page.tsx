@@ -30,6 +30,7 @@ type MenstrualPattern =
 interface PatternInfo {
   title: string;
   description: string;
+  icon:string;
   recommendations: Array<{
     icon: string;
     title: string;
@@ -42,6 +43,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
     title: "Regular Menstrual Cycles",
     description:
       "Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.",
+    icon: "/patternDataIcons/regularMenstrualCycles.svg",
     recommendations: [
       {
         icon: "📅",
@@ -73,6 +75,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
     title: "Irregular Timing Pattern",
     description:
       "Your cycle length is outside the typical range, which may indicate hormonal fluctuations.",
+    icon: "/patternDataIcons/irregularTimingPattern.svg",
     recommendations: [
       {
         icon: "📅",
@@ -104,6 +107,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
     title: "Heavy or Prolonged Flow Pattern",
     description:
       "Your flow is heavier or longer than typical, which could impact your daily activities.",
+    icon: "/patternDataIcons/heavyOrProlongedFlowPattern.svg",
     recommendations: [
       {
         icon: "🍳",
@@ -135,6 +139,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
     title: "Pain-Predominant Pattern",
     description:
       "Your menstrual pain is higher than typical and may interfere with daily activities.",
+    icon: "/patternDataIcons/painPredominantPattern.svg",
     recommendations: [
       {
         icon: "🔥",
@@ -166,6 +171,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
     title: "Developing Pattern",
     description:
       "Your cycles are still establishing a regular pattern, which is normal during adolescence.",
+    icon: "/patternDataIcons/developingPattern.svg",
     recommendations: [
       {
         icon: "⏱️",
@@ -494,6 +500,7 @@ export default function ResultsPage() {
         <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
+              <img src={patternData[pattern].icon} className="h-24 mx-auto mb-2 w-24"></img>
               <h2 className="text-2xl font-bold text-pink-600 mb-2">
                 {patternData[pattern].title}
               </h2>
