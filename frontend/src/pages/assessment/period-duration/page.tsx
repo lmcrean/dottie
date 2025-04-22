@@ -74,69 +74,105 @@ export default function PeriodDurationPage() {
            </div>
           </div>
         
-          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="pt-8 pb-8">
-                <RadioGroup value={selectedDuration || ""} onValueChange={handleDurationChange} className="mb-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="1-3" id="1-3" />
-                      <Label htmlFor="1-3" className="flex-1 cursor-pointer">
-                        <div className="font-medium">1-3 days</div>
-                        <p className="text-sm text-gray-500">Shorter duration</p>
-                      </Label>
-                    </div>
+          <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <CardContent className="pt-8 pb-8">
+            <RadioGroup
+              value={selectedDuration || ""}
+              onValueChange={handleDurationChange}
+              className="mb-6"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="1-3"
+                    id="1-3"
+                    ref={refTarget === "1-3" ? radioRef : null}
+                  />
+                  <Label htmlFor="1-3" className="flex-1 cursor-pointer">
+                    <div className="font-medium">1-3 days</div>
+                    <p className="text-sm text-gray-500">Shorter duration</p>
+                  </Label>
+                </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="4-5" id="4-5" />
-                      <Label htmlFor="4-5" className="flex-1 cursor-pointer">
-                        <div className="font-medium">4-5 days</div>
-                        <p className="text-sm text-gray-500">Average duration</p>
-                      </Label>
-                    </div>
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="4-5"
+                    id="4-5"
+                    ref={refTarget === "4-5" ? radioRef : null}
+                  />
+                  <Label htmlFor="4-5" className="flex-1 cursor-pointer">
+                    <div className="font-medium">4-5 days</div>
+                    <p className="text-sm text-gray-500">Average duration</p>
+                  </Label>
+                </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="6-7" id="6-7" />
-                      <Label htmlFor="6-7" className="flex-1 cursor-pointer">
-                        <div className="font-medium">6-7 days</div>
-                        <p className="text-sm text-gray-500">Longer duration</p>
-                      </Label>
-                    </div>
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="6-7"
+                    id="6-7"
+                    ref={refTarget === "6-7" ? radioRef : null}
+                  />
+                  <Label htmlFor="6-7" className="flex-1 cursor-pointer">
+                    <div className="font-medium">6-7 days</div>
+                    <p className="text-sm text-gray-500">Longer duration</p>
+                  </Label>
+                </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="8-plus" id="8-plus" />
-                      <Label htmlFor="8-plus" className="flex-1 cursor-pointer">
-                        <div className="font-medium">8+ days</div>
-                        <p className="text-sm text-gray-500">Extended duration</p>
-                      </Label>
-                    </div>
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="8-plus"
+                    id="8-plus"
+                    ref={refTarget === "8+" ? radioRef : null}
+                  />
+                  <Label htmlFor="8-plus" className="flex-1 cursor-pointer">
+                    <div className="font-medium">8+ days</div>
+                    <p className="text-sm text-gray-500">Extended duration</p>
+                  </Label>
+                </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="varies" id="varies" />
-                      <Label htmlFor="varies" className="flex-1 cursor-pointer">
-                        <div className="font-medium">It varies</div>
-                        <p className="text-sm text-gray-500">Changes from cycle to cycle</p>
-                      </Label>
-                    </div>
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="varies"
+                    id="varies"
+                    ref={refTarget === "It varies" ? radioRef : null}
+                  />
+                  <Label htmlFor="varies" className="flex-1 cursor-pointer">
+                    <div className="font-medium">It varies</div>
+                    <p className="text-sm text-gray-500">
+                      Changes from cycle to cycle
+                    </p>
+                  </Label>
+                </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="not-sure" id="not-sure" />
-                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                        <div className="font-medium">I'm not sure</div>
-                        <p className="text-sm text-gray-500">Need help tracking</p>
-                      </Label>
-                    </div>
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="not-sure"
+                    id="not-sure"
+                    ref={refTarget === "I'm not sure" ? radioRef : null}
+                  />
+                  <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
+                    <div className="font-medium">I'm not sure</div>
+                    <p className="text-sm text-gray-500">Need help tracking</p>
+                  </Label>
+                </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
-                      <RadioGroupItem value="other" id="other" />
-                      <Label htmlFor="other" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Other</div>
-                        <p className="text-sm text-gray-500">Specify your own period duration</p>
-                      </Label>
-                    </div>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-          </Card>
+                <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <RadioGroupItem
+                    value="other"
+                    id="other"
+                    ref={refTarget === "Other" ? radioRef : null}
+                  />
+                  <Label htmlFor="other" className="flex-1 cursor-pointer">
+                    <div className="font-medium">Other</div>
+                    <p className="text-sm text-gray-500">
+                      Specify your own period duration
+                    </p>
+                  </Label>
+                </div>
+              </div>
+            </RadioGroup>
+          </CardContent>
+        </Card>
         </div>
 
 
