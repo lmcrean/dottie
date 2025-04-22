@@ -28,7 +28,14 @@ export default function LandingPage(): JSX.Element {
               >
                 <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                   Your Personal
-                  <span className="text-pink-600"> Menstrual Health </span>
+                  <motion.span
+                    initial={{ color: "#111827" }}
+                    animate={{ color: "#db2777" }}
+                    transition={{ duration: 3, ease: "easeInOut" }}
+                  >
+                    {" "}
+                    Menstrual Health{" "}
+                  </motion.span>
                   Companion
                 </motion.h1>
                 <p className="text-xl md:text-2xl text-gray-600">
@@ -135,7 +142,11 @@ export default function LandingPage(): JSX.Element {
           <section className="py-20 px-6 bg-gradient-to-b from-pink-50 to-white">
             <motion.div
               className="max-w-4xl mx-auto text-center"
-              initial={{ opacity: 0, scale: 0.5, transform: "translateY(150px)" }}
+              initial={{
+                opacity: 0,
+                scale: 0.5,
+                transform: "translateY(150px)",
+              }}
               whileInView={{
                 opacity: 1,
                 scale: 1,
