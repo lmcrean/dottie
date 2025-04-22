@@ -2,7 +2,7 @@ import { db } from "../../../db/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { assessments } from "../store/index.js";
 import { validateAssessmentData } from "../validators/index.js";
-import Assessment from '../../../models/Assessment.js';
+import Assessment from "../../../models/Assessment.js";
 
 /**
  * Create a new assessment for a user
@@ -17,16 +17,16 @@ export const createAssessment = async (req, res) => {
 
     // Validate assessment data
     if (!assessmentData) {
-      return res.status(400).json({ error: 'Assessment data is required' });
+      return res.status(400).json({ error: "Assessment data is required" });
     }
     // For test users, save to database
-    if (userId.startsWith('test-')) {
+    if (userId.startsWith("test-")) {
       try {
         // Generate a new assessment ID
         const id = `test-assessment-${Date.now()}`;
 
         // Insert into database
-        await db('assessments').insert({
+        await db("assessments").insert({
           id: id,
           user_id: userId,
           created_at: new Date().toISOString(),
@@ -34,7 +34,7 @@ export const createAssessment = async (req, res) => {
           cycle_length: assessmentData.cycleLength,
           period_duration: assessmentData.periodDuration,
           flow_heaviness: assessmentData.flowHeaviness,
-          pain_level: assessmentData.painLevel
+          pain_level: assessmentData.painLevel,
         });
 
         // Insert symptoms if provided
@@ -42,30 +42,36 @@ export const createAssessment = async (req, res) => {
           const symptoms = [];
 
           // Add physical symptoms
-          if (assessmentData.symptoms.physical && Array.isArray(assessmentData.symptoms.physical)) {
+          if (
+            assessmentData.symptoms.physical &&
+            Array.isArray(assessmentData.symptoms.physical)
+          ) {
             for (const symptom of assessmentData.symptoms.physical) {
               symptoms.push({
                 assessment_id: id,
                 symptom_name: symptom,
-                symptom_type: 'physical'
+                symptom_type: "physical",
               });
             }
           }
 
           // Add emotional symptoms
-          if (assessmentData.symptoms.emotional && Array.isArray(assessmentData.symptoms.emotional)) {
+          if (
+            assessmentData.symptoms.emotional &&
+            Array.isArray(assessmentData.symptoms.emotional)
+          ) {
             for (const symptom of assessmentData.symptoms.emotional) {
               symptoms.push({
                 assessment_id: id,
                 symptom_name: symptom,
-                symptom_type: 'emotional'
+                symptom_type: "emotional",
               });
             }
           }
 
           // Insert symptoms if any exists
           if (symptoms.length > 0) {
-            await db('symptoms').insert(symptoms);
+            await db("symptoms").insert(symptoms);
           }
         }
 
@@ -74,10 +80,10 @@ export const createAssessment = async (req, res) => {
           id: id,
           userId: userId,
           createdAt: new Date().toISOString(),
-          assessmentData: assessmentData
+          assessmentData: assessmentData,
         });
       } catch (dbError) {
-        console.error('Database error:', dbError);
+        console.error("Database error:", dbError);
         // Continue to in-memory storage if database fails
       }
     }
@@ -86,7 +92,7 @@ export const createAssessment = async (req, res) => {
     // const id = `assessment-${Date.now()}`;
 
     // Create the assessment object
-    // const assessment = { 
+    // const assessment = {
     //   id,
     //   userId: userId,
     //   createdAt: new Date().toISOString(),
@@ -98,14 +104,14 @@ export const createAssessment = async (req, res) => {
 
     const validationError = validateAssessmentData(assessmentData);
 
-    if (!validationError.isValid){
+    if (!validationError.isValid) {
       return res.status(400).json({ error: validationError });
     }
     const newAssessment = await Assessment.create(assessmentData, userId);
 
     res.status(201).json(newAssessment);
   } catch (error) {
-    console.error('Error creating assessment:', error);
-    res.status(500).json({ error: 'Failed to create assessment' });
+    console.error("Error creating assessment:", error);
+    res.status(500).json({ error: "Failed to create assessment" });
   }
-}; 
+};
