@@ -15,17 +15,17 @@ export default function AccountSidebar() {
     {
       label: 'Profile',
       href: '/account/profile',
-      icon: <UserCircle className="h-5 w-5" />,
+      icon: <UserCircle className="h-5 w-5 text-pink-700" />,
     },
     {
       label: 'Password',
       href: '/account/password',
-      icon: <Key className="h-5 w-5" />,
+      icon: <Key className="h-5 w-5 text-pink-700" />,
     },
     {
       label: 'Sign Out',
       href: '/auth/signout',
-      icon: <LogOut className="h-5 w-5" />,
+      icon: <LogOut className="h-5 w-5 text-pink-700" />,
     },
   ];
 
@@ -39,7 +39,7 @@ export default function AccountSidebar() {
             className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${
               currentPath === link.href
                 ? 'bg-pink-100 text-pink-700'
-                : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+                : 'text-gray-700 dark:text-slate-200 hover:bg-pink-50 hover:text-pink-600 dark:hover:text-pink-600'
             }`}
           >
             <span className="mr-3">{link.icon}</span>
