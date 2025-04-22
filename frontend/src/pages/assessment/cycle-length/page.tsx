@@ -54,7 +54,7 @@ export default function CycleLengthPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+    <div className="flex min-h-screen flex-col">
 
       <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
@@ -68,24 +68,24 @@ export default function CycleLengthPage() {
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
           <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
             <div className="flex flex-col gap-3">
-              <h1 className="text-xl font-bold mb-2">Question 2 of 6</h1>
-              <h2 className="text-3xl font-semibold mb-1">How long is your menstrual cycle?</h2>
-              <p className="text-sm text-gray-500 mb-6">
+              <h1 className="text-xl dark:text-slate-100 font-bold mb-2">Question 2 of 6</h1>
+              <h2 className="text-3xl dark:text-slate-100 font-semibold mb-1">How long is your menstrual cycle?</h2>
+              <p className="text-sm dark:text-slate-200 text-gray-500 mb-6">
                 Count from the first day of one period to the first day of the next period
               </p>
               <img src="/assessmentAssets/cycle.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
             </div>
           </div>
 
-          <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <Card className="w-full lg:w-1/2 shadow-md border dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
             <CardContent className="pt-8 pb-8">
               <RadioGroup
                 value={selectedLength || ""}
                 onValueChange={handleLengthChange}
                 className="mb-6"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                <div className="space-y-3 dark:hover:text-gray-900">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="21-25"
                       id="21-25"
@@ -99,7 +99,7 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="26-30"
                       id="26-30"
@@ -111,7 +111,7 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="31-35"
                       id="31-35"
@@ -123,7 +123,7 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="36-40"
                       id="36-40"
@@ -135,7 +135,7 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="irregular"
                       id="irregular"
@@ -149,7 +149,7 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="not-sure"
                       id="not-sure"
@@ -161,7 +161,7 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                     <RadioGroupItem
                       value="other"
                       id="other"
@@ -206,7 +206,7 @@ export default function CycleLengthPage() {
           <Link to="/assessment/age-verification">
             <Button
               variant="outline"
-              className="flex items-center px-6 py-6 text-lg"
+              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
             >
               <ChevronLeft className="h-5 w-5 mr-2" />
               Back

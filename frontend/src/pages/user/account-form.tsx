@@ -98,7 +98,7 @@ export default function AccountForm({ user }: AccountFormProps) {
     <div className="space-y-8">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <label htmlFor="name" className="block text-sm font-medium">
+          <label htmlFor="name" className="block text-md font-medium dark:text-slate-200">
             Full Name
           </label>
           <input
@@ -107,12 +107,12 @@ export default function AccountForm({ user }: AccountFormProps) {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full md:w-3/4 lg:w-1/2 px-3 py-2 border dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-500"
           />
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="email" className="block text-sm font-medium">
+          <label htmlFor="email" className="block text-md font-medium dark:text-slate-200">
             Email
           </label>
           <input
@@ -121,14 +121,14 @@ export default function AccountForm({ user }: AccountFormProps) {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full md:w-3/4 lg:w-1/2 px-3 py-2 border dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-500"
           />
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50"
+          className="w-full md:w-1/2 lg:w-auto py-2 px-4 bg-pink-600 hover:bg-pink-700 rounded-lg text-white disabled:opacity-50"
         >
           {isLoading ? "Updating..." : "Update Account"}
         </button>

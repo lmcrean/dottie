@@ -5,6 +5,7 @@ import './globals.css'
 import { AssessmentResultProvider } from './context/AssessmentResultContext'
 import { AuthProvider } from './context/AuthContext'
 
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
