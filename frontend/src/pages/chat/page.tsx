@@ -33,6 +33,7 @@ export function ChatModal({
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hasSentInitialMessage = useRef(false);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -43,10 +44,19 @@ export function ChatModal({
 
   // Send initial message if provided
   useEffect(() => {
-    if (isOpen && initialMessage && messages.length === 0) {
-      setMessages([{ role: "user", content: initialMessage }]);
-      handleSend(initialMessage);
-    }
+    const sendInitialMessage = async () => {
+      if (
+        isOpen &&
+        initialMessage &&
+        messages.length === 0 &&
+        !hasSentInitialMessage.current
+      ) {
+        hasSentInitialMessage.current = true;
+        await handleSend(initialMessage);
+      }
+    };
+
+    sendInitialMessage();
   }, [isOpen, initialMessage]);
 
   const handleSend = async (messageText?: string) => {
@@ -91,7 +101,7 @@ export function ChatModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 shadow-lg">
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 shadow-lg bg-white">
         <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white">
           <div className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-pink-600" />
@@ -142,7 +152,7 @@ export function ChatModal({
                   <div
                     className={`max-w-[80%] rounded-xl p-3 ${
                       message.role === "user"
-                        ? "bg-pink-600 text-white"
+                        ? "bg-pink-500 text-white"
                         : "bg-gray-50 text-gray-900 border border-gray-100"
                     }`}
                   >
@@ -153,7 +163,7 @@ export function ChatModal({
               {isLoading && (
                 <div className="flex justify-start animate-fadeIn">
                   <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                    <Loader2 className="h-4 w-4 animate-spin text-pink-600" />
+                    <Loader2 className="h-4 w-4 animate-spin text-pink-500" />
                   </div>
                 </div>
               )}
@@ -171,7 +181,7 @@ export function ChatModal({
             <Button
               onClick={() => handleSend()}
               disabled={isLoading}
-              className="rounded-full bg-pink-600 hover:bg-pink-700 text-white"
+              className="rounded-full bg-pink-500 hover:bg-pink-600 text-white"
             >
               <Send className="h-4 w-4" />
             </Button>
