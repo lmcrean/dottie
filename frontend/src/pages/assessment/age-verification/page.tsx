@@ -49,7 +49,7 @@ export default function AgeVerificationPage() {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+      <div className="flex min-h-screen flex-col">
 
         <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
           <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
@@ -59,23 +59,23 @@ export default function AgeVerificationPage() {
           <div className="flex flex-col lg:flex-row gap-8 mb-8">
             <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
               <div className="flex flex-col gap-3">
-                <h1 className="text-xl font-bold mb-2">Question 1 of 6</h1>
-                <h2 className="text-3xl font-semibold mb-1">What is your age range?</h2>
-                <p className="text-gray-600">This helps us provide age-appropriate information and recommendations.</p>
+                <h1 className="text-xl dark:text-slate-100 font-bold mb-2">Question 1 of 6</h1>
+                <h2 className="text-3xl dark:text-slate-100 font-semibold mb-1">What is your age range?</h2>
+                <p className="text-gray-600 dark:text-slate-200">This helps us provide age-appropriate information and recommendations.</p>
                 <img src="/assessmentAssets/age.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
               </div>
               <div>
               </div>
             </div>
-            <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <Card className="w-full lg:w-1/2 shadow-md border dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
               <CardContent className="pt-8 pb-8">
                 <RadioGroup
                   value={selectedAge || ""}
                   onValueChange={handleAgeChange}
                 >
-                  <div className="space-y-4">
+                  <div className="space-y-4 dark:hover:text-gray-900">
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13"
+                      className={`flex items-center space-x-3 border border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 ${selectedAge === "under-13"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
                         }`}
@@ -100,7 +100,7 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "13-17"
+                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 ${selectedAge === "13-17"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
                         }`}
@@ -120,7 +120,7 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "18-24"
+                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 ${selectedAge === "18-24"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
                         }`}
@@ -140,7 +140,7 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border rounded-xl p-4 transition-all duration-300 ${selectedAge === "25-plus"
+                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 ${selectedAge === "25-plus"
                           ? "border-pink-500 bg-pink-50"
                           : "hover:bg-gray-50"
                         }`}
@@ -169,7 +169,7 @@ export default function AgeVerificationPage() {
             <Link to="/">
               <Button
                 variant="outline"
-                className="flex items-center px-6 py-6 text-lg"
+                className="flex dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700 items-center px-6 py-6 text-lg"
               >
                 <ChevronLeft className="h-5 w-5 mr-2" />
                 Back

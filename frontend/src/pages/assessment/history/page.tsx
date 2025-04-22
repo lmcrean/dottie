@@ -62,9 +62,9 @@ export default function HistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading assessments...</p>
         </div>
       </div>
@@ -73,15 +73,15 @@ export default function HistoryPage() {
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">
             Assessment History
           </h1>
           <Link
             to="/assessment/age-verification"
-            className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-pink-600 text-white hover:text-white rounded-lg hover:bg-pink-700 transition-colors"
           >
             New Assessment
           </Link>
@@ -127,12 +127,12 @@ export default function HistoryPage() {
                 <Link
                   key={assessment.id}
                   to={`/assessment/history/${assessment.id}`}
-                  className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
+                  className="block bg-white rounded-lg shadow-sm hover:shadow-md border dark:border-slate-800 transition-shadow p-6"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                        <span className="inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
                           {formatValue(data?.pattern)}
                         </span>
                         <span className="text-sm text-gray-500">
@@ -141,11 +141,11 @@ export default function HistoryPage() {
                       </div>
                       <div className="mt-2 text-sm text-gray-600">
                         <p>
-                          Age: {formatValue(data?.age)}
+                          <span className="text-gray-900">Age:</span> {formatValue(data?.age)}
                           {data?.age && data.age !== "under-13" ? " years" : ""}
                         </p>
                         <p>
-                          Cycle Length: {formatValue(data?.cycleLength)}
+                          <span className="text-gray-900">Cycle Length:</span> {formatValue(data?.cycleLength)}
                           {data?.cycleLength &&
                           !["other", "varies", "not-sure"].includes(
                             data.cycleLength

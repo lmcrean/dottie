@@ -144,7 +144,7 @@ export default function SymptomsPage() {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+      <div className="flex min-h-screen flex-col">
 
         <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
           <div className="flex items-center justify-between mb-4">
@@ -159,9 +159,9 @@ export default function SymptomsPage() {
           <div className="flex flex-col lg:flex-row gap-8 mb-8">
             <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
               <div className="flex flex-col gap-3">
-                <h1 className="text-xl font-bold mb-2">Question 6 of 6</h1>
-                <h2 className="text-3xl font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
-                <p className="text-sm text-gray-500 mb-6">
+                <h1 className="text-xl dark:text-slate-100 font-bold mb-2">Question 6 of 6</h1>
+                <h2 className="text-3xl dark:text-slate-100 font-semibold mb-1">Do you experience any other symptoms with your period?</h2>
+                <p className="text-sm text-gray-500 dark:text-slate-200 mb-6">
                   Select all that apply. These could occur before, during, or after your
                   period.
                 </p>
@@ -172,8 +172,8 @@ export default function SymptomsPage() {
           </div>
 
           <div className="mb-6">
-            <h3 className="text-base text-center font-medium mb-3">Physical symptoms</h3>
-            <div className="grid grid-cols-2 gap-3">
+            <h3 className="text-base dark:text-slate-100 text-center font-medium mb-3">Physical symptoms</h3>
+            <div className="grid grid-cols-2 gap-3 dark:text-slate-200 dark:hover:text-gray-900">
               {[
                 { id: "bloating", label: "Bloating", emoji: "🫃" },
                 {
@@ -202,7 +202,7 @@ export default function SymptomsPage() {
               ].map((symptom) => (
                 <div
                   key={symptom.id}
-                  className={`flex flex-col items-center justify-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
                     physicalSymptoms.includes(symptom.id)
                       ? "bg-pink-50 border-pink-300"
                       : ""
@@ -224,8 +224,8 @@ export default function SymptomsPage() {
           </div>
 
           <div className="mb-6">
-            <h3 className="text-base text-center font-medium mb-3">Emotional/Mood symptoms</h3>
-            <div className="grid grid-cols-2 gap-3">
+            <h3 className="text-base dark:text-slate-100 text-center font-medium mb-3">Emotional/Mood symptoms</h3>
+            <div className="grid grid-cols-2 gap-3 dark:text-slate-200 dark:hover:text-gray-900">
               {[
                 { id: "irritability", label: "Irritability", emoji: "😠" },
                 { id: "mood-swings", label: "Mood swings", emoji: "🙂😢" },
@@ -246,7 +246,7 @@ export default function SymptomsPage() {
               ].map((symptom) => (
                 <div
                   key={symptom.id}
-                  className={`flex flex-col items-center justify-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
                     emotionalSymptoms.includes(symptom.id)
                       ? "bg-pink-50 border-pink-300"
                       : ""
@@ -313,7 +313,7 @@ export default function SymptomsPage() {
             <Link to="/assessment/pain">
               <Button
                 variant="outline"
-                className="flex items-center px-6 py-6 text-lg"
+                className="flex items-center dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700 px-6 py-6 text-lg"
               >
                 <ChevronLeft className="h-5 w-5 mr-2" />
                 Back

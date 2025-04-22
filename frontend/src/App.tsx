@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./App.css";
+import "./globals.css";
 import SignIn from "./pages/auth/sign-in";
 import SignUp from "./pages/auth/sign-up";
 import SignOut from "./pages/auth/signout";
@@ -20,6 +20,7 @@ import Results from "./pages/assessment/results/page";
 import ResourcesPage from "./pages/assessment/resources/page";
 import HistoryPage from "./pages/assessment/history/page";
 import DetailsPage from "./pages/assessment/history/[id]/page";
+
 // Import TestPage component
 import TestPage from "./test_page/page";
 import ScrollToTop from "./components/scroll-to-top";
@@ -30,11 +31,14 @@ import Header from "./components/navigation/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
+// Dark mode
+import { ThemeProvider } from './context/ThemeContext';
+
 function AppContent(): JSX.Element {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-b from-white to-pink-50 dark:from-gray-900 dark:from-70% dark:to-gray-800">
       <Toaster
         position="top-center"
         richColors
@@ -98,8 +102,10 @@ function AppContent(): JSX.Element {
 
 export default function App(): JSX.Element {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
