@@ -10,7 +10,7 @@ export default function LandingPage(): JSX.Element {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+    <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
         <section className="py-20 px-6">
@@ -26,12 +26,12 @@ export default function LandingPage(): JSX.Element {
                 animate={{ opacity: 1, scale: 1, transform: "translateY(0)" }}
                 transition={{ duration: 0.8 }}
               >
-                <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
+                <motion.h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-slate-100 leading-tight">
                   Your Personal
                   <span className="text-pink-600"> Menstrual Health </span>
                   Companion
                 </motion.h1>
-                <p className="text-xl md:text-2xl text-gray-600">
+                <p className="text-xl md:text-2xl text-gray-600 dark:text-slate-200">
                   Track, understand, and take control of your menstrual health
                   journey with AI-powered insights and personalized guidance.
                 </p>
@@ -46,7 +46,7 @@ export default function LandingPage(): JSX.Element {
                     <Link to="/auth/sign-in">
                       <Button
                         variant="outline"
-                        className="w-full sm:w-auto text-lg px-8 py-6"
+                        className="w-full sm:w-auto text-lg px-8 py-6 dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
                       >
                         Sign In
                       </Button>
@@ -80,7 +80,7 @@ export default function LandingPage(): JSX.Element {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 px-6 bg-white">
+        <section className="py-20 px-6">
           <motion.div
             className="max-w-6xl mx-auto"
             initial={{ opacity: 0, scale: 0.5, transform: "translateY(200px)" }}
@@ -132,7 +132,7 @@ export default function LandingPage(): JSX.Element {
 
         {/* CTA Section - Only show when not authenticated */}
         {!isAuthenticated && (
-          <section className="py-20 px-6 bg-gradient-to-b from-pink-50 to-white">
+          <section className="py-20 px-6">
             <motion.div
               className="max-w-4xl mx-auto text-center"
               initial={{ opacity: 0, scale: 0.5, transform: "translateY(150px)" }}
@@ -147,7 +147,7 @@ export default function LandingPage(): JSX.Element {
               <h2 className="text-3xl md:text-4xl font-bold mb-8">
                 Ready to Take Control?
               </h2>
-              <p className="text-xl text-gray-600 mb-12">
+              <p className="text-xl text-gray-600 dark:text-slate-200 mb-12">
                 Join thousands of users who trust Dottie for their menstrual
                 health journey.
               </p>
@@ -161,8 +161,8 @@ export default function LandingPage(): JSX.Element {
         )}
       </main>
 
-      <footer className="bg-white border-t py-8">
-        <div className="max-w-6xl mx-auto px-6 text-center text-gray-600">
+      <footer className="border-t py-8 dark:border-t-slate-600">
+        <div className="max-w-6xl mx-auto px-6 text-center text-gray-600 dark:text-slate-200">
           <p>© {new Date().getFullYear()} Dottie. All rights reserved.</p>
         </div>
       </footer>

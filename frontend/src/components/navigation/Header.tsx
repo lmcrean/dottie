@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { useIsMobile } from '@/src/hooks/use-mobile';
 import UserIcon from "@/src/components/navigation/UserIcon";
+import ThemeToggle from "@/src/components/ThemeToggle";
 
 interface HeaderProps {
     logoSrc?: string;
@@ -26,7 +27,7 @@ const Header = ({
     return (
         <>
             <div>
-                <header className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+                <header className="flex items-center justify-between p-6 border-b dark:border-b-slate-600 bg-white/80 dark:bg-gray-900 backdrop-blur-sm sticky top-0 z-50">
                     <Link to="/">
                         <motion.div
                             className="flex items-center gap-2 cursor-pointer"
@@ -47,7 +48,7 @@ const Header = ({
                                 <>
                                     <Link
                                         to="/auth/sign-in"
-                                        className="text-gray-600 hover:text-pink-600 transition-colors"
+                                        className="text-gray-600 hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600 transition-colors"
                                     >
                                         Sign In
                                     </Link>
@@ -58,6 +59,7 @@ const Header = ({
                                     </Link>
                                 </>
                             ) : null}
+                            <ThemeToggle />
                         </nav>
                     )}
 
