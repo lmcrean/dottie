@@ -477,32 +477,32 @@ export default function ResultsPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+    <div className="flex min-h-screen flex-col">
       <main className="flex-1 p-6 max-w-4xl mx-auto w-full">
         <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
           <div className="bg-pink-500 h-2 rounded-full w-full transition-all duration-500"></div>
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-3">Your Assessment Results</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl dark:text-slate-100 font-bold mb-3">Your Assessment Results</h1>
+          <p className="text-gray-600 dark:text-slate-200">
             Based on your responses, here's what we've found about your
             menstrual health.
           </p>
         </div>
 
-        <Card className="w-full mb-8 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <Card className="w-full mb-8 shadow-md border dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-pink-600 mb-2">
                 {patternData[pattern].title}
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-gray-600 dark:text-slate-200 max-w-2xl mx-auto">
                 {patternData[pattern].description}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 dark:text-gray-900">
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
                   <img src="/public/time.png" className="w-[55px] h-[55px]" />
@@ -585,7 +585,7 @@ export default function ResultsPage() {
               {patternData[pattern].recommendations.map((rec, index) => (
                 <div
                   key={index}
-                  className="border rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300"
+                  className="border dark:border-slate-800 dark:hover:text-gray-900 rounded-xl p-4 hover:bg-pink-50 transition-colors duration-300"
                 >
                   <div className="flex items-start gap-3">
                     <div className="text-2xl">{rec.icon}</div>
@@ -613,7 +613,7 @@ export default function ResultsPage() {
             onClick={handleSaveResults}
             disabled={isSaving}
           >
-            <Save className="h-5 w-5" />
+            <Save className="h-5 w-5 hover:text-pink-700" />
             {isSaving ? "Saving..." : "Save Results"}
           </Button>
         </div>
@@ -622,7 +622,7 @@ export default function ResultsPage() {
           <Link to="/assessment/history">
             <Button
               variant="outline"
-              className="flex items-center px-6 py-6 text-lg"
+              className="flex items-center dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700 px-6 py-6 text-lg"
             >
               View History
             </Button>

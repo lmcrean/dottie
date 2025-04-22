@@ -55,7 +55,7 @@ export default function FlowPage() {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-pink-50">
+      <div className="flex min-h-screen flex-col">
 
         <main className="flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full">
           <div className="flex items-center justify-between mb-4">
@@ -69,26 +69,26 @@ export default function FlowPage() {
           <div className="flex flex-col lg:flex-row gap-8 mb-8">
             <div className="lg:w-1/2 flex items-top justify-center lg:justify-start text-center lg:text-left">
               <div className="flex flex-col gap-3">
-                <h1 className="text-xl font-bold mb-2">Question 4 of 6</h1>
-                <h2 className="text-3xl font-semibold mb-1">
+                <h1 className="text-xl dark:text-slate-100 font-bold mb-2">Question 4 of 6</h1>
+                <h2 className="text-3xl dark:text-slate-100 font-semibold mb-1">
                   How would you describe your menstrual flow?
                 </h2>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm dark:text-slate-200 text-gray-500 mb-6">
                   Select the option that best describes your typical flow heaviness
                 </p>
                 <img src="/assessmentAssets/flow.svg" alt="" className="filter contrast-125 hover:scale-105 transition duration-300" />
               </div>
             </div>
 
-            <Card className="w-full lg:w-1/2 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <Card className="w-full lg:w-1/2 shadow-md border dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
               <CardContent className="pt-8 pb-8">
                 <RadioGroup
                   value={selectedFlow || ""}
                   onValueChange={handleFlowChange}
                   className="mb-6"
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                  <div className="space-y-3 dark:hover:text-gray-900">
+                    <div className="flex items-center space-x-2 border dark:border-slate-800 dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem
                         value="light"
                         id="light"
@@ -102,7 +102,7 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem
                         value="moderate"
                         id="moderate"
@@ -116,7 +116,7 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem
                         value="heavy"
                         id="heavy"
@@ -130,7 +130,7 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem
                         value="very-heavy"
                         id="very-heavy"
@@ -144,7 +144,7 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem
                         value="varies"
                         id="varies"
@@ -158,7 +158,7 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50">
+                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
                       <RadioGroupItem
                         value="not-sure"
                         id="not-sure"
@@ -205,7 +205,7 @@ export default function FlowPage() {
             <Link to="/assessment/period-duration">
               <Button
                 variant="outline"
-                className="flex items-center px-6 py-6 text-lg"
+                className="flex items-center dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700 px-6 py-6 text-lg"
               >
                 <ChevronLeft className="h-5 w-5 mr-2" />
                 Back
