@@ -26,10 +26,9 @@ export const postSend = async (
     
     console.log("postSend received:", JSON.stringify(assessmentData, null, 2));
     
-    // IMPORTANT: The backend/database uses assessment_data (snake_case)
-    // This is a critical point of failure if we don't match this format exactly
+    // IMPORTANT: The backend expects assessmentData (camelCase), not assessment_data (snake_case)
     const formattedData = {
-      assessment_data: assessmentData
+      assessmentData: assessmentData
     };
     
     console.log("Formatted data to send:", JSON.stringify(formattedData, null, 2));
