@@ -173,7 +173,7 @@ export default function SymptomsPage() {
 
           <div className="mb-6">
             <h3 className="text-base dark:text-slate-100 text-center font-medium mb-3">Physical symptoms</h3>
-            <div className="grid grid-cols-2 gap-3 dark:text-slate-200 dark:hover:text-gray-900">
+            <div className="grid grid-cols-2 gap-3 dark:text-slate-200">
               {[
                 { id: "bloating", label: "Bloating", emoji: "🫃" },
                 {
@@ -202,10 +202,10 @@ export default function SymptomsPage() {
               ].map((symptom) => (
                 <div
                   key={symptom.id}
-                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer transition-all duration-300 dark:hover:text-gray-900  ${
                     physicalSymptoms.includes(symptom.id)
-                      ? "bg-pink-50 border-pink-300"
-                      : ""
+                      ? "bg-pink-50 border-pink-300 dark:text-gray-900"
+                      : "hover:bg-gray-50"
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
                   onClick={() => togglePhysicalSymptom(symptom.id)}
@@ -225,7 +225,7 @@ export default function SymptomsPage() {
 
           <div className="mb-6">
             <h3 className="text-base dark:text-slate-100 text-center font-medium mb-3">Emotional/Mood symptoms</h3>
-            <div className="grid grid-cols-2 gap-3 dark:text-slate-200 dark:hover:text-gray-900">
+            <div className="grid grid-cols-2 gap-3 dark:text-slate-200">
               {[
                 { id: "irritability", label: "Irritability", emoji: "😠" },
                 { id: "mood-swings", label: "Mood swings", emoji: "🙂😢" },
@@ -246,10 +246,10 @@ export default function SymptomsPage() {
               ].map((symptom) => (
                 <div
                   key={symptom.id}
-                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer transition-all duration-300 dark:hover:text-gray-900 ${
                     emotionalSymptoms.includes(symptom.id)
-                      ? "bg-pink-50 border-pink-300"
-                      : ""
+                      ? "bg-pink-50 border-pink-300 dark:text-gray-900"
+                      : "hover:bg-gray-50"
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
                   onClick={() => toggleEmotionalSymptom(symptom.id)}
