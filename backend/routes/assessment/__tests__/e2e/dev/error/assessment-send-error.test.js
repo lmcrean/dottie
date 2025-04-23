@@ -28,7 +28,7 @@ beforeAll(async () => {
       username: `testuser_${Date.now()}`,
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash',
-      created_at: new Date().toISOString()
+      createdAt: new Date().toISOString()
     });
     console.log('Test user created for error tests:', testUserId);
   } catch (error) {

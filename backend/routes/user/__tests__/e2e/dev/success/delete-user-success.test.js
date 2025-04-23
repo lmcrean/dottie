@@ -38,8 +38,8 @@ beforeAll(async () => {
       email: `delete_${timestamp}@example.com`,
       password_hash: 'test-hash-1',
       age: '18_24',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     // User 2 - For testing access control
@@ -49,8 +49,8 @@ beforeAll(async () => {
       email: `target_${timestamp}@example.com`,
       password_hash: 'test-hash-2',
       age: '25_34',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     // Insert test users
@@ -192,8 +192,8 @@ describe('Delete User API - Success Cases', () => {
       email: `authtest_${timestamp}@example.com`,
       password_hash: 'test-hash-3',
       age: '35_44',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     // Insert the test user

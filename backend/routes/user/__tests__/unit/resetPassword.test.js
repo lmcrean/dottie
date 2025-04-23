@@ -243,7 +243,7 @@ describe('Password Reset Functionality', () => {
       User.updatePassword.mockResolvedValue({
         id: 'user-id-123',
         email: 'user@example.com',
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
       });
       
       User.clearResetToken.mockResolvedValue({

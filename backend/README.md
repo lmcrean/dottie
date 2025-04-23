@@ -119,9 +119,9 @@ This architecture allows developers to work without setting up an external datab
 The database includes the following core tables (defined in `db/migrations/`):
 
 - **users**: User account information (id, username, email, password_hash, age)
-- **assessments**: Assessment results (id, user_id, date, result_category, recommendations, plus fields for each answer)
-- **period_logs**: (Optional/Future) Menstrual cycle tracking (id, user_id, start_date, end_date, flow_level)
-- **symptoms**: (Optional/Future) Symptom tracking (id, user_id, date, type, severity, notes)
+- **assessments**: Assessment results (id, userId, date, result_category, recommendations, plus fields for each answer)
+- **period_logs**: (Optional/Future) Menstrual cycle tracking (id, userId, start_date, end_date, flow_level)
+- **symptoms**: (Optional/Future) Symptom tracking (id, userId, date, type, severity, notes)
 
 *Note: `period_logs` and `symptoms` might be future enhancements or managed differently.*
 

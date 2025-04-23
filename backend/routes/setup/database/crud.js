@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
       .insert({
         id: testId,
         name: 'Test User',
-        created_at: new Date().toISOString()
+        createdAt: new Date().toISOString()
       })
       .select();
     

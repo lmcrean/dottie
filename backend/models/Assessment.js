@@ -85,10 +85,10 @@ class Assessment {
       // Store the data as JSON in the assessmentData column
       const dbPayload = {
         id,
-        user_id: userId,
+        userId: userId,
         assessmentData: JSON.stringify(data),
-        created_at: now,
-        updated_at: now
+        createdAt: now,
+        updatedAt: now
       };
       
       console.log("Inserting into database:", dbPayload);
@@ -110,9 +110,9 @@ class Assessment {
       // Format the response consistently with camelCase
       return {
         id: assessmentRow.id,
-        userId: assessmentRow.user_id,
-        createdAt: assessmentRow.created_at,
-        updatedAt: assessmentRow.updated_at,
+        userId: assessmentRow.userId,
+        createdAt: assessmentRow.createdAt,
+        updatedAt: assessmentRow.updatedAt,
         assessmentData: parsedData
       };
     } catch (error) {
@@ -140,10 +140,10 @@ class Assessment {
       console.log('Fetching assessments from database for userId:', userId);
       const assessments = await DbService.findByFieldWithJson(
         'assessments',
-        'user_id',
+        'userId',
         userId,
         ['assessmentData'],
-        'created_at'
+        'createdAt'
       );
       
       console.log('Raw DB assessments count:', assessments.length);
@@ -163,10 +163,10 @@ class Assessment {
         
         return {
           id: assessment.id,
-          userId: assessment.user_id,
+          userId: assessment.userId,
           assessmentData: assessment.assessmentData,
-          createdAt: assessment.created_at,
-          updatedAt: assessment.updated_at
+          createdAt: assessment.createdAt,
+          updatedAt: assessment.updatedAt
         };
       });
       
@@ -257,7 +257,7 @@ class Assessment {
         id,
         { 
           assessmentData: updatedData, 
-          updated_at: now 
+          updatedAt: now 
         },
         ['assessmentData']
       );
@@ -311,7 +311,7 @@ static async validateOwnership(assessmentId, userId) {
     
     // If assessment exists, check if user is the owner
     if (assessment && assessment.length > 0) {
-      return assessment[0].user_id === userId;
+      return assessment[0].userId === userId;
     }
     
     return false;

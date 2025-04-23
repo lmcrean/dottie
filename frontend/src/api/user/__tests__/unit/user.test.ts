@@ -124,7 +124,7 @@ describe('User API', () => {
       const mockInput = { currentPassword: 'old', newPassword: 'new' };
       const mockResponse = { 
         message: 'Password updated successfully',
-        updated_at: expect.any(String)
+        updatedAt: expect.any(String)
       };
   
       (apiClient.post as any).mockResolvedValueOnce({ data: mockResponse });

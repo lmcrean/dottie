@@ -26,7 +26,7 @@ export const deleteAssessment = async (req, res) => {
         const existingAssessment = await db('assessments')
           .where({
             'id': assessmentId,
-            'user_id': userId
+            'userId': userId
           })
           .first();
         

@@ -37,8 +37,8 @@ beforeAll(async () => {
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash',
       age: '25_34',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     // Insert the test user into the database
@@ -126,7 +126,7 @@ describe('User Update API - Success Cases', () => {
     const updateAttempt = {
       id: 'hacker-attempt', // Should not change ID
       email: 'new-email@example.com', // Email might be changeable
-      created_at: new Date(2000, 1, 1).toISOString(), // Should not change creation date
+      createdAt: new Date(2000, 1, 1).toISOString(), // Should not change creation date
       role: 'admin' // Should not allow role change
     };
     
@@ -147,8 +147,8 @@ describe('User Update API - Success Cases', () => {
     // The API may allow email changes, so we don't check that specifically
     
     // Other security-related fields shouldn't change
-    if (beforeUser.created_at) {
-      expect(updatedUser.created_at).toBe(beforeUser.created_at); // Creation date shouldn't change
+    if (beforeUser.createdAt) {
+      expect(updatedUser.createdAt).toBe(beforeUser.createdAt); // Creation date shouldn't change
     }
     
     if (beforeUser.role) {
@@ -175,6 +175,6 @@ describe('User Update API - Success Cases', () => {
     expect(response.body).toHaveProperty('id', testUserId);
     // The API returns the user data rather than a "no changes" message
     expect(response.body).toHaveProperty('email');
-    expect(response.body).toHaveProperty('updated_at');
+    expect(response.body).toHaveProperty('updatedAt');
   });
 }); 

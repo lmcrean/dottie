@@ -32,38 +32,38 @@ Create the following tables in the Supabase dashboard:
 - age: text
 - reset_token: text
 - reset_token_expires: timestamp with time zone
-- created_at: timestamp with time zone DEFAULT NOW()
-- updated_at: timestamp with time zone DEFAULT NOW()
+- createdAt: timestamp with time zone DEFAULT NOW()
+- updatedAt: timestamp with time zone DEFAULT NOW()
 
 #### Period Logs Table
 - id: serial PRIMARY KEY
-- user_id: uuid REFERENCES users(id)
+- userId: uuid REFERENCES users(id)
 - start_date: date NOT NULL
 - end_date: date
 - flow_level: integer
-- created_at: timestamp with time zone DEFAULT NOW()
-- updated_at: timestamp with time zone DEFAULT NOW()
+- createdAt: timestamp with time zone DEFAULT NOW()
+- updatedAt: timestamp with time zone DEFAULT NOW()
 
 #### Conversations Table
 - id: uuid PRIMARY KEY DEFAULT uuid_generate_v4()
-- user_id: uuid REFERENCES users(id)
+- userId: uuid REFERENCES users(id)
 - title: text
-- created_at: timestamp with time zone DEFAULT NOW()
-- updated_at: timestamp with time zone DEFAULT NOW()
+- createdAt: timestamp with time zone DEFAULT NOW()
+- updatedAt: timestamp with time zone DEFAULT NOW()
 
 #### Chat Messages Table
 - id: uuid PRIMARY KEY DEFAULT uuid_generate_v4()
 - conversation_id: uuid REFERENCES conversations(id)
 - role: text NOT NULL
 - content: text NOT NULL
-- created_at: timestamp with time zone DEFAULT NOW()
+- createdAt: timestamp with time zone DEFAULT NOW()
 
 ### assessments table:
 - id: uuid or char(36) PRIMARY KEY
-- user_id: text NOT NULL (FK to users.id)
+- userId: text NOT NULL (FK to users.id)
 - assessmentData: text NOT NULL (JSON string of all assessment fields)
-- created_at: timestamp NOT NULL (default now())
-- updated_at: timestamp NOT NULL (auto-updated on change)
+- createdAt: timestamp NOT NULL (default now())
+- updatedAt: timestamp NOT NULL (auto-updated on change)
     
 #### assessmentData (JSON) structure
 - date: string (ISO format timestamp)
@@ -84,7 +84,7 @@ Create the following tables in the Supabase dashboard:
 #### Temp Test CRUD Table (for testing)
 - id: uuid PRIMARY KEY
 - name: text
-- created_at: timestamp with time zone DEFAULT NOW()
+- createdAt: timestamp with time zone DEFAULT NOW()
 
 ### 3. Run the Migration Script
 

@@ -3,21 +3,21 @@
 -- First, make sure the assessments table exists with JSONB support
 CREATE TABLE IF NOT EXISTS public.assessments (
   id UUID PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES public.users(id),
+  userId UUID NOT NULL REFERENCES public.users(id),
   assessmentData JSONB NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create index for user_id lookups if it doesn't exist
-CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON public.assessments(user_id);
+-- Create index for userId lookups if it doesn't exist
+CREATE INDEX IF NOT EXISTS idx_assessments_userId ON public.assessments(userId);
 
 -- Create index for JSONB operations to improve query performance on nested fields
 CREATE INDEX IF NOT EXISTS idx_assessments_data_json ON public.assessments USING GIN (assessmentData);
 
 -- Ensure that the symptoms table reference in the index doesn't cause errors 
 -- (since it's now included in the JSON data and the table may not exist)
-DROP INDEX IF EXISTS idx_symptoms_user_id;
+DROP INDEX IF EXISTS idx_symptoms_userId;
 
 -- Add a comment to the table to document the expected JSON structure
 COMMENT ON TABLE public.assessments IS 'Assessments with nested JSON data structure for user health assessments';

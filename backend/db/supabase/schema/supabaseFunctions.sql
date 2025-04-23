@@ -17,7 +17,7 @@ BEGIN
     CREATE TABLE IF NOT EXISTS temp_test_crud (
       id UUID PRIMARY KEY,
       name TEXT,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      createdAt TIMESTAMP WITH TIME ZONE DEFAULT NOW()
     );
   END;
   $inner$ LANGUAGE plpgsql;';

@@ -27,7 +27,7 @@ export async function createTables(db) {
   if (!(await db.schema.hasTable('period_logs'))) {
     await db.schema.createTable('period_logs', (table) => {
       table.increments('id').primary();
-      table.uuid('user_id').notNullable();
+      table.uuid('userId').notNullable();
       table.date('start_date').notNullable();
       table.date('end_date');
       table.integer('flow_level'); // 1-5 scale
@@ -35,10 +35,10 @@ export async function createTables(db) {
       
       // Foreign key handling based on database type
       if (!isSQLite) {
-        table.foreign('user_id').references('users.id');
+        table.foreign('userId').references('users.id');
       } else {
         try {
-          table.foreign('user_id').references('users.id');
+          table.foreign('userId').references('users.id');
         } catch (error) {
           console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
         }
@@ -50,7 +50,7 @@ export async function createTables(db) {
   if (!(await db.schema.hasTable('symptoms'))) {
     await db.schema.createTable('symptoms', (table) => {
       table.increments('id').primary();
-      table.uuid('user_id').notNullable();
+      table.uuid('userId').notNullable();
       table.date('date').notNullable();
       table.string('type').notNullable(); // cramps, headache, mood, etc.
       table.integer('severity'); // 1-5 scale
@@ -59,10 +59,10 @@ export async function createTables(db) {
       
       // Foreign key handling based on database type
       if (!isSQLite) {
-        table.foreign('user_id').references('users.id');
+        table.foreign('userId').references('users.id');
       } else {
         try {
-          table.foreign('user_id').references('users.id');
+          table.foreign('userId').references('users.id');
         } catch (error) {
           console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
         }
@@ -74,15 +74,15 @@ export async function createTables(db) {
   if (!(await db.schema.hasTable('conversations'))) {
     await db.schema.createTable('conversations', (table) => {
       table.uuid('id').primary();
-      table.uuid('user_id').notNullable();
+      table.uuid('userId').notNullable();
       table.timestamps(true, true);
       
       // Foreign key handling based on database type
       if (!isSQLite) {
-        table.foreign('user_id').references('users.id');
+        table.foreign('userId').references('users.id');
       } else {
         try {
-          table.foreign('user_id').references('users.id');
+          table.foreign('userId').references('users.id');
         } catch (error) {
           console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
         }
@@ -97,7 +97,7 @@ export async function createTables(db) {
       table.uuid('conversation_id').notNullable();
       table.string('role').notNullable(); // 'user' or 'assistant'
       table.text('content').notNullable();
-      table.timestamp('created_at').defaultTo(db.fn.now());
+      table.timestamp('createdAt').defaultTo(db.fn.now());
       
       // Foreign key handling based on database type
       if (!isSQLite) {

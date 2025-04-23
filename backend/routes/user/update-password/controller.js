@@ -23,7 +23,7 @@ export const updatePassword = async (req, res) => {
       return res.json({
         id: userId,
         message: 'Password updated successfully',
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
       });
     }
     
@@ -50,7 +50,7 @@ export const updatePassword = async (req, res) => {
     
     res.json({
       message: 'Password updated successfully',
-      updated_at: new Date().toISOString()
+      updatedAt: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error updating password:', error);

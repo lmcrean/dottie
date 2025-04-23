@@ -17,8 +17,8 @@ export async function updateAssessmentSchema(db) {
   // Create the assessments table with updated schema
   await db.schema.createTable('assessments', (table) => {
     table.string('id').primary(); // Use string ID for test IDs
-    table.string('user_id').notNullable();
-    table.string('created_at').notNullable();
+    table.string('userId').notNullable();
+    table.string('createdAt').notNullable();
     table.string('age');
     table.string('cycle_length');
     table.string('period_duration');
@@ -27,10 +27,10 @@ export async function updateAssessmentSchema(db) {
     
     // Foreign key handling based on database type
     if (!isSQLite) {
-      table.foreign('user_id').references('users.id');
+      table.foreign('userId').references('users.id');
     } else {
       try {
-        table.foreign('user_id').references('users.id');
+        table.foreign('userId').references('users.id');
       } catch (error) {
         console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
       }
@@ -82,7 +82,7 @@ export async function revertAssessmentSchema(db) {
   // Re-create the original assessments table
   await db.schema.createTable('assessments', (table) => {
     table.increments('id').primary();
-    table.uuid('user_id').notNullable();
+    table.uuid('userId').notNullable();
     table.date('date').notNullable();
     table.string('result_category').notNullable(); // green, yellow, red
     table.text('recommendations');

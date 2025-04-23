@@ -95,8 +95,8 @@ export const signup = async (req, res) => {
           username,
           email,
           password_hash,
-          created_at: new Date(),
-          updated_at: new Date()
+          createdAt: new Date(),
+          updatedAt: new Date()
         };
         
         // Return mock response

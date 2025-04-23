@@ -14,9 +14,9 @@ export const createConversation = async (userId) => {
     
     await DbService.create('conversations', {
       id: conversationId,
-      user_id: userId,
-      created_at: now,
-      updated_at: now
+      userId: userId,
+      createdAt: now,
+      updatedAt: now
     });
     
     return conversationId;
@@ -43,12 +43,12 @@ export const insertChatMessage = async (conversationId, message) => {
       conversation_id: conversationId,
       role: message.role,
       content: message.content,
-      created_at: now
+      createdAt: now
     });
     
-    // Update conversation's updated_at time
+    // Update conversation's updatedAt time
     await DbService.update('conversations', conversationId, {
-      updated_at: now
+      updatedAt: now
     });
     
     return true;
@@ -69,7 +69,7 @@ export const getConversation = async (conversationId, userId) => {
     // First check if the conversation exists and belongs to the user
     const conversation = await DbService.findBy('conversations', 'id', conversationId);
 
-    if (!conversation || conversation.length === 0 || conversation[0].user_id !== userId) {
+    if (!conversation || conversation.length === 0 || conversation[0].userId !== userId) {
       return null;
     }
     
@@ -78,14 +78,14 @@ export const getConversation = async (conversationId, userId) => {
     
     return {
       // ...conversation[0],
-      // userId: conversation[0].user_id,
-      // createdAt: conversation[0].created_at,
-      // updatedAt: conversation[0].updated_at,
+      // userId: conversation[0].userId,
+      // createdAt: conversation[0].createdAt,
+      // updatedAt: conversation[0].updatedAt,
       id: conversationId,
       messages: messages.map(msg => ({
         role: msg.role,
         content: msg.content,
-        createdAt: msg.created_at
+        createdAt: msg.createdAt
       }))
     };
   } catch (error) {
@@ -135,7 +135,7 @@ export const deleteConversation = async (conversationId, userId) => {
     }
 
     const conversation = conversations[0];
-    if (conversation.user_id !== userId) {
+    if (conversation.userId !== userId) {
       logger.warn(`User ${userId} not authorized to delete conversation ${conversationId}`);
       return false;
     }
@@ -149,7 +149,7 @@ export const deleteConversation = async (conversationId, userId) => {
     // Delete the conversation
     const conversationDeleted = await DbService.delete('conversations', {
       id: conversationId,
-      user_id: userId  // Extra safety: ensure user owns the conversation
+      userId: userId  // Extra safety: ensure user owns the conversation
     });
 
     if (!conversationDeleted) {

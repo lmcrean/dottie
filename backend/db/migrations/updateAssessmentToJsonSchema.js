@@ -20,16 +20,16 @@ export async function updateAssessmentToJsonSchema(db) {
     // Create the new assessments table with JSON data
     await db.schema.createTable('assessments', (table) => {
       table.uuid('id').primary();
-      table.uuid('user_id').notNullable();
+      table.uuid('userId').notNullable();
       table.text('assessmentData').notNullable(); // JSON stored as text
       table.timestamps(true, true);
       
       // Foreign key handling based on database type
       if (!isSQLite) {
-        table.foreign('user_id').references('users.id');
+        table.foreign('userId').references('users.id');
       } else {
         try {
-          table.foreign('user_id').references('users.id');
+          table.foreign('userId').references('users.id');
         } catch (error) {
           console.warn('Warning: Could not create foreign key - common with SQLite:', error.message);
         }
@@ -52,7 +52,7 @@ export async function updateAssessmentToJsonSchema(db) {
     // Re-create the original assessments table
     await db.schema.createTable('assessments', (table) => {
       table.increments('id').primary();
-      table.uuid('user_id').notNullable();
+      table.uuid('userId').notNullable();
       table.date('date').notNullable();
       table.string('result_category').notNullable(); // green, yellow, red
       table.text('recommendations');
@@ -62,7 +62,7 @@ export async function updateAssessmentToJsonSchema(db) {
     // Re-create the symptoms table
     await db.schema.createTable('symptoms', (table) => {
       table.increments('id').primary();
-      table.uuid('user_id').notNullable();
+      table.uuid('userId').notNullable();
       table.date('date').notNullable();
       table.string('type').notNullable(); // cramps, headache, mood, etc.
       table.integer('severity'); // 1-5 scale

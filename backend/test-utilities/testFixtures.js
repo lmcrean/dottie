@@ -17,8 +17,8 @@ export function generateUser(overrides = {}) {
     email: overrides.email || `test_${timestamp}@example.com`,
     password_hash: overrides.password_hash || bcrypt.hashSync('TestPassword123!', 10),
     age: overrides.age || '25_34',
-    created_at: overrides.created_at || new Date(),
-    updated_at: overrides.updated_at || new Date()
+    createdAt: overrides.createdAt || new Date(),
+    updatedAt: overrides.updatedAt || new Date()
   };
 }
 
@@ -31,12 +31,12 @@ export function generatePeriodLog(overrides = {}) {
   const timestamp = Date.now();
   return {
     id: overrides.id || timestamp,
-    user_id: overrides.user_id || `test-${timestamp}`,
+    userId: overrides.userId || `test-${timestamp}`,
     start_date: overrides.start_date || new Date(),
     end_date: overrides.end_date || new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     flow_level: overrides.flow_level || 3,
-    created_at: overrides.created_at || new Date(),
-    updated_at: overrides.updated_at || new Date()
+    createdAt: overrides.createdAt || new Date(),
+    updatedAt: overrides.updatedAt || new Date()
   };
 }
 
@@ -49,13 +49,13 @@ export function generateSymptom(overrides = {}) {
   const timestamp = Date.now();
   return {
     id: overrides.id || timestamp,
-    user_id: overrides.user_id || `test-${timestamp}`,
+    userId: overrides.userId || `test-${timestamp}`,
     date: overrides.date || new Date(),
     type: overrides.type || 'cramps',
     severity: overrides.severity || 3,
     notes: overrides.notes || 'Test symptom notes',
-    created_at: overrides.created_at || new Date(),
-    updated_at: overrides.updated_at || new Date()
+    createdAt: overrides.createdAt || new Date(),
+    updatedAt: overrides.updatedAt || new Date()
   };
 }
 
@@ -68,12 +68,12 @@ export function generateAssessment(overrides = {}) {
   const timestamp = Date.now();
   return {
     id: overrides.id || timestamp,
-    user_id: overrides.user_id || `test-${timestamp}`,
+    userId: overrides.userId || `test-${timestamp}`,
     date: overrides.date || new Date(),
     result_category: overrides.result_category || 'green',
     recommendations: overrides.recommendations || 'Test recommendations',
-    created_at: overrides.created_at || new Date(),
-    updated_at: overrides.updated_at || new Date()
+    createdAt: overrides.createdAt || new Date(),
+    updatedAt: overrides.updatedAt || new Date()
   };
 }
 

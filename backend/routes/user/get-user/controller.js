@@ -18,8 +18,8 @@ export const getCurrentUser = async (req, res) => {
         name: `test_user_${Date.now()}`,
         email: `test_${Date.now()}@example.com`,
         age: "18_24",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       });
     }
     

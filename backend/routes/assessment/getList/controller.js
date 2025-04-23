@@ -27,7 +27,7 @@ export const listAssessments = async (req, res) => {
       console.log('Detected test user, attempting database fetch');
       try {
         // Get assessments from database
-        const dbAssessments = await db('assessments').where('user_id', userId);
+        const dbAssessments = await db('assessments').where('userId', userId);
         console.log('Database assessments found:', dbAssessments.length);
         
         if (dbAssessments && dbAssessments.length > 0) {
@@ -52,8 +52,8 @@ export const listAssessments = async (req, res) => {
             
             return {
               id: assessment.id,
-              userId: assessment.user_id,
-              createdAt: assessment.created_at,
+              userId: assessment.userId,
+              createdAt: assessment.createdAt,
               assessmentData: {
                 age: assessment.age,
                 cycleLength: assessment.cycle_length,
@@ -95,9 +95,9 @@ export const listAssessments = async (req, res) => {
       // Add a mapping step to ensure correct format before sending
       const formattedAssessments = userAssessments.map(assessment => ({
         id: assessment.id,
-        user_id: assessment.userId,
-        created_at: assessment.createdAt,
-        updated_at: assessment.updatedAt,
+        userId: assessment.userId,
+        createdAt: assessment.createdAt,
+        updatedAt: assessment.updatedAt,
         assessmentData: assessment.assessmentData
       }));
       

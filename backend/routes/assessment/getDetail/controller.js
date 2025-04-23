@@ -35,7 +35,7 @@ export const getAssessmentDetail = async (req, res) => {
         const dbAssessment = await db('assessments')
           .where({
             'id': assessmentId,
-            'user_id': userId
+            'userId': userId
           })
           .first();
         
@@ -52,8 +52,8 @@ export const getAssessmentDetail = async (req, res) => {
           // Format the response to match expected format
           return res.status(200).json({
             id: dbAssessment.id,
-            userId: dbAssessment.user_id,
-            createdAt: dbAssessment.created_at,
+            userId: dbAssessment.userId,
+            createdAt: dbAssessment.createdAt,
             assessmentData: {
               age: dbAssessment.age,
               cycleLength: dbAssessment.cycle_length,

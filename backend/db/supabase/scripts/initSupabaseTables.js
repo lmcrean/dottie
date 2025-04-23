@@ -39,7 +39,7 @@ async function verifyConnection() {
     1. healthcheck table:
        - id: uuid PRIMARY KEY DEFAULT uuid_generate_v4()
        - message: text
-       - created_at: timestamp with time zone DEFAULT NOW()
+       - createdAt: timestamp with time zone DEFAULT NOW()
        
     2. users table:
        - id: uuid PRIMARY KEY
@@ -49,38 +49,38 @@ async function verifyConnection() {
        - age: text
        - reset_token: text
        - reset_token_expires: timestamp with time zone
-       - created_at: timestamp with time zone DEFAULT NOW()
-       - updated_at: timestamp with time zone DEFAULT NOW()
+       - createdAt: timestamp with time zone DEFAULT NOW()
+       - updatedAt: timestamp with time zone DEFAULT NOW()
     
     3. period_logs table:
        - id: serial PRIMARY KEY
-       - user_id: uuid REFERENCES users(id)
+       - userId: uuid REFERENCES users(id)
        - start_date: date NOT NULL
        - end_date: date
        - flow_level: integer
-       - created_at: timestamp with time zone DEFAULT NOW()
-       - updated_at: timestamp with time zone DEFAULT NOW()
+       - createdAt: timestamp with time zone DEFAULT NOW()
+       - updatedAt: timestamp with time zone DEFAULT NOW()
     
     4. conversations table:
        - id: uuid PRIMARY KEY DEFAULT uuid_generate_v4()
-       - user_id: uuid REFERENCES users(id)
+       - userId: uuid REFERENCES users(id)
        - title: text
-       - created_at: timestamp with time zone DEFAULT NOW()
-       - updated_at: timestamp with time zone DEFAULT NOW()
+       - createdAt: timestamp with time zone DEFAULT NOW()
+       - updatedAt: timestamp with time zone DEFAULT NOW()
     
     5. chat_messages table:
        - id: uuid PRIMARY KEY DEFAULT uuid_generate_v4()
        - conversation_id: uuid REFERENCES conversations(id)
        - role: text NOT NULL
        - content: text NOT NULL
-       - created_at: timestamp with time zone DEFAULT NOW()
+       - createdAt: timestamp with time zone DEFAULT NOW()
     
     6. assessments table:
        - id: uuid or char(36) PRIMARY KEY
-       - user_id: text NOT NULL (FK to users.id)
+       - userId: text NOT NULL (FK to users.id)
        - assessmentData: text NOT NULL (JSON string of all assessment fields)
-       - created_at: timestamp NOT NULL (default now())
-       - updated_at: timestamp NOT NULL (auto-updated on change)
+       - createdAt: timestamp NOT NULL (default now())
+       - updatedAt: timestamp NOT NULL (auto-updated on change)
     
     7. assessmentData (JSON) structure
        - date: string (ISO format timestamp)
@@ -101,7 +101,7 @@ async function verifyConnection() {
     8. temp_test_crud table:
        - id: uuid PRIMARY KEY
        - name: text
-       - created_at: timestamp with time zone DEFAULT NOW()
+       - createdAt: timestamp with time zone DEFAULT NOW()
     `);
     
     console.log('\nAfter creating the tables in Supabase, your migration can proceed.');

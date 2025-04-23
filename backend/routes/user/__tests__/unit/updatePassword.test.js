@@ -10,7 +10,7 @@ vi.mock('../../../../models/User.js', () => ({
     updatePassword: vi.fn().mockResolvedValue({
       id: 'valid-user-id',
       username: 'testuser',
-      updated_at: new Date().toISOString()
+      updatedAt: new Date().toISOString()
     })
   }
 }));
@@ -96,7 +96,7 @@ describe('POST /pw/update/:id - Update Password', () => {
     expect(response.status).toBe(200);
     expect(response.body.id).toBe(testId);
     expect(response.body.message).toBe('Password updated successfully');
-    expect(response.body).toHaveProperty('updated_at');
+    expect(response.body).toHaveProperty('updatedAt');
   });
   
   it('should return 404 when user does not exist', async () => {
@@ -172,7 +172,7 @@ describe('POST /pw/update/:id - Update Password', () => {
     // Assertions
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('message', 'Password updated successfully');
-    expect(response.body).toHaveProperty('updated_at');
+    expect(response.body).toHaveProperty('updatedAt');
     
     // Verify bcrypt and User.updatePassword were called with correct parameters
     expect(bcrypt.compare).toHaveBeenCalledWith('CurrentPassword123!', 'hashed_password');

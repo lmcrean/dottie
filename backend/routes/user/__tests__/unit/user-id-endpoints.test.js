@@ -13,7 +13,7 @@ const createMockServer = () => {
     res.status(200).json({
       id,
       ...req.body,
-      updated_at: new Date().toISOString()
+      updatedAt: new Date().toISOString()
     });
   });
 

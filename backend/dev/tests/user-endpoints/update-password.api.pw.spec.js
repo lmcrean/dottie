@@ -46,7 +46,7 @@ test.describe('User API - Update Password', () => {
     // Verify response contains message
     const data = await response.json();
     expect(data).toHaveProperty('message', 'Password updated successfully');
-    expect(data).toHaveProperty('updated_at');
+    expect(data).toHaveProperty('updatedAt');
   });
   
   test('POST /api/user/pw/update/:id - should reject with invalid current password', async ({ request }) => {

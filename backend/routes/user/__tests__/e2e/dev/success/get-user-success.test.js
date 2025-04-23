@@ -37,8 +37,8 @@ beforeAll(async () => {
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash',
       age: '25_34',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     // Insert the test user into the database

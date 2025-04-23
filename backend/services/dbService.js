@@ -136,20 +136,20 @@ class DbService {
     try {
       // Get all conversations for the user
       const conversations = await db('conversations')
-        .where('user_id', userId)
-        .orderBy('updated_at', 'desc');
+        .where('userId', userId)
+        .orderBy('updatedAt', 'desc');
 
       // For each conversation, get the latest message
       const conversationsWithPreviews = await Promise.all(
         (conversations || []).map(async (conv) => {
           const latestMessage = await db('chat_messages')
             .where('conversation_id', conv.id)
-            .orderBy('created_at', 'desc')
+            .orderBy('createdAt', 'desc')
             .first();
 
           return {
             id: conv.id,
-            lastMessageDate: conv.updated_at,
+            lastMessageDate: conv.updatedAt,
             preview: latestMessage
               ? latestMessage.content.substring(0, 50)
               : ''

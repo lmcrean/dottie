@@ -33,7 +33,7 @@ export const updateAssessment = async (req, res) => {
         const existingAssessment = await db('assessments')
           .where({
             'id': assessmentId,
-            'user_id': userId
+            'userId': userId
           })
           .first();
         
@@ -50,7 +50,7 @@ export const updateAssessment = async (req, res) => {
             period_duration: assessmentData.periodDuration,
             flow_heaviness: assessmentData.flowHeaviness,
             pain_level: assessmentData.painLevel,
-            updated_at: new Date().toISOString()
+            updatedAt: new Date().toISOString()
           });
         
         // Handle symptoms update if provided
@@ -105,9 +105,9 @@ export const updateAssessment = async (req, res) => {
         // Return updated assessment
         return res.status(200).json({
           id: updatedDbAssessment.id,
-          userId: updatedDbAssessment.user_id,
-          createdAt: updatedDbAssessment.created_at,
-          updatedAt: updatedDbAssessment.updated_at,
+          userId: updatedDbAssessment.userId,
+          createdAt: updatedDbAssessment.createdAt,
+          updatedAt: updatedDbAssessment.updatedAt,
           assessmentData: {
             age: updatedDbAssessment.age,
             cycleLength: updatedDbAssessment.cycle_length,

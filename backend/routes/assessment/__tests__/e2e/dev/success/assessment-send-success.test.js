@@ -27,7 +27,7 @@ beforeAll(async () => {
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash',
       age: '18_24',
-      created_at: new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
     
     await db('users').insert(userData);
@@ -131,7 +131,7 @@ describe("Assessment Send Endpoint - Success Cases", () => {
       
       if (dbAssessment) {
         console.log('Database assessment found:', dbAssessment);
-        expect(dbAssessment.user_id).toBe(testUserId);
+        expect(dbAssessment.userId).toBe(testUserId);
         
         // Check symptoms table structure
         const tableInfo = await db.raw("PRAGMA table_info(symptoms)");

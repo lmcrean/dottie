@@ -34,7 +34,7 @@ beforeAll(async () => {
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash', // Not used for auth in these tests
       age: '18_24',
-      created_at: new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
     
     await db('users').insert(userData);
@@ -47,8 +47,8 @@ beforeAll(async () => {
     const testAssessment1Id = `test-assessment-1-${Date.now()}`;
     const assessmentData1 = {
       id: testAssessment1Id,
-      user_id: testUserId,
-      created_at: new Date().toISOString(),
+      userId: testUserId,
+      createdAt: new Date().toISOString(),
       age: '18_24',
       cycle_length: '26_30',
       period_duration: '4_5',
@@ -63,8 +63,8 @@ beforeAll(async () => {
     const testAssessment2Id = `test-assessment-2-${Date.now()}`;
     const assessmentData2 = {
       id: testAssessment2Id,
-      user_id: testUserId,
-      created_at: new Date().toISOString(),
+      userId: testUserId,
+      createdAt: new Date().toISOString(),
       age: '18_24',
       cycle_length: '21_25',
       period_duration: '6_7',

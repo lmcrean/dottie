@@ -25,7 +25,7 @@ beforeAll(async () => {
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash',
       age: '18_24',
-      created_at: new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
     
     await db('users').insert(userData);
@@ -43,8 +43,8 @@ beforeAll(async () => {
     testAssessmentId = `test-assessment-${Date.now()}`;
     const assessmentData = {
       id: testAssessmentId,
-      user_id: testUserId,
-      created_at: new Date().toISOString(),
+      userId: testUserId,
+      createdAt: new Date().toISOString(),
       age: '18_24',
       cycle_length: '26_30',
       period_duration: '4_5',

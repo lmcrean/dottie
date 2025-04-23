@@ -52,7 +52,7 @@ app.get('/api/assessment/list', async (req, res) => {
     const userId = req.user.userId;
     
     // Get all assessments for this user
-    const assessments = await db('assessments').where('user_id', userId);
+    const assessments = await db('assessments').where('userId', userId);
     
     if (!assessments || !Array.isArray(assessments) || assessments.length === 0) {
       return res.status(200).json([]);
@@ -75,8 +75,8 @@ app.get('/api/assessment/list', async (req, res) => {
       
       return {
         id: assessment.id,
-        userId: assessment.user_id,
-        createdAt: assessment.created_at,
+        userId: assessment.userId,
+        createdAt: assessment.createdAt,
         assessmentData: {
           age: assessment.age,
           cycleLength: assessment.cycle_length,
@@ -107,7 +107,7 @@ app.get('/api/assessment/:id', async (req, res) => {
     const assessment = await db('assessments')
       .where({
         'id': assessmentId,
-        'user_id': userId
+        'userId': userId
       })
       .first();
     
@@ -128,8 +128,8 @@ app.get('/api/assessment/:id', async (req, res) => {
     // Format the assessment
     const result = {
       id: assessment.id,
-      userId: assessment.user_id,
-      createdAt: assessment.created_at,
+      userId: assessment.userId,
+      createdAt: assessment.createdAt,
       assessmentData: {
         age: assessment.age,
         cycleLength: assessment.cycle_length,
@@ -165,8 +165,8 @@ app.post('/api/assessment/send', async (req, res) => {
     // Insert assessment into database
     await db('assessments').insert({
       id: assessmentId,
-      user_id: userId,
-      created_at: new Date().toISOString(),
+      userId: userId,
+      createdAt: new Date().toISOString(),
       age: assessmentData.age,
       cycle_length: assessmentData.cycleLength,
       period_duration: assessmentData.periodDuration,

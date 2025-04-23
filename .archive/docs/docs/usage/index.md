@@ -94,7 +94,7 @@ curl -X POST https://dottie-api.azurewebsites.net/auth/token \
 curl -X POST https://dottie-api.azurewebsites.net/conversations \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"user_id": "user123"}'
+  -d '{"userId": "user123"}'
 ```
 
 ### Sending a Message

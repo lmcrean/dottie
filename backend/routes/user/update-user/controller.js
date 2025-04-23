@@ -41,7 +41,7 @@ export const updateUser = async (req, res) => {
         ...updateData,
         email: updateData.email || `test_${Date.now()}@example.com`,
         age: updateData.age || "18_24",
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
       });
     }
     
