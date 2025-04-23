@@ -1,6 +1,9 @@
 -- Check if the assessments table exists
 DO $$
 BEGIN
+  -- Make sure UUID extension is available
+  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
   IF EXISTS (
     SELECT FROM information_schema.tables 
     WHERE table_schema = 'public' 
@@ -22,9 +25,15 @@ BEGIN
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
       
-      -- Copy data from old table to new table
+      -- Copy data from old table to new table with new UUIDs for all records
       INSERT INTO assessments_new(id, user_id, "assessmentData", created_at, updated_at)
-      SELECT id, user_id, assessment_data, created_at, updated_at FROM assessments;
+      SELECT 
+        uuid_generate_v4(), -- Generate new UUID for all records
+        user_id, 
+        assessment_data, 
+        created_at, 
+        updated_at 
+      FROM assessments;
       
       -- Drop old table and rename new one
       DROP TABLE assessments;
@@ -36,7 +45,7 @@ BEGIN
       
       -- Create the validator function
       CREATE OR REPLACE FUNCTION check_assessmentData_format()
-      RETURNS TRIGGER AS $$
+      RETURNS TRIGGER AS $func$
       BEGIN
         -- Check if assessmentData is valid JSON
         IF NEW."assessmentData" IS NULL THEN
@@ -44,7 +53,7 @@ BEGIN
         END IF;
         RETURN NEW;
       END;
-      $$ LANGUAGE plpgsql;
+      $func$ LANGUAGE plpgsql;
       
       -- Create the trigger
       DROP TRIGGER IF EXISTS validate_assessmentData ON public.assessments;
