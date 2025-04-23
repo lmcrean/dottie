@@ -102,7 +102,7 @@ export function FullscreenChat({
   return (
     <div className="fixed inset-0 bg-white flex flex-col z-50 w-full dark:bg-gray-900 ">
       <div className="container max-w-6xl mx-auto flex flex-col h-full border border-gray-200 dark:border-slate-800 rounded-lg shadow-lg p-0">
-        <header className="flex items-center justify-between rounded-t-lg  border bg-gradient-to-r from-pink-50 to-white dark:from-gray-900 dark:to-black p-4">
+        <header className="flex items-center justify-between rounded-t-lg border-b bg-gradient-to-r from-pink-50 to-white dark:from-gray-900 dark:to-black p-4">
           <h1 className="text-lg font-bold text-pink-600">Chat with Dottie</h1>
           <div>
             <Button
@@ -153,7 +153,7 @@ export function FullscreenChat({
               )}
             </div>
           </ScrollArea>
-          <div className="flex gap-2 p-4 border  rounded-b-lg  bg-white dark:bg-gray-900">
+          <div className="flex gap-2 p-4 border-t rounded-b-lg  bg-white dark:bg-gray-900">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
