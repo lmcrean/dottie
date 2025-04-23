@@ -28,7 +28,7 @@ export default function SignOut() {
   return (
     <div className="flex justify-center items-center h-screen">
       {showModal && (
-        <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full text-center border">
+        <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full text-center border dark:bg-gray-900 dark:border-slate-800">
           <h2 className="text-xl font-semibold mb-4">Are you sure you want to sign out?</h2>
           <div className="flex justify-center gap-4 mt-6">
             <button
