@@ -101,8 +101,8 @@ export function ChatModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 shadow-lg bg-white">
-        <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white">
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 dark:border-slate-800 shadow-lg bg-white dark:bg-gray-900">
+        <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white bg-gradient-to-r from-pink-50 to-white dark:from-gray-900 dark:to-black">
           <div className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-pink-600" />
             <DialogTitle className="text-lg font-bold text-pink-600">
@@ -169,7 +169,7 @@ export function ChatModal({
               )}
             </div>
           </ScrollArea>
-          <div className="flex gap-2 p-4 border-t bg-white">
+          <div className="flex gap-2 p-4 border-t bg-white dark:bg-gray-900">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
