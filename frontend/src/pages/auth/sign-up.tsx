@@ -11,15 +11,16 @@ import { useState } from "react";
 import { PasswordInput } from "@/src/components/ui/PasswordInput";
 import AnimatedLogo from "@/src/components/AnimatedLogo";
 
-
 export default function SignUpPage() {
   const navigate = useNavigate();
   const { signup } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [cnfrmPasswordVisible, setCnfrmPasswordVisible] = useState(false);
 
-  const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
-  const toggleCnfrmPasswordVisibility = () => setCnfrmPasswordVisible((prev: boolean) => !prev);
+  const togglePasswordVisibility = () =>
+    setPasswordVisible((prev: boolean) => !prev);
+  const toggleCnfrmPasswordVisibility = () =>
+    setCnfrmPasswordVisible((prev: boolean) => !prev);
 
   const {
     register,
@@ -53,7 +54,12 @@ export default function SignUpPage() {
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-center mb-6">Create Account</h1>
-      <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png" />
+      <AnimatedLogo
+        borderColor="border-pink-600"
+        size={80}
+        logoSize={48}
+        logoSrc="/logo/logo-mascot.svg"
+      />
       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md shadow-sm space-y-4">
           <FormInput
@@ -124,7 +130,11 @@ export default function SignUpPage() {
           />
         </div>
         <div>
-          <Button type="submit" className="btn-primary hover:bg-pink-700 w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="btn-primary hover:bg-pink-700 w-full"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Creating account..." : "Create account"}
           </Button>
         </div>
@@ -132,7 +142,10 @@ export default function SignUpPage() {
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/auth/sign-in" className="text-pink-600 hover:text-pink-700">
+          <Link
+            to="/auth/sign-in"
+            className="text-pink-600 hover:text-pink-700"
+          >
             Sign in
           </Link>
         </p>

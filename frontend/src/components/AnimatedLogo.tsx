@@ -13,7 +13,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   size = 80,
   className = "",
   borderColor = "border-pink-600",
-  logoSrc = "/logo-mascot.png",
+  logoSrc = "/logo/logo-mascot.svg",
   logoSize = 48,
 }) => {
   return (

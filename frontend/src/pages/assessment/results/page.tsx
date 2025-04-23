@@ -30,7 +30,7 @@ type MenstrualPattern =
 interface PatternInfo {
   title: string;
   description: string;
-  icon:string;
+  icon: string;
   recommendations: Array<{
     icon: string;
     title: string;
@@ -498,7 +498,9 @@ export default function ResultsPage() {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl dark:text-slate-100 font-bold mb-3">Your Assessment Results</h1>
+          <h1 className="text-3xl dark:text-slate-100 font-bold mb-3">
+            Your Assessment Results
+          </h1>
           <p className="text-gray-600 dark:text-slate-200">
             Based on your responses, here's what we've found about your
             menstrual health.
@@ -508,7 +510,10 @@ export default function ResultsPage() {
         <Card className="w-full mb-8 shadow-md border dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-8">
-              <img src={patternData[pattern].icon} className="h-24 mx-auto mb-2 w-24"></img>
+              <img
+                src={patternData[pattern].icon}
+                className="h-24 mx-auto mb-2 w-24"
+              ></img>
               <h2 className="text-2xl font-bold text-pink-600 mb-2">
                 {patternData[pattern].title}
               </h2>
@@ -520,7 +525,10 @@ export default function ResultsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 dark:text-gray-900">
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/time.png" className="w-[55px] h-[55px]" />
+                  <img
+                    src="/resultAssets/time.svg"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Age Range</h3>
@@ -530,7 +538,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
                   <img
-                    src="/public/calendar.png"
+                    src="/resultAssets/calendar.svg"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
@@ -543,7 +551,10 @@ export default function ResultsPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/drop.png" className="w-[55px] h-[55px]" />
+                  <img
+                    src="/resultAssets/drop.svg"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Period Duration</h3>
@@ -554,7 +565,10 @@ export default function ResultsPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
-                  <img src="/public/d-drop.png" className="w-[55px] h-[55px]" />
+                  <img
+                    src="/resultAssets/d-drop.svg"
+                    className="w-[55px] h-[55px]"
+                  />
                 </div>
                 <div>
                   <h3 className="font-medium text-lg mb-2">Flow Level</h3>
@@ -566,7 +580,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
                 <div>
                   <img
-                    src="/public/emotion.png"
+                    src="/resultAssets/emotion.svg"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
@@ -580,7 +594,7 @@ export default function ResultsPage() {
               <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3 w-full max-w-full">
                 <div>
                   <img
-                    src="/public/tracktime.png"
+                    src="/resultAssets/track-time.svg"
                     className="w-[55px] h-[55px]"
                   />
                 </div>
