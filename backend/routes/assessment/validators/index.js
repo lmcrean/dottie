@@ -18,7 +18,7 @@ export function validateAssessmentData(assessment) {
   }
   
   const assessmentData = assessment.assessment_data;
-  // console.log('Validating assessment data:', assessmentData);
+ 
   
   // Validate required assessment fields
   if (!assessmentData.age) {

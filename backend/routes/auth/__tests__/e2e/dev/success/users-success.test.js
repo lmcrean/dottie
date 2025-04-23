@@ -1,9 +1,9 @@
 // @ts-check
-import { describe, test, expect, beforeAll, afterAll } from 'vitest';
-import supertest from 'supertest';
-import app from '../../../../../../server.js';
-import { createServer } from 'http';
-import jwt from 'jsonwebtoken';
+import { describe, test, expect, beforeAll, afterAll } from "vitest";
+import supertest from "supertest";
+import app from "../../../../../../server.js";
+import { createServer } from "http";
+import jwt from "jsonwebtoken";
 
 // Create a supertest instance
 const request = supertest(app);
@@ -20,47 +20,47 @@ const TEST_PORT = 5020;
 const createMockToken = (userId) => {
   return jwt.sign(
     { userId: userId, email: `test_${Date.now()}@example.com` },
-    process.env.JWT_SECRET || 'dev-jwt-secret',
-    { expiresIn: '1h' }
+    process.env.JWT_SECRET || "dev-jwt-secret",
+    { expiresIn: "1h" }
   );
 };
 
 // Start server before all tests
 beforeAll(async () => {
   server = createServer(app);
-  await new Promise(/** @param {(value: unknown) => void} resolve */ (resolve) => {
-    server.listen(TEST_PORT, () => {
-      console.log(`Users management success test server started on port ${TEST_PORT}`);
-      resolve(true);
-    });
-  });
-  
+  await new Promise(
+    /** @param {(value: unknown) => void} resolve */ (resolve) => {
+      server.listen(TEST_PORT, () => {
+        resolve(true);
+      });
+    }
+  );
+
   // Create test user
   const userData = {
     username: `usersmgmttest_${Date.now()}`,
     email: `test_${Date.now()}@example.com`,
     password: "Password123!",
-    age: "18_24"
+    age: "18_24",
   };
 
-  const signupResponse = await request
-    .post("/api/auth/signup")
-    .send(userData);
-  
+  const signupResponse = await request.post("/api/auth/signup").send(userData);
+
   testUserId = `test-user-${Date.now()}`;
-  
+
   // Create token for test user
   testToken = createMockToken(testUserId);
 }, 15000);
 
 // Close server after all tests
 afterAll(async () => {
-  await new Promise(/** @param {(value: unknown) => void} resolve */ (resolve) => {
-    server.close(() => {
-      console.log('Users management success test server closed');
-      resolve(true);
-    });
-  });
+  await new Promise(
+    /** @param {(value: unknown) => void} resolve */ (resolve) => {
+      server.close(() => {
+        resolve(true);
+      });
+    }
+  );
 }, 15000);
 
 describe("User Management - Success Scenarios", () => {
@@ -85,7 +85,7 @@ describe("User Management - Success Scenarios", () => {
 
   test("PUT /api/user/me - should update user", async () => {
     const updateData = {
-      username: `updated_user_${Date.now()}`
+      username: `updated_user_${Date.now()}`,
     };
 
     const response = await request
@@ -103,13 +103,13 @@ describe("User Management - Success Scenarios", () => {
       username: `delete_user_${Date.now()}`,
       email: `test_${Date.now()}@example.com`,
       password: "Password123!",
-      age: "18_24"
+      age: "18_24",
     };
 
     const createResponse = await request
       .post("/api/auth/signup")
       .send(deleteUserData);
-    
+
     const userIdToDelete = `test-user-${Date.now()}`;
     const deleteToken = createMockToken(userIdToDelete);
 
@@ -122,4 +122,4 @@ describe("User Management - Success Scenarios", () => {
     expect(response.body).toHaveProperty("message");
     expect(response.body.message).toContain("deleted");
   });
-}); 
+});

@@ -39,19 +39,18 @@ export function FullscreenChat({
     const fetchHistory = async () => {
       try {
         const response = await getHistory();
-        console.log(response);
-        
+
         // Map the conversation data to the Message format
         const allMessages: Message[] = [];
         response.forEach((conversation: Conversation) => {
           conversation.messages.forEach((msg: ApiMessage) => {
             allMessages.push({
               role: msg.role,
-              content: msg.content
+              content: msg.content,
             });
           });
         });
-        
+
         setMessages(allMessages);
       } catch (error) {
         console.error("Error fetching chat history:", error);

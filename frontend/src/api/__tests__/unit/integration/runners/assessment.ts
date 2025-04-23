@@ -1,11 +1,11 @@
 /**
  * Assessment Utilities for Integration Tests
- * 
+ *
  * This file contains helper functions for assessment-related operations
  * in integration tests, such as creating, retrieving, updating and deleting assessments.
  */
-import { api } from './apiClient';
-import { AxiosError } from 'axios';
+import { api } from "./apiClient";
+import { AxiosError } from "axios";
 
 interface Symptoms {
   physical: string[];
@@ -38,27 +38,31 @@ interface Assessment {
  * @param {AssessmentData} assessmentData - Assessment data
  * @returns {Promise<string>} Assessment ID
  */
-export async function createAssessment(userId: string, assessmentData: AssessmentData | null = null): Promise<string> {
+export async function createAssessment(
+  userId: string,
+  assessmentData: AssessmentData | null = null
+): Promise<string> {
   try {
-    console.log('Creating assessment for user:', userId);
-    
     // If no assessment data provided, use default test data
     const data = assessmentData || generateDefaultAssessment();
-    
+
     const payload = {
       userId: userId,
-      assessmentData: data
+      assessmentData: data,
     };
-    
-    console.log('Assessment payload:', payload);
-    
-    const response = await api.post('/api/assessment/send', payload);
-    console.log('Create assessment response:', response.data);
-    
+
+    const response = await api.post("/api/assessment/send", payload);
     return response.data.id;
   } catch (error) {
-    console.error('Failed to create assessment:', (error as AxiosError).response?.data || (error as Error).message);
-    throw new Error(`Failed to create assessment: ${(error as AxiosError).response?.status || (error as Error).message}`);
+    console.error(
+      "Failed to create assessment:",
+      (error as AxiosError).response?.data || (error as Error).message
+    );
+    throw new Error(
+      `Failed to create assessment: ${
+        (error as AxiosError).response?.status || (error as Error).message
+      }`
+    );
   }
 }
 
@@ -68,15 +72,19 @@ export async function createAssessment(userId: string, assessmentData: Assessmen
  */
 export async function getAssessments(): Promise<Assessment[]> {
   try {
-    console.log('Getting all assessments');
-    
-    const response = await api.get('/api/assessment/list');
-    console.log('Get assessments response:', response.data);
-    
+    const response = await api.get("/api/assessment/list");
+
     return response.data;
   } catch (error) {
-    console.error('Failed to get assessments:', (error as AxiosError).response?.data || (error as Error).message);
-    throw new Error(`Failed to get assessments: ${(error as AxiosError).response?.status || (error as Error).message}`);
+    console.error(
+      "Failed to get assessments:",
+      (error as AxiosError).response?.data || (error as Error).message
+    );
+    throw new Error(
+      `Failed to get assessments: ${
+        (error as AxiosError).response?.status || (error as Error).message
+      }`
+    );
   }
 }
 
@@ -85,17 +93,23 @@ export async function getAssessments(): Promise<Assessment[]> {
  * @param {string} assessmentId - Assessment ID
  * @returns {Promise<Assessment>} Assessment data
  */
-export async function getAssessmentById(assessmentId: string): Promise<Assessment> {
+export async function getAssessmentById(
+  assessmentId: string
+): Promise<Assessment> {
   try {
-    console.log('Getting assessment by ID:', assessmentId);
-    
     const response = await api.get(`/api/assessment/${assessmentId}`);
-    console.log('Get assessment by ID response:', response.data);
-    
+
     return response.data;
   } catch (error) {
-    console.error('Failed to get assessment:', (error as AxiosError).response?.data || (error as Error).message);
-    throw new Error(`Failed to get assessment: ${(error as AxiosError).response?.status || (error as Error).message}`);
+    console.error(
+      "Failed to get assessment:",
+      (error as AxiosError).response?.data || (error as Error).message
+    );
+    throw new Error(
+      `Failed to get assessment: ${
+        (error as AxiosError).response?.status || (error as Error).message
+      }`
+    );
   }
 }
 
@@ -106,23 +120,33 @@ export async function getAssessmentById(assessmentId: string): Promise<Assessmen
  * @param {AssessmentData} updateData - Updated assessment data
  * @returns {Promise<Assessment>} Updated assessment
  */
-export async function updateAssessment(userId: string, assessmentId: string, updateData: AssessmentData): Promise<Assessment> {
+export async function updateAssessment(
+  userId: string,
+  assessmentId: string,
+  updateData: AssessmentData
+): Promise<Assessment> {
   try {
-    console.log('Updating assessment:', assessmentId, 'for user:', userId);
-    console.log('Update data:', updateData);
-    
     // The API expects the full assessment structure with the updated data
     const payload = {
-      assessmentData: updateData
+      assessmentData: updateData,
     };
-    
-    const response = await api.put(`/api/assessment/${userId}/${assessmentId}`, payload);
-    console.log('Update assessment response:', response.data);
-    
+
+    const response = await api.put(
+      `/api/assessment/${userId}/${assessmentId}`,
+      payload
+    );
+
     return response.data;
   } catch (error) {
-    console.error('Failed to update assessment:', (error as AxiosError).response?.data || (error as Error).message);
-    throw new Error(`Failed to update assessment: ${(error as AxiosError).response?.status || (error as Error).message}`);
+    console.error(
+      "Failed to update assessment:",
+      (error as AxiosError).response?.data || (error as Error).message
+    );
+    throw new Error(
+      `Failed to update assessment: ${
+        (error as AxiosError).response?.status || (error as Error).message
+      }`
+    );
   }
 }
 
@@ -132,17 +156,26 @@ export async function updateAssessment(userId: string, assessmentId: string, upd
  * @param {string} assessmentId - Assessment ID
  * @returns {Promise<boolean>} True if deleted successfully
  */
-export async function deleteAssessment(userId: string, assessmentId: string): Promise<boolean> {
+export async function deleteAssessment(
+  userId: string,
+  assessmentId: string
+): Promise<boolean> {
   try {
-    console.log('Deleting assessment:', assessmentId, 'for user:', userId);
-    
-    const response = await api.delete(`/api/assessment/${userId}/${assessmentId}`);
-    console.log('Delete assessment status:', response.status);
-    
+    const response = await api.delete(
+      `/api/assessment/${userId}/${assessmentId}`
+    );
+
     return response.status === 200;
   } catch (error) {
-    console.error('Failed to delete assessment:', (error as AxiosError).response?.data || (error as Error).message);
-    throw new Error(`Failed to delete assessment: ${(error as AxiosError).response?.status || (error as Error).message}`);
+    console.error(
+      "Failed to delete assessment:",
+      (error as AxiosError).response?.data || (error as Error).message
+    );
+    throw new Error(
+      `Failed to delete assessment: ${
+        (error as AxiosError).response?.status || (error as Error).message
+      }`
+    );
   }
 }
 
@@ -152,15 +185,15 @@ export async function deleteAssessment(userId: string, assessmentId: string): Pr
  */
 export function generateDefaultAssessment(): AssessmentData {
   return {
-    age: '25_34',
-    cycleLength: '26_30',
-    periodDuration: '4-5',
-    flowHeaviness: 'moderate',
-    painLevel: 'moderate',
+    age: "25_34",
+    cycleLength: "26_30",
+    periodDuration: "4-5",
+    flowHeaviness: "moderate",
+    painLevel: "moderate",
     symptoms: {
-      physical: ['Bloating', 'Headaches'],
-      emotional: ['Mood swings', 'Irritability']
-    }
+      physical: ["Bloating", "Headaches"],
+      emotional: ["Mood swings", "Irritability"],
+    },
   };
 }
 
@@ -170,14 +203,14 @@ export function generateDefaultAssessment(): AssessmentData {
  */
 export function generateSevereAssessment(): AssessmentData {
   return {
-    age: '25_34',
-    cycleLength: '21-25',
-    periodDuration: '6-7',
-    flowHeaviness: 'heavy',
-    painLevel: 'severe',
+    age: "25_34",
+    cycleLength: "21-25",
+    periodDuration: "6-7",
+    flowHeaviness: "heavy",
+    painLevel: "severe",
     symptoms: {
-      physical: ['Cramps', 'Headaches', 'Fatigue', 'Nausea'],
-      emotional: ['Irritability', 'Anxiety', 'Depression']
-    }
+      physical: ["Cramps", "Headaches", "Fatigue", "Nausea"],
+      emotional: ["Irritability", "Anxiety", "Depression"],
+    },
   };
-} 
+}

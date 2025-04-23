@@ -38,7 +38,7 @@ const getBaseUrl = () => {
 export const setApiBaseUrl = (url: string) => {
   localStorage.setItem("api_base_url", url);
   apiClient.defaults.baseURL = url;
-  console.log(`[API Client] Base URL updated to: ${url}`);
+
   return url;
 };
 
@@ -54,11 +54,6 @@ try {
   const token = getAuthToken();
   if (token) {
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    console.log("[API Client] Initialized with token from localStorage");
-  } else {
-    console.log(
-      "[API Client] No token found in localStorage during initialization"
-    );
   }
 } catch (error) {
   console.error("[API Client] Error accessing localStorage:", error);
