@@ -202,9 +202,9 @@ export default function SymptomsPage() {
               ].map((symptom) => (
                 <div
                   key={symptom.id}
-                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer transition-all duration-300 dark:hover:text-black  ${
+                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer transition-all duration-300 dark:hover:text-gray-900  ${
                     physicalSymptoms.includes(symptom.id)
-                      ? "bg-pink-50 border-pink-300 dark:text-black"
+                      ? "bg-pink-50 border-pink-300 dark:text-gray-900"
                       : "hover:bg-gray-50"
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
@@ -246,9 +246,9 @@ export default function SymptomsPage() {
               ].map((symptom) => (
                 <div
                   key={symptom.id}
-                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer transition-all duration-300 dark:hover:text-black ${
+                  className={`flex flex-col items-center justify-center border dark:border-slate-800 rounded-lg p-3 cursor-pointer transition-all duration-300 dark:hover:text-gray-900 ${
                     emotionalSymptoms.includes(symptom.id)
-                      ? "bg-pink-50 border-pink-300 dark:text-black"
+                      ? "bg-pink-50 border-pink-300 dark:text-gray-900"
                       : "hover:bg-gray-50"
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}

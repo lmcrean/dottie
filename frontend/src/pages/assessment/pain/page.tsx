@@ -86,8 +86,8 @@ export default function PainPage() {
                   className="mb-6"
                 >
                   <div className="space-y-3">
-                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300 dark:hover:text-black  ${selectedPain === "no-pain"
-                          ? "border-pink-500 bg-pink-50 dark:text-black" 
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300 dark:hover:text-gray-900  ${selectedPain === "no-pain"
+                          ? "border-pink-500 bg-pink-50 dark:text-gray-900" 
                           : "hover:bg-gray-50"
                         }`}>
                       <RadioGroupItem
@@ -103,8 +103,8 @@ export default function PainPage() {
                       </Label>
                     </div>
 
-                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${selectedPain === "mild"
-                          ? "border-pink-500 bg-pink-50 dark:text-black" 
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-gray-900  ${selectedPain === "mild"
+                          ? "border-pink-500 bg-pink-50 dark:text-gray-900" 
                           : "hover:bg-gray-50"
                         }`}>
 
@@ -121,8 +121,8 @@ export default function PainPage() {
                       </Label>
                     </div>
 
-                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${selectedPain === "moderate"
-                          ? "border-pink-500 bg-pink-50 dark:text-black" 
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-gray-900  ${selectedPain === "moderate"
+                          ? "border-pink-500 bg-pink-50 dark:text-gray-900" 
                           : "hover:bg-gray-50"
                         }`}>
                       <RadioGroupItem
@@ -138,8 +138,8 @@ export default function PainPage() {
                       </Label>
                     </div>
 
-                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${selectedPain === "severe"
-                      ? "border-pink-500 bg-pink-50 dark:text-black" 
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-gray-900  ${selectedPain === "severe"
+                      ? "border-pink-500 bg-pink-50 dark:text-gray-900" 
                       : "hover:bg-gray-50"
                     }`}>
                       <RadioGroupItem
@@ -155,8 +155,8 @@ export default function PainPage() {
                       </Label>
                     </div>
 
-                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${selectedPain === "debilitating"
-                          ? "border-pink-500 bg-pink-50 dark:text-black" 
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-gray-900  ${selectedPain === "debilitating"
+                          ? "border-pink-500 bg-pink-50 dark:text-gray-900" 
                           : "hover:bg-gray-50"
                         }`}>
                       <RadioGroupItem
@@ -175,8 +175,8 @@ export default function PainPage() {
                       </Label>
                     </div>
 
-                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300 dark:hover:text-black  ${selectedPain === "varies"
-                          ? "border-pink-500 bg-pink-50 dark:text-black" 
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300 dark:hover:text-gray-900  ${selectedPain === "varies"
+                          ? "border-pink-500 bg-pink-50 dark:text-gray-900" 
                           : "hover:bg-gray-50"
                         }`}>
                       <RadioGroupItem
