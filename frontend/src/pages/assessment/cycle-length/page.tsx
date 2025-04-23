@@ -84,8 +84,14 @@ export default function CycleLengthPage() {
                 onValueChange={handleLengthChange}
                 className="mb-6"
               >
-                <div className="space-y-3 dark:hover:text-gray-900">
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className="space-y-3">
+                  <div
+                    className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "21-25"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
                     <RadioGroupItem
                       value="21-25"
                       id="21-25"
@@ -99,7 +105,11 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "26-30"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                    }`}>
                     <RadioGroupItem
                       value="26-30"
                       id="26-30"
@@ -111,7 +121,11 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "31-35"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                     <RadioGroupItem
                       value="31-35"
                       id="31-35"
@@ -123,7 +137,11 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "36-40"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                     <RadioGroupItem
                       value="36-40"
                       id="36-40"
@@ -135,7 +153,11 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "irregular"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                     <RadioGroupItem
                       value="irregular"
                       id="irregular"
@@ -149,7 +171,11 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "not-sure"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                     <RadioGroupItem
                       value="not-sure"
                       id="not-sure"
@@ -161,7 +187,11 @@ export default function CycleLengthPage() {
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedLength === "other"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                     <RadioGroupItem
                       value="other"
                       id="other"

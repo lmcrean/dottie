@@ -81,8 +81,12 @@ export default function PeriodDurationPage() {
               onValueChange={handleDurationChange}
               className="mb-6"
             >
-              <div className="space-y-3 dark:hover:text-gray-900">
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+              <div className="space-y-3">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "1-3"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="1-3"
                     id="1-3"
@@ -94,7 +98,11 @@ export default function PeriodDurationPage() {
                   </Label>
                 </div>
 
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "4-5"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="4-5"
                     id="4-5"
@@ -106,7 +114,11 @@ export default function PeriodDurationPage() {
                   </Label>
                 </div>
 
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "6-7"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="6-7"
                     id="6-7"
@@ -118,7 +130,11 @@ export default function PeriodDurationPage() {
                   </Label>
                 </div>
 
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "8-plus"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="8-plus"
                     id="8-plus"
@@ -130,7 +146,11 @@ export default function PeriodDurationPage() {
                   </Label>
                 </div>
 
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "varies"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="varies"
                     id="varies"
@@ -144,7 +164,11 @@ export default function PeriodDurationPage() {
                   </Label>
                 </div>
 
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "not-sure"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="not-sure"
                     id="not-sure"
@@ -156,7 +180,11 @@ export default function PeriodDurationPage() {
                   </Label>
                 </div>
 
-                <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedDuration === "other"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                }`}>
                   <RadioGroupItem
                     value="other"
                     id="other"

@@ -87,8 +87,12 @@ export default function FlowPage() {
                   onValueChange={handleFlowChange}
                   className="mb-6"
                 >
-                  <div className="space-y-3 dark:hover:text-gray-900">
-                    <div className="flex items-center space-x-2 border dark:border-slate-800 dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                  <div className="space-y-3">
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedFlow === "light"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                       <RadioGroupItem
                         value="light"
                         id="light"
@@ -102,7 +106,11 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedFlow === "moderate"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                       <RadioGroupItem
                         value="moderate"
                         id="moderate"
@@ -116,7 +124,11 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedFlow === "heavy"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                       <RadioGroupItem
                         value="heavy"
                         id="heavy"
@@ -130,7 +142,11 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black  ${
+                      selectedFlow === "very-heavy"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                       <RadioGroupItem
                         value="very-heavy"
                         id="very-heavy"
@@ -144,7 +160,11 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black   ${
+                      selectedFlow === "varies"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                       <RadioGroupItem
                         value="varies"
                         id="varies"
@@ -158,7 +178,11 @@ export default function FlowPage() {
                       </Label>
                     </div>
 
-                    <div className="flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 hover:bg-gray-50">
+                    <div className={`flex items-center space-x-2 border dark:border-slate-800 rounded-lg p-3 transition-all duration-300  dark:hover:text-black   ${
+                      selectedFlow === "not-sure"
+                        ? "border-pink-500 bg-pink-50 dark:text-black"
+                        : "hover:bg-gray-50"
+                  }`}>
                       <RadioGroupItem
                         value="not-sure"
                         id="not-sure"

@@ -75,7 +75,7 @@ export default function AgeVerificationPage() {
                 >
                   <div className="space-y-4">
                     <div
-                      className={`flex items-center space-x-3 border border dark:border-slate-800 rounded-xl p-4 transition-all duration-300  dark:hover:text-black  ${selectedAge === "under-13"
+                      className={`flex items-center space-x-3 border border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 dark:hover:text-black ${selectedAge === "under-13"
                           ? "border-pink-500 bg-pink-50 dark:text-black" 
                           : "hover:bg-gray-50"
                         }`}
@@ -100,7 +100,7 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300  dark:hover:text-black  ${selectedAge === "13-17"
+                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 dark:hover:text-black  ${selectedAge === "13-17"
                           ? "border-pink-500 bg-pink-50 dark:text-black"
                           : "hover:bg-gray-50"
                         }`}
@@ -120,7 +120,7 @@ export default function AgeVerificationPage() {
                     </div>
 
                     <div
-                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300  dark:hover:text-black  ${selectedAge === "18-24"
+                      className={`flex items-center space-x-3 border dark:border-slate-800 rounded-xl p-4 transition-all duration-300 dark:hover:text-black  ${selectedAge === "18-24"
                           ? "border-pink-500 bg-pink-50 dark:text-black"
                           : "hover:bg-gray-50"
                         }`}
