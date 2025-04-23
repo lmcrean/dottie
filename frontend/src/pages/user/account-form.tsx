@@ -44,7 +44,7 @@ export default function AccountForm({ user }: AccountFormProps) {
     setShowDeleteConfirmation(true);
     toast.custom(
       (t: string | number) => (
-        <div className="bg-white p-4 rounded-lg shadow-lg border border-red-200 w-full max-w-md dark:bg-gray-900">
+        <div className="bg-white p-4 rounded-lg shadow-lg border border-red-200 dark:border-slate-800 w-full max-w-md dark:bg-gray-900">
           <h3 className="font-medium text-lg text-red-600">
             Confirm Account Deletion
           </h3>
