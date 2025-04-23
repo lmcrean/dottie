@@ -433,10 +433,10 @@ export default function ResultsPage() {
 
       console.log("Sending assessment data:", JSON.stringify(rawAssessmentData, null, 2));
 
-      // IMPORTANT: The key is to use assessment_data (snake_case) at the top level
-      // This is what the backend database expects
+      // IMPORTANT: The key is to use assessmentData (camelCase) at the top level
+      // This is what the backend expects
       const formattedData = {
-        assessment_data: rawAssessmentData
+        assessmentData: rawAssessmentData
       };
 
       console.log("Manually formatted data to send:", JSON.stringify(formattedData, null, 2));
