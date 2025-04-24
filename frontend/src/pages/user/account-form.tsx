@@ -44,11 +44,11 @@ export default function AccountForm({ user }: AccountFormProps) {
     setShowDeleteConfirmation(true);
     toast.custom(
       (t: string | number) => (
-        <div className="bg-white p-4 rounded-lg shadow-lg border border-red-200 w-full max-w-md">
-          <h3 className="font-medium text-lg text-red-800">
+        <div className="bg-white p-4 rounded-lg shadow-lg border border-red-200 dark:border-slate-800 w-full max-w-md dark:bg-gray-900">
+          <h3 className="font-medium text-lg text-red-600">
             Confirm Account Deletion
           </h3>
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-gray-700 dark:text-slate-200">
             Are you sure you want to delete your account? This action cannot be
             undone.
           </p>
@@ -58,7 +58,7 @@ export default function AccountForm({ user }: AccountFormProps) {
                 toast.dismiss(t);
                 setShowDeleteConfirmation(false);
               }}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md dark:text-slate-200 dark:hover:text-gray-900"
             >
               Cancel
             </button>
@@ -107,7 +107,7 @@ export default function AccountForm({ user }: AccountFormProps) {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full md:w-3/4 lg:w-1/2 px-3 py-2 border dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-500"
+            className="w-full md:w-3/4 lg:w-1/2 px-3 py-2 border dark:bg-gray-900 dark:text-slate-200 dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-500"
           />
         </div>
 
@@ -121,7 +121,7 @@ export default function AccountForm({ user }: AccountFormProps) {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full md:w-3/4 lg:w-1/2 px-3 py-2 border dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-500"
+            className="w-full md:w-3/4 lg:w-1/2 px-3 py-2 border dark:bg-gray-900 dark:text-slate-200 dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-500"
           />
         </div>
 
@@ -135,7 +135,7 @@ export default function AccountForm({ user }: AccountFormProps) {
       </form>
 
       <div className="border-t pt-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Danger Zone</h2>
+        <h2 className="text-lg font-medium text-gray-900 dark:text-slate-200 mb-4">Danger Zone</h2>
         <div className="bg-red-50 p-4 rounded-md border border-red-200">
           <h3 className="text-sm font-medium text-red-800">Delete Account</h3>
           <p className="mt-1 text-sm text-red-700">
