@@ -66,11 +66,11 @@ Q: I want to work on an issue. Is it acceptable to pull request an initial commi
 A: Yes! Just make sure it is marked as `draft`.
 
 Q: I want to work on an issue but someone has started working on it in the Pull Request drafts.
-A: If someone has started on the PR board, consider reaching out to that peer in the comments and offering to contribute an isolated issue to their branch.
+A: If someone has started on the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls), consider reaching out to that peer in the comments and offering to contribute an isolated issue to their branch.
 
 # Using the issues tab
 
-Please read [CONTRIBUTING_issues_tab.md](/CONTRIBUTING_issues_tab.md) for further guidance on this.
+Please read [CONTRIBUTING_issues_tab.md](/CONTRIBUTING_issues_tab.md) for further guidance on using the issues tab.
 
 # join our discord channel 
 
