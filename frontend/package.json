@@ -94,7 +94,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "husky": "^9.1.7",
+    "husky": "^8.1.7",
     "jsdom": "^26.0.0",
     "lint-staged": "^15.5.1",
     "postcss": "^8",
