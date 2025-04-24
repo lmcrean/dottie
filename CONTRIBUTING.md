@@ -60,10 +60,10 @@ example labels:
 # Frequently asked Questions
 
 Q: How do I get assigned to an issue?
-A: The best way to self-assign is by drafting a Pull Request. Check the Pull Requests tab for potential overlap.
+A: The best way to self-assign is by drafting a Pull Request. Just check the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls) for potential overlap.
 
 Q: I want to work on an issue. Is it acceptable to pull request an initial commit with no changes?
-A: Yes! ✅ Just make sure it is marked as `draft`.
+A: Yes! Just make sure it is marked as `draft`.
 
 Q: I want to work on an issue but someone has started working on it in the Pull Request drafts.
 A: If someone has started on the PR board, consider reaching out to that peer in the comments and offering to contribute an isolated issue to their branch.
