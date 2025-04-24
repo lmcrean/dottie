@@ -2,12 +2,14 @@
 
 We use a Draft Pull Request workflow to manage contributions effectively.
 
+This tab is the central space for communication to see what peers are working on.
+
 ![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
 
 # Choosing an issue to work on
 
-1. Check the [Issues tab](https://github.com/lmcrean/dottie/issues), consider using a suitable filter like [good first issue](https://github.com/lmcrean/dottie/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22).
-2. Check the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls). **This is the central space for communication**.
+1. Pick and issue from the [Issues tab](https://github.com/lmcrean/dottie/issues), consider using a suitable filter like [good first issue](https://github.com/lmcrean/dottie/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22). (See also [CONTRIBUTING_issues_tab.md](/CONTRIBUTING_issues_tab.md))
+2. Check the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls).
 
 # How to contribute a pull request
 
