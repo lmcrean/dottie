@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
-npm run lint
+echo "💥 Pre-commit hook running!"
+exit 1
