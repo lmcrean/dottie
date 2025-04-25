@@ -19,77 +19,78 @@ This document provides a comprehensive view of all components that need to be up
    - Update `create()` method to support flattened structure
    - Update `update()` method to handle both formats
    - Update `findById()` to transform data to appropriate format
-   - Update `findByUserId()` to handle new structure
+   - Update `_transformDbRecordToApiResponse()` to handle flattened fields
 
-4. `backend/routes/assessment/controllers/index.js`
-   - Update handlers for all assessment endpoints
-   - Ensure compatibility with both data formats
+4. `backend/routes/assessment/create/controller.js`
+   - Update controller to handle flattened assessment format
+   - Ensure proper validation and data transformation
 
-5. `backend/routes/assessment/index.js`
-   - Update route definitions if needed
-   - Ensure proper validation middleware is applied
+5. `backend/routes/assessment/update/controller.js`
+   - Update controller to handle both data formats
+   - Ensure compatibility during transition period
 
-6. `backend/routes/assessment/validators/index.js`
+6. `backend/routes/assessment/getList/controller.js`
+   - Update to handle flattened data retrieval
+   - Transform database records to API format
+
+7. `backend/routes/assessment/getDetail/controller.js`
+   - Update to return properly formatted assessment data
+   - Handle both flattened and nested formats
+
+8. `backend/routes/assessment/validators/index.js`
    - Update validation logic to work with flattened structure
    - Ensure both nested and flat formats pass validation during transition
 
-7. `backend/utils/formatters.js` (if exists)
-   - Update any data formatters used for assessment data
-   - Create new formatters for flattened structure if needed
-
-8. `backend/utils/serializers.js` (if exists)
-   - Update serializers to convert between DB and API formats
-   - Handle JSON string conversion for array fields (symptoms, recommendations)
+9. `backend/services/dbService.js`
+   - Update JSON handling methods if needed for array fields
+   - Ensure proper JSON stringification/parsing for symptoms and recommendations
 
 ## Frontend Components
 
-9. `frontend/src/api/assessment/index.ts`
-   - Update API client methods to work with new data structure
-   - Ensure backward compatibility with existing code
+10. `frontend/src/api/assessment/index.ts`
+    - Update API client methods to work with new data structure
+    - Ensure backward compatibility with existing code
 
-10. `frontend/src/api/assessment/types.ts`
+11. `frontend/src/api/assessment/types.ts`
     - Update assessment interface definitions
     - Add proper typing for flattened structure
     - Maintain backward compatibility types during transition
 
-11. `frontend/src/store/assessment/` (if using Redux or similar)
-    - `actions.ts` - Update action creators to handle new format
-    - `reducers.ts` - Update state management for flattened data
-    - `selectors.ts` - Update selectors to work with new data structure
+12. `frontend/src/api/assessment/requests/postSend/Request.ts`
+    - Update to handle sending flattened assessment data
+    - Ensure compatibility with backend changes
 
-12. `frontend/src/components/Assessment/` (adjust paths as needed)
-    - `AssessmentForm.tsx` - Update form handling for flattened data
-    - `AssessmentView.tsx` - Update display components
-    - `SymptomsSection.tsx` - Update to handle separated symptom fields
-    - `RecommendationsSection.tsx` - Update to handle top-level recommendations
+13. `frontend/src/api/assessment/requests/getById/Request.ts`
+    - Update to handle receiving flattened data structure
+    - Transform data if needed for UI components
 
-13. `frontend/src/utils/assessment.ts` (if exists)
-    - Create helpers for converting between formats if needed
-    - Update any parsing logic for symptoms and recommendations
+14. `frontend/src/api/assessment/requests/getList/Request.ts`
+    - Update to handle receiving lists of flattened data
+    - Transform data format if needed for components
+
+15. `frontend/src/components/Assessment/` (adjust paths based on actual structure)
+    - Update form components to handle flattened data
+    - Update display components for symptoms and recommendations
 
 ## Testing Infrastructure
 
-14. `backend/routes/assessment/__tests__/`
-    - `unit/assessment.test.js` - Update unit tests for assessment model
-    - `unit/controllers.test.js` - Update controller tests
-    - `e2e/assessment.test.js` - Update API endpoint tests
+16. `backend/routes/assessment/__tests__/`
+    - Update unit tests for assessment model
+    - Update controller tests
+    - Update API endpoint tests
 
-15. `frontend/src/api/__tests__/unit/assessment.test.ts`
+17. `frontend/src/api/__tests__/unit/integration/runners/assessment.ts`
     - Update test fixtures to use new format
     - Update assertions to check for correct structure
     - Add tests for backward compatibility
 
-16. `frontend/src/components/Assessment/__tests__/`
-    - Update component tests to work with flattened data structure
+18. `backend/dev/tests/master-integration/runners/assessment.js`
+    - Update integration tests to work with flattened data structure
     - Test both formats during transition period
-
-17. `frontend/cypress/` or `frontend/playwright/` (e2e tests)
-    - Update E2E tests to work with new data structure
-    - Update test data generators and fixtures
 
 ## Migration Scripts
 
-18. `backend/scripts/migrateAssessmentData.js` (create if needed)
+19. `backend/scripts/migrateAssessmentData.js` (create if needed)
     - Script to convert existing production data
     - Test framework for verifying data integrity
 
