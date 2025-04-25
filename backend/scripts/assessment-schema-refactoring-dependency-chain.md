@@ -4,12 +4,12 @@ This document provides a comprehensive view of all components that need to be up
 
 ## Database Layer
 
-1. ✅ `backend/db/migrations/updateFlattenedAssessmentSchema.js`
+1.  `backend/db/migrations/updateFlattenedAssessmentSchema.js`
    - Migration script that implements schema changes
    - Adds individual columns for each assessment field
    - Converts nested JSON structure to flat columns
 
-2. ✅ `backend/scripts/updateAssessmentSchemaToFlattened.js`
+2.  `backend/scripts/updateAssessmentSchemaToFlattened.js`
    - Runner script that executes the migration
    - Entry point for updating the database schema
 
