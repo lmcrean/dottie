@@ -4,6 +4,8 @@ import { updateAssessmentToJsonSchema } from "./updateAssessmentToJsonSchema.js"
 //for test - TODO: remove
 import { updateAssessmentSchema } from "./assessmentSchema.js";
 
+import { updateFlattenedAssessmentSchema } from "./updateFlattenedAssessmentSchema.js";
+
 /**
  * Create all tables for the Dottie application
  * @param {object} db - Knex database instance
@@ -49,32 +51,32 @@ export async function createTables(db) {
     });
   }
 
-  // Symptoms tracking table
-  if (!(await db.schema.hasTable("symptoms"))) {
-    await db.schema.createTable("symptoms", (table) => {
-      table.increments("id").primary();
-      table.uuid("user_id").notNullable();
-      table.date("date").notNullable();
-      table.string("type").notNullable(); // cramps, headache, mood, etc.
-      table.integer("severity"); // 1-5 scale
-      table.text("notes");
-      table.timestamps(true, true);
+  // // Symptoms tracking table  ! commented out, no longer needed
+  // if (!(await db.schema.hasTable("symptoms"))) {
+  //   await db.schema.createTable("symptoms", (table) => {
+  //     table.increments("id").primary();
+  //     table.uuid("user_id").notNullable();
+  //     table.date("date").notNullable();
+  //     table.string("type").notNullable(); // cramps, headache, mood, etc.
+  //     table.integer("severity"); // 1-5 scale
+  //     table.text("notes");
+  //     table.timestamps(true, true);
 
-      // Foreign key handling based on database type
-      if (!isSQLite) {
-        table.foreign("user_id").references("users.id");
-      } else {
-        try {
-          table.foreign("user_id").references("users.id");
-        } catch (error) {
-          console.warn(
-            "Warning: Could not create foreign key - common with SQLite:",
-            error.message
-          );
-        }
-      }
-    });
-  }
+  //     // Foreign key handling based on database type
+  //     if (!isSQLite) {
+  //       table.foreign("user_id").references("users.id");
+  //     } else {
+  //       try {
+  //         table.foreign("user_id").references("users.id");
+  //       } catch (error) {
+  //         console.warn(
+  //           "Warning: Could not create foreign key - common with SQLite:",
+  //           error.message
+  //         );
+  //       }
+  //     }
+  //   });
+  // }
 
   // Conversations table
   if (!(await db.schema.hasTable("conversations"))) {
@@ -125,19 +127,22 @@ export async function createTables(db) {
   }
 
   // Create the assessment table with JSON schema
-  await updateAssessmentToJsonSchema(db);
+  // await updateAssessmentToJsonSchema(db);
 
-  // Check if we're in test mode
-  if (process.env.TEST_MODE === "true") {
-    // In test mode, use the special assessment schema
-    await updateAssessmentSchema(db);
-  } else {
-    // Normal assessment schema for non-test environments
-    // Assessment results table
-    if (!(await db.schema.hasTable("assessments"))) {
-      await updateAssessmentToJsonSchema(db);
-    }
-  }
+  // Create the assessment table with new Flattened schema 
+  await updateFlattenedAssessmentSchema(db);
+
+  // // Check if we're in test mode
+  // if (process.env.TEST_MODE === "true") {
+  //   // In test mode, use the special assessment schema
+  //   await updateAssessmentSchema(db);
+  // } else {
+  //   // Normal assessment schema for non-test environments
+  //   // Assessment results table
+  //   if (!(await db.schema.hasTable("assessments"))) {
+  //     await updateFlattenedAssessmentSchema(db);
+  //   }
+  // }
 
   // Enable foreign keys in SQLite
   if (isSQLite) {
