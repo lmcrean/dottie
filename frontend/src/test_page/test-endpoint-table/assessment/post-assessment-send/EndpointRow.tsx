@@ -19,21 +19,21 @@ export default function EndpointRow() {
           painLevel: 'moderate',
           symptoms: {
             physical: ['Bloating', 'Headaches'],
-            emotional: [],
+            emotional: []
           },
           recommendations: [
             {
               title: 'Stay Hydrated',
-              description: 'Drink at least 8 glasses of water daily to help reduce bloating.',
+              description: 'Drink at least 8 glasses of water daily to help reduce bloating.'
             },
             {
               title: 'Regular Exercise',
-              description: 'Engage in light activities like walking or yoga to ease cramps.',
-            },
-          ],
+              description: 'Engage in light activities like walking or yoga to ease cramps.'
+            }
+          ]
         },
         createdAt: 'created-date',
-        updatedAt: 'updated-date',
+        updatedAt: 'updated-date'
       }}
       requiresAuth={true}
       requiresParams={true}
@@ -57,24 +57,24 @@ export default function EndpointRow() {
                 painLevel: 'moderate',
                 symptoms: {
                   physical: ['Bloating', 'Headaches'],
-                  emotional: [],
+                  emotional: []
                 },
                 recommendations: [
                   {
                     title: 'Stay Hydrated',
-                    description: 'Drink at least 8 glasses of water daily to help reduce bloating.',
+                    description: 'Drink at least 8 glasses of water daily to help reduce bloating.'
                   },
                   {
                     title: 'Regular Exercise',
-                    description: 'Engage in light activities like walking or yoga to ease cramps.',
-                  },
-                ],
-              },
+                    description: 'Engage in light activities like walking or yoga to ease cramps.'
+                  }
+                ]
+              }
             },
             null,
-            2,
-          ),
-        },
+            2
+          )
+        }
       ]}
     />
   );

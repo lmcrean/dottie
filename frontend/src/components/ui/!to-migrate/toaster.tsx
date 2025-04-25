@@ -7,7 +7,7 @@ import {
   ToastDescription,
   ToastProvider,
   ToastTitle,
-  ToastViewport,
+  ToastViewport
 } from '@/src/components/ui/!to-migrate/toast';
 
 export function Toaster() {

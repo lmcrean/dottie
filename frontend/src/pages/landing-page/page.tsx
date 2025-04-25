@@ -21,7 +21,7 @@ export default function LandingPage(): JSX.Element {
                 initial={{
                   opacity: 0,
                   scale: 0.5,
-                  transform: 'translateY(200px)',
+                  transform: 'translateY(200px)'
                 }}
                 animate={{ opacity: 1, scale: 1, transform: 'translateY(0)' }}
                 transition={{ duration: 0.8 }}
@@ -145,12 +145,12 @@ export default function LandingPage(): JSX.Element {
               initial={{
                 opacity: 0,
                 scale: 0.5,
-                transform: 'translateY(150px)',
+                transform: 'translateY(150px)'
               }}
               whileInView={{
                 opacity: 1,
                 scale: 1,
-                transform: 'translateY(0)',
+                transform: 'translateY(0)'
               }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}

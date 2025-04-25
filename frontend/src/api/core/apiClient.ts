@@ -42,8 +42,8 @@ export const setApiBaseUrl = (url: string) => {
 const apiClient = axios.create({
   baseURL: getBaseUrl(),
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 // Initialize headers from localStorage if available
@@ -73,7 +73,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Add response interceptor for common error handling
@@ -100,7 +100,7 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 // Helper functions to check response status

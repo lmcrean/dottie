@@ -62,7 +62,7 @@ interface AssessmentResultContextType {
 // Initial state
 const initialState: AssessmentResultState = {
   result: null,
-  isComplete: false,
+  isComplete: false
 };
 
 // Context
@@ -71,31 +71,31 @@ const AssessmentResultContext = createContext<AssessmentResultContextType | unde
 // Reducer
 function assessmentResultReducer(
   state: AssessmentResultState,
-  action: AssessmentResultAction,
+  action: AssessmentResultAction
 ): AssessmentResultState {
   switch (action.type) {
     case 'SET_RESULT':
       return {
         ...state,
         result: action.payload,
-        isComplete: true,
+        isComplete: true
       };
     case 'UPDATE_RESULT':
       return {
         ...state,
-        result: state.result ? { ...state.result, ...action.payload } : null,
+        result: state.result ? { ...state.result, ...action.payload } : null
       };
     case 'RESET_RESULT':
       return initialState;
     case 'SET_PATTERN':
       return {
         ...state,
-        result: state.result ? { ...state.result, pattern: action.payload } : null,
+        result: state.result ? { ...state.result, pattern: action.payload } : null
       };
     case 'SET_RECOMMENDATIONS':
       return {
         ...state,
-        result: state.result ? { ...state.result, recommendations: action.payload } : null,
+        result: state.result ? { ...state.result, recommendations: action.payload } : null
       };
     default:
       return state;
@@ -134,7 +134,7 @@ export function AssessmentResultProvider({ children }: { children: ReactNode }) 
         updateResult,
         resetResult,
         setPattern,
-        setRecommendations,
+        setRecommendations
       }}
     >
       {children}

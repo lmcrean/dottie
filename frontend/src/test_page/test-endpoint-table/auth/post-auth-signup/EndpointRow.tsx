@@ -37,9 +37,9 @@ export default function EndpointRow() {
         expectedOutput={{
           user: {
             id: 'user-id',
-            email: 'user@example.com',
+            email: 'user@example.com'
           },
-          token: 'jwt-token',
+          token: 'jwt-token'
         }}
         requiresParams={true}
         inputFields={[
@@ -49,7 +49,7 @@ export default function EndpointRow() {
             type: 'email',
             required: true,
             placeholder: 'user@example.com',
-            defaultValue: randomCredentials?.email || '',
+            defaultValue: randomCredentials?.email || ''
           },
           {
             name: 'password',
@@ -57,7 +57,7 @@ export default function EndpointRow() {
             type: 'password',
             required: true,
             placeholder: 'Min 8 characters',
-            defaultValue: randomCredentials?.password || '',
+            defaultValue: randomCredentials?.password || ''
           },
           {
             name: 'username',
@@ -65,8 +65,8 @@ export default function EndpointRow() {
             type: 'text',
             required: true,
             placeholder: 'Your username',
-            defaultValue: randomCredentials?.username || '',
-          },
+            defaultValue: randomCredentials?.username || ''
+          }
         ]}
       />
 

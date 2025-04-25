@@ -22,7 +22,7 @@ export const PasswordInput = ({
   required = false,
   placeholder,
   isVisible,
-  toggleVisibility,
+  toggleVisibility
 }: PasswordInputProps) => {
   const icon = isVisible ? <EyeIcon size={18} /> : <EyeClosed size={18} />;
 

@@ -15,7 +15,7 @@ export default function getTokenVerification() {
       authTokenExists: !!authToken,
       refreshTokenExists: !!refreshToken,
       authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-      refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
-    },
+      refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null
+    }
   };
 }

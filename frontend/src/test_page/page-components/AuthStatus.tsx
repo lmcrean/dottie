@@ -38,7 +38,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
     try {
       const credentials = {
         email: formData.email as string,
-        password: formData.password as string,
+        password: formData.password as string
       };
       await onLogin(credentials);
       setIsAuthenticated(true);
@@ -93,13 +93,12 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
 
       // Step 1: Find and click the "Generate Random User" button
       const generateButton = Array.from(document.querySelectorAll('button')).find((button) =>
-        button.textContent?.includes('Generate Random User'),
+        button.textContent?.includes('Generate Random User')
       );
 
       if (generateButton) {
         scrollToElement(generateButton as HTMLElement);
         await wait(300, 'Scrolling to Generate Random User button');
-
         (generateButton as HTMLButtonElement).click();
 
         // Wait for the credentials to be generated
@@ -107,7 +106,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
 
         // Step 2: Find and click the signup button
         const signupButton = document.querySelector(
-          'button[data-testid="test-post -api-auth-signup-button"]',
+          'button[data-testid="test-post -api-auth-signup-button"]'
         ) as HTMLButtonElement;
         if (signupButton) {
           scrollToElement(signupButton as HTMLElement);
@@ -147,7 +146,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
 
             // Step 4: Find and click the login button
             const loginButton = document.querySelector(
-              'button[data-testid="test-post -api-auth-login-button"]',
+              'button[data-testid="test-post -api-auth-login-button"]'
             ) as HTMLButtonElement;
             if (loginButton) {
               scrollToElement(loginButton as HTMLElement);
@@ -160,13 +159,12 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
 
               // Step 5: Find and click "Use Latest Signup Credentials" button
               const useCredentialsButton = Array.from(document.querySelectorAll('button')).find(
-                (button) => button.textContent?.includes('Use Latest Signup Credentials'),
+                (button) => button.textContent?.includes('Use Latest Signup Credentials')
               );
 
               if (useCredentialsButton) {
                 scrollToElement(useCredentialsButton as HTMLElement);
                 await wait(300, 'Scrolling to Use Latest Signup Credentials button');
-
                 (useCredentialsButton as HTMLButtonElement).click();
 
                 // Wait for credentials to be populated
@@ -186,7 +184,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
                   if (hasEmailField && hasPasswordField && !hasUsernameField) {
                     // This is likely the login form
                     sendLoginButton = form.querySelector(
-                      'button[type="submit"]',
+                      'button[type="submit"]'
                     ) as HTMLButtonElement;
                     break;
                   }
@@ -230,7 +228,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
                     }
                   } else {
                     console.warn(
-                      'Auth flow completed but no token found. This may still have worked correctly - check UI for login status.',
+                      'Auth flow completed but no token found. This may still have worked correctly - check UI for login status.'
                     );
 
                     // Refresh the auth status for reliability
@@ -242,7 +240,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
                     } else {
                       console.error('Auth flow likely failed - UI shows not logged in.');
                       alert(
-                        'Auth flow may have failed: No authentication indicators found. Check your login status in the UI.',
+                        'Auth flow may have failed: No authentication indicators found. Check your login status in the UI.'
                       );
                     }
                   }
@@ -338,15 +336,15 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
                 label: 'Email',
                 type: 'email',
                 required: true,
-                placeholder: 'user@example.com',
+                placeholder: 'user@example.com'
               },
               {
                 name: 'password',
                 label: 'Password',
                 type: 'password',
                 required: true,
-                placeholder: 'Your password',
-              },
+                placeholder: 'Your password'
+              }
             ]}
             onSubmit={handleLogin}
             submitLabel="Login"

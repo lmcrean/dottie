@@ -4,7 +4,7 @@ import {
   deleteUser,
   postPasswordUpdate,
   requestPasswordReset,
-  completePasswordReset,
+  completePasswordReset
 } from './requests';
 
 // Export types
@@ -17,7 +17,7 @@ export {
   deleteUser,
   postPasswordUpdate as updatePassword,
   requestPasswordReset,
-  completePasswordReset,
+  completePasswordReset
 };
 
 // User API object for backward compatibility
@@ -28,8 +28,8 @@ export const userApi = {
   updatePassword: postPasswordUpdate,
   passwordReset: {
     request: requestPasswordReset,
-    complete: completePasswordReset,
-  },
+    complete: completePasswordReset
+  }
 };
 
 export default userApi;

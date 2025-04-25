@@ -8,7 +8,7 @@ import { getUserData } from '../../../core/tokenManager';
  */
 export const putUpdate = async (
   id: string,
-  assessmentData: Partial<Assessment>,
+  assessmentData: Partial<Assessment>
 ): Promise<Assessment> => {
   try {
     const userData = getUserData();

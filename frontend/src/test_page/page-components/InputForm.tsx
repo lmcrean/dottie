@@ -23,7 +23,7 @@ export default function InputForm({
   fields,
   onSubmit,
   submitLabel = 'Submit',
-  isLoading = false,
+  isLoading = false
 }: InputFormProps) {
   const [formValues, setFormValues] = useState<Record<string, any>>(() => {
     // Initialize form values with default values

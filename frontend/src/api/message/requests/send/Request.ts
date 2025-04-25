@@ -7,7 +7,7 @@ import { ApiMessage, ChatResponse } from '../../types';
  */
 export const sendMessage = async (
   message: string,
-  conversationId?: string,
+  conversationId?: string
 ): Promise<ChatResponse> => {
   try {
     const response = await apiClient.post('/api/chat/send', message);

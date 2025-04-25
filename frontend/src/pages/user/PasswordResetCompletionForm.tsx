@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '../../components/ui/card';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -19,11 +19,11 @@ import { useNavigate } from 'react-router-dom';
 const PasswordResetCompletionSchema = z
   .object({
     newPassword: z.string().min(6, 'New password must be at least 6 characters'),
-    confirmNewPassword: z.string().min(6, 'Confirm password must be at least 6 characters'),
+    confirmNewPassword: z.string().min(6, 'Confirm password must be at least 6 characters')
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: 'The passwords do not match',
-    path: ['confirmNewPassword'],
+    path: ['confirmNewPassword']
   });
 
 // Get type from the schema
@@ -34,7 +34,7 @@ interface PasswordResetCompletionFormProps {
 }
 
 export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormProps> = ({
-  token,
+  token
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResetComplete, setIsResetComplete] = useState(false);
@@ -44,13 +44,13 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset
   } = useForm<PasswordResetCompletionFormInputs>({
     resolver: zodResolver(PasswordResetCompletionSchema),
     defaultValues: {
       newPassword: '',
-      confirmNewPassword: '',
-    },
+      confirmNewPassword: ''
+    }
   });
 
   const onSubmit: SubmitHandler<PasswordResetCompletionFormInputs> = async (data) => {
@@ -59,7 +59,7 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
       // Combine form data with token
       const resetData = {
         ...data,
-        token,
+        token
       };
 
       // Simulate API success

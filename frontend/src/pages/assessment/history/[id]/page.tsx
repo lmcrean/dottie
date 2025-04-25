@@ -222,7 +222,7 @@ export default function AssessmentDetailsPage() {
                         <h3 className="text-xl font-medium text-pink-600">{rec.title}</h3>
                         <p className="mt-1 text-sm text-gray-600">{rec.description}</p>
                       </div>
-                    ),
+                    )
                   )
                 ) : (
                   <p className="text-sm text-gray-500">No recommendations available</p>

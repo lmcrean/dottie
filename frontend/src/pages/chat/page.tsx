@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/src/components/ui/!to-migrate/dialog';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { Input } from '@/src/components/ui/!to-migrate/input';
@@ -66,7 +66,7 @@ export function ChatModal({ isOpen, onClose, initialMessage, setIsFullscreen }: 
         periodDuration: sessionStorage.getItem('periodDuration') || '',
         flowHeaviness: sessionStorage.getItem('flowLevel') || '',
         painLevel: sessionStorage.getItem('painLevel') || '',
-        symptoms: JSON.parse(sessionStorage.getItem('symptoms') || '[]'),
+        symptoms: JSON.parse(sessionStorage.getItem('symptoms') || '[]')
       };
 
       const aiResponse = await getAIFeedback(userData, userMessage);
@@ -78,8 +78,8 @@ export function ChatModal({ isOpen, onClose, initialMessage, setIsFullscreen }: 
         {
           role: 'assistant',
           content:
-            "I apologize, but I'm having trouble processing your request right now. Please try again later.",
-        },
+            "I apologize, but I'm having trouble processing your request right now. Please try again later."
+        }
       ]);
     } finally {
       setIsLoading(false);

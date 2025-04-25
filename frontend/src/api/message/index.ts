@@ -11,7 +11,7 @@ export const chatApi = {
   sendMessage,
   getHistory,
   getConversation,
-  deleteConversation,
+  deleteConversation
 };
 
 export default chatApi;

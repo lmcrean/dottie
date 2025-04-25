@@ -42,15 +42,15 @@ export default function SymptomsPage() {
       {
         id: 'difficulty-concentrating',
         label: 'Difficulty concentrating',
-        emoji: '🧠',
+        emoji: '🧠'
       },
       { id: 'food-cravings', label: 'Food cravings', emoji: '🍫' },
       {
         id: 'emotional-sensitivity',
         label: 'Emotional sensitivity',
-        emoji: '💔',
+        emoji: '💔'
       },
-      { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' },
+      { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
     ];
 
     const random = symptomsList[Math.floor(Math.random() * symptomsList.length)].id;
@@ -66,7 +66,7 @@ export default function SymptomsPage() {
       if (symptomRef.current) {
         symptomRef.current.scrollIntoView({
           behavior: 'smooth',
-          block: 'center',
+          block: 'center'
         });
       }
 
@@ -87,13 +87,13 @@ export default function SymptomsPage() {
 
   const togglePhysicalSymptom = (symptom: string) => {
     setPhysicalSymptoms((prev) =>
-      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom],
+      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
     );
   };
 
   const toggleEmotionalSymptom = (symptom: string) => {
     setEmotionalSymptoms((prev) =>
-      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom],
+      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
     );
   };
 
@@ -113,7 +113,7 @@ export default function SymptomsPage() {
           { id: 'digestive-issues', label: 'Digestive issues' },
           { id: 'sleep-disturbances', label: 'Sleep disturbances' },
           { id: 'hot-flashes', label: 'Hot flashes' },
-          { id: 'joint-pain', label: 'Joint pain' },
+          { id: 'joint-pain', label: 'Joint pain' }
         ].find((s) => s.id === id);
         return symptom?.label || id;
       }),
@@ -126,11 +126,11 @@ export default function SymptomsPage() {
           { id: 'difficulty-concentrating', label: 'Difficulty concentrating' },
           { id: 'food-cravings', label: 'Food cravings' },
           { id: 'emotional-sensitivity', label: 'Emotional sensitivity' },
-          { id: 'low-energy', label: 'Low energy/motivation' },
+          { id: 'low-energy', label: 'Low energy/motivation' }
         ].find((s) => s.id === id);
         return symptom?.label || id;
       }),
-      ...(otherSymptoms ? [otherSymptoms] : []),
+      ...(otherSymptoms ? [otherSymptoms] : [])
     ];
 
     // Save to sessionStorage
@@ -178,7 +178,7 @@ export default function SymptomsPage() {
                 {
                   id: 'breast-tenderness',
                   label: 'Breast tenderness',
-                  emoji: '🤱',
+                  emoji: '🤱'
                 },
                 { id: 'headaches', label: 'Headaches', emoji: '🤕' },
                 { id: 'back-pain', label: 'Back pain', emoji: '⬇️' },
@@ -189,15 +189,15 @@ export default function SymptomsPage() {
                 {
                   id: 'digestive-issues',
                   label: 'Digestive issues',
-                  emoji: '🚽',
+                  emoji: '🚽'
                 },
                 {
                   id: 'sleep-disturbances',
                   label: 'Sleep disturbances',
-                  emoji: '🛌',
+                  emoji: '🛌'
                 },
                 { id: 'hot-flashes', label: 'Hot flashes', emoji: '🔥' },
-                { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' },
+                { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' }
               ].map((symptom) => (
                 <div
                   key={symptom.id}
@@ -235,15 +235,15 @@ export default function SymptomsPage() {
                 {
                   id: 'difficulty-concentrating',
                   label: 'Difficulty concentrating',
-                  emoji: '🧠',
+                  emoji: '🧠'
                 },
                 { id: 'food-cravings', label: 'Food cravings', emoji: '🍫' },
                 {
                   id: 'emotional-sensitivity',
                   label: 'Emotional sensitivity',
-                  emoji: '💔',
+                  emoji: '💔'
                 },
-                { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' },
+                { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
               ].map((symptom) => (
                 <div
                   key={symptom.id}

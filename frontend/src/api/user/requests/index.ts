@@ -10,5 +10,5 @@ export {
   putUpdate,
   postPasswordUpdate,
   requestPasswordReset,
-  completePasswordReset,
+  completePasswordReset
 };

@@ -6,7 +6,7 @@ import {
   AuthEndpoints,
   AssessmentEndpoints,
   UserEndpoints,
-  ChatEndpoints,
+  ChatEndpoints
 } from './test-endpoint-table';
 import { AuthStatus } from './page-components';
 import { authApi } from '../api/auth';

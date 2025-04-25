@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '../../components/ui/card';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -18,7 +18,7 @@ import { requestPasswordReset } from '../../api/user/requests/passwordReset/Requ
 
 // Define schema directly here for simplicity
 const PasswordResetRequestSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address')
 });
 
 type PasswordResetRequestFormInputs = z.infer<typeof PasswordResetRequestSchema>;
@@ -33,12 +33,12 @@ export const PasswordResetRequestForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    watch
   } = useForm<PasswordResetRequestFormInputs>({
     resolver: zodResolver(PasswordResetRequestSchema),
     defaultValues: {
-      email: '',
-    },
+      email: ''
+    }
   });
 
   const watchEmail = watch('email', '');

@@ -11,7 +11,7 @@ export default function EndpointRow() {
         userId: 'user-id',
         assessment_data: '{updated-assessment-data}',
         createdAt: 'created-date',
-        updatedAt: 'updated-date',
+        updatedAt: 'updated-date'
       }}
       requiresAuth={true}
       pathParams={['userId', 'id']}
@@ -33,25 +33,25 @@ export default function EndpointRow() {
               painLevel: 'severe',
               symptoms: {
                 physical: ['Bloating', 'Fatigue'],
-                emotional: ['Irritability'],
+                emotional: ['Irritability']
               },
               recommendations: [
                 {
                   title: 'Stay Hydrated',
                   description:
-                    'Increase water intake to help with fatigue and bloating. Aim for 10 glasses of water per day.',
+                    'Increase water intake to help with fatigue and bloating. Aim for 10 glasses of water per day.'
                 },
                 {
                   title: 'Balanced Diet',
                   description:
-                    'Incorporate more fruits and vegetables to reduce inflammation and ease cramps.',
-                },
-              ],
+                    'Incorporate more fruits and vegetables to reduce inflammation and ease cramps.'
+                }
+              ]
             },
             null,
-            2,
-          ),
-        },
+            2
+          )
+        }
       ]}
     />
   );

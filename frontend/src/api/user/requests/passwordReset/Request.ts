@@ -6,7 +6,7 @@ import { PasswordResetRequest, PasswordResetCompletion } from '../../types';
  * @endpoint /api/user/password/reset (POST)
  */
 export const requestPasswordReset = async (
-  emailData: PasswordResetRequest,
+  emailData: PasswordResetRequest
 ): Promise<{ message: string }> => {
   try {
     const response = await apiClient.post('/api/user/password/reset', emailData);
@@ -22,7 +22,7 @@ export const requestPasswordReset = async (
  * @endpoint /api/user/password/reset/complete (POST)
  */
 export const completePasswordReset = async (
-  resetData: PasswordResetCompletion,
+  resetData: PasswordResetCompletion
 ): Promise<{ message: string }> => {
   try {
     const response = await apiClient.post('/api/user/password/reset/complete', resetData);

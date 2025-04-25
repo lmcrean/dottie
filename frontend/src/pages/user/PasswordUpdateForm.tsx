@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
+  CardContent
 } from '@/src/components/ui/card';
 import {
   Form,
@@ -16,7 +16,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormMessage,
+  FormMessage
 } from '@/src/components/ui/form';
 import { useToast } from '@/src/components/ui/use-toast';
 import { Alert, AlertDescription } from '@/src/components/ui/alert';
@@ -27,22 +27,22 @@ import { useNavigate } from 'react-router-dom';
 const passwordUpdateSchema = z
   .object({
     currentPassword: z.string().min(8, {
-      message: 'Current password must be at least 8 characters.',
+      message: 'Current password must be at least 8 characters.'
     }),
     newPassword: z.string().min(8, {
-      message: 'New password must be at least 8 characters.',
+      message: 'New password must be at least 8 characters.'
     }),
     confirmNewPassword: z.string().min(8, {
-      message: 'Confirmation password must be at least 8 characters.',
-    }),
+      message: 'Confirmation password must be at least 8 characters.'
+    })
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "New passwords don't match",
-    path: ['confirmNewPassword'],
+    path: ['confirmNewPassword']
   })
   .refine((data) => data.currentPassword !== data.newPassword, {
     message: 'New password must be different from current password',
-    path: ['newPassword'],
+    path: ['newPassword']
   });
 
 type PasswordUpdateFormValues = z.infer<typeof passwordUpdateSchema>;
@@ -61,7 +61,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
   const [passwordVisibility, setPasswordVisibility] = useState({
     current: false,
     new: false,
-    confirm: false,
+    confirm: false
   });
 
   const form = useForm<PasswordUpdateFormValues>({
@@ -69,14 +69,14 @@ export function PasswordForm({ userId }: PasswordFormProps) {
     defaultValues: {
       currentPassword: '',
       newPassword: '',
-      confirmNewPassword: '',
-    },
+      confirmNewPassword: ''
+    }
   });
 
   const togglePasswordVisibility = (field: keyof typeof passwordVisibility) => {
     setPasswordVisibility((prev) => ({
       ...prev,
-      [field]: !prev[field],
+      [field]: !prev[field]
     }));
   };
 
@@ -92,13 +92,13 @@ export function PasswordForm({ userId }: PasswordFormProps) {
 
       toast({
         title: 'Password updated',
-        description: 'Your password has been updated successfully.',
+        description: 'Your password has been updated successfully.'
       });
 
       await logout(); // Logout after password update
       toast({
         title: 'Logged out',
-        description: 'You have been logged out due to a password change. Please log in again.',
+        description: 'You have been logged out due to a password change. Please log in again.'
       });
       navigate('/auth/sign-in'); // Redirect to sign-in page
     } catch (error) {
@@ -106,7 +106,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
       toast({
         title: 'Error',
         description: 'Failed to update password. Please check your current password and try again.',
-        variant: 'destructive',
+        variant: 'destructive'
       });
     } finally {
       setIsLoading(false);

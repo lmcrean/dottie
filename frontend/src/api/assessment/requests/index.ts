@@ -12,5 +12,5 @@ export default {
   getList,
   delete: deleteById,
   postSend,
-  putUpdate,
+  putUpdate
 };

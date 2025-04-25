@@ -12,15 +12,15 @@ export default function EndpointRow() {
           userId: 'user-id',
           assessment_data: '{}',
           createdAt: 'created-date',
-          updatedAt: 'updated-date',
+          updatedAt: 'updated-date'
         },
         {
           id: 'assessment-id-2',
           userId: 'user-id',
           assessment_data: '{}',
           createdAt: 'created-date',
-          updatedAt: 'updated-date',
-        },
+          updatedAt: 'updated-date'
+        }
       ]}
       requiresAuth={true}
     />

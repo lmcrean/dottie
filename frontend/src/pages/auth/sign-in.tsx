@@ -22,9 +22,9 @@ export default function SignInPage() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting }
   } = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signInSchema)
   });
 
   // Auto-fill login credentials from successful signup
@@ -59,7 +59,7 @@ export default function SignInPage() {
         authToken: localStorage.getItem('authToken'),
         refresh_token: localStorage.getItem('refresh_token'),
         user: localStorage.getItem('user'),
-        auth_user: localStorage.getItem('auth_user'),
+        auth_user: localStorage.getItem('auth_user')
       });
 
       // Log context values
@@ -67,7 +67,7 @@ export default function SignInPage() {
         // Log auth state after login
         console.log('[Auth Debug] Auth context after login:', {
           isAuthenticated,
-          user,
+          user
         });
       }, 100);
 

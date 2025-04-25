@@ -14,8 +14,8 @@ export default function EndpointRow() {
           label: 'Email',
           type: 'email',
           required: false,
-          placeholder: 'user@example.com',
-        },
+          placeholder: 'user@example.com'
+        }
       ]}
     />
   );

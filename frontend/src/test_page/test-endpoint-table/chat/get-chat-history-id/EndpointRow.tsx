@@ -10,8 +10,8 @@ export default function EndpointRow() {
         id: 'conversation-id',
         messages: [
           { role: 'user', content: 'Hello, can you help with my period symptoms?' },
-          { role: 'assistant', content: "I'd be happy to help with your period symptoms..." },
-        ],
+          { role: 'assistant', content: "I'd be happy to help with your period symptoms..." }
+        ]
       }}
       requiresAuth={true}
       pathParams={['conversationId']}

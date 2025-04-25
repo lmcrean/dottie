@@ -9,7 +9,7 @@ export default function EndpointRow() {
       expectedOutput={{
         id: 'user-id',
         email: 'user@example.com',
-        name: 'User Name',
+        name: 'User Name'
       }}
       requiresAuth={true}
     />

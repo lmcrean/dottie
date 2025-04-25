@@ -14,14 +14,14 @@ export default function EndpointRow() {
           name: 'currentPassword',
           label: 'Current Password',
           type: 'password',
-          required: true,
+          required: true
         },
         {
           name: 'newPassword',
           label: 'New Password',
           type: 'password',
-          required: true,
-        },
+          required: true
+        }
       ]}
     />
   );

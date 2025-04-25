@@ -14,7 +14,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   className = '',
   borderColor = 'border-pink-600',
   logoSrc = '/logo/logo-mascot.svg',
-  logoSize = 48,
+  logoSize = 48
 }) => {
   return (
     <div className={`mb-6 flex items-center justify-center ${className} `}>

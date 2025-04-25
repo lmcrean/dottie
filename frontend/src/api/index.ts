@@ -10,13 +10,13 @@ import {
   userApi,
   type UserProfile,
   type PasswordResetRequest,
-  type PasswordUpdateRequest,
+  type PasswordUpdateRequest
 } from './user';
 import setupApi from './setup';
 import {
   type HealthResponse,
   type DatabaseStatusResponse,
-  type DatabaseHelloResponse,
+  type DatabaseHelloResponse
 } from './setup/types';
 
 // Export all API modules
@@ -59,7 +59,7 @@ export {
   setupApi,
   HealthResponse,
   DatabaseStatusResponse,
-  DatabaseHelloResponse,
+  DatabaseHelloResponse
 };
 
 // Default export for convenience
@@ -70,5 +70,5 @@ export default {
   chat: chatApi,
   user: userApi,
   setup: setupApi,
-  db: { checkDbConnection, fetchUserData },
+  db: { checkDbConnection, fetchUserData }
 };

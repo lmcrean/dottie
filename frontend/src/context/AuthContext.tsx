@@ -28,7 +28,7 @@ const getStoredAuthData = (): { user: User | null; token: string | null } => {
 
   return {
     user,
-    token,
+    token
   };
 };
 
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user: null,
     isAuthenticated: false,
     isLoading: true,
-    error: null,
+    error: null
   });
 
   // Initialize auth state from storage
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             user: currentUser,
             isAuthenticated: true,
             isLoading: false,
-            error: null,
+            error: null
           });
         } catch (error) {
           setState((prev) => ({ ...prev, isLoading: false }));
@@ -103,14 +103,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user: response.user,
         isAuthenticated: true,
         isLoading: false,
-        error: null,
+        error: null
       });
     } catch (error) {
       console.error('[AuthContext Debug] Login error:', error);
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Login failed',
+        error: error instanceof Error ? error.message : 'Login failed'
       }));
       throw error;
     }
@@ -124,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: null,
+        error: null
       }));
 
       return response.user;
@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Signup failed',
+        error: error instanceof Error ? error.message : 'Signup failed'
       }));
       throw error;
     }
@@ -152,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
-        error: null,
+        error: null
       });
     }
   };
@@ -161,7 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await userApi.updatePassword({
         currentPassword,
-        newPassword,
+        newPassword
       });
       return true;
     } catch (error) {
@@ -182,7 +182,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         updatePassword,
-        clearError,
+        clearError
       }}
     >
       {children}

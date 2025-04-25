@@ -4,7 +4,7 @@ import type {
   AssessmentResult,
   MenstrualPattern,
   Recommendation,
-  Symptoms,
+  Symptoms
 } from '@/src/context/AssessmentResultContext';
 
 export function useAssessmentResult() {
@@ -51,7 +51,7 @@ export function useAssessmentResult() {
     // Base recommendations for all patterns
     recommendations.push({
       title: 'Track Your Cycle',
-      description: 'Keep a record of when your period starts and stops to identify patterns.',
+      description: 'Keep a record of when your period starts and stops to identify patterns.'
     });
 
     // Pattern-specific recommendations
@@ -59,28 +59,27 @@ export function useAssessmentResult() {
       case 'irregular':
         recommendations.push({
           title: 'Consult a Healthcare Provider',
-          description:
-            'Irregular cycles may need medical evaluation to identify underlying causes.',
+          description: 'Irregular cycles may need medical evaluation to identify underlying causes.'
         });
         break;
       case 'heavy':
         recommendations.push({
           title: 'Iron-Rich Diet',
           description:
-            'Consider increasing iron intake through diet or supplements to prevent anemia.',
+            'Consider increasing iron intake through diet or supplements to prevent anemia.'
         });
         break;
       case 'pain':
         recommendations.push({
           title: 'Pain Management',
-          description: 'Over-the-counter pain relievers like ibuprofen can help with cramps.',
+          description: 'Over-the-counter pain relievers like ibuprofen can help with cramps.'
         });
         break;
       case 'developing':
         recommendations.push({
           title: 'Be Patient',
           description:
-            "Your cycles are still establishing. It's normal for them to be irregular during adolescence.",
+            "Your cycles are still establishing. It's normal for them to be irregular during adolescence."
         });
         break;
     }
@@ -89,7 +88,7 @@ export function useAssessmentResult() {
     if (symptoms.physical.includes('Fatigue')) {
       recommendations.push({
         title: 'Rest and Sleep',
-        description: 'Ensure you get adequate rest and maintain a regular sleep schedule.',
+        description: 'Ensure you get adequate rest and maintain a regular sleep schedule.'
       });
     }
 
@@ -97,7 +96,7 @@ export function useAssessmentResult() {
       recommendations.push({
         title: 'Emotional Support',
         description:
-          'Consider talking to a counselor or joining a support group about emotional symptoms.',
+          'Consider talking to a counselor or joining a support group about emotional symptoms.'
       });
     }
 
@@ -122,7 +121,7 @@ export function useAssessmentResult() {
       'painLevel',
       'symptoms',
       'pattern',
-      'recommendations',
+      'recommendations'
     ];
 
     keys.forEach((key) => {
@@ -142,12 +141,12 @@ export function useAssessmentResult() {
 
       const updatedSymptoms: Symptoms = {
         ...state.result.symptoms,
-        [type]: symptoms,
+        [type]: symptoms
       };
 
       updateResult({ symptoms: updatedSymptoms });
     },
-    [state.result, updateResult],
+    [state.result, updateResult]
   );
 
   // Function to complete the assessment
@@ -159,13 +158,13 @@ export function useAssessmentResult() {
       const completeResult = {
         ...result,
         pattern,
-        recommendations,
+        recommendations
       };
 
       setResult(completeResult);
       saveToSessionStorage(completeResult);
     },
-    [determinePattern, generateRecommendations, setResult, saveToSessionStorage],
+    [determinePattern, generateRecommendations, setResult, saveToSessionStorage]
   );
 
   // Function to clear assessment data
@@ -187,6 +186,6 @@ export function useAssessmentResult() {
     loadFromSessionStorage,
     updateSymptoms,
     completeAssessment,
-    clearAssessment,
+    clearAssessment
   };
 }

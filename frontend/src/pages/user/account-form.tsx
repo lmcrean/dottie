@@ -12,7 +12,7 @@ interface AccountFormProps {
 export default function AccountForm({ user }: AccountFormProps) {
   const [formData, setFormData] = useState({
     name: user.name || '',
-    email: user.email || '',
+    email: user.email || ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -86,8 +86,8 @@ export default function AccountForm({ user }: AccountFormProps) {
       {
         onAutoClose: () => setShowDeleteConfirmation(false),
         onDismiss: () => setShowDeleteConfirmation(false),
-        duration: Infinity,
-      },
+        duration: Infinity
+      }
     );
   };
 

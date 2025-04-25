@@ -3,7 +3,7 @@ import {
   postSignup,
   postLogout,
   postRefreshToken,
-  getTokenVerification,
+  getTokenVerification
 } from './requests';
 
 // Export types
@@ -18,7 +18,7 @@ export {
   postSignup as signup,
   postLogout as logout,
   postRefreshToken as refreshToken,
-  getTokenVerification as verifyToken,
+  getTokenVerification as verifyToken
 };
 
 // Auth API object for backward compatibility
@@ -27,7 +27,7 @@ export const authApi = {
   signup: postSignup,
   logout: postLogout,
   refreshToken: postRefreshToken,
-  verifyToken: getTokenVerification,
+  verifyToken: getTokenVerification
 };
 
 export default authApi;

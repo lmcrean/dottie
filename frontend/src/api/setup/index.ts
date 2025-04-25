@@ -5,7 +5,7 @@ import { getDatabaseHello } from './requests/getDatabaseHello';
 export const setupApi = {
   getHealthHello,
   getDatabaseStatus,
-  getDatabaseHello,
+  getDatabaseHello
 };
 
 export default setupApi;

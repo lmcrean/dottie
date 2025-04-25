@@ -6,7 +6,7 @@ import { PasswordUpdateRequest } from '../../types';
  * @endpoint /api/user/pw/update (POST)
  */
 export const postPasswordUpdate = async (
-  passwordData: PasswordUpdateRequest,
+  passwordData: PasswordUpdateRequest
 ): Promise<{ message: string }> => {
   try {
     const response = await apiClient.post('/api/user/pw/update', passwordData);

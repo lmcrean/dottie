@@ -36,26 +36,26 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
         icon: '📅',
         title: 'Track Your Cycle',
         description:
-          'Regular tracking will help you understand your patterns better and predict your next period.',
+          'Regular tracking will help you understand your patterns better and predict your next period.'
       },
       {
         icon: '🏃‍♀️',
         title: 'Exercise Regularly',
-        description: 'Light to moderate exercise can help reduce menstrual pain and improve mood.',
+        description: 'Light to moderate exercise can help reduce menstrual pain and improve mood.'
       },
       {
         icon: '❤️',
         title: 'Maintain a Balanced Diet',
         description:
-          'Foods rich in iron, calcium, and omega-3 fatty acids can help manage period symptoms.',
+          'Foods rich in iron, calcium, and omega-3 fatty acids can help manage period symptoms.'
       },
       {
         icon: '🌙',
         title: 'Prioritize Sleep',
         description:
-          'Aim for 8-10 hours of sleep, especially during your period when fatigue is common.',
-      },
-    ],
+          'Aim for 8-10 hours of sleep, especially during your period when fatigue is common.'
+      }
+    ]
   },
   irregular: {
     title: 'Irregular Timing Pattern',
@@ -67,26 +67,26 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
         icon: '📅',
         title: 'Track Your Cycle',
         description:
-          'Keeping a detailed record can help identify patterns and share with healthcare providers.',
+          'Keeping a detailed record can help identify patterns and share with healthcare providers.'
       },
       {
         icon: '👩‍⚕️',
         title: 'Consult a Healthcare Provider',
         description:
-          'If your cycles are consistently irregular, consider discussing with a healthcare provider.',
+          'If your cycles are consistently irregular, consider discussing with a healthcare provider.'
       },
       {
         icon: '🥗',
         title: 'Focus on Nutrition',
-        description: 'A balanced diet can help support hormonal balance and regulate cycles.',
+        description: 'A balanced diet can help support hormonal balance and regulate cycles.'
       },
       {
         icon: '🧘‍♀️',
         title: 'Stress Management',
         description:
-          'High stress can affect your cycle. Consider yoga, meditation, or other relaxation techniques.',
-      },
-    ],
+          'High stress can affect your cycle. Consider yoga, meditation, or other relaxation techniques.'
+      }
+    ]
   },
   heavy: {
     title: 'Heavy or Prolonged Flow Pattern',
@@ -98,26 +98,25 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
         icon: '🍳',
         title: 'Iron-rich Foods',
         description:
-          'Include lean red meat, spinach, beans, and fortified cereals to prevent iron deficiency.',
+          'Include lean red meat, spinach, beans, and fortified cereals to prevent iron deficiency.'
       },
       {
         icon: '💧',
         title: 'Stay Hydrated',
-        description: 'Drink plenty of water to help replace fluids lost during your period.',
+        description: 'Drink plenty of water to help replace fluids lost during your period.'
       },
       {
         icon: '👩‍⚕️',
         title: 'Medical Evaluation',
         description:
-          'If your flow regularly soaks through pads/tampons hourly, consult a healthcare provider.',
+          'If your flow regularly soaks through pads/tampons hourly, consult a healthcare provider.'
       },
       {
         icon: '⏰',
         title: 'Plan Ahead',
-        description:
-          'Keep extra supplies and a change of clothes available during heavy flow days.',
-      },
-    ],
+        description: 'Keep extra supplies and a change of clothes available during heavy flow days.'
+      }
+    ]
   },
   pain: {
     title: 'Pain-Predominant Pattern',
@@ -128,27 +127,27 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
       {
         icon: '🔥',
         title: 'Heat Therapy',
-        description: 'Apply a heating pad to your lower abdomen to help relieve menstrual cramps.',
+        description: 'Apply a heating pad to your lower abdomen to help relieve menstrual cramps.'
       },
       {
         icon: '💊',
         title: 'Pain Management',
         description:
-          'Over-the-counter pain relievers like ibuprofen can help reduce pain and inflammation.',
+          'Over-the-counter pain relievers like ibuprofen can help reduce pain and inflammation.'
       },
       {
         icon: '🧘‍♀️',
         title: 'Gentle Exercise',
         description:
-          'Light activities like walking or stretching can help alleviate menstrual pain.',
+          'Light activities like walking or stretching can help alleviate menstrual pain.'
       },
       {
         icon: '👩‍⚕️',
         title: 'Medical Support',
         description:
-          'If pain is severe, talk to a healthcare provider about additional treatment options.',
-      },
-    ],
+          'If pain is severe, talk to a healthcare provider about additional treatment options.'
+      }
+    ]
   },
   developing: {
     title: 'Developing Pattern',
@@ -160,25 +159,25 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
         icon: '⏱️',
         title: 'Be Patient',
         description:
-          "It's normal for your cycle to be irregular during adolescence. It can take 2-3 years to establish a regular pattern.",
+          "It's normal for your cycle to be irregular during adolescence. It can take 2-3 years to establish a regular pattern."
       },
       {
         icon: '📅',
         title: 'Track Your Cycle',
-        description: 'Start keeping a record of your periods to observe patterns as they develop.',
+        description: 'Start keeping a record of your periods to observe patterns as they develop.'
       },
       {
         icon: '🧠',
         title: 'Learn About Your Body',
-        description: "Understanding menstrual health can help you recognize what's normal for you.",
+        description: "Understanding menstrual health can help you recognize what's normal for you."
       },
       {
         icon: '👩‍👧',
         title: 'Talk to Someone You Trust',
-        description: 'Discuss concerns with a parent, school nurse, or healthcare provider.',
-      },
-    ],
-  },
+        description: 'Discuss concerns with a parent, school nurse, or healthcare provider.'
+      }
+    ]
+  }
 };
 
 export default function ResultsPage() {
@@ -258,7 +257,7 @@ export default function ResultsPage() {
         '>7',
         '8+',
         '8 days',
-        '8-plus',
+        '8-plus'
       ]);
       decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
 
@@ -292,7 +291,7 @@ export default function ResultsPage() {
               // O5: Developing Pattern - cycles not predictable
               determinedPattern = 'developing';
               decisionPath.push(
-                `O5: Assigning pattern = "developing" (explicitly not predictable)`,
+                `O5: Assigning pattern = "developing" (explicitly not predictable)`
               );
             } else if (containsAny(storedCyclePredictable, ['yes', 'true'])) {
               // O4: Regular Menstrual Cycles - cycles are predictable
@@ -301,7 +300,7 @@ export default function ResultsPage() {
             } else {
               // We don't have explicit predictability data, so infer based on age
               decisionPath.push(
-                `No explicit predictability data, inferring from age: ${storedAge}`,
+                `No explicit predictability data, inferring from age: ${storedAge}`
               );
               // If age is adolescent (12-17), assume developing, otherwise assume regular
               if (
@@ -317,7 +316,7 @@ export default function ResultsPage() {
                   '16',
                   '17',
                   'teen',
-                  'adolescent',
+                  'adolescent'
                 ])
               ) {
                 // O5: Developing Pattern
@@ -426,14 +425,14 @@ export default function ResultsPage() {
           painLevel: painLevel || 'Not provided',
           symptoms: {
             physical: symptoms || [],
-            emotional: [],
+            emotional: []
           },
           recommendations:
             patternInfo?.recommendations?.map((rec) => ({
               title: rec.title,
-              description: rec.description,
-            })) || [],
-        },
+              description: rec.description
+            })) || []
+        }
       };
 
       // Use the postSend function

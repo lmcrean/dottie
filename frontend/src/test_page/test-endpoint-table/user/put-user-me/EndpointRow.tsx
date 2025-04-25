@@ -15,15 +15,15 @@ export default function EndpointRow() {
           label: 'Name',
           type: 'text',
           required: true,
-          defaultValue: `UpdatedUser_${Date.now()}`,
+          defaultValue: `UpdatedUser_${Date.now()}`
         },
         {
           name: 'email',
           label: 'Email',
           type: 'text',
           required: true,
-          defaultValue: `updated_${Date.now()}@example.com`,
-        },
+          defaultValue: `updated_${Date.now()}@example.com`
+        }
       ]}
     />
   );

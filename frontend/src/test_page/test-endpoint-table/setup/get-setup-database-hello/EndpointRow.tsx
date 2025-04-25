@@ -9,7 +9,7 @@ export default function EndpointRow() {
       expectedOutput={{
         message: 'Hello World from SQLite!',
         dbType: 'sqlite3',
-        isConnected: true,
+        isConnected: true
       }}
     />
   );

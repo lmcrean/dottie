@@ -16,7 +16,7 @@ export default function EndpointButton({
   method,
   onClick,
   status,
-  isLoading,
+  isLoading
 }: EndpointButtonProps) {
   // Determine button color based on status
   const getButtonClass = () => {
@@ -32,7 +32,7 @@ export default function EndpointButton({
       GET: 'bg-blue-600 hover:bg-blue-700',
       POST: 'bg-purple-600 hover:bg-purple-700',
       PUT: 'bg-amber-600 hover:bg-amber-700',
-      DELETE: 'bg-rose-600 hover:bg-rose-700',
+      DELETE: 'bg-rose-600 hover:bg-rose-700'
     };
 
     return `${baseClass} ${methodColors[method]}`;

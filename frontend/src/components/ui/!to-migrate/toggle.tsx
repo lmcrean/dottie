@@ -13,19 +13,19 @@ const toggleVariants = cva(
       variant: {
         default: 'bg-transparent',
         outline:
-          'border dark:border-slate-800 bg-transparent hover:bg-accent hover:text-accent-foreground',
+          'border dark:border-slate-800 bg-transparent hover:bg-accent hover:text-accent-foreground'
       },
       size: {
         default: 'h-10 px-3 min-w-10',
         sm: 'h-9 px-2.5 min-w-9',
-        lg: 'h-11 px-5 min-w-11',
-      },
+        lg: 'h-11 px-5 min-w-11'
+      }
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default',
-    },
-  },
+      size: 'default'
+    }
+  }
 );
 
 const Toggle = React.forwardRef<

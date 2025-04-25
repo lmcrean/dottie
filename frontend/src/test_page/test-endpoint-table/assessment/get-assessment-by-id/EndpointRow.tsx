@@ -11,7 +11,7 @@ export default function EndpointRow() {
         userId: 'user-id',
         assessment_data: '{}',
         createdAt: 'created-date',
-        updatedAt: 'updated-date',
+        updatedAt: 'updated-date'
       }}
       requiresAuth={true}
       pathParams={['id']}

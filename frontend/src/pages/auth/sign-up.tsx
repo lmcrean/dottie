@@ -23,9 +23,9 @@ export default function SignUpPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting }
   } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpSchema)
   });
 
   const onSubmit = async (data: SignUpFormData) => {
@@ -41,7 +41,7 @@ export default function SignUpPage() {
     } catch (error) {
       if (error instanceof Error) {
         toast.error(
-          error.message === 'Failed to create user' ? 'Username Already Taken' : error.message,
+          error.message === 'Failed to create user' ? 'Username Already Taken' : error.message
         );
       }
     }

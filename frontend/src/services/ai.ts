@@ -143,18 +143,18 @@ Your Feedback:`;
             role: 'user',
             parts: [
               {
-                text: systemPrompt,
-              },
-            ],
-          },
+                text: systemPrompt
+              }
+            ]
+          }
         ],
         generationConfig: {
           temperature: 1,
           topK: 40,
           topP: 0.95,
           maxOutputTokens: 8192,
-          responseMimeType: 'text/plain',
-        },
+          responseMimeType: 'text/plain'
+        }
       });
 
       return response.data.candidates[0].content.parts[0].text;

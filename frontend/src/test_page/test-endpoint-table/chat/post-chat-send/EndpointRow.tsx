@@ -8,7 +8,7 @@ export default function EndpointRow() {
       endpoint="/api/chat/send"
       expectedOutput={{
         message: 'AI response message',
-        conversationId: 'conversation-id',
+        conversationId: 'conversation-id'
       }}
       requiresAuth={true}
       requiresParams={true}
@@ -18,14 +18,14 @@ export default function EndpointRow() {
           label: 'Message',
           type: 'textarea',
           required: true,
-          placeholder: 'Enter your message to the AI',
+          placeholder: 'Enter your message to the AI'
         },
         {
           name: 'conversationId',
           label: 'Conversation ID (optional)',
           type: 'text',
-          placeholder: 'Leave empty for a new conversation',
-        },
+          placeholder: 'Leave empty for a new conversation'
+        }
       ]}
     />
   );

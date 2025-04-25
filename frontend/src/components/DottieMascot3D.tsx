@@ -155,12 +155,12 @@ function TeardropBody() {
                 new THREE.Vector3(-0.1, 0.05, 0.68), // Left middle
                 new THREE.Vector3(0, 0.07, 0.7), // Center (further out)
                 new THREE.Vector3(0.1, 0.05, 0.68), // Right middle
-                new THREE.Vector3(0.2, 0, 0.62), // Right end
+                new THREE.Vector3(0.2, 0, 0.62) // Right end
               ]),
               32, // tubular segments
               0.02, // radius of the tube
               8, // radial segments
-              false,
+              false
             ]}
           />
           <meshStandardMaterial color="#111827" />

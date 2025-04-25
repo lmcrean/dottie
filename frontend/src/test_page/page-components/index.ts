@@ -24,7 +24,7 @@ export const testCredentialsManager = {
       }
     }
     return null;
-  },
+  }
 };
 
 export {
@@ -34,5 +34,5 @@ export {
   ApiResponse,
   InputForm,
   EndpointTable,
-  AuthStatus,
+  AuthStatus
 };

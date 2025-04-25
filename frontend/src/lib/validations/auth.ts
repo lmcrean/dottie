@@ -2,7 +2,7 @@ import * as z from 'zod';
 
 export const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters')
 });
 
 const passwordValidation = z.string();
@@ -29,7 +29,7 @@ export const signUpSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&_#).',
+            'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&_#).'
           // Optional: Include individual flags if needed elsewhere
           // params: {
           //   hasMinLength,
@@ -41,11 +41,11 @@ export const signUpSchema = z
         });
       }
     }),
-    confirmPassword: z.string(),
+    confirmPassword: z.string()
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirmPassword']
   });
 
 export type SignInFormData = z.infer<typeof signInSchema>;

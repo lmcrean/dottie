@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => ({ id: '', email: '' }),
   logout: () => {},
   updatePassword: async () => false,
-  checkTokens: () => {}, // Default implementation
+  checkTokens: () => {} // Default implementation
 });
 
 // Provider component
@@ -195,7 +195,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     updatePassword,
-    checkTokens, // Expose to make testing easier
+    checkTokens // Expose to make testing easier
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

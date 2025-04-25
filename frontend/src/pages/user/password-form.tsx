@@ -6,7 +6,7 @@ export default function PasswordForm() {
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: '',
+    confirmPassword: ''
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -61,14 +61,14 @@ export default function PasswordForm() {
     try {
       await axios.post('/api/user/pw/update', {
         currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
+        newPassword: formData.newPassword
       });
 
       toast.success('Password updated successfully');
       setFormData({
         currentPassword: '',
         newPassword: '',
-        confirmPassword: '',
+        confirmPassword: ''
       });
     } catch (error: any) {
       console.error('Error updating password:', error);

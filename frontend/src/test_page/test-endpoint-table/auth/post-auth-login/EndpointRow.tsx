@@ -17,10 +17,10 @@ let authApi: any = {
         authTokenExists: !!authToken,
         refreshTokenExists: !!refreshToken,
         authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-        refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
-      },
+        refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null
+      }
     };
-  },
+  }
 };
 
 // Try to import the real API, but don't fail if not available
@@ -48,10 +48,10 @@ try {
           authTokenExists: !!authToken,
           refreshTokenExists: !!refreshToken,
           authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
-        },
+          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null
+        }
       };
-    },
+    }
   };
 } catch (err) {
   console.warn('Auth API not available, using mock', err);
@@ -123,7 +123,7 @@ export default function EndpointRow() {
         url: string | URL,
         async: boolean = true,
         username?: string | null,
-        password?: string | null,
+        password?: string | null
       ) {
         if (typeof url === 'string' && url.includes('/api/auth/login')) {
           this._isLoginRequest = true;
@@ -134,7 +134,7 @@ export default function EndpointRow() {
           url,
           async,
           username || undefined,
-          password || undefined,
+          password || undefined
         );
       };
 
@@ -194,7 +194,7 @@ export default function EndpointRow() {
       if (credentials) {
         setSavedCredentials({
           email: credentials.email,
-          password: credentials.password,
+          password: credentials.password
         });
       }
     };
@@ -215,7 +215,7 @@ export default function EndpointRow() {
     if (credentials) {
       setSavedCredentials({
         email: credentials.email,
-        password: credentials.password,
+        password: credentials.password
       });
     }
   };
@@ -308,7 +308,7 @@ export default function EndpointRow() {
         // Check if localStorage is being blocked or cleared
         if (!testValue) {
           console.error(
-            '[Token Verification] ERROR: localStorage test failed - cannot read/write to localStorage',
+            '[Token Verification] ERROR: localStorage test failed - cannot read/write to localStorage'
           );
         }
       } catch (e) {
@@ -327,7 +327,7 @@ export default function EndpointRow() {
           authTokenExists: !!authToken,
           refreshTokenExists: !!refreshToken,
           authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
+          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null
         };
 
         if (verificationResult.authTokenExists || attempts >= maxAttempts) {
@@ -370,8 +370,8 @@ export default function EndpointRow() {
           token: 'jwt-token',
           user: {
             id: 'user-id',
-            email: 'user@example.com',
-          },
+            email: 'user@example.com'
+          }
         }}
         requiresParams={true}
         inputFields={[
@@ -381,7 +381,7 @@ export default function EndpointRow() {
             type: 'email',
             required: true,
             placeholder: 'user@example.com',
-            defaultValue: savedCredentials?.email || '',
+            defaultValue: savedCredentials?.email || ''
           },
           {
             name: 'password',
@@ -389,8 +389,8 @@ export default function EndpointRow() {
             type: 'password',
             required: true,
             placeholder: 'Your password',
-            defaultValue: savedCredentials?.password || '',
-          },
+            defaultValue: savedCredentials?.password || ''
+          }
         ]}
       />
 

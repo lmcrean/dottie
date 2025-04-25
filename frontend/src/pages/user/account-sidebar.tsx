@@ -15,18 +15,18 @@ export default function AccountSidebar() {
     {
       label: 'Profile',
       href: '/account/profile',
-      icon: <UserCircle className="h-5 w-5 text-pink-700" />,
+      icon: <UserCircle className="h-5 w-5 text-pink-700" />
     },
     {
       label: 'Password',
       href: '/account/password',
-      icon: <Key className="h-5 w-5 text-pink-700" />,
+      icon: <Key className="h-5 w-5 text-pink-700" />
     },
     {
       label: 'Sign Out',
       href: '/auth/signout',
-      icon: <LogOut className="h-5 w-5 text-pink-700" />,
-    },
+      icon: <LogOut className="h-5 w-5 text-pink-700" />
+    }
   ];
 
   return (

@@ -12,7 +12,7 @@ export const assessmentApi = {
   getById,
   sendAssessment: postSend,
   update: putUpdate,
-  delete: deleteAssessment,
+  delete: deleteAssessment
 };
 
 export default assessmentApi;

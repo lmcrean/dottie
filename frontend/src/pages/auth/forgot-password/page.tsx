@@ -8,7 +8,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '../../../components/ui/card';
 import { toast } from 'sonner';
 
@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
       await completePasswordReset({
         email,
         newPassword,
-        confirmPassword,
+        confirmPassword
       });
       toast.success('Password reset successful');
       navigate('/auth/sign-in');

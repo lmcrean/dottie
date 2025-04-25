@@ -24,7 +24,7 @@ export default function ApiResponse({ data, status }: ApiResponseProps) {
 
     const errorData = {
       error: errorMessage,
-      status: data?.response?.status || 'Error',
+      status: data?.response?.status || 'Error'
     };
 
     return (

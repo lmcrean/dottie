@@ -15,7 +15,7 @@ interface HeaderProps {
 const Header = ({
   logoSrc = '/logo/logo-mascot.svg',
   appName = 'Dottie',
-  isLoggedIn = false,
+  isLoggedIn = false
 }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();

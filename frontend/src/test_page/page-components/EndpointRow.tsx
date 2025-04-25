@@ -38,7 +38,7 @@ export default function EndpointRow({
   requiresParams = false,
   inputFields = [],
   pathParams = [],
-  onCustomButtonClick,
+  onCustomButtonClick
 }: EndpointRowProps) {
   const [response, setResponse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +60,7 @@ export default function EndpointRow({
     label: `${param} (path parameter)`,
     type: 'text',
     required: true,
-    placeholder: `Enter value for ${param}`,
+    placeholder: `Enter value for ${param}`
   }));
 
   // Replace path parameters in endpoint
@@ -80,7 +80,7 @@ export default function EndpointRow({
 
   const handleApiCall = async (
     formData?: Record<string, any>,
-    overridePathParams?: Record<string, string>,
+    overridePathParams?: Record<string, string>
   ) => {
     setIsLoading(true);
     setStatus('idle');
@@ -121,9 +121,9 @@ export default function EndpointRow({
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+                    ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
                   },
-                  body: JSON.stringify({ refreshToken }),
+                  body: JSON.stringify({ refreshToken })
                 });
 
                 if (response.ok) {
@@ -171,7 +171,7 @@ export default function EndpointRow({
         message: error instanceof Error ? error.message : 'Unknown error',
         response: (error as AxiosError)?.response?.data,
         status: (error as AxiosError)?.response?.status,
-        headers: (error as AxiosError)?.response?.headers,
+        headers: (error as AxiosError)?.response?.headers
       });
       setResponse(error);
       setStatus('error');

@@ -7,14 +7,14 @@
 export const TOKEN_KEYS = {
   AUTH_TOKEN: 'authToken',
   REFRESH_TOKEN: 'refresh_token',
-  USER: 'auth_user',
+  USER: 'auth_user'
 };
 
 // In-memory backup storage in case localStorage is not available
 const memoryTokenStorage = {
   [TOKEN_KEYS.AUTH_TOKEN]: null as string | null,
   [TOKEN_KEYS.REFRESH_TOKEN]: null as string | null,
-  [TOKEN_KEYS.USER]: null as string | null,
+  [TOKEN_KEYS.USER]: null as string | null
 };
 
 /**
@@ -242,5 +242,5 @@ export default {
   hasAuthToken,
   hasRefreshToken,
   clearAllTokens,
-  storeAuthData,
+  storeAuthData
 };
