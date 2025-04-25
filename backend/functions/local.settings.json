@@ -1,0 +1,18 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "NODE_ENV": "development",
+    "JWT_SECRET": "dev-jwt-secret",
+    "REFRESH_SECRET": "dev-refresh-secret",
+    "DB_USER": "your-db-user",
+    "DB_PASSWORD": "your-db-password",
+    "DB_SERVER": "your-db-server.database.windows.net",
+    "DB_NAME": "dottie-db"
+  },
+  "Host": {
+    "CORS": "*",
+    "CORSCredentials": true
+  }
+} 

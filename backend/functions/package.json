@@ -1,0 +1,27 @@
+{
+  "name": "dottie-backend-functions",
+  "version": "1.0.0",
+  "description": "Dottie backend services implemented as Azure Functions",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests specified\" && exit 0",
+    "test:api": "node test.js",
+    "deploy": "./deploy.sh",
+    "dev": "func start --verbose",
+    "pack": "func pack --build-native-deps",
+    "build": "npm run pack"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^10.0.2",
+    "uuid": "^11.1.0",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.5690"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 

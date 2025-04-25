@@ -16,4 +16,9 @@ router.use(detailRouter);
 router.use(updateRouter);
 router.use(deleteRouter);
 
-export default router;
+export default async function (context, req) {
+    context.res = {
+        status: 200,
+        body: { status: "ok", message: "Server is running" }
+    };
+}
