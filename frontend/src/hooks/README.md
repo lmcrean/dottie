@@ -18,15 +18,15 @@ The primary authentication hook that provides:
 import { useAuth } from '@/hooks/use-auth';
 
 function MyComponent() {
-  const { 
-    user,                // Current user or null if not authenticated
-    loading,             // Loading state during auth operations
-    error,               // Error state if an auth operation fails
-    isAuthenticated,     // Boolean indicating if user is logged in
-    authToken,           // Current auth token from localStorage
-    login,               // Function to login: (email, password) => Promise<User>
-    logout,              // Function to logout: () => void
-    updatePassword       // Function to update password: (current, new) => Promise<boolean>
+  const {
+    user, // Current user or null if not authenticated
+    loading, // Loading state during auth operations
+    error, // Error state if an auth operation fails
+    isAuthenticated, // Boolean indicating if user is logged in
+    authToken, // Current auth token from localStorage
+    login, // Function to login: (email, password) => Promise<User>
+    logout, // Function to logout: () => void
+    updatePassword, // Function to update password: (current, new) => Promise<boolean>
   } = useAuth();
 
   // Example usage
@@ -49,9 +49,7 @@ function MyComponent() {
           <button onClick={logout}>Logout</button>
         </div>
       ) : (
-        <button onClick={() => handleLogin('user@example.com', 'password')}>
-          Login
-        </button>
+        <button onClick={() => handleLogin('user@example.com', 'password')}>Login</button>
       )}
     </div>
   );
@@ -66,10 +64,6 @@ Make sure to wrap your application with the `AuthProvider`:
 import { AuthProvider } from '@/hooks/use-auth';
 
 function App() {
-  return (
-    <AuthProvider>
-      {/* Your app components */}
-    </AuthProvider>
-  );
+  return <AuthProvider>{/* Your app components */}</AuthProvider>;
 }
-``` 
+```

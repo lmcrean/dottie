@@ -19,10 +19,12 @@ export default function JsonDisplay({ data, isExpected = false }: JsonDisplayPro
   };
 
   return (
-    <div className={`p-4 rounded-md ${isExpected ? 'bg-gray-700' : 'bg-gray-700'}`}>
-      <pre className={`text-sm whitespace-pre-wrap break-words ${isExpected ? 'text-gray-300' : 'text-white'}`}>
+    <div className={`rounded-md p-4 ${isExpected ? 'bg-gray-700' : 'bg-gray-700'}`}>
+      <pre
+        className={`whitespace-pre-wrap break-words text-sm ${isExpected ? 'text-gray-300' : 'text-white'}`}
+      >
         {formatJson(data)}
       </pre>
     </div>
   );
-} 
+}

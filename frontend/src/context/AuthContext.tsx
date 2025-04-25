@@ -1,19 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import { authApi } from "@/src/api/auth/index";
-import { User, LoginInput, SignupInput } from "@/src/api/auth/types";
-import { userApi } from "@/src/api/user/index";
-import {
-  storeAuthData,
-  getAuthToken,
-  getUserData,
-  clearAllTokens,
-} from "../api/core/tokenManager";
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { authApi } from '@/src/api/auth/index';
+import { User, LoginInput, SignupInput } from '@/src/api/auth/types';
+import { userApi } from '@/src/api/user/index';
+import { storeAuthData, getAuthToken, getUserData, clearAllTokens } from '../api/core/tokenManager';
 
 interface AuthState {
   user: User | null;
@@ -26,10 +15,7 @@ interface AuthContextType extends AuthState {
   login: (credentials: LoginInput) => Promise<void>;
   signup: (userData: SignupInput) => Promise<User>;
   logout: () => Promise<void>;
-  updatePassword: (
-    currentPassword: string,
-    newPassword: string
-  ) => Promise<boolean>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
   clearError: () => void;
 }
 
@@ -120,11 +106,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: null,
       });
     } catch (error) {
-      console.error("[AuthContext Debug] Login error:", error);
+      console.error('[AuthContext Debug] Login error:', error);
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : "Login failed",
+        error: error instanceof Error ? error.message : 'Login failed',
       }));
       throw error;
     }
@@ -143,11 +129,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return response.user;
     } catch (error) {
-      console.error("[AuthContext Debug] Signup error:", error);
+      console.error('[AuthContext Debug] Signup error:', error);
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : "Signup failed",
+        error: error instanceof Error ? error.message : 'Signup failed',
       }));
       throw error;
     }
@@ -157,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authApi.logout();
     } catch (error) {
-      console.error("[AuthContext Debug] Logout error:", error);
+      console.error('[AuthContext Debug] Logout error:', error);
     } finally {
       // Use token manager to clear all tokens
       clearAllTokens();
@@ -171,10 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updatePassword = async (
-    currentPassword: string,
-    newPassword: string
-  ): Promise<boolean> => {
+  const updatePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
     try {
       const response = await userApi.updatePassword({
         currentPassword,
@@ -182,7 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return true;
     } catch (error) {
-      console.error("Failed to update password", error);
+      console.error('Failed to update password', error);
       return false;
     }
   };
@@ -210,7 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

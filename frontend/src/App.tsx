@@ -1,35 +1,35 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./globals.css";
-import SignIn from "./pages/auth/sign-in";
-import SignUp from "./pages/auth/sign-up";
-import SignOut from "./pages/auth/signout";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './globals.css';
+import SignIn from './pages/auth/sign-in';
+import SignUp from './pages/auth/sign-up';
+import SignOut from './pages/auth/signout';
 
 // Import account management pages
-import ProfilePage from "./pages/user/profile";
-import PasswordPage from "./pages/user/password";
-import { Toaster } from "sonner";
+import ProfilePage from './pages/user/profile';
+import PasswordPage from './pages/user/password';
+import { Toaster } from 'sonner';
 
 // Import assessment components
-import AgeVerification from "./pages/assessment/age-verification/page";
-import CycleLength from "./pages/assessment/cycle-length/page";
-import PeriodDuration from "./pages/assessment/period-duration/page";
-import FlowLevel from "./pages/assessment/flow/page";
-import PainLevel from "./pages/assessment/pain/page";
-import Symptoms from "./pages/assessment/symptoms/page";
-import Results from "./pages/assessment/results/page";
-import ResourcesPage from "./pages/assessment/resources/page";
-import HistoryPage from "./pages/assessment/history/page";
-import DetailsPage from "./pages/assessment/history/[id]/page";
+import AgeVerification from './pages/assessment/age-verification/page';
+import CycleLength from './pages/assessment/cycle-length/page';
+import PeriodDuration from './pages/assessment/period-duration/page';
+import FlowLevel from './pages/assessment/flow/page';
+import PainLevel from './pages/assessment/pain/page';
+import Symptoms from './pages/assessment/symptoms/page';
+import Results from './pages/assessment/results/page';
+import ResourcesPage from './pages/assessment/resources/page';
+import HistoryPage from './pages/assessment/history/page';
+import DetailsPage from './pages/assessment/history/[id]/page';
 
 // Import TestPage component
-import TestPage from "./test_page/page";
-import ScrollToTop from "./components/scroll-to-top";
-import LandingPage from "./pages/landing-page/page";
-import UITestPageSwitch from "./components/navigation/UITestPageSwitch";
+import TestPage from './test_page/page';
+import ScrollToTop from './components/scroll-to-top';
+import LandingPage from './pages/landing-page/page';
+import UITestPageSwitch from './components/navigation/UITestPageSwitch';
 
-import Header from "./components/navigation/Header";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
+import Header from './components/navigation/Header';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ProtectedRoute } from './routes/ProtectedRoute';
 
 // Dark mode
 import { ThemeProvider } from './context/ThemeContext';
@@ -44,10 +44,9 @@ function AppContent(): JSX.Element {
         richColors
         toastOptions={{
           style: {
-            border: "1px solid #fce7f3",
-            borderRadius: "0.75rem",
-            boxShadow:
-              "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+            border: '1px solid #fce7f3',
+            borderRadius: '0.75rem',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
           },
         }}
       />

@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  EndpointRow as BaseEndpointRow,
-  testCredentialsManager,
-} from "../../../page-components";
+import React, { useState, useEffect, useRef } from 'react';
+import { EndpointRow as BaseEndpointRow, testCredentialsManager } from '../../../page-components';
 
 // Track the last API response globally for debugging
 let lastLoginResponse: any = null;
@@ -11,8 +8,8 @@ let lastLoginResponse: any = null;
 let authApi: any = {
   verifyToken: () => {
     // Implement a direct token verification function using localStorage
-    const authToken = localStorage.getItem("authToken");
-    const refreshToken = localStorage.getItem("refresh_token");
+    const authToken = localStorage.getItem('authToken');
+    const refreshToken = localStorage.getItem('refresh_token');
 
     return {
       data: {
@@ -20,9 +17,7 @@ let authApi: any = {
         authTokenExists: !!authToken,
         refreshTokenExists: !!refreshToken,
         authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-        refreshTokenValue: refreshToken
-          ? `${refreshToken.substring(0, 10)}...`
-          : null,
+        refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
       },
     };
   },
@@ -39,17 +34,12 @@ try {
 
       try {
         // Use only snake_case naming convention
-        authToken =
-          typeof localStorage !== "undefined"
-            ? localStorage.getItem("authToken")
-            : null;
+        authToken = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
 
         refreshToken =
-          typeof localStorage !== "undefined"
-            ? localStorage.getItem("refresh_token")
-            : null;
+          typeof localStorage !== 'undefined' ? localStorage.getItem('refresh_token') : null;
       } catch (e) {
-        console.warn("LocalStorage not available, using mock values");
+        console.warn('LocalStorage not available, using mock values');
       }
 
       return {
@@ -58,15 +48,13 @@ try {
           authTokenExists: !!authToken,
           refreshTokenExists: !!refreshToken,
           authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-          refreshTokenValue: refreshToken
-            ? `${refreshToken.substring(0, 10)}...`
-            : null,
+          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
         },
       };
     },
   };
 } catch (err) {
-  console.warn("Auth API not available, using mock", err);
+  console.warn('Auth API not available, using mock', err);
 }
 
 export default function EndpointRow() {
@@ -75,9 +63,7 @@ export default function EndpointRow() {
     password: string;
   } | null>(null);
   const [verificationResponse, setVerificationResponse] = useState<any>(null);
-  const [verifyStatus, setVerifyStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
+  const [verifyStatus, setVerifyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isVerifying, setIsVerifying] = useState(false);
   const [manualTokenCreated, setManualTokenCreated] = useState(false);
   const [lastApiResponse, setLastApiResponse] = useState<any>(null);
@@ -94,11 +80,7 @@ export default function EndpointRow() {
         const response = await originalFetch.apply(this, args);
 
         // Only capture login requests
-        if (
-          args[0] &&
-          typeof args[0] === "string" &&
-          args[0].includes("/api/auth/login")
-        ) {
+        if (args[0] && typeof args[0] === 'string' && args[0].includes('/api/auth/login')) {
           try {
             // Clone the response to avoid consuming it
             const clonedResponse = response.clone();
@@ -108,19 +90,16 @@ export default function EndpointRow() {
 
             // Automatically save tokens with correct naming
             if (data.token) {
-              localStorage.setItem("authToken", data.token);
+              localStorage.setItem('authToken', data.token);
             }
             if (data.refreshToken) {
-              localStorage.setItem("refresh_token", data.refreshToken);
+              localStorage.setItem('refresh_token', data.refreshToken);
             }
 
             // Dispatch auth token changed event
-            window.dispatchEvent(new Event("authToken_changed"));
+            window.dispatchEvent(new Event('authToken_changed'));
           } catch (e) {
-            console.error(
-              "[Response Monitor] Error capturing fetch response:",
-              e
-            );
+            console.error('[Response Monitor] Error capturing fetch response:', e);
           }
         }
 
@@ -144,9 +123,9 @@ export default function EndpointRow() {
         url: string | URL,
         async: boolean = true,
         username?: string | null,
-        password?: string | null
+        password?: string | null,
       ) {
-        if (typeof url === "string" && url.includes("/api/auth/login")) {
+        if (typeof url === 'string' && url.includes('/api/auth/login')) {
           this._isLoginRequest = true;
         }
         return originalOpen.call(
@@ -155,14 +134,11 @@ export default function EndpointRow() {
           url,
           async,
           username || undefined,
-          password || undefined
+          password || undefined,
         );
       };
 
-      XMLHttpRequest.prototype.send = function (
-        this: CustomXMLHttpRequest,
-        ...args
-      ) {
+      XMLHttpRequest.prototype.send = function (this: CustomXMLHttpRequest, ...args) {
         if (this._isLoginRequest) {
           const originalOnload = this.onload;
           this.onload = function (e) {
@@ -174,20 +150,17 @@ export default function EndpointRow() {
 
                 // Automatically save tokens with correct naming
                 if (data.token) {
-                  localStorage.setItem("authToken", data.token);
+                  localStorage.setItem('authToken', data.token);
                 }
                 if (data.refreshToken) {
-                  localStorage.setItem("refresh_token", data.refreshToken);
+                  localStorage.setItem('refresh_token', data.refreshToken);
                 }
 
                 // Dispatch auth token changed event
-                window.dispatchEvent(new Event("authToken_changed"));
+                window.dispatchEvent(new Event('authToken_changed'));
               }
             } catch (e) {
-              console.error(
-                "[Response Monitor] Error parsing XHR response:",
-                e
-              );
+              console.error('[Response Monitor] Error parsing XHR response:', e);
             }
 
             if (originalOnload) {
@@ -229,17 +202,11 @@ export default function EndpointRow() {
     checkForStoredCredentials();
 
     // Add event listener to detect when credentials are updated
-    window.addEventListener(
-      "signup_credentials_updated",
-      checkForStoredCredentials
-    );
+    window.addEventListener('signup_credentials_updated', checkForStoredCredentials);
 
     // Cleanup
     return () => {
-      window.removeEventListener(
-        "signup_credentials_updated",
-        checkForStoredCredentials
-      );
+      window.removeEventListener('signup_credentials_updated', checkForStoredCredentials);
     };
   }, []);
 
@@ -255,39 +222,29 @@ export default function EndpointRow() {
 
   const handleCreateTestToken = () => {
     try {
-      const testToken = "test-auth-token-" + Date.now();
-      const testRefreshToken = "test-refresh-token-" + Date.now();
+      const testToken = 'test-auth-token-' + Date.now();
+      const testRefreshToken = 'test-refresh-token-' + Date.now();
 
       // Use snake_case naming convention consistently
-      localStorage.setItem("authToken", testToken);
-      localStorage.setItem("refresh_token", testRefreshToken);
+      localStorage.setItem('authToken', testToken);
+      localStorage.setItem('refresh_token', testRefreshToken);
 
       setManualTokenCreated(true);
     } catch (error) {
-      console.error("[Manual Token] Error creating test tokens:", error);
+      console.error('[Manual Token] Error creating test tokens:', error);
     }
   };
 
   const handleExtractFromResponse = () => {
     if (!lastApiResponse) {
-      console.error("[Extract Tokens] No API response available");
+      console.error('[Extract Tokens] No API response available');
       return;
     }
 
     try {
       // Check all possible token field names
-      const possibleTokenFields = [
-        "token",
-        "accessToken",
-        "jwt",
-        "access_token",
-        "jwtToken",
-      ];
-      const possibleRefreshTokenFields = [
-        "refreshToken",
-        "refresh_token",
-        "refresh",
-      ];
+      const possibleTokenFields = ['token', 'accessToken', 'jwt', 'access_token', 'jwtToken'];
+      const possibleRefreshTokenFields = ['refreshToken', 'refresh_token', 'refresh'];
 
       // Try to find a token
       let token = null;
@@ -315,20 +272,20 @@ export default function EndpointRow() {
 
       // Store the tokens if found - using snake_case naming convention
       if (token) {
-        localStorage.setItem("authToken", token);
+        localStorage.setItem('authToken', token);
       }
 
       if (refreshToken) {
-        localStorage.setItem("refresh_token", refreshToken);
+        localStorage.setItem('refresh_token', refreshToken);
       }
 
       // Set state to indicate tokens were created
       setManualTokenCreated(true);
 
       // Dispatch event
-      window.dispatchEvent(new Event("authToken_changed"));
+      window.dispatchEvent(new Event('authToken_changed'));
     } catch (error) {
-      console.error("[Extract Tokens] Error extracting tokens:", error);
+      console.error('[Extract Tokens] Error extracting tokens:', error);
     }
   };
 
@@ -345,54 +302,47 @@ export default function EndpointRow() {
 
       // First try to forcefully set a token to test if localStorage is working
       try {
-        localStorage.setItem("test_token", "test-value-" + Date.now());
-        const testValue = localStorage.getItem("test_token");
+        localStorage.setItem('test_token', 'test-value-' + Date.now());
+        const testValue = localStorage.getItem('test_token');
 
         // Check if localStorage is being blocked or cleared
         if (!testValue) {
           console.error(
-            "[Token Verification] ERROR: localStorage test failed - cannot read/write to localStorage"
+            '[Token Verification] ERROR: localStorage test failed - cannot read/write to localStorage',
           );
         }
       } catch (e) {
-        console.error("[Token Verification] ERROR accessing localStorage:", e);
+        console.error('[Token Verification] ERROR accessing localStorage:', e);
       }
 
       const attemptVerification = () => {
         attempts++;
 
         // Get tokens using snake_case consistently
-        const authToken = localStorage.getItem("authToken");
-        const refreshToken = localStorage.getItem("refresh_token");
+        const authToken = localStorage.getItem('authToken');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         const verificationResult = {
           success: true,
           authTokenExists: !!authToken,
           refreshTokenExists: !!refreshToken,
           authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-          refreshTokenValue: refreshToken
-            ? `${refreshToken.substring(0, 10)}...`
-            : null,
+          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
         };
 
         if (verificationResult.authTokenExists || attempts >= maxAttempts) {
           // Success or max attempts reached
           setVerificationResponse(verificationResult);
-          setVerifyStatus(
-            verificationResult.authTokenExists ? "success" : "error"
-          );
+          setVerifyStatus(verificationResult.authTokenExists ? 'success' : 'error');
           setIsVerifying(false);
 
           if (!verificationResult.authTokenExists) {
             // If verification failed at the end, add a direct token for debugging
             try {
-              const directTestToken = "direct-test-token-" + Date.now();
-              localStorage.setItem("authToken", directTestToken);
+              const directTestToken = 'direct-test-token-' + Date.now();
+              localStorage.setItem('authToken', directTestToken);
             } catch (e) {
-              console.error(
-                "[Token Verification] ERROR setting direct test token:",
-                e
-              );
+              console.error('[Token Verification] ERROR setting direct test token:', e);
             }
           }
         } else {
@@ -405,8 +355,8 @@ export default function EndpointRow() {
       // Start the verification process
       attemptVerification();
     } catch (error) {
-      console.error("Error verifying tokens:", error);
-      setVerifyStatus("error");
+      console.error('Error verifying tokens:', error);
+      setVerifyStatus('error');
       setIsVerifying(false);
     }
   };
@@ -417,29 +367,29 @@ export default function EndpointRow() {
         method="POST"
         endpoint="/api/auth/login"
         expectedOutput={{
-          token: "jwt-token",
+          token: 'jwt-token',
           user: {
-            id: "user-id",
-            email: "user@example.com",
+            id: 'user-id',
+            email: 'user@example.com',
           },
         }}
         requiresParams={true}
         inputFields={[
           {
-            name: "email",
-            label: "Email",
-            type: "email",
+            name: 'email',
+            label: 'Email',
+            type: 'email',
             required: true,
-            placeholder: "user@example.com",
-            defaultValue: savedCredentials?.email || "",
+            placeholder: 'user@example.com',
+            defaultValue: savedCredentials?.email || '',
           },
           {
-            name: "password",
-            label: "Password",
-            type: "password",
+            name: 'password',
+            label: 'Password',
+            type: 'password',
             required: true,
-            placeholder: "Your password",
-            defaultValue: savedCredentials?.password || "",
+            placeholder: 'Your password',
+            defaultValue: savedCredentials?.password || '',
           },
         ]}
       />
@@ -447,22 +397,20 @@ export default function EndpointRow() {
       {/* Button row with credentials and verification */}
       <tr>
         <td colSpan={3}>
-          <div className="flex flex-col space-y-3 ml-4 mt-2 mb-4">
+          <div className="mb-4 ml-4 mt-2 flex flex-col space-y-3">
             <div className="flex items-center">
               <button
                 onClick={handleUseSignupCredentials}
-                className="px-3 py-1 bg-purple-600 text-white text-sm rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2"
+                className="rounded-md bg-purple-600 px-3 py-1 text-sm text-white hover:bg-purple-700 focus:outline-none focus:ring-2"
               >
                 Use Latest Signup Credentials
               </button>
 
               {savedCredentials && (
-                <div className="ml-4 p-2 bg-gray-800 rounded text-xs">
+                <div className="ml-4 rounded bg-gray-800 p-2 text-xs">
                   <div>
-                    Using credentials for:{" "}
-                    <span className="text-purple-400">
-                      {savedCredentials.email}
-                    </span>
+                    Using credentials for:{' '}
+                    <span className="text-purple-400">{savedCredentials.email}</span>
                   </div>
                 </div>
               )}
@@ -472,13 +420,13 @@ export default function EndpointRow() {
             <div className="flex items-center">
               <button
                 onClick={handleCreateTestToken}
-                className="px-3 py-1 bg-yellow-600 text-white text-sm rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2"
+                className="rounded-md bg-yellow-600 px-3 py-1 text-sm text-white hover:bg-yellow-700 focus:outline-none focus:ring-2"
               >
                 Create Test Tokens Manually
               </button>
 
               {manualTokenCreated && (
-                <div className="ml-4 p-2 bg-yellow-900 rounded text-xs">
+                <div className="ml-4 rounded bg-yellow-900 p-2 text-xs">
                   <div>
                     Test tokens <span className="text-yellow-400">created</span>
                   </div>
@@ -491,13 +439,13 @@ export default function EndpointRow() {
               <button
                 onClick={handleVerifyToken}
                 disabled={isVerifying}
-                className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2"
+                className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2"
                 data-testid="test-get-frontend-auth-token-verification-button"
               >
                 {isVerifying ? (
                   <div className="flex items-center justify-center space-x-1">
                     <svg
-                      className="animate-spin h-4 w-4 text-white"
+                      className="h-4 w-4 animate-spin text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -523,21 +471,19 @@ export default function EndpointRow() {
                 )}
               </button>
 
-              {verifyStatus !== "idle" && (
+              {verifyStatus !== 'idle' && (
                 <div
                   className={`ml-4 p-2 ${
-                    verifyStatus === "success" ? "bg-green-900" : "bg-red-900"
+                    verifyStatus === 'success' ? 'bg-green-900' : 'bg-red-900'
                   } rounded text-xs`}
                 >
-                  {verifyStatus === "success" ? (
+                  {verifyStatus === 'success' ? (
                     <div>
-                      Token verification{" "}
-                      <span className="text-green-400">successful</span>
+                      Token verification <span className="text-green-400">successful</span>
                     </div>
                   ) : (
                     <div>
-                      Token verification{" "}
-                      <span className="text-red-400">failed</span>
+                      Token verification <span className="text-red-400">failed</span>
                     </div>
                   )}
                 </div>
@@ -545,16 +491,16 @@ export default function EndpointRow() {
             </div>
 
             {/* Extract Tokens from Last Response Button */}
-            <div className="flex items-center mt-2">
+            <div className="mt-2 flex items-center">
               <button
                 onClick={handleExtractFromResponse}
-                className="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 focus:outline-none focus:ring-2"
+                className="rounded-md bg-green-600 px-3 py-1 text-sm text-white hover:bg-green-700 focus:outline-none focus:ring-2"
               >
                 Extract Tokens from Response
               </button>
 
               {lastApiResponse && (
-                <div className="ml-4 p-2 bg-gray-800 rounded text-xs">
+                <div className="ml-4 rounded bg-gray-800 p-2 text-xs">
                   <div>
                     Response captured <span className="text-green-400">✓</span>
                   </div>
@@ -563,7 +509,7 @@ export default function EndpointRow() {
             </div>
 
             {verificationResponse && (
-              <div className="mt-2 p-2 bg-gray-800 rounded text-xs">
+              <div className="mt-2 rounded bg-gray-800 p-2 text-xs">
                 <pre className="whitespace-pre-wrap break-words text-gray-300">
                   {JSON.stringify(verificationResponse, null, 2)}
                 </pre>

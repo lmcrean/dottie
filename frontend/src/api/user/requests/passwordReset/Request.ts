@@ -1,11 +1,13 @@
-import { apiClient } from "../../../core/apiClient";
-import { PasswordResetRequest, PasswordResetCompletion } from "../../types";
+import { apiClient } from '../../../core/apiClient';
+import { PasswordResetRequest, PasswordResetCompletion } from '../../types';
 
 /**
  * Request password reset by email
  * @endpoint /api/user/password/reset (POST)
  */
-export const requestPasswordReset = async (emailData: PasswordResetRequest): Promise<{ message: string }> => {
+export const requestPasswordReset = async (
+  emailData: PasswordResetRequest,
+): Promise<{ message: string }> => {
   try {
     const response = await apiClient.post('/api/user/password/reset', emailData);
     return response.data;
@@ -19,7 +21,9 @@ export const requestPasswordReset = async (emailData: PasswordResetRequest): Pro
  * Complete password reset using token and new password
  * @endpoint /api/user/password/reset/complete (POST)
  */
-export const completePasswordReset = async (resetData: PasswordResetCompletion): Promise<{ message: string }> => {
+export const completePasswordReset = async (
+  resetData: PasswordResetCompletion,
+): Promise<{ message: string }> => {
   try {
     const response = await apiClient.post('/api/user/password/reset/complete', resetData);
     return response.data;
@@ -27,4 +31,4 @@ export const completePasswordReset = async (resetData: PasswordResetCompletion):
     console.error('Failed to complete password reset:', error);
     throw error;
   }
-}; 
+};

@@ -12,7 +12,7 @@ interface ApiResponseProps {
 export default function ApiResponse({ data, status }: ApiResponseProps) {
   if (!data && status === 'idle') {
     return (
-      <div className="p-4 rounded-md bg-gray-700 text-gray-400 italic">
+      <div className="rounded-md bg-gray-700 p-4 italic text-gray-400">
         No response yet. Click the endpoint button to test.
       </div>
     );
@@ -20,20 +20,18 @@ export default function ApiResponse({ data, status }: ApiResponseProps) {
 
   if (status === 'error') {
     // Format error response
-    const errorMessage = data?.response?.data?.error || 
-                       data?.message || 
-                       'An error occurred';
-    
+    const errorMessage = data?.response?.data?.error || data?.message || 'An error occurred';
+
     const errorData = {
       error: errorMessage,
       status: data?.response?.status || 'Error',
     };
-    
+
     return (
       <div className="space-y-2">
         <div className="flex items-center">
-          <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
-          <span className="text-red-500 font-medium">Error</span>
+          <div className="mr-2 h-2 w-2 rounded-full bg-red-500"></div>
+          <span className="font-medium text-red-500">Error</span>
         </div>
         <JsonDisplay data={errorData} />
       </div>
@@ -44,8 +42,8 @@ export default function ApiResponse({ data, status }: ApiResponseProps) {
     return (
       <div className="space-y-2">
         <div className="flex items-center">
-          <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-          <span className="text-green-500 font-medium">Success</span>
+          <div className="mr-2 h-2 w-2 rounded-full bg-green-500"></div>
+          <span className="font-medium text-green-500">Success</span>
         </div>
         <JsonDisplay data={data} />
       </div>
@@ -56,15 +54,13 @@ export default function ApiResponse({ data, status }: ApiResponseProps) {
     return (
       <div className="space-y-2">
         <div className="flex items-center">
-          <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2"></div>
-          <span className="text-yellow-500 font-medium">Partial Success</span>
+          <div className="mr-2 h-2 w-2 rounded-full bg-yellow-500"></div>
+          <span className="font-medium text-yellow-500">Partial Success</span>
         </div>
         <JsonDisplay data={data} />
       </div>
     );
   }
 
-  return (
-    <JsonDisplay data={data} />
-  );
-} 
+  return <JsonDisplay data={data} />;
+}

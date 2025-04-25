@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const UserSchema = z.object({
   id: z.string().uuid(),
@@ -7,4 +7,4 @@ export const UserSchema = z.object({
   age: z.nullable(z.number()),
   created_at: z.string(),
   updated_at: z.string(),
-}); 
+});

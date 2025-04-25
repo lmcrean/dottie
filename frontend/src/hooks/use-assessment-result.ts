@@ -1,42 +1,36 @@
 import { useCallback } from 'react';
 import { useAssessmentResult as useAssessmentResultContext } from '@/src/context/AssessmentResultContext';
-import type { 
-  AssessmentResult, 
+import type {
+  AssessmentResult,
   MenstrualPattern,
   Recommendation,
-  Symptoms 
+  Symptoms,
 } from '@/src/context/AssessmentResultContext';
 
 export function useAssessmentResult() {
-  const { 
-    state, 
-    setResult, 
-    updateResult, 
-    resetResult, 
-    setPattern,
-    setRecommendations 
-  } = useAssessmentResultContext();
+  const { state, setResult, updateResult, resetResult, setPattern, setRecommendations } =
+    useAssessmentResultContext();
 
   // Utility function to determine the menstrual pattern based on assessment results
   const determinePattern = useCallback((result: AssessmentResult): MenstrualPattern => {
     const { age, cycleLength, periodDuration, flowHeaviness, painLevel } = result;
 
     // Developing Pattern (O5)
-    if (age === "under-13" || age === "13-17") {
+    if (age === 'under-13' || age === '13-17') {
       return 'developing';
     }
 
     // Irregular Timing Pattern (O1)
-    if (cycleLength === 'irregular' || 
-        cycleLength === 'less-than-21' || 
-        cycleLength === '36-40') {
+    if (cycleLength === 'irregular' || cycleLength === 'less-than-21' || cycleLength === '36-40') {
       return 'irregular';
     }
 
     // Heavy Flow Pattern (O2)
-    if (flowHeaviness === 'heavy' || 
-        flowHeaviness === 'very-heavy' || 
-        periodDuration === '8-plus') {
+    if (
+      flowHeaviness === 'heavy' ||
+      flowHeaviness === 'very-heavy' ||
+      periodDuration === '8-plus'
+    ) {
       return 'heavy';
     }
 
@@ -56,34 +50,37 @@ export function useAssessmentResult() {
 
     // Base recommendations for all patterns
     recommendations.push({
-      title: "Track Your Cycle",
-      description: "Keep a record of when your period starts and stops to identify patterns."
+      title: 'Track Your Cycle',
+      description: 'Keep a record of when your period starts and stops to identify patterns.',
     });
 
     // Pattern-specific recommendations
     switch (pattern) {
       case 'irregular':
         recommendations.push({
-          title: "Consult a Healthcare Provider",
-          description: "Irregular cycles may need medical evaluation to identify underlying causes."
+          title: 'Consult a Healthcare Provider',
+          description:
+            'Irregular cycles may need medical evaluation to identify underlying causes.',
         });
         break;
       case 'heavy':
         recommendations.push({
-          title: "Iron-Rich Diet",
-          description: "Consider increasing iron intake through diet or supplements to prevent anemia."
+          title: 'Iron-Rich Diet',
+          description:
+            'Consider increasing iron intake through diet or supplements to prevent anemia.',
         });
         break;
       case 'pain':
         recommendations.push({
-          title: "Pain Management",
-          description: "Over-the-counter pain relievers like ibuprofen can help with cramps."
+          title: 'Pain Management',
+          description: 'Over-the-counter pain relievers like ibuprofen can help with cramps.',
         });
         break;
       case 'developing':
         recommendations.push({
-          title: "Be Patient",
-          description: "Your cycles are still establishing. It's normal for them to be irregular during adolescence."
+          title: 'Be Patient',
+          description:
+            "Your cycles are still establishing. It's normal for them to be irregular during adolescence.",
         });
         break;
     }
@@ -91,15 +88,16 @@ export function useAssessmentResult() {
     // Symptom-specific recommendations
     if (symptoms.physical.includes('Fatigue')) {
       recommendations.push({
-        title: "Rest and Sleep",
-        description: "Ensure you get adequate rest and maintain a regular sleep schedule."
+        title: 'Rest and Sleep',
+        description: 'Ensure you get adequate rest and maintain a regular sleep schedule.',
       });
     }
 
     if (symptoms.emotional.length > 0) {
       recommendations.push({
-        title: "Emotional Support",
-        description: "Consider talking to a counselor or joining a support group about emotional symptoms."
+        title: 'Emotional Support',
+        description:
+          'Consider talking to a counselor or joining a support group about emotional symptoms.',
       });
     }
 
@@ -124,7 +122,7 @@ export function useAssessmentResult() {
       'painLevel',
       'symptoms',
       'pattern',
-      'recommendations'
+      'recommendations',
     ];
 
     keys.forEach((key) => {
@@ -138,34 +136,37 @@ export function useAssessmentResult() {
   }, []);
 
   // Function to update symptoms
-  const updateSymptoms = useCallback((
-    type: keyof Symptoms,
-    symptoms: string[]
-  ) => {
-    if (!state.result) return;
+  const updateSymptoms = useCallback(
+    (type: keyof Symptoms, symptoms: string[]) => {
+      if (!state.result) return;
 
-    const updatedSymptoms: Symptoms = {
-      ...state.result.symptoms,
-      [type]: symptoms
-    };
+      const updatedSymptoms: Symptoms = {
+        ...state.result.symptoms,
+        [type]: symptoms,
+      };
 
-    updateResult({ symptoms: updatedSymptoms });
-  }, [state.result, updateResult]);
+      updateResult({ symptoms: updatedSymptoms });
+    },
+    [state.result, updateResult],
+  );
 
   // Function to complete the assessment
-  const completeAssessment = useCallback((result: AssessmentResult) => {
-    const pattern = determinePattern(result);
-    const recommendations = generateRecommendations({ ...result, pattern });
-    
-    const completeResult = {
-      ...result,
-      pattern,
-      recommendations
-    };
+  const completeAssessment = useCallback(
+    (result: AssessmentResult) => {
+      const pattern = determinePattern(result);
+      const recommendations = generateRecommendations({ ...result, pattern });
 
-    setResult(completeResult);
-    saveToSessionStorage(completeResult);
-  }, [determinePattern, generateRecommendations, setResult, saveToSessionStorage]);
+      const completeResult = {
+        ...result,
+        pattern,
+        recommendations,
+      };
+
+      setResult(completeResult);
+      saveToSessionStorage(completeResult);
+    },
+    [determinePattern, generateRecommendations, setResult, saveToSessionStorage],
+  );
 
   // Function to clear assessment data
   const clearAssessment = useCallback(() => {
@@ -188,4 +189,4 @@ export function useAssessmentResult() {
     completeAssessment,
     clearAssessment,
   };
-} 
+}

@@ -26,20 +26,20 @@ export default function SignOut() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex h-screen items-center justify-center">
       {showModal && (
-        <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full text-center border dark:bg-gray-900 dark:border-slate-800">
-          <h2 className="text-xl font-semibold mb-4">Are you sure you want to sign out?</h2>
-          <div className="flex justify-center gap-4 mt-6">
+        <div className="w-full max-w-md rounded-lg border bg-white p-6 text-center shadow-lg dark:border-slate-800 dark:bg-gray-900">
+          <h2 className="mb-4 text-xl font-semibold">Are you sure you want to sign out?</h2>
+          <div className="mt-6 flex justify-center gap-4">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
             >
               Cancel
             </button>
             <button
               onClick={handleConfirm}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
             >
               Sign Out
             </button>

@@ -1,18 +1,21 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Types
-export type AgeRange = "under-13" | "13-17" | "18-24" | "25-plus";
-export type CycleLength = "less-than-21" | "21-25" | "26-30" | "31-35" | "36-40" | "irregular" | "not-sure" | "other";
-export type PeriodDuration = "1-3" | "4-5" | "6-7" | "8-plus" | "varies"| "not-sure" | "other";
-export type FlowHeaviness = "light" | "moderate" | "heavy" | "very-heavy" | "varies" | "not-sure";
-export type PainLevel = "no-pain" | "mild" | "moderate" | "severe" | "debilitating" | "varies";
+export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
+export type CycleLength =
+  | 'less-than-21'
+  | '21-25'
+  | '26-30'
+  | '31-35'
+  | '36-40'
+  | 'irregular'
+  | 'not-sure'
+  | 'other';
+export type PeriodDuration = '1-3' | '4-5' | '6-7' | '8-plus' | 'varies' | 'not-sure' | 'other';
+export type FlowHeaviness = 'light' | 'moderate' | 'heavy' | 'very-heavy' | 'varies' | 'not-sure';
+export type PainLevel = 'no-pain' | 'mild' | 'moderate' | 'severe' | 'debilitating' | 'varies';
 
-export type MenstrualPattern = 
-  | "regular" 
-  | "irregular" 
-  | "heavy" 
-  | "pain" 
-  | "developing";
+export type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
 
 export interface Recommendation {
   title: string;
@@ -68,7 +71,7 @@ const AssessmentResultContext = createContext<AssessmentResultContextType | unde
 // Reducer
 function assessmentResultReducer(
   state: AssessmentResultState,
-  action: AssessmentResultAction
+  action: AssessmentResultAction,
 ): AssessmentResultState {
   switch (action.type) {
     case 'SET_RESULT':
@@ -146,4 +149,4 @@ export function useAssessmentResult() {
     throw new Error('useAssessmentResult must be used within an AssessmentResultProvider');
   }
   return context;
-} 
+}

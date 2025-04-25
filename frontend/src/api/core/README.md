@@ -1,11 +1,13 @@
 # Core API Modules
 
 ## apiClient.ts
+
 Axios-based HTTP client with centralized configuration and error handling.
 
 ### Key Features:
+
 - Base URL: `http://localhost:5000`
-- Default headers: 
+- Default headers:
   ```ts
   {
     'Content-Type': 'application/json',
@@ -20,16 +22,19 @@ Axios-based HTTP client with centralized configuration and error handling.
     - Server errors (5xx)
 - Status helpers:
   ```ts
-  isSuccess(status)  // 200-299
-  isClientError(status)  // 400-499
-  isServerError(status)  // 500+
+  isSuccess(status); // 200-299
+  isClientError(status); // 400-499
+  isServerError(status); // 500+
   ```
 
 ## db.ts
+
 Database service layer providing common data operations.
 
 ### Exported Functions:
+
 1. `checkDbConnection()`
+
    - Endpoint: GET `/api/setup/database/status`
    - Returns: Connection status object
    - Error handling: Returns error status message
@@ -40,6 +45,7 @@ Database service layer providing common data operations.
    - Error handling: Throws error for caller to handle
 
 ### Usage Example:
+
 ```ts
 import { checkDbConnection, fetchUserData } from './db';
 
@@ -53,6 +59,7 @@ try {
   // Handle specific error
 }
 ```
+
 ```
 
 This documentation provides:
@@ -63,3 +70,4 @@ This documentation provides:
 5. Endpoint references
 
 Would you like me to add any specific details or modify the structure?
+```

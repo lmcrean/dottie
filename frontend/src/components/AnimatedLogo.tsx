@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface AnimatedLogoProps {
   size?: number;
@@ -11,22 +11,22 @@ interface AnimatedLogoProps {
 /* Logo with animation */
 const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   size = 80,
-  className = "",
-  borderColor = "border-pink-600",
-  logoSrc = "/logo/logo-mascot.svg",
+  className = '',
+  borderColor = 'border-pink-600',
+  logoSrc = '/logo/logo-mascot.svg',
   logoSize = 48,
 }) => {
   return (
-    <div className={`flex justify-center items-center mb-6 ${className} `}>
+    <div className={`mb-6 flex items-center justify-center ${className} `}>
       <div
-        className="relative flex justify-center items-center"
+        className="relative flex items-center justify-center"
         style={{ width: size, height: size }}
       >
         <div
-          className={`absolute w-full h-full border-t-4 rounded-full animate-spin-left ${borderColor}`}
+          className={`animate-spin-left absolute h-full w-full rounded-full border-t-4 ${borderColor}`}
         ></div>
         <div
-          className={`absolute w-full h-full border-b-4 rounded-full animate-spin-right ${borderColor}`}
+          className={`animate-spin-right absolute h-full w-full rounded-full border-b-4 ${borderColor}`}
         ></div>
 
         {/* Logo */}

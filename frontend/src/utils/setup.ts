@@ -43,5 +43,5 @@ class LocalStorageMock implements Storage {
 
 // Set up global mocks
 Object.defineProperty(window, 'localStorage', {
-  value: new LocalStorageMock()
-}); 
+  value: new LocalStorageMock(),
+});

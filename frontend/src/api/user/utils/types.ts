@@ -1,4 +1,4 @@
-import { UserSchema } from "./schemas";
+import { UserSchema } from './schemas';
 
 // User Types
 export interface UserProfile {
@@ -24,4 +24,4 @@ export interface PasswordResetCompletion {
   token: string;
   newPassword: string;
   confirmPassword: string;
-} 
+}

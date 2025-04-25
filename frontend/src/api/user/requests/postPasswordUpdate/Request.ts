@@ -1,11 +1,13 @@
-import { apiClient } from "../../../core/apiClient";
-import { PasswordUpdateRequest } from "../../types";
+import { apiClient } from '../../../core/apiClient';
+import { PasswordUpdateRequest } from '../../types';
 
 /**
  * Update user password
  * @endpoint /api/user/pw/update (POST)
  */
-export const postPasswordUpdate = async (passwordData: PasswordUpdateRequest): Promise<{ message: string }> => {
+export const postPasswordUpdate = async (
+  passwordData: PasswordUpdateRequest,
+): Promise<{ message: string }> => {
   try {
     const response = await apiClient.post('/api/user/pw/update', passwordData);
     return response.data;
@@ -15,4 +17,4 @@ export const postPasswordUpdate = async (passwordData: PasswordUpdateRequest): P
   }
 };
 
-export default postPasswordUpdate; 
+export default postPasswordUpdate;

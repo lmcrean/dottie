@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/src/components/ui/!to-migrate/button";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/src/components/ui/!to-migrate/button';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/src/components/ui/card";
+} from '@/src/components/ui/card';
 import {
   Form,
   FormControl,
@@ -17,32 +17,32 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "@/src/components/ui/form";
-import { useToast } from "@/src/components/ui/use-toast";
-import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { useAuth } from "@/src/context/AuthContext";
-import { PasswordInput } from "@/src/components/ui/PasswordInput";
-import { useNavigate } from "react-router-dom";
+} from '@/src/components/ui/form';
+import { useToast } from '@/src/components/ui/use-toast';
+import { Alert, AlertDescription } from '@/src/components/ui/alert';
+import { useAuth } from '@/src/context/AuthContext';
+import { PasswordInput } from '@/src/components/ui/PasswordInput';
+import { useNavigate } from 'react-router-dom';
 
 const passwordUpdateSchema = z
   .object({
     currentPassword: z.string().min(8, {
-      message: "Current password must be at least 8 characters.",
+      message: 'Current password must be at least 8 characters.',
     }),
     newPassword: z.string().min(8, {
-      message: "New password must be at least 8 characters.",
+      message: 'New password must be at least 8 characters.',
     }),
     confirmNewPassword: z.string().min(8, {
-      message: "Confirmation password must be at least 8 characters.",
+      message: 'Confirmation password must be at least 8 characters.',
     }),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "New passwords don't match",
-    path: ["confirmNewPassword"],
+    path: ['confirmNewPassword'],
   })
   .refine((data) => data.currentPassword !== data.newPassword, {
-    message: "New password must be different from current password",
-    path: ["newPassword"],
+    message: 'New password must be different from current password',
+    path: ['newPassword'],
   });
 
 type PasswordUpdateFormValues = z.infer<typeof passwordUpdateSchema>;
@@ -67,9 +67,9 @@ export function PasswordForm({ userId }: PasswordFormProps) {
   const form = useForm<PasswordUpdateFormValues>({
     resolver: zodResolver(passwordUpdateSchema),
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
     },
   });
 
@@ -91,25 +91,22 @@ export function PasswordForm({ userId }: PasswordFormProps) {
       form.reset();
 
       toast({
-        title: "Password updated",
-        description: "Your password has been updated successfully.",
+        title: 'Password updated',
+        description: 'Your password has been updated successfully.',
       });
 
       await logout(); // Logout after password update
       toast({
-        title: "Logged out",
-        description:
-          "You have been logged out due to a password change. Please log in again.",
+        title: 'Logged out',
+        description: 'You have been logged out due to a password change. Please log in again.',
       });
-      navigate("/auth/sign-in"); // Redirect to sign-in page
-      
+      navigate('/auth/sign-in'); // Redirect to sign-in page
     } catch (error) {
       console.error(error);
       toast({
-        title: "Error",
-        description:
-          "Failed to update password. Please check your current password and try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update password. Please check your current password and try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -121,16 +118,13 @@ export function PasswordForm({ userId }: PasswordFormProps) {
       <CardHeader>
         <CardTitle>Update Password</CardTitle>
         <CardDescription>
-          Change your account password. After saving, you'll need to use the new
-          password to log in.
+          Change your account password. After saving, you'll need to use the new password to log in.
         </CardDescription>
       </CardHeader>
       <CardContent>
         {isSuccess && (
           <Alert className="mb-4">
-            <AlertDescription>
-              Your password has been updated successfully.
-            </AlertDescription>
+            <AlertDescription>Your password has been updated successfully.</AlertDescription>
           </Alert>
         )}
 
@@ -147,9 +141,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
                       label="Current Password"
                       register={form.register}
                       isVisible={passwordVisibility.current}
-                      toggleVisibility={() =>
-                        togglePasswordVisibility("current")
-                      }
+                      toggleVisibility={() => togglePasswordVisibility('current')}
                     />
                   </FormControl>
                   <FormMessage />
@@ -168,12 +160,10 @@ export function PasswordForm({ userId }: PasswordFormProps) {
                       label="New Password"
                       register={form.register}
                       isVisible={passwordVisibility.new}
-                      toggleVisibility={() => togglePasswordVisibility("new")}
+                      toggleVisibility={() => togglePasswordVisibility('new')}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Password must be at least 8 characters.
-                  </FormDescription>
+                  <FormDescription>Password must be at least 8 characters.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -190,9 +180,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
                       label="Confirm New Password"
                       register={form.register}
                       isVisible={passwordVisibility.confirm}
-                      toggleVisibility={() =>
-                        togglePasswordVisibility("confirm")
-                      }
+                      toggleVisibility={() => togglePasswordVisibility('confirm')}
                     />
                   </FormControl>
                   <FormMessage />
@@ -201,7 +189,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
             />
 
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Updating..." : "Update Password"}
+              {isLoading ? 'Updating...' : 'Update Password'}
             </Button>
           </form>
         </Form>

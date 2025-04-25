@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Button } from "@/src/components/ui/!to-migrate/button";
-import { useIsMobile } from "@/src/hooks/use-mobile";
-import UserIcon from "@/src/components/navigation/UserIcon";
-import ThemeToggle from "@/src/components/ThemeToggle";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { Button } from '@/src/components/ui/!to-migrate/button';
+import { useIsMobile } from '@/src/hooks/use-mobile';
+import UserIcon from '@/src/components/navigation/UserIcon';
+import ThemeToggle from '@/src/components/ThemeToggle';
 
 interface HeaderProps {
   logoSrc?: string;
@@ -13,8 +13,8 @@ interface HeaderProps {
 }
 
 const Header = ({
-  logoSrc = "/logo/logo-mascot.svg",
-  appName = "Dottie",
+  logoSrc = '/logo/logo-mascot.svg',
+  appName = 'Dottie',
   isLoggedIn = false,
 }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,24 +27,18 @@ const Header = ({
   return (
     <>
       <div>
-        <header className="flex items-center justify-between p-6 border-b dark:border-b-slate-800 backdrop-blur-sm sticky top-0 z-50">
+        <header className="sticky top-0 z-50 flex items-center justify-between border-b p-6 backdrop-blur-sm dark:border-b-slate-800">
           <Link to="/">
             <motion.div
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex cursor-pointer items-center gap-2"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <img
-                src={logoSrc}
-                alt={`${appName} Logo`}
-                className="w-6 h-auto"
-              />
-              <span className="font-bold text-xl text-pink-600 pl-2">
-                {appName}
-              </span>
+              <img src={logoSrc} alt={`${appName} Logo`} className="h-auto w-6" />
+              <span className="pl-2 text-xl font-bold text-pink-600">{appName}</span>
             </motion.div>
           </Link>
 
@@ -55,14 +49,12 @@ const Header = ({
               <nav className="flex items-center gap-6">
                 <Link
                   to="/auth/sign-in"
-                  className="text-gray-600 hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600 transition-colors"
+                  className="text-gray-600 transition-colors hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600"
                 >
                   Sign In
                 </Link>
                 <Link to="/auth/sign-up">
-                  <Button className="bg-pink-600 hover:bg-pink-700 text-white">
-                    Get Started
-                  </Button>
+                  <Button className="bg-pink-600 text-white hover:bg-pink-700">Get Started</Button>
                 </Link>
               </nav>
             )}
@@ -78,13 +70,13 @@ const Header = ({
                 aria-label="Toggle mobile menu"
               >
                 <span
-                  className={`block w-6 h-0.5 bg-gray-600 transition-transform duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}
+                  className={`block h-0.5 w-6 bg-gray-600 transition-transform duration-300 ${mobileMenuOpen ? 'translate-y-1.5 rotate-45' : ''}`}
                 ></span>
                 <span
-                  className={`block w-6 h-0.5 bg-gray-600 my-1 transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : ""}`}
+                  className={`my-1 block h-0.5 w-6 bg-gray-600 transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`}
                 ></span>
                 <span
-                  className={`block w-6 h-0.5 bg-gray-600 transition-transform duration-300 ${mobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
+                  className={`block h-0.5 w-6 bg-gray-600 transition-transform duration-300 ${mobileMenuOpen ? '-translate-y-1.5 -rotate-45' : ''}`}
                 ></span>
               </button>
             )}
@@ -99,28 +91,22 @@ const Header = ({
           {isMobile && mobileMenuOpen && !isLoggedIn && (
             <motion.div
               layout
-              className="absolute top-[76px] left-0 right-0 bg-white dark:bg-gray-900 border-b border-b-slate-800 z-40"
+              className="absolute left-0 right-0 top-[76px] z-40 border-b border-b-slate-800 bg-white dark:bg-gray-900"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="flex flex-col py-2 justify-center items-center">
+              <div className="flex flex-col items-center justify-center py-2">
                 <Link
                   to="/auth/sign-in"
-                  className="text-gray-600 hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600 transition-colors py-2"
+                  className="py-2 text-gray-600 transition-colors hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Sign In
                 </Link>
-                <Link
-                  to="/auth/sign-up"
-                  className="py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Button className="bg-pink-600 hover:bg-pink-700 text-white">
-                    Get Started
-                  </Button>
+                <Link to="/auth/sign-up" className="py-2" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="bg-pink-600 text-white hover:bg-pink-700">Get Started</Button>
                 </Link>
               </div>
             </motion.div>

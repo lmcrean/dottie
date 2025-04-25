@@ -12,7 +12,7 @@ export const checkDbConnection = async (): Promise<{ status: string; message: st
     console.error('Database connection check failed:', error);
     return {
       status: 'error',
-      message: 'Failed to check database connection'
+      message: 'Failed to check database connection',
     };
   }
 };
@@ -36,5 +36,5 @@ export const fetchUserData = async (userId: string): Promise<any> => {
 
 export default {
   checkDbConnection,
-  fetchUserData
-}; 
+  fetchUserData,
+};

@@ -22,4 +22,4 @@ export interface PasswordResetCompletion {
   email: string;
   newPassword: string;
   confirmPassword: string;
-} 
+}

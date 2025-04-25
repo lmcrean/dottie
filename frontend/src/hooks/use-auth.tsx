@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { createContext, useState, useEffect, useContext, ReactNode, useCallback } from 'react';
 
@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => ({ id: '', email: '' }),
   logout: () => {},
   updatePassword: async () => false,
-  checkTokens: () => {} // Default implementation
+  checkTokens: () => {}, // Default implementation
 });
 
 // Provider component
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const checkTokens = useCallback(() => {
     const currentAuthToken = localStorage.getItem('authToken');
     const currentRefreshToken = localStorage.getItem('refresh_token');
-    
+
     setAuthToken(currentAuthToken);
     setRefreshToken(currentRefreshToken);
     setAuthTokenExists(!!currentAuthToken);
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setLoading(true);
       const currentAuthToken = localStorage.getItem('authToken');
-      
+
       if (currentAuthToken) {
         // In a real app, make an API call to validate the token
         // For now, try to load user from localStorage
@@ -96,24 +96,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Initial check for tokens
     checkTokens();
     validateToken();
-    
+
     // Set up event listeners
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'authToken' || event.key === 'refresh_token' || event.key === 'user' || event.key === null) {
+      if (
+        event.key === 'authToken' ||
+        event.key === 'refresh_token' ||
+        event.key === 'user' ||
+        event.key === null
+      ) {
         checkTokens();
         validateToken();
       }
     };
-    
+
     const handleAuthTokenChanged = () => {
       checkTokens();
       validateToken();
     };
-    
+
     // Add event listeners
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('authToken_changed', handleAuthTokenChanged);
-    
+
     return () => {
       // Remove event listeners on cleanup
       window.removeEventListener('storage', handleStorageChange);
@@ -124,23 +129,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string) => {
     try {
       setLoading(true);
-      
+
       // This would be an API call in a real app
       // For demo, we'll just simulate a successful login
       const user = { id: '123', email };
-      
+
       // Store tokens and user info
       localStorage.setItem('authToken', 'demo-auth-token-' + Date.now());
       localStorage.setItem('refresh_token', 'demo-refresh-token-' + Date.now());
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       // Update state
       setUser(user);
       checkTokens();
-      
+
       // Dispatch event to notify other tabs
       window.dispatchEvent(new Event('authToken_changed'));
-      
+
       return user;
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to login'));
@@ -155,11 +160,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
-    
+
     // Update state
     setUser(null);
     checkTokens();
-    
+
     // Dispatch event to notify other tabs
     window.dispatchEvent(new Event('authToken_changed'));
   };
@@ -190,7 +195,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     updatePassword,
-    checkTokens // Expose to make testing easier
+    checkTokens, // Expose to make testing easier
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -201,10 +206,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
  */
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
-} 
+}

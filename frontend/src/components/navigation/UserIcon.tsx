@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { User, List } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/src/context/AuthContext";
-import { assessmentApi } from "@/src/api/assessment";
+import React, { useEffect, useState } from 'react';
+import { User, List } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/src/context/AuthContext';
+import { assessmentApi } from '@/src/api/assessment';
 
 const UserIcon: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -15,7 +15,7 @@ const UserIcon: React.FC = () => {
         const assessments = await assessmentApi.list();
         setHasHistory(Array.isArray(assessments) && assessments.length > 0);
       } catch (error) {
-        console.error("Error fetching assessment history:", error);
+        console.error('Error fetching assessment history:', error);
         setHasHistory(false);
       } finally {
         setLoading(false);
@@ -41,16 +41,12 @@ const UserIcon: React.FC = () => {
         <Link
           to="/assessment/history"
           title="Assessment History"
-          className="hover:text-pink-600 text-sm font-medium"
+          className="text-sm font-medium hover:text-pink-600"
         >
           <List className="h-5 w-5" />
         </Link>
       )}
-      <Link
-        to="/account/profile"
-        title="Profile"
-        className="hover:text-pink-600"
-      >
+      <Link to="/account/profile" title="Profile" className="hover:text-pink-600">
         <User className="h-5 w-5" />
       </Link>
     </div>

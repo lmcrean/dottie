@@ -7,4 +7,4 @@ import { apiClient } from '../../../core/apiClient';
 export const getHealthHello = async (): Promise<HealthHelloResponse> => {
   const response = await apiClient.get<HealthHelloResponse>('/setup/health/hello');
   return response.data;
-}; 
+};

@@ -1,6 +1,6 @@
 # src/api
 
-This directory is the entry point between the frontend and the backend. 
+This directory is the entry point between the frontend and the backend.
 
 It contains all API-related code organized by domain. They should access the established endpoints of the backend as described in the `backend/Endpoints-master.md` file and built in the `backend/routes` folder.
 
@@ -37,14 +37,14 @@ import { assessmentApi } from '../api/assessment';
 
 // Or import from the main barrel file
 import { authApi, userApi } from '../api';
-import api from '../api';  // Import everything as a namespace
+import api from '../api'; // Import everything as a namespace
 
 // Example usage
 const login = async () => {
   try {
     const response = await authApi.login({
       email: 'user@example.com',
-      password: 'password123'
+      password: 'password123',
     });
     // Handle successful login
   } catch (error) {
@@ -73,4 +73,4 @@ Each API module has associated tests in the `__tests__` directory. Run them with
 
 ```
 npm test -- "api.test"
-``` 
+```

@@ -7,4 +7,4 @@ import { apiClient } from '../../../core/apiClient';
 export const getDatabaseStatus = async (): Promise<GetDatabaseStatusResponse> => {
   const response = await apiClient.get<GetDatabaseStatusResponse>('/setup/database/status');
   return response.data;
-}; 
+};

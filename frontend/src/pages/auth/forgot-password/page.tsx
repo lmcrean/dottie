@@ -3,7 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { completePasswordReset } from '../../../api/user/requests/passwordReset/Request';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/card';
 import { toast } from 'sonner';
 
 export default function ForgotPasswordPage() {
@@ -15,7 +21,7 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (newPassword !== confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -27,7 +33,7 @@ export default function ForgotPasswordPage() {
       await completePasswordReset({
         email,
         newPassword,
-        confirmPassword
+        confirmPassword,
       });
       toast.success('Password reset successful');
       navigate('/auth/sign-in');
@@ -105,4 +111,4 @@ export default function ForgotPasswordPage() {
       </Card>
     </div>
   );
-} 
+}
