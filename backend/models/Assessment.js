@@ -20,7 +20,14 @@ class Assessment {
       if (isTestMode && testAssessments[id]) {
         return testAssessments[id];
       }
-      return await DbService.findByIdWithJson('assessments', id, ['assessment_data']);
+      
+      // Get the assessment from database
+      const assessment = await DbService.findById('assessments', id);
+      
+      if (!assessment) return null;
+      
+      // Transform to API format before returning
+      return this._transformDbRecordToApiResponse(assessment);
     } catch (error) {
       console.error('Error finding assessment by ID:', error);
       throw error;
@@ -51,27 +58,50 @@ class Assessment {
         return assessment;
       }
 
-      const payload = {
-        id,
-        user_id: userId,
-        assessment_data: assessmentData.assessment_data,
-        created_at: now,
-        updated_at: now
-      };
+      // Support both old nested and new flattened format
+      let payload;
       
+      // If assessment_data is present in the payload, use old format
+      if (assessmentData.assessment_data) {
+        payload = {
+          id,
+          user_id: userId,
+          assessment_data: JSON.stringify(assessmentData.assessment_data),
+          created_at: now,
+          updated_at: now
+        };
+      } else {
+        // Use new flattened format
+        const {
+          age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        } = assessmentData;
+        
+        payload = {
+          id,
+          user_id: userId,
+          created_at: now,
+          updated_at: now,
+          
+          // Flattened fields
+          age,
+          pattern,
+          cycle_length: cycleLength,
+          period_duration: periodDuration,
+          flow_heaviness: flowHeaviness,
+          pain_level: painLevel,
+          
+          // Array fields as JSON strings
+          physical_symptoms: symptoms?.physical ? JSON.stringify(symptoms.physical) : null,
+          emotional_symptoms: symptoms?.emotional ? JSON.stringify(symptoms.emotional) : null,
+          recommendations: recommendations ? JSON.stringify(recommendations) : null
+        };
+      }
 
-      const inserted = await DbService.createWithJson(
-        'assessments',
-        payload,
-        ['assessment_data']
-      );
-      return {
-        id: inserted.id,
-        userId: inserted.user_id,
-        assessmentData: inserted.assessment_data,
-        createdAt: inserted.created_at,
-        updatedAt: inserted.updated_at
-      };
+      // Insert into database
+      const inserted = await DbService.create('assessments', payload);
+      
+      // Transform to API format before returning
+      return this._transformDbRecordToApiResponse(inserted);
     } catch (error) {
       console.error('Error creating assessment:', error);
       throw error;
@@ -91,13 +121,12 @@ class Assessment {
         return Object.values(testAssessments)
           .filter(assessment => assessment.userId === userId);
       }
-      return await DbService.findByFieldWithJson(
-        'assessments',
-        'user_id',
-        userId,
-        ['assessment_data'],
-        'created_at'
-      );
+      
+      // Get all assessments for user
+      const assessments = await DbService.findBy('assessments', 'user_id', userId);
+      
+      // Transform each record to API format
+      return assessments.map(assessment => this._transformDbRecordToApiResponse(assessment));
     } catch (error) {
       console.error('Error listing assessments by user:', error);
       throw error;
@@ -128,12 +157,45 @@ class Assessment {
 
         return testAssessments[id];
       }
-      return await DbService.updateWithJson(
-        'assessments',
-        id,
-        { assessment_data: assessmentData, updated_at: new Date() },
-        ['assessment_data']
-      );
+      
+      // Support both old nested and new flattened format
+      let updates;
+      
+      // If assessment_data is present in the payload, use old format
+      if (assessmentData.assessment_data) {
+        updates = {
+          assessment_data: JSON.stringify(assessmentData.assessment_data),
+          updated_at: now
+        };
+      } else {
+        // Use new flattened format
+        const {
+          age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        } = assessmentData;
+        
+        updates = {
+          updated_at: now,
+          
+          // Flattened fields
+          age,
+          pattern,
+          cycle_length: cycleLength,
+          period_duration: periodDuration,
+          flow_heaviness: flowHeaviness,
+          pain_level: painLevel,
+          
+          // Array fields as JSON strings
+          physical_symptoms: symptoms?.physical ? JSON.stringify(symptoms.physical) : null,
+          emotional_symptoms: symptoms?.emotional ? JSON.stringify(symptoms.emotional) : null,
+          recommendations: recommendations ? JSON.stringify(recommendations) : null
+        };
+      }
+      
+      // Update database
+      const updated = await DbService.update('assessments', id, updates);
+      
+      // Transform to API format before returning
+      return this._transformDbRecordToApiResponse(updated);
     } catch (error) {
       console.error('Error updating assessment:', error);
       throw error;
@@ -156,6 +218,7 @@ class Assessment {
         delete testAssessments[id];
         return true;
       }
+      
       return await DbService.delete('assessments', id);
     } catch (error) {
       console.error('Error deleting assessment:', error);
@@ -189,6 +252,105 @@ static async validateOwnership(assessmentId, userId) {
     console.error('Error validating ownership:', error);
     throw error;
   }
+}
+
+/**
+ * Transform database record to API response format
+ * Handles both nested and flattened formats
+ * @param {Object} record - Database record
+ * @returns {Object} API response object
+ * @private
+ */
+static _transformDbRecordToApiResponse(record) {
+  if (!record) return null;
+  
+  // Check if we're using the legacy nested format
+  if (record.assessment_data) {
+    let assessmentData;
+    
+    try {
+      // Parse JSON if stored as string
+      assessmentData = typeof record.assessment_data === 'string'
+        ? JSON.parse(record.assessment_data)
+        : record.assessment_data;
+    } catch (error) {
+      console.error(`Failed to parse assessment_data for record ${record.id}:`, error);
+      assessmentData = {};
+    }
+    
+    return {
+      id: record.id,
+      userId: record.user_id,
+      assessmentData,
+      createdAt: record.created_at,
+      updatedAt: record.updated_at
+    };
+  }
+  
+  // Handle new flattened format
+  let physicalSymptoms = [];
+  let emotionalSymptoms = [];
+  let recommendations = [];
+  
+  try {
+    // Parse JSON stored arrays if they exist
+    if (record.physical_symptoms) {
+      try {
+        physicalSymptoms = JSON.parse(record.physical_symptoms);
+      } catch (error) {
+        console.error(`Failed to parse physical_symptoms for record ${record.id}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to process physical_symptoms for record ${record.id}:`, error);
+  }
+  
+  try {
+    if (record.emotional_symptoms) {
+      try {
+        emotionalSymptoms = JSON.parse(record.emotional_symptoms);
+      } catch (error) {
+        console.error(`Failed to parse emotional_symptoms for record ${record.id}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to process emotional_symptoms for record ${record.id}:`, error);
+  }
+  
+  try {
+    if (record.recommendations) {
+      try {
+        recommendations = JSON.parse(record.recommendations);
+      } catch (error) {
+        console.error(`Failed to parse recommendations for record ${record.id}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to process recommendations for record ${record.id}:`, error);
+  }
+  
+  // Construct nested assessment data from flattened fields
+  const assessmentData = {
+    age: record.age,
+    pattern: record.pattern,
+    cycleLength: record.cycle_length,
+    periodDuration: record.period_duration,
+    flowHeaviness: record.flow_heaviness,
+    painLevel: record.pain_level,
+    symptoms: {
+      physical: physicalSymptoms,
+      emotional: emotionalSymptoms
+    },
+    recommendations
+  };
+  
+  return {
+    id: record.id,
+    userId: record.user_id,
+    assessmentData,
+    createdAt: record.created_at,
+    updatedAt: record.updated_at
+  };
 }
 
 }
