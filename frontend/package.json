@@ -18,6 +18,7 @@
   },
   "lint-staged": {
     "src/**/*.(ts|tsx|js|jsx)": [
+      "eslint --fix",
       "prettier --write"
     ],
     "src/**/*.(json|css|scss|md)|.(babelrc|prettierrc|eslint.js|tsconfig.json)": [
