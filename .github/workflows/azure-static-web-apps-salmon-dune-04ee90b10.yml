@@ -32,11 +32,10 @@ jobs:
       ######################################################################
       # Install Backend Dependencies
       ######################################################################
-      # - name: Install Backend Dependencies
-      #   run: |
-      #     cd backend
-      #     rm -rf node_modules package-lock.json # Clear old dependencies
-      #     npm install --legacy-peer-deps  # Reinstall backend dependencies
+      - name: Install Backend Dependencies
+        run: |
+          cd backend/functions
+          npm install  # Install Azure Functions dependencies
 
       ######################################################################
       # Install Frontend Dependencies
@@ -64,9 +63,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "dottie-app"    # App source code path
-          api_location: "backend"       # Backend API source code path
-          output_location: "dist"       # Changed from "dottie-app/dist" to "dist"
-          app_build_command: "npm run build"   # Build command for the app
+          api_location: "backend/functions"  # Azure Functions location
+          output_location: "dist"
 
 
   close_pull_request_job:

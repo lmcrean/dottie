@@ -1,0 +1,31 @@
+{
+  "routes": [
+    {
+      "route": "/api/*",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      "rewrite": "/api/index"
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/js/*"]
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    }
+  },
+  "globalHeaders": {
+    "content-security-policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://*.azure.com; img-src 'self' data: blob: https://*.azure.com;",
+    "cache-control": "no-cache"
+  },
+  "mimeTypes": {
+    ".json": "text/json"
+  }
+} 
