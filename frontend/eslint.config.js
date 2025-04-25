@@ -28,7 +28,7 @@ export default defineConfig([
     plugins: { js, 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommended,
       pluginReact.configs.flat.recommended,
       jsxA11y.flatConfigs.recommended,
       prettier
@@ -36,7 +36,11 @@ export default defineConfig([
 
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser
+      globals: globals.browser,
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname
+      }
     },
     settings: {
       react: {
