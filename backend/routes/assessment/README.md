@@ -11,12 +11,10 @@
 
 ## Common Issues
 
-1. **Update Router Missing** - Fixed by commenting out missing update router in assessment/index.js
-2. **Port Conflicts** - Detail test has port conflict with other tests (EADDRINUSE on port 5000)
-3. **Path Resolution** - List test has path resolution issue for db/index.js
+1. **Port Conflicts** - Detail test has port conflict with other tests (EADDRINUSE on port 5000)
+2. **Path Resolution** - List test has path resolution issue for db/index.js
 
 ## To-Do
 
-1. Implement update router
-2. Fix path imports in assessment-list-success.test.js
-3. Ensure tests use unique ports to avoid conflicts
+1. Fix path imports in assessment-list-success.test.js
+2. Ensure tests use unique ports to avoid conflicts
