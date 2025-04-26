@@ -99,6 +99,11 @@ describe('List Assessments Controller - Success Case', () => {
     
     // Verify response
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.any(String),
+        user_id: req.user.userId
+      })
+    ]));
   });
 }); 

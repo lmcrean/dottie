@@ -109,6 +109,9 @@ describe('Update Assessment Controller - Success Case', () => {
     
     // Verify response
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      id: 'test-assessment-123',
+      user_id: 'test-user-123'
+    }));
   });
 }); 

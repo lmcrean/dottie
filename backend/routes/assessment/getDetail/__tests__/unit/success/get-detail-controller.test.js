@@ -85,6 +85,9 @@ describe('Get Assessment Detail Controller - Success Case', () => {
     );
     
     // Verify response
-    expect(res.json).toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      id: 'test-assessment-123',
+      user_id: 'test-user-123'
+    }));
   });
 }); 
