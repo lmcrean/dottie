@@ -51,10 +51,10 @@ describe('AssessmentEndpoints', () => {
   it('renders the DELETE /api/assessment/:id endpoint correctly', () => {
     render(<AssessmentEndpoints />);
     
-    const button = screen.getByTestId('test-delete -api-assessment-:id-button');
+    const button = screen.getByTestId('test-delete -api-assessment-:userid-:id-button');
     expect(button).toBeInTheDocument();
     expect(button).toHaveTextContent('DELETE');
-    expect(button).toHaveTextContent('/api/assessment/:id');
+    expect(button).toHaveTextContent('/api/assessment/:userId/:id');
     
     const authText = button.parentElement?.querySelector('.text-yellow-400');
     expect(authText).toHaveTextContent('Requires authentication');
