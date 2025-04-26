@@ -1,12 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getById } from '../../Request';
 import { apiClient } from '../../../../../core/apiClient';
+import { getUserData } from '../../../../../core/tokenManager';
 
-// Mock the apiClient
+// Mock the apiClient and tokenManager
 vi.mock('../../../../../core/apiClient', () => ({
   apiClient: {
     get: vi.fn(),
   },
+}));
+
+vi.mock('../../../../../core/tokenManager', () => ({
+  getUserData: vi.fn(),
 }));
 
 describe('getById request', () => {
@@ -33,6 +38,8 @@ describe('getById request', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock getUserData to return a valid user
+    (getUserData as any).mockReturnValue({ id: 'user123' });
   });
 
   afterEach(() => {
@@ -62,6 +69,14 @@ describe('getById request', () => {
     await expect(getById('123')).rejects.toThrow('Network error');
     expect(apiClient.get).toHaveBeenCalledTimes(1);
     expect(apiClient.get).toHaveBeenCalledWith('/api/assessment/123');
+  });
+
+  it('should throw an error when user data is not available', async () => {
+    // Arrange
+    (getUserData as any).mockReturnValue(null);
+    
+    // Act & Assert
+    await expect(getById('123')).rejects.toThrow('User ID not found');
   });
 
   it('should propagate the original error', async () => {
