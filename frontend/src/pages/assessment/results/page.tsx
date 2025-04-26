@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { Assessment } from "@/src/api/assessment/types";
 import { postSend } from "@/src/api/assessment/requests/postSend/Request";
 import UserIcon from "@/src/components/navigation/UserIcon";
+import { useAssessmentResult } from "@/src/hooks/use-assessment-result";
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern =
@@ -214,6 +215,8 @@ export default function ResultsPage() {
   const [flowLevel, setFlowLevel] = useState<string>("");
   const [painLevel, setPainLevel] = useState<string>("");
   const [symptoms, setSymptoms] = useState<string[]>([]);
+
+  const { transformToFlattenedFormat } = useAssessmentResult();
 
   // Helper function to normalize string values for more reliable comparisons
   const normalizeValue = (value: string | null): string => {
@@ -453,29 +456,27 @@ export default function ResultsPage() {
         return;
       }
 
-      // Create assessment data object according to the Assessment interface structure
-      const assessment: Omit<Assessment, "id"> = {
-        userId: "", // This will be set by the backend
-        createdAt: new Date().toISOString(),
-        assessment_data: {
-          date: new Date().toISOString(),
-          pattern,
-          age,
-          cycleLength,
-          periodDuration: periodDuration || "Not provided",
-          flowHeaviness: flowLevel,
-          painLevel: painLevel || "Not provided",
-          symptoms: {
-            physical: symptoms || [],
-            emotional: [],
-          },
-          recommendations:
-            patternInfo?.recommendations?.map((rec) => ({
-              title: rec.title,
-              description: rec.description,
-            })) || [],
+      // Create assessment result in internal format
+      const assessmentResult = {
+        age,
+        pattern,
+        cycleLength,
+        periodDuration: periodDuration || "Not provided",
+        flowHeaviness: flowLevel,
+        painLevel: painLevel || "Not provided",
+        symptoms: {
+          physical: symptoms || [],
+          emotional: [],
         },
-      };
+        recommendations:
+          patternInfo?.recommendations?.map((rec) => ({
+            title: rec.title,
+            description: rec.description,
+          })) || [],
+      } as any; // Type casting to avoid type errors with the exact structure
+
+      // Transform to flattened format with snake_case keys
+      const assessment = transformToFlattenedFormat(assessmentResult);
 
       // Use the postSend function
       const savedAssessment = await postSend(assessment);
