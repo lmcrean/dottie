@@ -1,6 +1,6 @@
 import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
-import Assessment from '../../../models/Assessment.js';
+import Assessment from '../../../models/assessment/Assessment.js';
 
 
 /**
@@ -10,7 +10,6 @@ import Assessment from '../../../models/Assessment.js';
  */
 export const updateAssessment = async (req, res) => {
   try {
-
     const assessmentId = req.params.assessmentId;
     // Get userId from JWT token only to prevent unauthorized access
     const userId = req.user?.userId
@@ -26,8 +25,9 @@ export const updateAssessment = async (req, res) => {
       return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
     }
     
-    // For test IDs, try to update in the database // ! To be removed
-    if (assessmentId.startsWith('test-')) {
+    // Legacy direct database update for test users
+    // This will be removed once migration is complete
+    if (assessmentId.startsWith('test-') && process.env.USE_LEGACY_DB_DIRECT === 'true') {
       try {
         // Check if assessment exists and belongs to user
         const existingAssessment = await db('assessments')
@@ -41,51 +41,74 @@ export const updateAssessment = async (req, res) => {
           return res.status(404).json({ error: 'Assessment not found' });
         }
         
-        // Update assessment in database
-        await db('assessments')
-          .where('id', assessmentId)
-          .update({
-            age: assessmentData.age,
-            cycle_length: assessmentData.cycleLength,
-            period_duration: assessmentData.periodDuration,
-            flow_heaviness: assessmentData.flowHeaviness,
-            pain_level: assessmentData.painLevel,
-            updated_at: new Date().toISOString()
-          });
+        // Determine if we're using nested or flattened format
+        const isFlattened = !assessmentData.assessment_data;
         
-        // Handle symptoms update if provided
-        if (assessmentData.symptoms) {
-          // Delete existing symptoms
-          await db('symptoms').where('assessment_id', assessmentId).del();
+        if (isFlattened) {
+          // Handle flattened structure update
+          const updates = {
+            updated_at: new Date().toISOString(),
+            
+            // Flattened fields
+            age: assessmentData.age,
+            pattern: assessmentData.pattern,
+            cycle_length: assessmentData.cycle_length || assessmentData.cycleLength,
+            period_duration: assessmentData.period_duration || assessmentData.periodDuration,
+            flow_heaviness: assessmentData.flow_heaviness || assessmentData.flowHeaviness,
+            pain_level: assessmentData.pain_level || assessmentData.painLevel,
+            
+            // Parse and store arrays as JSON
+            physical_symptoms: assessmentData.physical_symptoms 
+              ? JSON.stringify(assessmentData.physical_symptoms) 
+              : (assessmentData.symptoms?.physical ? JSON.stringify(assessmentData.symptoms.physical) : null),
+            
+            emotional_symptoms: assessmentData.emotional_symptoms 
+              ? JSON.stringify(assessmentData.emotional_symptoms) 
+              : (assessmentData.symptoms?.emotional ? JSON.stringify(assessmentData.symptoms.emotional) : null),
+            
+            recommendations: assessmentData.recommendations 
+              ? JSON.stringify(assessmentData.recommendations) 
+              : null
+          };
           
-          const symptoms = [];
+          // Update the assessment
+          await db('assessments')
+            .where('id', assessmentId)
+            .update(updates);
+        } else {
+          // Handle legacy nested structure update
+          const nestedData = assessmentData.assessment_data;
           
-          // Add physical symptoms
-          if (assessmentData.symptoms.physical && Array.isArray(assessmentData.symptoms.physical)) {
-            for (const symptom of assessmentData.symptoms.physical) {
-              symptoms.push({
-                assessment_id: assessmentId,
-                symptom_name: symptom,
-                symptom_type: 'physical'
-              });
-            }
-          }
+          const updates = {
+            assessment_data: JSON.stringify(assessmentData.assessment_data),
+            updated_at: new Date().toISOString(),
+            
+            // Also update flattened fields for compatibility
+            age: nestedData.age,
+            pattern: nestedData.pattern,
+            cycle_length: nestedData.cycleLength,
+            period_duration: nestedData.periodDuration,
+            flow_heaviness: nestedData.flowHeaviness,
+            pain_level: nestedData.painLevel,
+            
+            // Parse and store arrays as JSON
+            physical_symptoms: nestedData.symptoms?.physical 
+              ? JSON.stringify(nestedData.symptoms.physical) 
+              : null,
+            
+            emotional_symptoms: nestedData.symptoms?.emotional 
+              ? JSON.stringify(nestedData.symptoms.emotional) 
+              : null,
+            
+            recommendations: nestedData.recommendations 
+              ? JSON.stringify(nestedData.recommendations) 
+              : null
+          };
           
-          // Add emotional symptoms
-          if (assessmentData.symptoms.emotional && Array.isArray(assessmentData.symptoms.emotional)) {
-            for (const symptom of assessmentData.symptoms.emotional) {
-              symptoms.push({
-                assessment_id: assessmentId,
-                symptom_name: symptom,
-                symptom_type: 'emotional'
-              });
-            }
-          }
-          
-          // Insert new symptoms if any exists
-          if (symptoms.length > 0) {
-            await db('symptoms').insert(symptoms);
-          }
+          // Update the assessment
+          await db('assessments')
+            .where('id', assessmentId)
+            .update(updates);
         }
         
         // Get updated assessment
@@ -93,41 +116,104 @@ export const updateAssessment = async (req, res) => {
           .where('id', assessmentId)
           .first();
         
-        // Get symptoms for this assessment
-        const symptoms = await db('symptoms').where('assessment_id', assessmentId);
+        // Transform to API response format
+        let responseData;
         
-        // Group symptoms by type
-        const groupedSymptoms = {
-          physical: symptoms.filter(s => s.symptom_type === 'physical').map(s => s.symptom_name),
-          emotional: symptoms.filter(s => s.symptom_type === 'emotional').map(s => s.symptom_name)
-        };
-        
-        // Return updated assessment
-        return res.status(200).json({
-          id: updatedDbAssessment.id,
-          userId: updatedDbAssessment.user_id,
-          createdAt: updatedDbAssessment.created_at,
-          updatedAt: updatedDbAssessment.updated_at,
-          assessmentData: {
-            age: updatedDbAssessment.age,
-            cycleLength: updatedDbAssessment.cycle_length,
-            periodDuration: updatedDbAssessment.period_duration,
-            flowHeaviness: updatedDbAssessment.flow_heaviness,
-            painLevel: updatedDbAssessment.pain_level,
-            symptoms: groupedSymptoms
+        // Check which format to return based on what was received
+        if (isFlattened) {
+          // Return flattened format
+          let physicalSymptoms = [];
+          let emotionalSymptoms = [];
+          let recommendations = [];
+          
+          try {
+            if (updatedDbAssessment.physical_symptoms) {
+              physicalSymptoms = JSON.parse(updatedDbAssessment.physical_symptoms);
+            }
+            if (updatedDbAssessment.emotional_symptoms) {
+              emotionalSymptoms = JSON.parse(updatedDbAssessment.emotional_symptoms);
+            }
+            if (updatedDbAssessment.recommendations) {
+              recommendations = JSON.parse(updatedDbAssessment.recommendations);
+            }
+          } catch (error) {
+            console.error('Error parsing JSON from database:', error);
           }
-        });
+          
+          responseData = {
+            id: updatedDbAssessment.id,
+            userId: updatedDbAssessment.user_id,
+            createdAt: updatedDbAssessment.created_at,
+            updatedAt: updatedDbAssessment.updated_at,
+            age: updatedDbAssessment.age,
+            pattern: updatedDbAssessment.pattern,
+            cycle_length: updatedDbAssessment.cycle_length,
+            period_duration: updatedDbAssessment.period_duration,
+            flow_heaviness: updatedDbAssessment.flow_heaviness,
+            pain_level: updatedDbAssessment.pain_level,
+            physical_symptoms: physicalSymptoms,
+            emotional_symptoms: emotionalSymptoms,
+            recommendations: recommendations
+          };
+        } else {
+          // Return legacy nested format
+          let physicalSymptoms = [];
+          let emotionalSymptoms = [];
+          
+          try {
+            if (updatedDbAssessment.physical_symptoms) {
+              physicalSymptoms = JSON.parse(updatedDbAssessment.physical_symptoms);
+            }
+            if (updatedDbAssessment.emotional_symptoms) {
+              emotionalSymptoms = JSON.parse(updatedDbAssessment.emotional_symptoms);
+            }
+          } catch (error) {
+            console.error('Error parsing JSON from database:', error);
+          }
+          
+          responseData = {
+            id: updatedDbAssessment.id,
+            userId: updatedDbAssessment.user_id,
+            createdAt: updatedDbAssessment.created_at,
+            updatedAt: updatedDbAssessment.updated_at,
+            assessmentData: {
+              age: updatedDbAssessment.age,
+              pattern: updatedDbAssessment.pattern,
+              cycleLength: updatedDbAssessment.cycle_length,
+              periodDuration: updatedDbAssessment.period_duration,
+              flowHeaviness: updatedDbAssessment.flow_heaviness,
+              painLevel: updatedDbAssessment.pain_level,
+              symptoms: {
+                physical: physicalSymptoms,
+                emotional: emotionalSymptoms
+              }
+            }
+          };
+          
+          // Add recommendations if they exist
+          try {
+            if (updatedDbAssessment.recommendations) {
+              responseData.assessmentData.recommendations = JSON.parse(updatedDbAssessment.recommendations);
+            }
+          } catch (error) {
+            console.error('Error parsing recommendations JSON:', error);
+          }
+        }
+        
+        return res.status(200).json(responseData);
       } catch (dbError) {
         console.error('Database error:', dbError);
-        // Continue to in-memory update if database fails
+        // Continue to model layer if database direct access fails
       }
     }
 
+    // Use Assessment model to update (handles both formats automatically)
     const updatedAssessment = await Assessment.update(assessmentId, assessmentData);
     if (!updatedAssessment) {
       return res.status(404).json({ error: 'Assessment not found' });
     }
-    // Return the updated assessment  
+    
+    // Return the updated assessment
     res.status(200).json(updatedAssessment);
   } catch (error) {
     console.error('Error updating assessment:', error);
