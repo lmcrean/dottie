@@ -15,9 +15,9 @@ This endpoint retrieves a list of all assessments for the authenticated user.
 [
   {
     "id": "assessment-id",
-    "userId": "user-id",
-    "createdAt": "2023-01-01T00:00:00.000Z",
-    "updatedAt": "2023-01-01T00:00:00.000Z",
+    "user_id": "user-id",
+    "created_at": "2023-01-01T00:00:00.000Z",
+    "updated_at": "2023-01-01T00:00:00.000Z",
     "age": 25,
     "pattern": "regular",
     "cycle_length": 28,
@@ -45,5 +45,5 @@ This endpoint retrieves a list of all assessments for the authenticated user.
 
 ## Notes
 - The endpoint supports both flattened and nested data formats for backward compatibility
-- Although legacy code can handle both formats, the response will be in the flattened format
+- Although legacy code can handle both formats, the response will be in the flattened format with all properties in snake_case
 - For test users, it may also attempt direct database access if the USE_LEGACY_DB_DIRECT environment variable is set to 'true' 

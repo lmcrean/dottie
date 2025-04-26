@@ -35,9 +35,9 @@ This endpoint updates an existing assessment by its ID. Access is restricted to 
 ```json
 {
   "id": "assessment-id",
-  "userId": "user-id",
-  "createdAt": "2023-01-01T00:00:00.000Z",
-  "updatedAt": "2023-01-01T00:00:00.000Z",
+  "user_id": "user-id",
+  "created_at": "2023-01-01T00:00:00.000Z",
+  "updated_at": "2023-01-01T00:00:00.000Z",
   "age": 25,
   "pattern": "regular",
   "cycle_length": 28,
@@ -58,7 +58,7 @@ This endpoint updates an existing assessment by its ID. Access is restricted to 
 
 ## Notes
 - The endpoint supports both flattened and nested data formats for backward compatibility
-- Although the request can accept both formats, the response will be in the flattened format
+- Although the request can accept both formats, the response will be in the flattened format with all properties in snake_case
 - The endpoint validates ownership of the assessment before allowing updates
 - For test users with IDs starting with 'test-', it may attempt direct database update if the USE_LEGACY_DB_DIRECT environment variable is set to 'true'
-- The updatedAt timestamp is automatically updated to the current time 
+- The updated_at timestamp is automatically updated to the current time 
