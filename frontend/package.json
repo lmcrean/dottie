@@ -13,19 +13,13 @@
     "test": "vitest",
     "test:screenshots": "npx playwright test --project=safari",
     "test:e2e:dev:regular": "npx playwright test src/components/assessment/__tests__/e2e/development/RegularCycle.spec.ts --headed --timeout=120000",
-    "test:api": "node start-api-and-test.js",
-    "prepare": "husky"
+    "test:api": "node start-api-and-test.js"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,md,html,css}": [
       "eslint --fix",
       "prettier --write"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
