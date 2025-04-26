@@ -118,13 +118,15 @@ class LegacyAssessment extends AssessmentBase {
   static _transformDbRecordToApiResponse(record) {
     if (!record) return null;
     
-    let assessmentData;
+    let assessmentData = {};
     
     try {
       // Parse JSON if stored as string
-      assessmentData = typeof record.assessment_data === 'string'
-        ? JSON.parse(record.assessment_data)
-        : record.assessment_data;
+      if (record.assessment_data) {
+        assessmentData = typeof record.assessment_data === 'string'
+          ? JSON.parse(record.assessment_data)
+          : record.assessment_data;
+      }
     } catch (error) {
       console.error(`Failed to parse assessment_data for record ${record.id}:`, error);
       assessmentData = {};
@@ -136,15 +138,15 @@ class LegacyAssessment extends AssessmentBase {
       user_id: record.user_id,
       created_at: record.created_at,
       updated_at: record.updated_at,
-      age: assessmentData.age,
-      pattern: assessmentData.pattern,
-      cycle_length: assessmentData.cycleLength,
-      period_duration: assessmentData.periodDuration,
-      flow_heaviness: assessmentData.flowHeaviness,
-      pain_level: assessmentData.painLevel,
-      physical_symptoms: assessmentData.symptoms?.physical || [],
-      emotional_symptoms: assessmentData.symptoms?.emotional || [],
-      recommendations: assessmentData.recommendations || []
+      age: assessmentData.age || record.age,
+      pattern: assessmentData.pattern || record.pattern,
+      cycle_length: assessmentData.cycleLength || record.cycle_length,
+      period_duration: assessmentData.periodDuration || record.period_duration,
+      flow_heaviness: assessmentData.flowHeaviness || record.flow_heaviness,
+      pain_level: assessmentData.painLevel || record.pain_level,
+      physical_symptoms: (assessmentData.symptoms?.physical || []),
+      emotional_symptoms: (assessmentData.symptoms?.emotional || []),
+      recommendations: (assessmentData.recommendations || [])
     };
   }
 }
