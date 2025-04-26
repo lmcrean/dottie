@@ -2,7 +2,7 @@ import { db } from "../../../db/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { assessments } from "../store/index.js";
 import { validateAssessmentData } from "../validators/index.js";
-import Assessment from "../../../models/Assessment.js";
+import Assessment from "../../../models/assessment/Assessment.js";
 
 /**
  * Create a new assessment for a user
