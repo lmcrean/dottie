@@ -28,8 +28,9 @@ export const getAssessmentDetail = async (req, res) => {
       return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
     }
     
-    // For test IDs, try to fetch from the database // ! to be removed
-    if (assessmentId.startsWith('test-')) {
+    // Legacy direct database fetch for test users
+    // This will be removed once migration is complete
+    if (assessmentId.startsWith('test-') && process.env.USE_LEGACY_DB_DIRECT === 'true') {
       // Try to find the assessment in the database first
       try {
         const dbAssessment = await db('assessments')
@@ -40,39 +41,96 @@ export const getAssessmentDetail = async (req, res) => {
           .first();
         
         if (dbAssessment) {
-          // Get symptoms for this assessment
-          const symptoms = await db('symptoms').where('assessment_id', assessmentId);
-          
-          // Group symptoms by type
-          const groupedSymptoms = {
-            physical: symptoms.filter(s => s.symptom_type === 'physical').map(s => s.symptom_name),
-            emotional: symptoms.filter(s => s.symptom_type === 'emotional').map(s => s.symptom_name)
-          };
-          
-          // Format the response to match expected format
-          return res.status(200).json({
-            id: dbAssessment.id,
-            userId: dbAssessment.user_id,
-            createdAt: dbAssessment.created_at,
-            assessmentData: {
-              age: dbAssessment.age,
-              cycleLength: dbAssessment.cycle_length,
-              periodDuration: dbAssessment.period_duration,
-              flowHeaviness: dbAssessment.flow_heaviness,
-              painLevel: dbAssessment.pain_level,
-              symptoms: groupedSymptoms
+          // Determine format based on presence of assessment_data field
+          if (dbAssessment.assessment_data) {
+            // Legacy format - parse symptoms from JSON
+            let symptoms = { physical: [], emotional: [] };
+            let recommendations = [];
+            
+            // Parse physical and emotional symptoms from JSON if they exist
+            try {
+              if (dbAssessment.physical_symptoms) {
+                symptoms.physical = JSON.parse(dbAssessment.physical_symptoms);
+              }
+              if (dbAssessment.emotional_symptoms) {
+                symptoms.emotional = JSON.parse(dbAssessment.emotional_symptoms);
+              }
+              if (dbAssessment.recommendations) {
+                recommendations = JSON.parse(dbAssessment.recommendations);
+              }
+            } catch (error) {
+              console.error(`Failed to parse JSON for assessment ${dbAssessment.id}:`, error);
             }
-          });
+            
+            // Format the response in legacy nested format
+            const response = {
+              id: dbAssessment.id,
+              userId: dbAssessment.user_id,
+              createdAt: dbAssessment.created_at,
+              updatedAt: dbAssessment.updated_at,
+              assessmentData: {
+                age: dbAssessment.age,
+                pattern: dbAssessment.pattern,
+                cycleLength: dbAssessment.cycle_length,
+                periodDuration: dbAssessment.period_duration,
+                flowHeaviness: dbAssessment.flow_heaviness,
+                painLevel: dbAssessment.pain_level,
+                symptoms: symptoms
+              }
+            };
+            
+            // Add recommendations if they exist
+            if (recommendations.length > 0) {
+              response.assessmentData.recommendations = recommendations;
+            }
+            
+            return res.status(200).json(response);
+          } else {
+            // Flattened format
+            let physicalSymptoms = [];
+            let emotionalSymptoms = [];
+            let recommendations = [];
+            
+            // Parse JSON arrays if they exist
+            try {
+              if (dbAssessment.physical_symptoms) {
+                physicalSymptoms = JSON.parse(dbAssessment.physical_symptoms);
+              }
+              if (dbAssessment.emotional_symptoms) {
+                emotionalSymptoms = JSON.parse(dbAssessment.emotional_symptoms);
+              }
+              if (dbAssessment.recommendations) {
+                recommendations = JSON.parse(dbAssessment.recommendations);
+              }
+            } catch (error) {
+              console.error(`Failed to parse JSON for assessment ${dbAssessment.id}:`, error);
+            }
+            
+            // Return in flattened format
+            return res.status(200).json({
+              id: dbAssessment.id,
+              userId: dbAssessment.user_id,
+              createdAt: dbAssessment.created_at,
+              updatedAt: dbAssessment.updated_at,
+              age: dbAssessment.age,
+              pattern: dbAssessment.pattern,
+              cycle_length: dbAssessment.cycle_length,
+              period_duration: dbAssessment.period_duration,
+              flow_heaviness: dbAssessment.flow_heaviness,
+              pain_level: dbAssessment.pain_level,
+              physical_symptoms: physicalSymptoms,
+              emotional_symptoms: emotionalSymptoms,
+              recommendations: recommendations
+            });
+          }
         }
       } catch (dbError) {
         console.error('Database error:', dbError);
-        // Continue to in-memory check if database fails
+        // Continue to model layer if database direct access fails
       }
     }
     
-    // Find the assessment by ID and userId in memory
-    // const assessment = assessments.find(a => a.id === assessmentId && a.userId === userId);
-    
+    // Use Assessment model to find (handles both formats automatically)
     const assessment = await Assessment.findById(assessmentId);
     if (!assessment) {
       return res.status(404).json({ error: 'Assessment not found' });
