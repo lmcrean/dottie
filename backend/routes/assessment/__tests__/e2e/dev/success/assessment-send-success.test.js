@@ -26,7 +26,7 @@ beforeAll(async () => {
       username: `testuser_${Date.now()}`,
       email: `test_${Date.now()}@example.com`,
       password_hash: "test-hash",
-      age: "18_24",
+      age: "18-24",
       created_at: new Date().toISOString(),
     };
 
@@ -79,8 +79,8 @@ describe("Assessment Send Endpoint - Success Cases", () => {
     // Create assessment data
     const assessmentData = {
       assessmentData: {
-        age: "18_24",
-        cycleLength: "26_30",
+        age: "18-24",
+        cycleLength: "26-30",
         periodDuration: "4-5",
         flowHeaviness: "moderate",
         painLevel: "moderate",
@@ -107,6 +107,10 @@ describe("Assessment Send Endpoint - Success Cases", () => {
       .post("/api/assessment/send")
       .set("Authorization", `Bearer ${testToken}`)
       .send(assessmentData);
+
+    // Debug response
+    console.log("Response status:", response.status);
+    console.log("Response body:", response.body);
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
@@ -140,11 +144,17 @@ describe("Assessment Send Endpoint - Success Cases", () => {
         );
 
         if (assessmentIdColumn) {
-          const symptoms = await db("symptoms").where(
+          const symptomsQuery = db("symptoms").where(
             assessmentIdColumn.name,
             testAssessmentId
           );
-
+          
+          // Execute the query and get the result array
+          const symptomsResult = await symptomsQuery;
+          
+          // Ensure we're working with an array
+          const symptoms = Array.isArray(symptomsResult) ? symptomsResult : [];
+          
           expect(symptoms.length).toBeGreaterThan(0);
         }
       } else {
