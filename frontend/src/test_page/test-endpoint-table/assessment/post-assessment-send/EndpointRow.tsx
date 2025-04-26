@@ -10,7 +10,6 @@ export default function EndpointRow() {
         id: "assessment-id",
         user_id: "user-id",
         created_at: "created-date",
-        updated_at: "updated-date",
         age: "18-24",
         pattern: "Regular",
         cycle_length: "26-30",

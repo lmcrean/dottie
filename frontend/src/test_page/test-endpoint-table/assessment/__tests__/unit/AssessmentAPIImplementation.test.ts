@@ -38,14 +38,12 @@ describe('AssessmentAPIImplementation', () => {
   
   const mockAssessmentData = {
     age: "18-24",
-    cycleLength: "26-30",
-    periodDuration: "4-5",
-    flowHeaviness: "moderate",
-    painLevel: "moderate",
-    symptoms: {
-      physical: ["Bloating", "Headaches"],
-      emotional: ["Mood swings", "Irritability"]
-    }
+    cycle_length: "26-30",
+    period_duration: "4-5",
+    flow_heaviness: "moderate",
+    pain_level: "moderate",
+    physical_symptoms: ["Bloating", "Headaches"],
+    emotional_symptoms: ["Mood swings", "Irritability"]
   };
 
   const mockAssessmentResponse = {
@@ -60,13 +58,9 @@ describe('AssessmentAPIImplementation', () => {
 
   const mockAssessmentDetail = {
     id: "assessment-123",
-    data: {
-      age: "18_24",
-      symptoms: {
-        physical: ["Bloating"],
-        emotional: ["Mood swings"]
-      }
-    }
+    age: "18_24",
+    physical_symptoms: ["Bloating"],
+    emotional_symptoms: ["Mood swings"]
   };
 
   beforeEach(() => {
