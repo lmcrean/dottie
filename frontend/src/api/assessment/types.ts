@@ -1,19 +1,18 @@
 export interface Assessment {
   id: string;
-  userId: string;
-  createdAt: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
   
-  // Flattened fields (previously nested in assessment_data)
+  // Flattened fields
   age: string;
   pattern: string;
-  cycleLength: string;
-  periodDuration: string;
-  flowHeaviness: string;
-  painLevel: string;
+  cycle_length: string;
+  period_duration: string;
+  flow_heaviness: string;
+  pain_level: string;
   physical_symptoms: string[];
   emotional_symptoms: string[];
-  
-  // Recommendations remain nested but at level 1
   recommendations: Array<{
     title: string;
     description: string;
