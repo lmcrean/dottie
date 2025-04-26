@@ -17,7 +17,8 @@ class FlattenedAssessment extends AssessmentBase {
       if (isTestMode) {
         // Extract data for flattened format and create with snake_case keys
         const {
-          age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+          age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+          physical_symptoms, emotional_symptoms, recommendations
         } = assessmentData;
         
         const assessment = {
@@ -27,12 +28,12 @@ class FlattenedAssessment extends AssessmentBase {
           updated_at: now,
           age,
           pattern,
-          cycle_length: cycleLength,
-          period_duration: periodDuration,
-          flow_heaviness: flowHeaviness,
-          pain_level: painLevel,
-          physical_symptoms: symptoms?.physical || [],
-          emotional_symptoms: symptoms?.emotional || [],
+          cycle_length,
+          period_duration,
+          flow_heaviness,
+          pain_level,
+          physical_symptoms: physical_symptoms || [],
+          emotional_symptoms: emotional_symptoms || [],
           recommendations: recommendations || []
         };
         
@@ -42,7 +43,8 @@ class FlattenedAssessment extends AssessmentBase {
 
       // Extract data for flattened format
       const {
-        age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+        physical_symptoms, emotional_symptoms, recommendations
       } = assessmentData;
       
       // Use new flattened format
@@ -55,14 +57,14 @@ class FlattenedAssessment extends AssessmentBase {
         // Flattened fields
         age,
         pattern,
-        cycle_length: cycleLength,
-        period_duration: periodDuration,
-        flow_heaviness: flowHeaviness,
-        pain_level: painLevel,
+        cycle_length,
+        period_duration,
+        flow_heaviness,
+        pain_level,
         
         // Array fields as JSON strings
-        physical_symptoms: symptoms?.physical ? JSON.stringify(symptoms.physical) : null,
-        emotional_symptoms: symptoms?.emotional ? JSON.stringify(symptoms.emotional) : null,
+        physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
+        emotional_symptoms: emotional_symptoms ? JSON.stringify(emotional_symptoms) : null,
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
 
@@ -95,7 +97,8 @@ class FlattenedAssessment extends AssessmentBase {
 
         // Extract data for flattened format
         const {
-          age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+          age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+          physical_symptoms, emotional_symptoms, recommendations
         } = assessmentData;
         
         // Update with snake_case keys
@@ -104,12 +107,12 @@ class FlattenedAssessment extends AssessmentBase {
           updated_at: now,
           age,
           pattern,
-          cycle_length: cycleLength,
-          period_duration: periodDuration,
-          flow_heaviness: flowHeaviness,
-          pain_level: painLevel,
-          physical_symptoms: symptoms?.physical || [],
-          emotional_symptoms: symptoms?.emotional || [],
+          cycle_length,
+          period_duration,
+          flow_heaviness,
+          pain_level,
+          physical_symptoms: physical_symptoms || [],
+          emotional_symptoms: emotional_symptoms || [],
           recommendations: recommendations || []
         };
 
@@ -118,7 +121,8 @@ class FlattenedAssessment extends AssessmentBase {
       
       // Extract data for flattened format
       const {
-        age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+        physical_symptoms, emotional_symptoms, recommendations
       } = assessmentData;
       
       // Use flattened format
@@ -128,14 +132,14 @@ class FlattenedAssessment extends AssessmentBase {
         // Flattened fields
         age,
         pattern,
-        cycle_length: cycleLength,
-        period_duration: periodDuration,
-        flow_heaviness: flowHeaviness,
-        pain_level: painLevel,
+        cycle_length,
+        period_duration,
+        flow_heaviness,
+        pain_level,
         
         // Array fields as JSON strings
-        physical_symptoms: symptoms?.physical ? JSON.stringify(symptoms.physical) : null,
-        emotional_symptoms: symptoms?.emotional ? JSON.stringify(symptoms.emotional) : null,
+        physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
+        emotional_symptoms: emotional_symptoms ? JSON.stringify(emotional_symptoms) : null,
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
       
@@ -164,14 +168,14 @@ class FlattenedAssessment extends AssessmentBase {
       return null;
     }
     
-    let physicalSymptoms = [];
-    let emotionalSymptoms = [];
+    let physical_symptoms = [];
+    let emotional_symptoms = [];
     let recommendations = [];
     
     try {
       // Parse JSON stored arrays if they exist
       if (record.physical_symptoms) {
-        physicalSymptoms = JSON.parse(record.physical_symptoms);
+        physical_symptoms = JSON.parse(record.physical_symptoms);
       }
     } catch (error) {
       console.error(`Failed to parse physical_symptoms for record ${record.id}:`, error);
@@ -179,7 +183,7 @@ class FlattenedAssessment extends AssessmentBase {
     
     try {
       if (record.emotional_symptoms) {
-        emotionalSymptoms = JSON.parse(record.emotional_symptoms);
+        emotional_symptoms = JSON.parse(record.emotional_symptoms);
       }
     } catch (error) {
       console.error(`Failed to parse emotional_symptoms for record ${record.id}:`, error);
@@ -188,6 +192,17 @@ class FlattenedAssessment extends AssessmentBase {
     try {
       if (record.recommendations) {
         recommendations = JSON.parse(record.recommendations);
+        
+        // Ensure recommendations have title and description
+        if (Array.isArray(recommendations) && recommendations.length > 0) {
+          // If recommendations are strings, convert to objects with title and description
+          if (typeof recommendations[0] === 'string') {
+            recommendations = recommendations.map(rec => ({
+              title: rec,
+              description: ''
+            }));
+          }
+        }
       }
     } catch (error) {
       console.error(`Failed to parse recommendations for record ${record.id}:`, error);
@@ -205,9 +220,9 @@ class FlattenedAssessment extends AssessmentBase {
       period_duration: record.period_duration,
       flow_heaviness: record.flow_heaviness,
       pain_level: record.pain_level,
-      physical_symptoms: physicalSymptoms,
-      emotional_symptoms: emotionalSymptoms,
-      recommendations: recommendations
+      physical_symptoms,
+      emotional_symptoms,
+      recommendations
     };
   }
 }
