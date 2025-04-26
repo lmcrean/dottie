@@ -32,7 +32,7 @@ This endpoint retrieves detailed information about a specific assessment by its 
   "emotional_symptoms": ["irritability", "mood swings"],
   "recommendations": ["recommendation1", "recommendation2"]
   
-  // OR nested format
+  // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
   "assessmentData": {
     "age": 25,
     "pattern": "regular",

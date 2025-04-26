@@ -25,7 +25,7 @@ This endpoint updates an existing assessment by its ID. Access is restricted to 
     "emotional_symptoms": ["irritability", "mood swings"],
     "recommendations": ["recommendation1", "recommendation2"]
     
-    // OR nested format
+    // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
     "assessment_data": {
       "age": 25,
       "pattern": "regular",

@@ -22,7 +22,7 @@ This endpoint creates a new assessment for the authenticated user.
     "emotional_symptoms": ["irritability", "mood swings"],
     "recommendations": ["recommendation1", "recommendation2"]
     
-    // OR nested format
+    // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
     "assessment_data": {
       "age": 25,
       "pattern": "regular",

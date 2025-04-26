@@ -31,7 +31,7 @@ This endpoint retrieves a list of all assessments for the authenticated user.
     "emotional_symptoms": ["irritability", "mood swings"],
     "recommendations": ["recommendation1", "recommendation2"]
     
-    // OR nested format
+    // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
     "assessmentData": {
       "age": 25,
       "pattern": "regular",
