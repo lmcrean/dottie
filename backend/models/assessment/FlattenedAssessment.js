@@ -52,7 +52,6 @@ class FlattenedAssessment extends AssessmentBase {
         id,
         user_id: userId,
         created_at: now,
-        updated_at: now,
         
         // Flattened fields
         age,
