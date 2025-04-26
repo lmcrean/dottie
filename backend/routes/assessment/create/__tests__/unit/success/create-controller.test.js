@@ -69,7 +69,7 @@ vi.mock('../../../store/index.js', () => {
 vi.mock('../../../controller.js', () => {
   return {
     createAssessment: vi.fn(async (req, res) => {
-      return res.status(201).json({
+      const assessment = {
         id: 'test-assessment-123',
         user_id: req.user.userId,
         created_at: new Date().toISOString(),
@@ -83,7 +83,8 @@ vi.mock('../../../controller.js', () => {
         physical_symptoms: req.body.assessmentData.physical_symptoms,
         emotional_symptoms: req.body.assessmentData.emotional_symptoms,
         recommendations: req.body.assessmentData.recommendations
-      });
+      };
+      return res.status(201).json(assessment);
     })
   };
 });
@@ -91,15 +92,17 @@ vi.mock('../../../controller.js', () => {
 // Import after mocking
 import { createAssessment } from '../../../controller.js';
 
-// Simple direct test
 describe('Create Assessment Controller - Success Case', () => {
   // Mock request and response
   let req;
   let res;
+  let responseData;
   
   beforeEach(() => {
     // Reset mocks
     vi.clearAllMocks();
+    
+    responseData = null;
     
     // Setup request with authentication and body
     req = {
@@ -133,7 +136,10 @@ describe('Create Assessment Controller - Success Case', () => {
     // Setup response with vitest spies
     res = {
       status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis()
+      json: vi.fn((data) => {
+        responseData = data;
+        return res;
+      })
     };
   });
   
@@ -141,8 +147,31 @@ describe('Create Assessment Controller - Success Case', () => {
     // Call the mocked controller
     await createAssessment(req, res);
     
-    // Verify response
+    // Verify response status and call
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalled();
+    
+    // Verify response data structure
+    expect(responseData).toBeDefined();
+    expect(responseData.id).toBe('test-assessment-123');
+    expect(responseData.user_id).toBe('test-user-123');
+    expect(responseData.age).toBe("25-34");
+    expect(responseData.pattern).toBe("regular");
+    expect(responseData.cycle_length).toBe("26-30");
+    expect(responseData.period_duration).toBe("4-5");
+    expect(responseData.flow_heaviness).toBe("moderate");
+    expect(responseData.pain_level).toBe("moderate");
+    expect(responseData.physical_symptoms).toEqual(["Bloating", "Headaches"]);
+    expect(responseData.emotional_symptoms).toEqual(["Mood swings", "Irritability"]);
+    expect(responseData.recommendations).toEqual([
+      {
+        title: "Recommendation 1",
+        description: "Description for recommendation 1"
+      },
+      {
+        title: "Recommendation 2",
+        description: "Description for recommendation 2"
+      }
+    ]);
   });
 }); 
