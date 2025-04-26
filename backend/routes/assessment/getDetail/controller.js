@@ -1,6 +1,6 @@
 // import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
-import Assessment from '../../../models/Assessment.js';
+import Assessment from '../../../models/assessment/Assessment.js';
 
 
 
