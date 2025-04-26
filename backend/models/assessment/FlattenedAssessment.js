@@ -212,7 +212,6 @@ class FlattenedAssessment extends AssessmentBase {
       id: record.id,
       user_id: record.user_id,
       created_at: record.created_at,
-      updated_at: record.updated_at,
       age: record.age,
       pattern: record.pattern,
       cycle_length: record.cycle_length,
