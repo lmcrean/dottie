@@ -19,60 +19,80 @@ export const createAssessment = async (req, res) => {
     if (!assessmentData) {
       return res.status(400).json({ error: "Assessment data is required" });
     }
-    // For test users, save to database
-    if (userId.startsWith("test-")) {
+    
+    // Legacy direct database insertion for test users
+    // This will be removed once migration is complete
+    if (userId.startsWith("test-") && process.env.USE_LEGACY_DB_DIRECT === 'true') {
       try {
         // Generate a new assessment ID
         const id = `test-assessment-${Date.now()}`;
-
-        // Insert into database
-        await db("assessments").insert({
-          id: id,
-          user_id: userId,
-          created_at: new Date().toISOString(),
-          age: assessmentData.age,
-          cycle_length: assessmentData.cycleLength,
-          period_duration: assessmentData.periodDuration,
-          flow_heaviness: assessmentData.flowHeaviness,
-          pain_level: assessmentData.painLevel,
-        });
-
-        // Insert symptoms if provided
-        if (assessmentData.symptoms) {
-          const symptoms = [];
-
-          // Add physical symptoms
-          if (
-            assessmentData.symptoms.physical &&
-            Array.isArray(assessmentData.symptoms.physical)
-          ) {
-            for (const symptom of assessmentData.symptoms.physical) {
-              symptoms.push({
-                assessment_id: id,
-                symptom_name: symptom,
-                symptom_type: "physical",
-              });
-            }
-          }
-
-          // Add emotional symptoms
-          if (
-            assessmentData.symptoms.emotional &&
-            Array.isArray(assessmentData.symptoms.emotional)
-          ) {
-            for (const symptom of assessmentData.symptoms.emotional) {
-              symptoms.push({
-                assessment_id: id,
-                symptom_name: symptom,
-                symptom_type: "emotional",
-              });
-            }
-          }
-
-          // Insert symptoms if any exists
-          if (symptoms.length > 0) {
-            await db("symptoms").insert(symptoms);
-          }
+        
+        // Determine if we're using nested or flattened format
+        const isFlattened = !assessmentData.assessment_data;
+        
+        if (isFlattened) {
+          // Handle flattened structure
+          await db("assessments").insert({
+            id: id,
+            user_id: userId,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            
+            // Flattened fields
+            age: assessmentData.age,
+            pattern: assessmentData.pattern,
+            cycle_length: assessmentData.cycle_length || assessmentData.cycleLength,
+            period_duration: assessmentData.period_duration || assessmentData.periodDuration,
+            flow_heaviness: assessmentData.flow_heaviness || assessmentData.flowHeaviness,
+            pain_level: assessmentData.pain_level || assessmentData.painLevel,
+            
+            // Parse and store arrays as JSON
+            physical_symptoms: assessmentData.physical_symptoms 
+              ? JSON.stringify(assessmentData.physical_symptoms) 
+              : (assessmentData.symptoms?.physical ? JSON.stringify(assessmentData.symptoms.physical) : null),
+            
+            emotional_symptoms: assessmentData.emotional_symptoms 
+              ? JSON.stringify(assessmentData.emotional_symptoms) 
+              : (assessmentData.symptoms?.emotional ? JSON.stringify(assessmentData.symptoms.emotional) : null),
+            
+            recommendations: assessmentData.recommendations 
+              ? JSON.stringify(assessmentData.recommendations) 
+              : null
+          });
+        } else {
+          // Handle legacy nested structure
+          const nestedData = assessmentData.assessment_data;
+          
+          await db("assessments").insert({
+            id: id,
+            user_id: userId,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            
+            // Store legacy format as-is
+            assessment_data: JSON.stringify(assessmentData.assessment_data),
+            
+            // Also extract and store as flattened fields for compatibility
+            age: nestedData.age,
+            pattern: nestedData.pattern,
+            cycle_length: nestedData.cycleLength,
+            period_duration: nestedData.periodDuration,
+            flow_heaviness: nestedData.flowHeaviness,
+            pain_level: nestedData.painLevel,
+            
+            // Parse and store arrays as JSON
+            physical_symptoms: nestedData.symptoms?.physical 
+              ? JSON.stringify(nestedData.symptoms.physical) 
+              : null,
+            
+            emotional_symptoms: nestedData.symptoms?.emotional 
+              ? JSON.stringify(nestedData.symptoms.emotional) 
+              : null,
+            
+            recommendations: nestedData.recommendations 
+              ? JSON.stringify(nestedData.recommendations) 
+              : null
+          });
         }
 
         // Return the created assessment
@@ -80,33 +100,23 @@ export const createAssessment = async (req, res) => {
           id: id,
           userId: userId,
           createdAt: new Date().toISOString(),
-          assessmentData: assessmentData,
+          updatedAt: new Date().toISOString(),
+          assessmentData: assessmentData
         });
       } catch (dbError) {
         console.error("Database error:", dbError);
-        // Continue to in-memory storage if database fails
+        // Continue to model layer if database direct access fails
       }
     }
 
-    // Generate a new assessment ID // ! UPDATE: now automatically generated by uuid to prevent collisions
-    // const id = `assessment-${Date.now()}`;
-
-    // Create the assessment object
-    // const assessment = {
-    //   id,
-    //   userId: userId,
-    //   createdAt: new Date().toISOString(),
-    //   assessmentData
-    // };
-    // Store in memory
-    // assessments.push(assessment);
-    // console.log('Assessment data:', assessmentData);
-
+    // Validate assessment data using our shared validator
     const validationError = validateAssessmentData(assessmentData);
-
     if (!validationError.isValid) {
       return res.status(400).json({ error: validationError });
     }
+    
+    // Create assessment using the model layer
+    // This will automatically handle both flattened and nested formats
     const newAssessment = await Assessment.create(assessmentData, userId);
 
     res.status(201).json(newAssessment);
