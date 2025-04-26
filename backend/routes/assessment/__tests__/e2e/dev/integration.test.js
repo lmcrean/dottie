@@ -40,7 +40,19 @@ beforeAll(async () => {
       created_at: new Date().toISOString(),
     };
 
-    await db("users").insert(userData, ["id"]);
+    // Insert using raw query to avoid type issues
+    await db.raw(
+      `INSERT INTO users (id, username, email, password_hash, age, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        userData.id,
+        userData.username,
+        userData.email,
+        userData.password_hash,
+        userData.age,
+        userData.created_at
+      ]
+    );
 
     // Create a JWT token
     const secret = process.env.JWT_SECRET || "dev-jwt-secret";
@@ -61,7 +73,8 @@ afterAll(async () => {
     // Clean up test data
     if (testAssessmentId) {
       try {
-        await db("assessments").where("id", testAssessmentId).delete().then();
+        // Use raw query to delete
+        await db.raw("DELETE FROM assessments WHERE id = ?", [testAssessmentId]);
       } catch (error) {
         console.log(`Error deleting assessment ${testAssessmentId}:`, error);
       }
@@ -69,7 +82,8 @@ afterAll(async () => {
     
     if (testUserId) {
       try {
-        await db("users").where("id", testUserId).delete().then();
+        // Use raw query to delete
+        await db.raw("DELETE FROM users WHERE id = ?", [testUserId]);
       } catch (error) {
         console.log(`Error deleting user ${testUserId}:`, error);
       }
