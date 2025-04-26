@@ -40,7 +40,7 @@ beforeAll(async () => {
       created_at: new Date().toISOString(),
     };
 
-    await db("users").insert(userData);
+    await db("users").insert(userData, ["id"]);
 
     // Create a JWT token
     const secret = process.env.JWT_SECRET || "dev-jwt-secret";
@@ -61,7 +61,7 @@ afterAll(async () => {
     // Clean up test data
     if (testAssessmentId) {
       try {
-        await db("assessments").where("id", testAssessmentId).delete();
+        await db("assessments").where("id", testAssessmentId).delete().then();
       } catch (error) {
         console.log(`Error deleting assessment ${testAssessmentId}:`, error);
       }
@@ -69,7 +69,7 @@ afterAll(async () => {
     
     if (testUserId) {
       try {
-        await db("users").where("id", testUserId).delete();
+        await db("users").where("id", testUserId).delete().then();
       } catch (error) {
         console.log(`Error deleting user ${testUserId}:`, error);
       }
