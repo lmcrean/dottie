@@ -48,18 +48,6 @@ describe('AssessmentEndpoints', () => {
     expect(authText).toHaveTextContent('Requires authentication');
   });
 
-  it('renders the PUT /api/assessment/:id endpoint correctly', () => {
-    render(<AssessmentEndpoints />);
-    
-    const button = screen.getByTestId('test-put -api-assessment-:id-button');
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent('PUT');
-    expect(button).toHaveTextContent('/api/assessment/:id');
-    
-    const authText = button.parentElement?.querySelector('.text-yellow-400');
-    expect(authText).toHaveTextContent('Requires authentication');
-  });
-
   it('renders the DELETE /api/assessment/:id endpoint correctly', () => {
     render(<AssessmentEndpoints />);
     

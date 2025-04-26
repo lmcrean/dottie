@@ -22,11 +22,6 @@ const createAssessmentApi = (axiosInstance: any) => {
       return response.data;
     },
     
-    update: async (id: string, assessmentData: any) => {
-      const response = await axiosInstance.put(`/api/assessment/${id}`, assessmentData);
-      return response.data;
-    },
-    
     delete: async (id: string) => {
       const response = await axiosInstance.delete(`/api/assessment/${id}`);
       return response.data;
@@ -160,21 +155,6 @@ describe('AssessmentAPIImplementation', () => {
       
       expect(mockAxios.get).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`);
       expect(result).toEqual(mockAssessmentDetail);
-    });
-  });
-
-  describe('assessmentApi.update', () => {
-    it('should update assessment and return success message', async () => {
-      const assessmentId = "assessment-123";
-      const updateData = {
-        flowHeaviness: "heavy",
-        painLevel: "severe"
-      };
-      
-      const result = await assessmentApi.update(assessmentId, updateData);
-      
-      expect(mockAxios.put).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`, updateData);
-      expect(result.message).toBe("Assessment updated");
     });
   });
 

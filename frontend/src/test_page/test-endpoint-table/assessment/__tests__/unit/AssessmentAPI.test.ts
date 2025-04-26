@@ -115,21 +115,6 @@ describe('AssessmentAPI', () => {
     });
   });
 
-  describe('PUT /api/assessment/:id', () => {
-    it('should update assessment and return success message', async () => {
-      const assessmentId = "assessment-123";
-      const updateData = {
-        flowHeaviness: "heavy",
-        painLevel: "severe"
-      };
-      
-      const response = await axios.put(`/api/assessment/${assessmentId}`, updateData);
-      
-      expect(axios.put).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`, updateData);
-      expect(response.data.message).toBe("Assessment updated");
-    });
-  });
-
   describe('DELETE /api/assessment/:id', () => {
     it('should delete assessment and return success message', async () => {
       const assessmentId = "assessment-123";
