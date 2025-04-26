@@ -15,12 +15,23 @@ class LegacyAssessment extends AssessmentBase {
       const now = new Date();
 
       if (isTestMode) {
+        const nestedData = assessmentData.assessment_data || assessmentData;
+        
+        // Create with snake_case keys and flattened structure
         const assessment = {
           id,
-          userId,
-          assessmentData,
-          createdAt: now,
-          updatedAt: now
+          user_id: userId,
+          created_at: now,
+          updated_at: now,
+          age: nestedData.age,
+          pattern: nestedData.pattern,
+          cycle_length: nestedData.cycleLength,
+          period_duration: nestedData.periodDuration,
+          flow_heaviness: nestedData.flowHeaviness,
+          pain_level: nestedData.painLevel,
+          physical_symptoms: nestedData.symptoms?.physical || [],
+          emotional_symptoms: nestedData.symptoms?.emotional || [],
+          recommendations: nestedData.recommendations || []
         };
         testAssessments[id] = assessment;
         return assessment;
@@ -62,10 +73,21 @@ class LegacyAssessment extends AssessmentBase {
           throw new Error(`Assessment with ID ${id} not found`);
         }
 
+        const nestedData = assessmentData.assessment_data || assessmentData;
+        
+        // Update with snake_case keys and flattened structure
         testAssessments[id] = {
           ...testAssessments[id],
-          assessmentData,
-          updatedAt: now
+          updated_at: now,
+          age: nestedData.age,
+          pattern: nestedData.pattern,
+          cycle_length: nestedData.cycleLength,
+          period_duration: nestedData.periodDuration,
+          flow_heaviness: nestedData.flowHeaviness,
+          pain_level: nestedData.painLevel,
+          physical_symptoms: nestedData.symptoms?.physical || [],
+          emotional_symptoms: nestedData.symptoms?.emotional || [],
+          recommendations: nestedData.recommendations || []
         };
 
         return testAssessments[id];
@@ -108,12 +130,21 @@ class LegacyAssessment extends AssessmentBase {
       assessmentData = {};
     }
     
+    // Convert to flattened format with snake_case
     return {
       id: record.id,
-      userId: record.user_id,
-      assessmentData,
-      createdAt: record.created_at,
-      updatedAt: record.updated_at
+      user_id: record.user_id,
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+      age: assessmentData.age,
+      pattern: assessmentData.pattern,
+      cycle_length: assessmentData.cycleLength,
+      period_duration: assessmentData.periodDuration,
+      flow_heaviness: assessmentData.flowHeaviness,
+      pain_level: assessmentData.painLevel,
+      physical_symptoms: assessmentData.symptoms?.physical || [],
+      emotional_symptoms: assessmentData.symptoms?.emotional || [],
+      recommendations: assessmentData.recommendations || []
     };
   }
 }

@@ -15,13 +15,27 @@ class FlattenedAssessment extends AssessmentBase {
       const now = new Date();
 
       if (isTestMode) {
+        // Extract data for flattened format and create with snake_case keys
+        const {
+          age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        } = assessmentData;
+        
         const assessment = {
           id,
-          userId,
-          assessmentData,
-          createdAt: now,
-          updatedAt: now
+          user_id: userId,
+          created_at: now,
+          updated_at: now,
+          age,
+          pattern,
+          cycle_length: cycleLength,
+          period_duration: periodDuration,
+          flow_heaviness: flowHeaviness,
+          pain_level: painLevel,
+          physical_symptoms: symptoms?.physical || [],
+          emotional_symptoms: symptoms?.emotional || [],
+          recommendations: recommendations || []
         };
+        
         testAssessments[id] = assessment;
         return assessment;
       }
@@ -79,10 +93,24 @@ class FlattenedAssessment extends AssessmentBase {
           throw new Error(`Assessment with ID ${id} not found`);
         }
 
+        // Extract data for flattened format
+        const {
+          age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        } = assessmentData;
+        
+        // Update with snake_case keys
         testAssessments[id] = {
           ...testAssessments[id],
-          assessmentData,
-          updatedAt: now
+          updated_at: now,
+          age,
+          pattern,
+          cycle_length: cycleLength,
+          period_duration: periodDuration,
+          flow_heaviness: flowHeaviness,
+          pain_level: painLevel,
+          physical_symptoms: symptoms?.physical || [],
+          emotional_symptoms: symptoms?.emotional || [],
+          recommendations: recommendations || []
         };
 
         return testAssessments[id];
@@ -165,27 +193,21 @@ class FlattenedAssessment extends AssessmentBase {
       console.error(`Failed to parse recommendations for record ${record.id}:`, error);
     }
     
-    // Construct nested assessment data from flattened fields
-    const assessmentData = {
-      age: record.age,
-      pattern: record.pattern,
-      cycleLength: record.cycle_length,
-      periodDuration: record.period_duration,
-      flowHeaviness: record.flow_heaviness,
-      painLevel: record.pain_level,
-      symptoms: {
-        physical: physicalSymptoms,
-        emotional: emotionalSymptoms
-      },
-      recommendations
-    };
-    
+    // Return flattened format with all fields in snake_case
     return {
       id: record.id,
-      userId: record.user_id,
-      assessmentData,
-      createdAt: record.created_at,
-      updatedAt: record.updated_at
+      user_id: record.user_id,
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+      age: record.age,
+      pattern: record.pattern,
+      cycle_length: record.cycle_length,
+      period_duration: record.period_duration,
+      flow_heaviness: record.flow_heaviness,
+      pain_level: record.pain_level,
+      physical_symptoms: physicalSymptoms,
+      emotional_symptoms: emotionalSymptoms,
+      recommendations: recommendations
     };
   }
 }

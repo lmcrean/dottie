@@ -43,7 +43,7 @@ class AssessmentBase {
       // Use in-memory store for tests
       if (isTestMode) {
         return Object.values(testAssessments)
-          .filter(assessment => assessment.userId === userId);
+          .filter(assessment => assessment.user_id === userId);
       }
       
       // Get all assessments for user
@@ -91,7 +91,7 @@ class AssessmentBase {
     try {
       // Test mode check
       if (isTestMode && testAssessments[assessmentId]) {
-        return testAssessments[assessmentId].userId === userId;
+        return testAssessments[assessmentId].user_id === userId;
       }
       
       // Database check using DbService
