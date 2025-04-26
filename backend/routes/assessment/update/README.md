@@ -17,27 +17,13 @@ This endpoint updates an existing assessment by its ID. Access is restricted to 
     // Either flattened format
     "age": 25,
     "pattern": "regular",
-    "cycle_length": 28, // or "cycleLength": 28
-    "period_duration": 5, // or "periodDuration": 5
-    "flow_heaviness": "medium", // or "flowHeaviness": "medium"
-    "pain_level": 3, // or "painLevel": 3
+    "cycle_length": 28,
+    "period_duration": 5, 
+    "flow_heaviness": "medium",
+    "pain_level": 3,
     "physical_symptoms": ["bloating", "cramps"],
     "emotional_symptoms": ["irritability", "mood swings"],
     "recommendations": ["recommendation1", "recommendation2"]
-    
-    // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
-    "assessment_data": {
-      "age": 25,
-      "pattern": "regular",
-      "cycleLength": 28,
-      "periodDuration": 5,
-      "flowHeaviness": "medium",
-      "painLevel": 3,
-      "symptoms": {
-        "physical": ["bloating", "cramps"],
-        "emotional": ["irritability", "mood swings"]
-      },
-      "recommendations": ["recommendation1", "recommendation2"]
     }
   }
 }
@@ -52,7 +38,15 @@ This endpoint updates an existing assessment by its ID. Access is restricted to 
   "userId": "user-id",
   "createdAt": "2023-01-01T00:00:00.000Z",
   "updatedAt": "2023-01-01T00:00:00.000Z",
-  // Response will match the format of the input (either flattened or nested)
+  "age": 25,
+  "pattern": "regular",
+  "cycle_length": 28,
+  "period_duration": 5,
+  "flow_heaviness": "medium",
+  "pain_level": 3,
+  "physical_symptoms": ["bloating", "cramps"],
+  "emotional_symptoms": ["irritability", "mood swings"],
+  "recommendations": ["recommendation1", "recommendation2"]
 }
 ```
 
@@ -64,6 +58,7 @@ This endpoint updates an existing assessment by its ID. Access is restricted to 
 
 ## Notes
 - The endpoint supports both flattened and nested data formats for backward compatibility
+- Although the request can accept both formats, the response will be in the flattened format
 - The endpoint validates ownership of the assessment before allowing updates
 - For test users with IDs starting with 'test-', it may attempt direct database update if the USE_LEGACY_DB_DIRECT environment variable is set to 'true'
 - The updatedAt timestamp is automatically updated to the current time 

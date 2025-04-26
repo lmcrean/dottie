@@ -22,7 +22,7 @@ This endpoint creates a new assessment for the authenticated user.
     "emotional_symptoms": ["irritability", "mood swings"],
     "recommendations": ["recommendation1", "recommendation2"]
     
-    // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
+    // OR nested format
     "assessment_data": {
       "age": 25,
       "pattern": "regular",
@@ -49,9 +49,15 @@ This endpoint creates a new assessment for the authenticated user.
   "userId": "user-id",
   "createdAt": "2023-01-01T00:00:00.000Z",
   "updatedAt": "2023-01-01T00:00:00.000Z",
-  "assessmentData": {
-    // Same format as in the request
-  }
+  "age": 25,
+  "pattern": "regular",
+  "cycle_length": 28,
+  "period_duration": 5,
+  "flow_heaviness": "medium",
+  "pain_level": 3,
+  "physical_symptoms": ["bloating", "cramps"],
+  "emotional_symptoms": ["irritability", "mood swings"],
+  "recommendations": ["recommendation1", "recommendation2"]
 }
 ```
 
@@ -61,6 +67,7 @@ This endpoint creates a new assessment for the authenticated user.
 
 ## Notes
 - The endpoint supports both flattened and nested data formats for backward compatibility
+- Although the request can accept both formats, the response will be in the flattened format
 - Assessment data is validated before creation
 - For test users with IDs starting with 'test-', it may attempt direct database insertion if the USE_LEGACY_DB_DIRECT environment variable is set to 'true'
 - A unique assessment ID is generated for each new assessment 

@@ -18,9 +18,6 @@ This endpoint retrieves a list of all assessments for the authenticated user.
     "userId": "user-id",
     "createdAt": "2023-01-01T00:00:00.000Z",
     "updatedAt": "2023-01-01T00:00:00.000Z",
-    // Depending on format, either flattened or nested structure:
-    
-    // Flattened format
     "age": 25,
     "pattern": "regular",
     "cycle_length": 28,
@@ -30,21 +27,6 @@ This endpoint retrieves a list of all assessments for the authenticated user.
     "physical_symptoms": ["bloating", "cramps"],
     "emotional_symptoms": ["irritability", "mood swings"],
     "recommendations": ["recommendation1", "recommendation2"]
-    
-    // OR nested format below, which is being PHASED OUT and replaced with the flattened format above
-    "assessmentData": {
-      "age": 25,
-      "pattern": "regular",
-      "cycleLength": 28,
-      "periodDuration": 5,
-      "flowHeaviness": "medium",
-      "painLevel": 3,
-      "symptoms": {
-        "physical": ["bloating", "cramps"],
-        "emotional": ["irritability", "mood swings"]
-      },
-      "recommendations": ["recommendation1", "recommendation2"]
-    }
   },
   // Additional assessments...
 ]
@@ -63,4 +45,5 @@ This endpoint retrieves a list of all assessments for the authenticated user.
 
 ## Notes
 - The endpoint supports both flattened and nested data formats for backward compatibility
+- Although legacy code can handle both formats, the response will be in the flattened format
 - For test users, it may also attempt direct database access if the USE_LEGACY_DB_DIRECT environment variable is set to 'true' 
