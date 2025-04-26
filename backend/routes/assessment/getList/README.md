@@ -14,19 +14,28 @@ This endpoint retrieves a list of all assessments for the authenticated user.
 ```json
 [
   {
-    "id": "assessment-id",
-    "user_id": "user-id",
+    "id": "uuid-here",
+    "user_id": "user-uuid-here",
     "created_at": "2023-01-01T00:00:00.000Z",
     "updated_at": "2023-01-01T00:00:00.000Z",
-    "age": 25,
+    "age": "25-34",
     "pattern": "regular",
-    "cycle_length": 28,
-    "period_duration": 5,
-    "flow_heaviness": "medium",
-    "pain_level": 3,
-    "physical_symptoms": ["bloating", "cramps"],
-    "emotional_symptoms": ["irritability", "mood swings"],
-    "recommendations": ["recommendation1", "recommendation2"]
+    "cycle_length": "26-30",
+    "period_duration": "4-5",
+    "flow_heaviness": "moderate",
+    "pain_level": "moderate",
+    "physical_symptoms": ["Bloating", "Headaches"],
+    "emotional_symptoms": ["Mood swings", "Irritability"],
+    "recommendations": [
+      {
+        "title": "Recommendation 1",
+        "description": "Description for recommendation 1"
+      },
+      {
+        "title": "Recommendation 2",
+        "description": "Description for recommendation 2"
+      }
+    ]
   },
   // Additional assessments...
 ]
@@ -44,6 +53,7 @@ This endpoint retrieves a list of all assessments for the authenticated user.
 - **500 Internal Server Error**: Server-side error
 
 ## Notes
-- The endpoint supports both flattened and nested data formats for backward compatibility
-- Although legacy code can handle both formats, the response will be in the flattened format with all properties in snake_case
-- For test users, it may also attempt direct database access if the USE_LEGACY_DB_DIRECT environment variable is set to 'true' 
+- The response will use the flattened format with all properties in snake_case
+- Symptoms are split into physical_symptoms and emotional_symptoms arrays
+- Recommendations have one level of nesting with title and description properties
+- For test users, it may attempt direct database access if the USE_LEGACY_DB_DIRECT environment variable is set to 'true' 
