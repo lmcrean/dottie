@@ -33,11 +33,21 @@ export default function HistoryPage() {
     if (!dateString) return "Unknown date";
 
     try {
+      // Handle numeric timestamp format (e.g., "1745679949668.0")
+      if (/^\d+(\.\d+)?$/.test(dateString)) {
+        const timestamp = parseFloat(dateString);
+        const date = new Date(timestamp);
+        if (isValid(date)) {
+          return format(date, "MMM d, yyyy");
+        }
+      }
+
+      // Standard date string handling
       const date = parseISO(dateString);
-      if (!isValid(date)) return "Invalid date";
+      if (!isValid(date)) return "Unknown date";
       return format(date, "MMM d, yyyy");
     } catch (error) {
-      return "Invalid date";
+      return "Unknown date";
     }
   };
 
@@ -47,6 +57,11 @@ export default function HistoryPage() {
         const data = await assessmentApi.list();
         setAssessments(data);
         console.log("Fetched assessments:", data);
+        // Additional debugging for first assessment structure
+        if (data.length > 0) {
+          console.log("First assessment structure:", JSON.stringify(data[0], null, 2));
+          console.log("Using flattened fields:", !data[0].assessment_data);
+        }
         setError(null);
       } catch (error) {
         console.error("Error fetching assessments:", error);
@@ -121,7 +136,12 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-4">
             {assessments.map((assessment) => {
-              const data = assessment?.assessment_data; 
+              // Handle both legacy and flattened data formats
+              const legacyData = assessment?.assessment_data;
+              const pattern = legacyData?.pattern || assessment?.pattern;
+              const date = legacyData?.date || assessment?.created_at;
+              const periodDuration = legacyData?.periodDuration || assessment?.period_duration;
+              const cycleLength = legacyData?.cycleLength || assessment?.cycle_length;
 
               return (
                 <Link
@@ -133,22 +153,22 @@ export default function HistoryPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                          {formatValue(data?.pattern)}
+                          {formatValue(pattern)}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {formatDate(data?.date)}
+                          {formatDate(date)}
                         </span>
                       </div>
                       <div className="mt-2 text-sm text-gray-600">
                         <p>
-                          <span className="text-gray-900">Period Duration:</span> {formatValue(data?.periodDuration)}
-                          {data?.periodDuration && !["other", "varies", "not-sure"].includes(data.periodDuration) ? " days" : ""}
+                          <span className="text-gray-900">Period Duration:</span> {formatValue(periodDuration)}
+                          {periodDuration && !["other", "varies", "not-sure"].includes(periodDuration) ? "" : ""}
                         </p>
                         <p>
-                          <span className="text-gray-900">Cycle Length:</span> {formatValue(data?.cycleLength)}
-                          {data?.cycleLength &&
+                          <span className="text-gray-900">Cycle Length:</span> {formatValue(cycleLength)}
+                          {cycleLength &&
                           !["other", "varies", "not-sure"].includes(
-                            data.cycleLength
+                            cycleLength
                           )
                             ? " days"
                             : ""}
