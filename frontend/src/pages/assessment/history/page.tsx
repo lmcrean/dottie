@@ -141,8 +141,8 @@ export default function HistoryPage() {
                       </div>
                       <div className="mt-2 text-sm text-gray-600">
                         <p>
-                          <span className="text-gray-900">Age:</span> {formatValue(data?.age)}
-                          {data?.age && data.age !== "under-13" ? " years" : ""}
+                          <span className="text-gray-900">Period Duration:</span> {formatValue(data?.periodDuration)}
+                          {data?.periodDuration && !["other", "varies", "not-sure"].includes(data.periodDuration) ? " days" : ""}
                         </p>
                         <p>
                           <span className="text-gray-900">Cycle Length:</span> {formatValue(data?.cycleLength)}
