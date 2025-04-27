@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { format, isValid, parseISO } from "date-fns";
 import {
   ArrowLeft,
@@ -8,6 +8,8 @@ import {
   Droplet,
   Heart,
   Brain,
+  Trash2,
+  X,
 } from "lucide-react";
 import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
@@ -38,9 +40,10 @@ const ensureArrayFormat = (data: any): string[] => {
 
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [assessment, setAssessment] = useState<Assessment | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAssessment = async () => {
@@ -65,6 +68,29 @@ export default function AssessmentDetailsPage() {
 
     fetchAssessment();
   }, [id]);
+
+  const openDeleteModal = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    
+    try {
+      await assessmentApi.delete(id);
+      toast.success("Assessment deleted successfully");
+      navigate("/assessment/history");
+    } catch (error) {
+      console.error("Error deleting assessment:", error);
+      toast.error("Failed to delete assessment");
+    } finally {
+      closeDeleteModal();
+    }
+  };
 
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "Unknown date";
@@ -175,13 +201,24 @@ export default function AssessmentDetailsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 ">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <Link
-          to="/assessment/history"
-          className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700 mb-8"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to History
-        </Link>
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            to="/assessment/history"
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to History
+          </Link>
+          
+          <button
+            onClick={openDeleteModal}
+            className="inline-flex items-center px-4 py-2 bg-white-600 text-gray-400 rounded-lg hover:bg-red-400 hover:text-white transition-colors"
+            aria-label="Delete assessment"
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete Assessment
+          </button>
+        </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-lg border dark:border-slate-800 shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
@@ -327,6 +364,42 @@ export default function AssessmentDetailsPage() {
           </div>
         </div>
       </div>
+      
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Confirm Delete</h3>
+              <button 
+                onClick={closeDeleteModal}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="mb-6">
+              <p className="text-gray-600 dark:text-gray-300">
+                Are you sure you want to delete this assessment? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={closeDeleteModal}
+                className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

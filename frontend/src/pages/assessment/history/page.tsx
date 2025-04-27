@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { format, isValid, parseISO } from "date-fns";
-import { Calendar, ChevronRight } from "lucide-react";
+import { Calendar, ChevronRight, Trash2, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { assessmentApi, type Assessment } from "@/src/api/assessment";
 import { toast } from "sonner";
@@ -14,6 +14,8 @@ export default function HistoryPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [assessmentToDelete, setAssessmentToDelete] = useState<string | null>(null);
 
   const formatValue = (value: string | undefined): string => {
     if (!value) return "Not provided";
@@ -48,6 +50,33 @@ export default function HistoryPage() {
       return format(date, "MMM d, yyyy");
     } catch (error) {
       return "Unknown date";
+    }
+  };
+
+  const openDeleteModal = (id: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAssessmentToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setAssessmentToDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!assessmentToDelete) return;
+    
+    try {
+      await assessmentApi.delete(assessmentToDelete);
+      setAssessments(assessments.filter(assessment => assessment.id !== assessmentToDelete));
+      toast.success("Assessment deleted successfully");
+    } catch (error) {
+      console.error("Error deleting assessment:", error);
+      toast.error("Failed to delete assessment");
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -170,7 +199,16 @@ export default function HistoryPage() {
                         </p>
                       </div>
                     </div>
-                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                    <div className="flex items-center">
+                      <button
+                        onClick={(e) => openDeleteModal(assessment.id, e)}
+                        className="p-2 text-gray-500 hover:text-red-600 mr-2"
+                        aria-label="Delete assessment"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                      <ChevronRight className="h-5 w-5 text-gray-400" />
+                    </div>
                   </div>
                 </Link>
               );
@@ -178,6 +216,42 @@ export default function HistoryPage() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Confirm Delete</h3>
+              <button 
+                onClick={closeDeleteModal}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="mb-6">
+              <p className="text-gray-600 dark:text-gray-300">
+                Are you sure you want to delete this assessment? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={closeDeleteModal}
+                className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </PageTransition>
   );
