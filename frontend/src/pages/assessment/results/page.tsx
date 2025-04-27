@@ -393,6 +393,47 @@ export default function ResultsPage() {
     setPattern(determinedPattern);
   }, []);
 
+  // NEW useEffect to categorize symptoms after they are loaded
+  useEffect(() => {
+    if (symptoms.length === 0) return; // Don't run if symptoms haven't loaded
+
+    const physicalLabels = [
+      "Bloating", "Breast tenderness", "Headaches", "Back pain", "Nausea",
+      "Fatigue", "Dizziness", "Acne", "Digestive issues", "Sleep disturbances",
+      "Hot flashes", "Joint pain"
+    ];
+    const emotionalLabels = [
+      "Irritability", "Mood swings", "Anxiety", "Depression",
+      "Difficulty concentrating", "Food cravings", "Emotional sensitivity",
+      "Low energy/motivation"
+    ];
+
+    const categorized = {
+      physical: [] as string[],
+      emotional: [] as string[],
+      other: [] as string[]
+    };
+
+    symptoms.forEach(label => {
+      if (physicalLabels.includes(label)) {
+        categorized.physical.push(label);
+      } else if (emotionalLabels.includes(label)) {
+        categorized.emotional.push(label);
+      } else {
+        // Assume any non-empty label not in the known lists is 'other'
+        if (label && label.trim() !== "") { 
+          categorized.other.push(label);
+        }
+      }
+    });
+
+    setCategorizedSymptoms(categorized);
+    
+    // Optional: Save categorized symptoms back to sessionStorage if needed elsewhere
+    // sessionStorage.setItem("symptoms_categorized", JSON.stringify(categorized));
+
+  }, [symptoms]); // Re-run when the raw symptoms array changes
+
   const patternInfo = patternData[pattern];
 
   // Calculate progress bar widths based on values
