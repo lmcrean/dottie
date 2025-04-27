@@ -7,13 +7,21 @@ class Assessment {
    * @param {string} id - Assessment ID
    * @returns {Promise<Object|null>} Assessment object or null if not found
    */
-  static async findById(id) {
-    const assessment = await LegacyAssessment.findById(id);
-    // If assessment can't be transformed by legacy handler, it might be flattened
-    if (!assessment) {
+  static async findById(id) {    
+    // Get the raw record first to determine its format
+    const DbService = (await import('../../services/dbService.js')).default;
+    const rawRecord = await DbService.findById('assessments', id);
+    
+    if (!rawRecord) {
+      return null;
+    }
+    
+    // Properly determine format by checking for assessment_data field
+    if (rawRecord.assessment_data) {
+      return await LegacyAssessment.findById(id);
+    } else {
       return await FlattenedAssessment.findById(id);
     }
-    return assessment;
   }
 
   /**
