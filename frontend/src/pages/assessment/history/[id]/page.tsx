@@ -30,7 +30,6 @@ export default function AssessmentDetailsPage() {
         const data = await assessmentApi.getById(id);
         setAssessment(data);
       } catch (error) {
-        console.error("Failed to fetch assessment:", error);
         toast.error("Failed to load assessment details");
       } finally {
         setIsLoading(false);
@@ -44,12 +43,22 @@ export default function AssessmentDetailsPage() {
     if (!dateString) return "Unknown date";
 
     try {
+      // Special handling for numeric timestamp strings
+      if (/^\d+(\.\d+)?$/.test(dateString)) {
+        // Convert from milliseconds to date
+        const timestamp = parseFloat(dateString);
+        const date = new Date(timestamp);
+        if (isValid(date)) {
+          return format(date, "MMMM d, yyyy");
+        }
+      }
+      
+      // Try standard date parsing
       const date = parseISO(dateString);
       if (!isValid(date)) return "Invalid date";
 
       return format(date, "MMMM d, yyyy");
     } catch (error) {
-      console.error("Error formatting date:", error);
       return "Invalid date format";
     }
   };
@@ -74,7 +83,30 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = assessment?.assessment_data
+  // Check for both formats
+  const legacyData = assessment?.assessment_data;
+  
+  const flattenedData = assessment ? {
+    date: assessment.created_at,
+    pattern: assessment.pattern,
+    age: assessment.age,
+    cycleLength: assessment.cycle_length,
+    periodDuration: assessment.period_duration,
+    flowHeaviness: assessment.flow_heaviness,
+    painLevel: assessment.pain_level,
+    symptoms: {
+      physical: assessment.physical_symptoms || [],
+      emotional: assessment.emotional_symptoms || []
+    },
+    recommendations: assessment.recommendations || []
+  } : null;
+  
+  const hasLegacyFormat = !!legacyData;
+  const hasFlattenedFormat = !!(assessment?.age || assessment?.pattern);
+  
+  // Use either format, prioritizing legacy for backward compatibility
+  const assessmentData = hasLegacyFormat ? legacyData : flattenedData;
+
   if (!assessmentData) {
     return (
       <div className="min-h-screen">
@@ -97,9 +129,20 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const physicalSymptoms = assessmentData.symptoms?.physical || [];
-  const emotionalSymptoms = assessmentData.symptoms?.emotional || [];
-  const recommendations = assessmentData.recommendations || [];
+  // Extract data using the correct path based on format
+  let physicalSymptoms: string[] = [];
+  let emotionalSymptoms: string[] = [];
+  let recommendations: {title: string, description: string}[] = [];
+
+  if (hasLegacyFormat) {
+    physicalSymptoms = assessmentData.symptoms?.physical || [];
+    emotionalSymptoms = assessmentData.symptoms?.emotional || [];
+    recommendations = assessmentData.recommendations || [];
+  } else if (hasFlattenedFormat) {
+    physicalSymptoms = assessment?.physical_symptoms || [];
+    emotionalSymptoms = assessment?.emotional_symptoms || [];
+    recommendations = assessment?.recommendations || [];
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 ">
@@ -119,7 +162,7 @@ export default function AssessmentDetailsPage() {
                 Assessment Details
               </h1>
               <p className="text-sm text-gray-500 dark:text-slate-200">
-                {formatDate(assessmentData.date)}
+                {formatDate(hasLegacyFormat ? assessmentData.date : assessment?.created_at)}
               </p>
             </div>
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800">
