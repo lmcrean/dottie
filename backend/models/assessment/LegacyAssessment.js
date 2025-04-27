@@ -52,7 +52,6 @@ class LegacyAssessment extends AssessmentBase {
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(inserted);
     } catch (error) {
-      console.error('Error creating assessment:', error);
       throw error;
     }
   }
@@ -105,7 +104,6 @@ class LegacyAssessment extends AssessmentBase {
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(updated);
     } catch (error) {
-      console.error('Error updating assessment:', error);
       throw error;
     }
   }
@@ -128,7 +126,6 @@ class LegacyAssessment extends AssessmentBase {
           : record.assessment_data;
       }
     } catch (error) {
-      console.error(`Failed to parse assessment_data for record ${record.id}:`, error);
       assessmentData = {};
     }
     
@@ -148,6 +145,18 @@ class LegacyAssessment extends AssessmentBase {
       emotional_symptoms: (assessmentData.symptoms?.emotional || []),
       recommendations: (assessmentData.recommendations || [])
     };
+  }
+
+  /**
+   * Check if this class can process the given record format
+   * @param {Object} record - Database record
+   * @returns {boolean} True if this class can process the record
+   */
+  static _canProcessRecord(record) {
+    // Legacy format must have assessment_data field
+    const isLegacy = !!record.assessment_data;
+    
+    return isLegacy;
   }
 }
 
