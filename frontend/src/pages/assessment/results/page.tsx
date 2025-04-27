@@ -215,6 +215,15 @@ export default function ResultsPage() {
   const [flowLevel, setFlowLevel] = useState<string>("");
   const [painLevel, setPainLevel] = useState<string>("");
   const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [categorizedSymptoms, setCategorizedSymptoms] = useState<{
+    physical: string[];
+    emotional: string[];
+    other: string[];
+  }>({
+    physical: [],
+    emotional: [],
+    other: []
+  });
 
   const { transformToFlattenedFormat } = useAssessmentResult();
 
@@ -242,6 +251,7 @@ export default function ResultsPage() {
     const storedFlowLevel = sessionStorage.getItem("flowLevel");
     const storedPainLevel = sessionStorage.getItem("painLevel");
     const storedSymptoms = sessionStorage.getItem("symptoms");
+    const storedCategorizedSymptoms = sessionStorage.getItem("symptoms_categorized");
     const storedCyclePredictable = sessionStorage.getItem("cyclePredictable");
 
     if (storedAge) setAge(storedAge);
@@ -249,11 +259,20 @@ export default function ResultsPage() {
     if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
     if (storedFlowLevel) setFlowLevel(storedFlowLevel);
     if (storedPainLevel) setPainLevel(storedPainLevel);
+    
     if (storedSymptoms) {
       try {
         setSymptoms(JSON.parse(storedSymptoms));
       } catch (e) {
-        console.error("Error parsing symptoms:", e);
+        // console.error("Error parsing symptoms:", e); // Removed log
+      }
+    }
+    
+    if (storedCategorizedSymptoms) {
+      try {
+        const parsedCategorizedSymptoms = JSON.parse(storedCategorizedSymptoms);
+        setCategorizedSymptoms(parsedCategorizedSymptoms);
+      } catch (e) {
       }
     }
 
@@ -465,8 +484,8 @@ export default function ResultsPage() {
         flowHeaviness: flowLevel,
         painLevel: painLevel || "Not provided",
         symptoms: {
-          physical: symptoms || [],
-          emotional: [],
+          physical: [...categorizedSymptoms.physical, ...categorizedSymptoms.other],
+          emotional: categorizedSymptoms.emotional,
         },
         recommendations:
           patternInfo?.recommendations?.map((rec) => ({
