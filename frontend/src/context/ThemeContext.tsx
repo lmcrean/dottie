@@ -24,8 +24,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    console.log("Theme applied:", dark ? "dark" : "light");
-    console.log("HTML classes:", document.documentElement.className);
   };
 
   // Initialize theme based on system preference or localStorage
@@ -35,7 +33,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     // Check localStorage first
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     if (savedTheme) {
-      console.log("Found saved theme:", savedTheme);
       setIsDarkMode(savedTheme === 'dark');
       applyThemeToHTML(savedTheme === 'dark');
       return;
