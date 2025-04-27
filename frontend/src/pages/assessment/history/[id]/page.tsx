@@ -13,6 +13,29 @@ import { Assessment } from "@/src/api/assessment/types";
 import { assessmentApi } from "@/src/api/assessment";
 import { toast } from "sonner";
 
+/**
+ * Helper function to ensure symptoms are arrays
+ * Handles case where API might return symptoms as JSON strings instead of arrays
+ */
+const ensureArrayFormat = (data: any): string[] => {
+  if (!data) return [];
+  
+  // Already an array
+  if (Array.isArray(data)) return data;
+  
+  // String that might be JSON
+  if (typeof data === 'string') {
+    try {
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  
+  return [];
+};
+
 export default function AssessmentDetailsPage() {
   const { id } = useParams();
   const [assessment, setAssessment] = useState<Assessment | null>(null);
@@ -28,7 +51,11 @@ export default function AssessmentDetailsPage() {
 
       try {
         const data = await assessmentApi.getById(id);
-        setAssessment(data);
+        if (data) {
+          data.physical_symptoms = ensureArrayFormat(data.physical_symptoms);
+          data.emotional_symptoms = ensureArrayFormat(data.emotional_symptoms);
+          setAssessment(data);
+        }
       } catch (error) {
         toast.error("Failed to load assessment details");
       } finally {
@@ -139,8 +166,9 @@ export default function AssessmentDetailsPage() {
     emotionalSymptoms = assessmentData.symptoms?.emotional || [];
     recommendations = assessmentData.recommendations || [];
   } else if (hasFlattenedFormat) {
-    physicalSymptoms = assessment?.physical_symptoms || [];
-    emotionalSymptoms = assessment?.emotional_symptoms || [];
+    // Ensure we're getting arrays, parse if needed
+    physicalSymptoms = ensureArrayFormat(assessment?.physical_symptoms) || [];
+    emotionalSymptoms = ensureArrayFormat(assessment?.emotional_symptoms) || [];
     recommendations = assessment?.recommendations || [];
   }
 
