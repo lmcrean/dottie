@@ -56,12 +56,7 @@ export default function HistoryPage() {
       try {
         const data = await assessmentApi.list();
         setAssessments(data);
-        console.log("Fetched assessments:", data);
         // Additional debugging for first assessment structure
-        if (data.length > 0) {
-          console.log("First assessment structure:", JSON.stringify(data[0], null, 2));
-          console.log("Using flattened fields:", !data[0].assessment_data);
-        }
         setError(null);
       } catch (error) {
         console.error("Error fetching assessments:", error);
