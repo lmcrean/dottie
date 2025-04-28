@@ -25,12 +25,29 @@ class AssessmentBase {
       
       if (!assessment) return null;
       
+      // Check if this class can handle this format
+      // This should be overridden by subclasses
+      if (!this._canProcessRecord(assessment)) {
+        return null;
+      }
+      
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(assessment);
     } catch (error) {
-      console.error('Error finding assessment by ID:', error);
       throw error;
     }
+  }
+
+  /**
+   * Check if this class can process the given record format
+   * Must be implemented by subclasses
+   * @param {Object} record - Database record
+   * @returns {boolean} True if this class can process the record
+   */
+  static _canProcessRecord(record) {
+    // Base implementation always returns false
+    // Subclasses should override with specific format checks
+    return false;
   }
 
   /**
@@ -43,7 +60,7 @@ class AssessmentBase {
       // Use in-memory store for tests
       if (isTestMode) {
         return Object.values(testAssessments)
-          .filter(assessment => assessment.userId === userId);
+          .filter(assessment => assessment.user_id === userId);
       }
       
       // Get all assessments for user
@@ -52,7 +69,6 @@ class AssessmentBase {
       // Transform each record to API format
       return assessments.map(assessment => this._transformDbRecordToApiResponse(assessment));
     } catch (error) {
-      console.error('Error listing assessments by user:', error);
       throw error;
     }
   }
@@ -76,7 +92,6 @@ class AssessmentBase {
       
       return await DbService.delete('assessments', id);
     } catch (error) {
-      console.error('Error deleting assessment:', error);
       throw error;
     }
   }
@@ -91,7 +106,7 @@ class AssessmentBase {
     try {
       // Test mode check
       if (isTestMode && testAssessments[assessmentId]) {
-        return testAssessments[assessmentId].userId === userId;
+        return testAssessments[assessmentId].user_id === userId;
       }
       
       // Database check using DbService
@@ -104,7 +119,6 @@ class AssessmentBase {
       
       return false;
     } catch (error) {
-      console.error('Error validating ownership:', error);
       throw error;
     }
   }

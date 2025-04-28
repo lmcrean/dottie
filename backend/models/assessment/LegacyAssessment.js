@@ -15,12 +15,23 @@ class LegacyAssessment extends AssessmentBase {
       const now = new Date();
 
       if (isTestMode) {
+        const nestedData = assessmentData.assessment_data || assessmentData;
+        
+        // Create with snake_case keys and flattened structure
         const assessment = {
           id,
-          userId,
-          assessmentData,
-          createdAt: now,
-          updatedAt: now
+          user_id: userId,
+          created_at: now,
+          updated_at: now,
+          age: nestedData.age,
+          pattern: nestedData.pattern,
+          cycle_length: nestedData.cycleLength,
+          period_duration: nestedData.periodDuration,
+          flow_heaviness: nestedData.flowHeaviness,
+          pain_level: nestedData.painLevel,
+          physical_symptoms: nestedData.symptoms?.physical || [],
+          emotional_symptoms: nestedData.symptoms?.emotional || [],
+          recommendations: nestedData.recommendations || []
         };
         testAssessments[id] = assessment;
         return assessment;
@@ -41,7 +52,6 @@ class LegacyAssessment extends AssessmentBase {
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(inserted);
     } catch (error) {
-      console.error('Error creating assessment:', error);
       throw error;
     }
   }
@@ -62,10 +72,21 @@ class LegacyAssessment extends AssessmentBase {
           throw new Error(`Assessment with ID ${id} not found`);
         }
 
+        const nestedData = assessmentData.assessment_data || assessmentData;
+        
+        // Update with snake_case keys and flattened structure
         testAssessments[id] = {
           ...testAssessments[id],
-          assessmentData,
-          updatedAt: now
+          updated_at: now,
+          age: nestedData.age,
+          pattern: nestedData.pattern,
+          cycle_length: nestedData.cycleLength,
+          period_duration: nestedData.periodDuration,
+          flow_heaviness: nestedData.flowHeaviness,
+          pain_level: nestedData.painLevel,
+          physical_symptoms: nestedData.symptoms?.physical || [],
+          emotional_symptoms: nestedData.symptoms?.emotional || [],
+          recommendations: nestedData.recommendations || []
         };
 
         return testAssessments[id];
@@ -83,7 +104,6 @@ class LegacyAssessment extends AssessmentBase {
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(updated);
     } catch (error) {
-      console.error('Error updating assessment:', error);
       throw error;
     }
   }
@@ -96,25 +116,47 @@ class LegacyAssessment extends AssessmentBase {
   static _transformDbRecordToApiResponse(record) {
     if (!record) return null;
     
-    let assessmentData;
+    let assessmentData = {};
     
     try {
       // Parse JSON if stored as string
-      assessmentData = typeof record.assessment_data === 'string'
-        ? JSON.parse(record.assessment_data)
-        : record.assessment_data;
+      if (record.assessment_data) {
+        assessmentData = typeof record.assessment_data === 'string'
+          ? JSON.parse(record.assessment_data)
+          : record.assessment_data;
+      }
     } catch (error) {
-      console.error(`Failed to parse assessment_data for record ${record.id}:`, error);
       assessmentData = {};
     }
     
+    // Convert to flattened format with snake_case
     return {
       id: record.id,
-      userId: record.user_id,
-      assessmentData,
-      createdAt: record.created_at,
-      updatedAt: record.updated_at
+      user_id: record.user_id,
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+      age: assessmentData.age || record.age,
+      pattern: assessmentData.pattern || record.pattern,
+      cycle_length: assessmentData.cycleLength || record.cycle_length,
+      period_duration: assessmentData.periodDuration || record.period_duration,
+      flow_heaviness: assessmentData.flowHeaviness || record.flow_heaviness,
+      pain_level: assessmentData.painLevel || record.pain_level,
+      physical_symptoms: (assessmentData.symptoms?.physical || []),
+      emotional_symptoms: (assessmentData.symptoms?.emotional || []),
+      recommendations: (assessmentData.recommendations || [])
     };
+  }
+
+  /**
+   * Check if this class can process the given record format
+   * @param {Object} record - Database record
+   * @returns {boolean} True if this class can process the record
+   */
+  static _canProcessRecord(record) {
+    // Legacy format must have assessment_data field
+    const isLegacy = !!record.assessment_data;
+    
+    return isLegacy;
   }
 }
 

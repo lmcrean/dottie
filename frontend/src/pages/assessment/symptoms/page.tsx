@@ -57,7 +57,7 @@ export default function SymptomsPage() {
       symptomsList[Math.floor(Math.random() * symptomsList.length)].id;
     setRefTarget(random);
 
-    console.log("Auto-select triggered", random);
+
   }, [isQuickResponse]);
 
   useEffect(() => {

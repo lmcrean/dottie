@@ -1,4 +1,4 @@
-import { getList, getById, postSend, putUpdate, deleteById as deleteAssessment } from "./requests";
+import { getList, getById, postSend, deleteById as deleteAssessment } from "./requests";
 
 // Export types
 export * from "./types";
@@ -8,7 +8,6 @@ export {
   getList,
   getById,
   postSend as sendAssessment,
-  putUpdate as update,
   deleteAssessment
 };
 
@@ -17,7 +16,6 @@ export const assessmentApi = {
   list: getList,
   getById,
   sendAssessment: postSend,
-  update: putUpdate,
   delete: deleteAssessment
 };
 

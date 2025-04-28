@@ -22,11 +22,6 @@ const createAssessmentApi = (axiosInstance: any) => {
       return response.data;
     },
     
-    update: async (id: string, assessmentData: any) => {
-      const response = await axiosInstance.put(`/api/assessment/${id}`, assessmentData);
-      return response.data;
-    },
-    
     delete: async (id: string) => {
       const response = await axiosInstance.delete(`/api/assessment/${id}`);
       return response.data;
@@ -43,14 +38,12 @@ describe('AssessmentAPIImplementation', () => {
   
   const mockAssessmentData = {
     age: "18-24",
-    cycleLength: "26-30",
-    periodDuration: "4-5",
-    flowHeaviness: "moderate",
-    painLevel: "moderate",
-    symptoms: {
-      physical: ["Bloating", "Headaches"],
-      emotional: ["Mood swings", "Irritability"]
-    }
+    cycle_length: "26-30",
+    period_duration: "4-5",
+    flow_heaviness: "moderate",
+    pain_level: "moderate",
+    physical_symptoms: ["Bloating", "Headaches"],
+    emotional_symptoms: ["Mood swings", "Irritability"]
   };
 
   const mockAssessmentResponse = {
@@ -65,13 +58,9 @@ describe('AssessmentAPIImplementation', () => {
 
   const mockAssessmentDetail = {
     id: "assessment-123",
-    data: {
-      age: "18_24",
-      symptoms: {
-        physical: ["Bloating"],
-        emotional: ["Mood swings"]
-      }
-    }
+    age: "18_24",
+    physical_symptoms: ["Bloating"],
+    emotional_symptoms: ["Mood swings"]
   };
 
   beforeEach(() => {
@@ -160,21 +149,6 @@ describe('AssessmentAPIImplementation', () => {
       
       expect(mockAxios.get).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`);
       expect(result).toEqual(mockAssessmentDetail);
-    });
-  });
-
-  describe('assessmentApi.update', () => {
-    it('should update assessment and return success message', async () => {
-      const assessmentId = "assessment-123";
-      const updateData = {
-        flowHeaviness: "heavy",
-        painLevel: "severe"
-      };
-      
-      const result = await assessmentApi.update(assessmentId, updateData);
-      
-      expect(mockAxios.put).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`, updateData);
-      expect(result.message).toBe("Assessment updated");
     });
   });
 

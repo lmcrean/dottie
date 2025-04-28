@@ -1,17 +1,24 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { deleteById } from '../../Request';
 import { apiClient } from '../../../../../core/apiClient';
+import { getUserData } from '../../../../../core/tokenManager';
 
-// Mock the apiClient
+// Mock the apiClient and tokenManager
 vi.mock('../../../../../core/apiClient', () => ({
   apiClient: {
     delete: vi.fn(),
   },
 }));
 
+vi.mock('../../../../../core/tokenManager', () => ({
+  getUserData: vi.fn(),
+}));
+
 describe('deleteById request', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock getUserData to return a valid user
+    (getUserData as any).mockReturnValue({ id: 'user123' });
   });
 
   afterEach(() => {
@@ -27,7 +34,7 @@ describe('deleteById request', () => {
     
     // Assert
     expect(apiClient.delete).toHaveBeenCalledTimes(1);
-    expect(apiClient.delete).toHaveBeenCalledWith('/api/assessment/123');
+    expect(apiClient.delete).toHaveBeenCalledWith('/api/assessment/user123/123');
   });
 
   it('should throw an error when the request fails', async () => {
@@ -38,7 +45,15 @@ describe('deleteById request', () => {
     // Act & Assert
     await expect(deleteById('123')).rejects.toThrow('Network error');
     expect(apiClient.delete).toHaveBeenCalledTimes(1);
-    expect(apiClient.delete).toHaveBeenCalledWith('/api/assessment/123');
+    expect(apiClient.delete).toHaveBeenCalledWith('/api/assessment/user123/123');
+  });
+
+  it('should throw an error when user data is not available', async () => {
+    // Arrange
+    (getUserData as any).mockReturnValue(null);
+    
+    // Act & Assert
+    await expect(deleteById('123')).rejects.toThrow('User ID not found');
   });
 
   it('should propagate the original error', async () => {

@@ -17,7 +17,6 @@ vi.mock('../../../core/apiClient', () => ({
 
 // Import after mocking
 import { apiClient } from '../../../core/apiClient';
-import { putUpdate } from '../../requests/putUpdate/Request';
 import { deleteById } from '../../requests/deleteById/Request';
 
 describe('Assessment API Endpoints', () => {
@@ -29,33 +28,6 @@ describe('Assessment API Endpoints', () => {
     vi.mocked(tokenManager.getAuthToken).mockReturnValue('mock-token');
     vi.mocked(apiClient.put).mockResolvedValue({ data: { message: "Success" } });
     vi.mocked(apiClient.delete).mockResolvedValue({ data: { message: "Success" } });
-  });
-
-  describe('PUT update assessment', () => {
-    it('should call the correct endpoint with userId and assessmentId', async () => {
-      // Arrange
-      const assessmentId = "assessment-123";
-      const updateData = { flowHeaviness: "heavy" };
-      
-      // Act
-      await putUpdate(assessmentId, updateData);
-      
-      // Assert - This should pass with our changes
-      expect(apiClient.put).toHaveBeenCalledWith(
-        `/api/assessment/${mockUserData.id}/${assessmentId}`,
-        updateData
-      );
-    });
-
-    it('should throw error when user data is not available', async () => {
-      // Arrange
-      const assessmentId = "assessment-123";
-      const updateData = { flowHeaviness: "heavy" };
-      vi.mocked(tokenManager.getUserData).mockReturnValue(null);
-      
-      // Act & Assert
-      await expect(putUpdate(assessmentId, updateData)).rejects.toThrow('User ID not found');
-    });
   });
 
   describe('DELETE assessment', () => {

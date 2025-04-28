@@ -6,7 +6,7 @@ import { Assessment } from "../../types";
  * @endpoint /api/assessment/send (POST)
  */
 export const postSend = async (
-  assessmentData: Omit<Assessment, "id">
+  assessmentData: Omit<Assessment, "id" | "user_id" | "created_at" | "updated_at">
 ): Promise<Assessment> => {
   try {
     // Send assessment data wrapped in an assessmentData property

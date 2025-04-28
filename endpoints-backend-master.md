@@ -23,7 +23,6 @@
 | `/api/assessment/send` | POST | Send assessment results from frontend context, generates a new assessmentId |
 | `/api/assessment/list` | GET | Get list of all assessments for the authenticated user |
 | `/api/assessment/:id` | GET | Get detailed view of a specific assessment by ID |
-| `/api/assessment/:id` | PUT | Update a specific assessment by ID |
 | `/api/assessment/:id` | DELETE | Delete a specific assessment by ID |
 
 

@@ -24,18 +24,15 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    console.log("Theme applied:", dark ? "dark" : "light");
-    console.log("HTML classes:", document.documentElement.className);
   };
 
   // Initialize theme based on system preference or localStorage
   useEffect(() => {
-    console.log("ThemeProvider mounted");
+
     
     // Check localStorage first
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     if (savedTheme) {
-      console.log("Found saved theme:", savedTheme);
       setIsDarkMode(savedTheme === 'dark');
       applyThemeToHTML(savedTheme === 'dark');
       return;
@@ -43,7 +40,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     
     // Then check OS preference
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    console.log("OS prefers dark:", prefersDark);
+
     setIsDarkMode(prefersDark);
     applyThemeToHTML(prefersDark);
   }, []);
@@ -55,7 +52,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const handleChange = (e: MediaQueryListEvent) => {
       // Only auto-switch if no manual preference is saved
       if (!localStorage.getItem('theme')) {
-        console.log("OS theme changed:", e.matches ? "dark" : "light");
+
         setIsDarkMode(e.matches);
         applyThemeToHTML(e.matches);
       }
@@ -68,14 +65,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const toggleTheme = (): void => {
     const newDarkMode = !isDarkMode;
     const newTheme: Theme = newDarkMode ? 'dark' : 'light';
-    console.log("Toggling theme to:", newTheme);
+
     setIsDarkMode(newDarkMode);
     applyThemeToHTML(newDarkMode);
     localStorage.setItem('theme', newTheme);
   };
 
   const setTheme = (theme: Theme): void => {
-    console.log("Setting theme to:", theme);
+
     const isDark = theme === 'dark';
     setIsDarkMode(isDark);
     applyThemeToHTML(isDark);

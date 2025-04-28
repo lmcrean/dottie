@@ -15,20 +15,36 @@ class FlattenedAssessment extends AssessmentBase {
       const now = new Date();
 
       if (isTestMode) {
+        // Extract data for flattened format and create with snake_case keys
+        const {
+          age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+          physical_symptoms, emotional_symptoms, recommendations
+        } = assessmentData;
+        
         const assessment = {
           id,
-          userId,
-          assessmentData,
-          createdAt: now,
-          updatedAt: now
+          user_id: userId,
+          created_at: now,
+          updated_at: now,
+          age,
+          pattern,
+          cycle_length,
+          period_duration,
+          flow_heaviness,
+          pain_level,
+          physical_symptoms: physical_symptoms || [],
+          emotional_symptoms: emotional_symptoms || [],
+          recommendations: recommendations || []
         };
+        
         testAssessments[id] = assessment;
         return assessment;
       }
 
       // Extract data for flattened format
       const {
-        age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+        physical_symptoms, emotional_symptoms, recommendations
       } = assessmentData;
       
       // Use new flattened format
@@ -36,19 +52,18 @@ class FlattenedAssessment extends AssessmentBase {
         id,
         user_id: userId,
         created_at: now,
-        updated_at: now,
         
         // Flattened fields
         age,
         pattern,
-        cycle_length: cycleLength,
-        period_duration: periodDuration,
-        flow_heaviness: flowHeaviness,
-        pain_level: painLevel,
+        cycle_length,
+        period_duration,
+        flow_heaviness,
+        pain_level,
         
         // Array fields as JSON strings
-        physical_symptoms: symptoms?.physical ? JSON.stringify(symptoms.physical) : null,
-        emotional_symptoms: symptoms?.emotional ? JSON.stringify(symptoms.emotional) : null,
+        physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
+        emotional_symptoms: emotional_symptoms ? JSON.stringify(emotional_symptoms) : null,
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
 
@@ -58,7 +73,6 @@ class FlattenedAssessment extends AssessmentBase {
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(inserted);
     } catch (error) {
-      console.error('Error creating assessment:', error);
       throw error;
     }
   }
@@ -79,10 +93,25 @@ class FlattenedAssessment extends AssessmentBase {
           throw new Error(`Assessment with ID ${id} not found`);
         }
 
+        // Extract data for flattened format
+        const {
+          age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+          physical_symptoms, emotional_symptoms, recommendations
+        } = assessmentData;
+        
+        // Update with snake_case keys
         testAssessments[id] = {
           ...testAssessments[id],
-          assessmentData,
-          updatedAt: now
+          updated_at: now,
+          age,
+          pattern,
+          cycle_length,
+          period_duration,
+          flow_heaviness,
+          pain_level,
+          physical_symptoms: physical_symptoms || [],
+          emotional_symptoms: emotional_symptoms || [],
+          recommendations: recommendations || []
         };
 
         return testAssessments[id];
@@ -90,7 +119,8 @@ class FlattenedAssessment extends AssessmentBase {
       
       // Extract data for flattened format
       const {
-        age, pattern, cycleLength, periodDuration, flowHeaviness, painLevel, symptoms, recommendations
+        age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
+        physical_symptoms, emotional_symptoms, recommendations
       } = assessmentData;
       
       // Use flattened format
@@ -100,14 +130,14 @@ class FlattenedAssessment extends AssessmentBase {
         // Flattened fields
         age,
         pattern,
-        cycle_length: cycleLength,
-        period_duration: periodDuration,
-        flow_heaviness: flowHeaviness,
-        pain_level: painLevel,
+        cycle_length,
+        period_duration,
+        flow_heaviness,
+        pain_level,
         
         // Array fields as JSON strings
-        physical_symptoms: symptoms?.physical ? JSON.stringify(symptoms.physical) : null,
-        emotional_symptoms: symptoms?.emotional ? JSON.stringify(symptoms.emotional) : null,
+        physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
+        emotional_symptoms: emotional_symptoms ? JSON.stringify(emotional_symptoms) : null,
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
       
@@ -117,7 +147,6 @@ class FlattenedAssessment extends AssessmentBase {
       // Transform to API format before returning
       return this._transformDbRecordToApiResponse(updated);
     } catch (error) {
-      console.error('Error updating assessment:', error);
       throw error;
     }
   }
@@ -136,57 +165,95 @@ class FlattenedAssessment extends AssessmentBase {
       return null;
     }
     
-    let physicalSymptoms = [];
-    let emotionalSymptoms = [];
+    let physical_symptoms = [];
+    let emotional_symptoms = [];
     let recommendations = [];
     
     try {
       // Parse JSON stored arrays if they exist
       if (record.physical_symptoms) {
-        physicalSymptoms = JSON.parse(record.physical_symptoms);
+        // Handle case when physical_symptoms is already an array (from test environment)
+        if (Array.isArray(record.physical_symptoms)) {
+          physical_symptoms = record.physical_symptoms;
+        } else {
+          physical_symptoms = JSON.parse(record.physical_symptoms);
+        }
       }
     } catch (error) {
-      console.error(`Failed to parse physical_symptoms for record ${record.id}:`, error);
     }
     
     try {
       if (record.emotional_symptoms) {
-        emotionalSymptoms = JSON.parse(record.emotional_symptoms);
+        // Handle case when emotional_symptoms is already an array (from test environment)
+        if (Array.isArray(record.emotional_symptoms)) {
+          emotional_symptoms = record.emotional_symptoms;
+        } else {
+          emotional_symptoms = JSON.parse(record.emotional_symptoms);
+        }
       }
     } catch (error) {
-      console.error(`Failed to parse emotional_symptoms for record ${record.id}:`, error);
     }
     
     try {
       if (record.recommendations) {
-        recommendations = JSON.parse(record.recommendations);
+        // Handle case when recommendations is already an array (from test environment)
+        if (Array.isArray(record.recommendations)) {
+          recommendations = record.recommendations;
+        } else {
+          recommendations = JSON.parse(record.recommendations);
+        }
+        
+        // Ensure recommendations have title and description
+        if (Array.isArray(recommendations) && recommendations.length > 0) {
+          // If recommendations are strings, convert to objects with title and description
+          if (typeof recommendations[0] === 'string') {
+            recommendations = recommendations.map(rec => ({
+              title: rec,
+              description: ''
+            }));
+          }
+        }
       }
     } catch (error) {
-      console.error(`Failed to parse recommendations for record ${record.id}:`, error);
     }
     
-    // Construct nested assessment data from flattened fields
-    const assessmentData = {
-      age: record.age,
-      pattern: record.pattern,
-      cycleLength: record.cycle_length,
-      periodDuration: record.period_duration,
-      flowHeaviness: record.flow_heaviness,
-      painLevel: record.pain_level,
-      symptoms: {
-        physical: physicalSymptoms,
-        emotional: emotionalSymptoms
-      },
-      recommendations
-    };
+    // Ensure physical_symptoms and emotional_symptoms are arrays
+    if (!Array.isArray(physical_symptoms)) {
+      physical_symptoms = [];
+    }
     
+    if (!Array.isArray(emotional_symptoms)) {
+      emotional_symptoms = [];
+    }
+    
+    // Return flattened format with all fields in snake_case
     return {
       id: record.id,
-      userId: record.user_id,
-      assessmentData,
-      createdAt: record.created_at,
-      updatedAt: record.updated_at
+      user_id: record.user_id,
+      created_at: record.created_at,
+      age: record.age,
+      pattern: record.pattern,
+      cycle_length: record.cycle_length,
+      period_duration: record.period_duration,
+      flow_heaviness: record.flow_heaviness,
+      pain_level: record.pain_level,
+      physical_symptoms,
+      emotional_symptoms,
+      recommendations
     };
+  }
+
+  /**
+   * Check if this class can process the given record format
+   * @param {Object} record - Database record
+   * @returns {boolean} True if this class can process the record
+   */
+  static _canProcessRecord(record) {
+    // Flattened format has direct fields and NO assessment_data
+    const hasDirectFields = record.age || record.pattern || record.cycle_length;
+    const isFlattened = !record.assessment_data && hasDirectFields;
+    
+    return isFlattened;
   }
 }
 
