@@ -22,7 +22,7 @@
     "test:prod": "vitest run -t prod",
     "test:prod:watch": "vitest -t prod",
     "test:pattern": "vitest run -t",
-    "vercel-build": "node scripts/vercel-build.js",
+    "vercel-build": "node services/vercel-build.js",
     "___test workflow____": "___test workflow using vitest and test driven development____",
     "___STATUS:PASSED____": "___the following tests have passed____",
     "test:setup:unit": "vitest run routes/setup/__tests__/unit",
