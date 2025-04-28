@@ -1,5 +1,6 @@
 import { apiClient } from "../../../core/apiClient";
 import { SignupInput, AuthResponse } from "../../types";
+import axios, { AxiosError } from "axios";
 
 /**
  * Register a new user
@@ -55,10 +56,13 @@ export const postSignup = async (userData: SignupInput): Promise<AuthResponse> =
   } catch (error) {
     console.error('Signup failed:', error);
     // More detailed error logging
-    if (error.response) {
-      console.error('Error response data:', error.response.data);
-      console.error('Error response status:', error.response.status);
-      console.error('Error response headers:', error.response.headers);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Error response data:', axiosError.response.data);
+        console.error('Error response status:', axiosError.response.status);
+        console.error('Error response headers:', axiosError.response.headers);
+      }
     }
     throw error;
   }
