@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,14 +8,14 @@ import {
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { Input } from '@/src/components/ui/!to-migrate/input';
 import { ScrollArea } from '@/src/components/ui/!to-migrate/scroll-area';
-import { Send, Loader2, X, MessageCircle, Maximize2 } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Maximize2 } from 'lucide-react';
 import { getAIFeedback } from '@/src/services/ai';
 
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialMessage?: string;
-  setIsFullscreen?: (isFullscreen: boolean) => void;
+  setIsFullscreen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Message {
@@ -120,7 +120,9 @@ export function ChatModal({ isOpen, onClose, initialMessage, setIsFullscreen }: 
                 <div className="flex h-full flex-col items-center justify-center p-8 text-center text-gray-500">
                   <MessageCircle className="mb-4 h-12 w-12 text-pink-200" />
                   <h3 className="mb-2 text-lg font-medium">Ask Dottie anything</h3>
-                  <p className="text-sm">I'm here to help with your menstrual health questions</p>
+                  <p className="text-sm">
+                    {"I'm here to help with your menstrual health questions"}
+                  </p>
                 </div>
               )}
               {messages.map((message, index) => (

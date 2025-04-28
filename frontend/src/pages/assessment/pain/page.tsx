@@ -7,7 +7,6 @@ import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
 import { RadioGroup, RadioGroupItem } from '@/src/components/ui/!to-migrate/radio-group';
 import { Label } from '@/src/components/ui/!to-migrate/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
-import UserIcon from '@/src/components/navigation/UserIcon';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../page-transitions';
 
@@ -96,7 +95,7 @@ export default function PainPage() {
                       <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
                         <div className="font-medium">No Pain</div>
                         <p className="text-sm text-gray-500">
-                          I don't experience any discomfort during my period
+                          {" I don't experience any discomfort during my period"}
                         </p>
                       </Label>
                     </div>
@@ -116,7 +115,7 @@ export default function PainPage() {
                       <Label htmlFor="mild" className="flex-1 cursor-pointer">
                         <div className="font-medium">Mild</div>
                         <p className="text-sm text-gray-500">
-                          Noticeable but doesn't interfere with daily activities
+                          {"Noticeable but doesn't interfere with daily activities"}
                         </p>
                       </Label>
                     </div>
@@ -213,9 +212,9 @@ export default function PainPage() {
                 <div>
                   <h3 className="mb-1 font-semibold text-gray-800">About Menstrual Pain</h3>
                   <p className="text-sm text-gray-600">
-                    Mild to moderate menstrual cramps (dysmenorrhea) are common. They're caused by
+                    {`Mild to moderate menstrual cramps (dysmenorrhea) are common. They're caused by
                     substances called prostaglandins that help the uterus contract to shed its
-                    lining.
+                    lining.`}
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
                     Severe pain that disrupts your life may be a sign of conditions like

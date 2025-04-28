@@ -5,10 +5,11 @@ import { clearAllTokens, getRefreshToken } from '../../../core/tokenManager';
  * Logout user and clear all tokens
  * @endpoint /api/auth/logout (POST)
  */
-export const postLogout = async (userId: string = ''): Promise<{ success: boolean }> => {
+export const postLogout = async (): Promise<{ success: boolean }> => {
   const refreshToken = getRefreshToken();
   try {
-    const response = await apiClient.post('/api/auth/logout', { refreshToken });
+    await apiClient.post('/api/auth/logout', { refreshToken });
+
     // Clear all tokens using the token manager
     clearAllTokens();
 

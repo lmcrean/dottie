@@ -47,11 +47,7 @@ const passwordUpdateSchema = z
 
 type PasswordUpdateFormValues = z.infer<typeof passwordUpdateSchema>;
 
-interface PasswordFormProps {
-  userId: string;
-}
-
-export function PasswordForm({ userId }: PasswordFormProps) {
+export function PasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
@@ -118,7 +114,8 @@ export function PasswordForm({ userId }: PasswordFormProps) {
       <CardHeader>
         <CardTitle>Update Password</CardTitle>
         <CardDescription>
-          Change your account password. After saving, you'll need to use the new password to log in.
+          {`Change your account password. After saving, 
+          you'll need to use the new password to log in.`}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -142,6 +139,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
                       register={form.register}
                       isVisible={passwordVisibility.current}
                       toggleVisibility={() => togglePasswordVisibility('current')}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -161,6 +159,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
                       register={form.register}
                       isVisible={passwordVisibility.new}
                       toggleVisibility={() => togglePasswordVisibility('new')}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>Password must be at least 8 characters.</FormDescription>
@@ -181,6 +180,7 @@ export function PasswordForm({ userId }: PasswordFormProps) {
                       register={form.register}
                       isVisible={passwordVisibility.confirm}
                       toggleVisibility={() => togglePasswordVisibility('confirm')}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

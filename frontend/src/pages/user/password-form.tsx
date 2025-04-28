@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 export default function PasswordForm() {
@@ -70,14 +70,16 @@ export default function PasswordForm() {
         newPassword: '',
         confirmPassword: ''
       });
-    } catch (error: any) {
-      console.error('Error updating password:', error);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error('Error updating password:', error.response);
 
-      if (error.response?.status === 401) {
-        setErrors({ currentPassword: 'Current password is incorrect' });
-        toast.error('Current password is incorrect');
-      } else {
-        toast.error('Failed to update password');
+        if (error.response?.status === 401) {
+          setErrors({ currentPassword: 'Current password is incorrect' });
+          toast.error('Current password is incorrect');
+        } else {
+          toast.error('Failed to update password');
+        }
       }
     } finally {
       setIsLoading(false);

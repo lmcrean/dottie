@@ -1,5 +1,3 @@
-import { UserSchema } from './schemas';
-
 // User Types
 export interface UserProfile {
   id: string;

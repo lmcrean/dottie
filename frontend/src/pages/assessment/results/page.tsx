@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
-import { MessageCircle, Heart, ChevronRight, DotIcon, Save, Share2, Download } from 'lucide-react';
+import { MessageCircle, Save, Share2, Download } from 'lucide-react';
 
 import { useEffect, useState } from 'react';
 import { ChatModal } from '@/src/pages/chat/page';
@@ -9,7 +9,6 @@ import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
 import { toast } from 'sonner';
 import { Assessment } from '@/src/api/assessment/types';
 import { postSend } from '@/src/api/assessment/requests/postSend/Request';
-import UserIcon from '@/src/components/navigation/UserIcon';
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
@@ -339,52 +338,52 @@ export default function ResultsPage() {
   const patternInfo = patternData[pattern];
 
   // Calculate progress bar widths based on values
-  const getProgressWidth = (value: string): string => {
-    if (!value) return '0%';
+  // const getProgressWidth = (value: string): string => {
+  //   if (!value) return '0%';
 
-    // Make sure value is a string for consistent handling
-    const val = String(value).trim().toLowerCase();
+  //   // Make sure value is a string for consistent handling
+  //   const val = String(value).trim().toLowerCase();
 
-    // Age handling
-    if (val === '13-17') return '25%';
-    if (val === '18-24') return '35%';
-    if (val.includes('25')) return '45%'; // Handle "25+", "25-plus", etc.
-    if (val.includes('35')) return '65%'; // Handle "35+", "35-plus", etc.
-    if (val.includes('45')) return '85%'; // Handle "45+", "45-plus", etc.
+  //   // Age handling
+  //   if (val === '13-17') return '25%';
+  //   if (val === '18-24') return '35%';
+  //   if (val.includes('25')) return '45%'; // Handle "25+", "25-plus", etc.
+  //   if (val.includes('35')) return '65%'; // Handle "35+", "35-plus", etc.
+  //   if (val.includes('45')) return '85%'; // Handle "45+", "45-plus", etc.
 
-    // Cycle length handling
-    if (val.includes('less than 21')) return '20%';
-    if (val.includes('21-25') || val === '21-25 days') return '30%';
-    if (val.includes('26-30')) return '45%';
-    if (val.includes('31-35')) return '60%';
-    if (val.includes('36-40')) return '75%';
-    if (val.includes('more than 45') || val.includes('45+')) return '100%';
-    if (val.includes('irregular')) return '50%';
+  //   // Cycle length handling
+  //   if (val.includes('less than 21')) return '20%';
+  //   if (val.includes('21-25') || val === '21-25 days') return '30%';
+  //   if (val.includes('26-30')) return '45%';
+  //   if (val.includes('31-35')) return '60%';
+  //   if (val.includes('36-40')) return '75%';
+  //   if (val.includes('more than 45') || val.includes('45+')) return '100%';
+  //   if (val.includes('irregular')) return '50%';
 
-    // Period duration handling
-    if (val.includes('1-2')) return '20%';
-    if (val.includes('3-4')) return '40%';
-    if (val.includes('5-7')) return '60%';
-    if (val.includes('8+') || val.includes('8-plus') || val.includes('more than 7')) return '100%';
+  //   // Period duration handling
+  //   if (val.includes('1-2')) return '20%';
+  //   if (val.includes('3-4')) return '40%';
+  //   if (val.includes('5-7')) return '60%';
+  //   if (val.includes('8+') || val.includes('8-plus') || val.includes('more than 7')) return '100%';
 
-    // Flow level handling
-    if (val === 'light' || val.includes('light')) return '25%';
-    if (val === 'moderate' || val.includes('moderate')) return '50%';
-    if (val === 'heavy' || val.includes('heavy')) return '75%';
-    if (val.includes('very heavy') || val === 'very-heavy') return '100%';
+  //   // Flow level handling
+  //   if (val === 'light' || val.includes('light')) return '25%';
+  //   if (val === 'moderate' || val.includes('moderate')) return '50%';
+  //   if (val === 'heavy' || val.includes('heavy')) return '75%';
+  //   if (val.includes('very heavy') || val === 'very-heavy') return '100%';
 
-    // Pain level handling
-    if (val === 'mild' || val.includes('mild')) return '25%';
-    if (val === 'moderate' || val.includes('moderate')) return '50%';
-    if (val === 'severe' || val.includes('severe')) return '75%';
-    if (val === 'debilitating' || val.includes('debilitating')) return '100%';
+  //   // Pain level handling
+  //   if (val === 'mild' || val.includes('mild')) return '25%';
+  //   if (val === 'moderate' || val.includes('moderate')) return '50%';
+  //   if (val === 'severe' || val.includes('severe')) return '75%';
+  //   if (val === 'debilitating' || val.includes('debilitating')) return '100%';
 
-    // If we couldn't match anything specific, use sensible defaults
-    if (val.includes('less than')) return '20%';
-    if (val.includes('more than')) return '80%';
+  //   // If we couldn't match anything specific, use sensible defaults
+  //   if (val.includes('less than')) return '20%';
+  //   if (val.includes('more than')) return '80%';
 
-    return '50%'; // Default value
-  };
+  //   return '50%'; // Default value
+  // };
 
   // Force progress bars to update when values change
   useEffect(() => {
@@ -458,14 +457,18 @@ export default function ResultsPage() {
         <div className="mb-8 text-center">
           <h1 className="mb-3 text-3xl font-bold dark:text-slate-100">Your Assessment Results</h1>
           <p className="text-gray-600 dark:text-slate-200">
-            Based on your responses, here's what we've found about your menstrual health.
+            {" Based on your responses, here's what we've found about your menstrual health."}
           </p>
         </div>
 
         <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
           <CardContent className="pb-8 pt-8">
             <div className="mb-8 text-center">
-              <img src={patternData[pattern].icon} className="mx-auto mb-2 h-24 w-24"></img>
+              <img
+                src={patternData[pattern].icon}
+                className="mx-auto mb-2 h-24 w-24"
+                alt="menstrual-pattern-icon"
+              />
               <h2 className="mb-2 text-2xl font-bold text-pink-600">
                 {patternData[pattern].title}
               </h2>
@@ -477,7 +480,7 @@ export default function ResultsPage() {
             <div className="mb-8 grid grid-cols-1 gap-6 dark:text-gray-900 md:grid-cols-2">
               <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
-                  <img src="/resultAssets/time.svg" className="h-[55px] w-[55px]" />
+                  <img src="/resultAssets/time.svg" className="h-[55px] w-[55px]" alt="time-icon" />
                 </div>
                 <div>
                   <h3 className="mb-2 text-lg font-medium">Age Range</h3>
@@ -486,7 +489,11 @@ export default function ResultsPage() {
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
-                  <img src="/resultAssets/calendar.svg" className="h-[55px] w-[55px]" />
+                  <img
+                    src="/resultAssets/calendar.svg"
+                    className="h-[55px] w-[55px]"
+                    alt="calendar-icon"
+                  />
                 </div>
                 <div>
                   <h3 className="mb-2 text-lg font-medium">Cycle Length</h3>
@@ -495,7 +502,7 @@ export default function ResultsPage() {
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
-                  <img src="/resultAssets/drop.svg" className="h-[55px] w-[55px]" />
+                  <img src="/resultAssets/drop.svg" className="h-[55px] w-[55px]" alt="drop-icon" />
                 </div>
                 <div>
                   <h3 className="mb-2 text-lg font-medium">Period Duration</h3>
@@ -504,7 +511,11 @@ export default function ResultsPage() {
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
-                  <img src="/resultAssets/d-drop.svg" className="h-[55px] w-[55px]" />
+                  <img
+                    src="/resultAssets/d-drop.svg"
+                    className="h-[55px] w-[55px]"
+                    alt="d-drop-icon"
+                  />
                 </div>
                 <div>
                   <h3 className="mb-2 text-lg font-medium">Flow Level</h3>
@@ -513,7 +524,11 @@ export default function ResultsPage() {
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
-                  <img src="/resultAssets/emotion.svg" className="h-[55px] w-[55px]" />
+                  <img
+                    src="/resultAssets/emotion.svg"
+                    className="h-[55px] w-[55px]"
+                    alt="emotion-icon"
+                  />
                 </div>
                 <div>
                   <h3 className="mb-2 text-lg font-medium">Pain Level</h3>
@@ -522,7 +537,11 @@ export default function ResultsPage() {
               </div>
               <div className="flex w-full max-w-full items-start gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
-                  <img src="/resultAssets/track-time.svg" className="h-[55px] w-[55px]" />
+                  <img
+                    src="/resultAssets/track-time.svg"
+                    className="h-[55px] w-[55px]"
+                    alt="track-time-icon"
+                  />
                 </div>
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
@@ -581,7 +600,7 @@ export default function ResultsPage() {
             </Button>
           </Link>
 
-          <div className="flex hidden gap-4">
+          <div className="hidden gap-4">
             <Button variant="outline" className="flex items-center gap-2 px-6 py-6 text-lg">
               <Share2 className="h-5 w-5" />
               Share

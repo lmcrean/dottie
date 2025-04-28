@@ -6,6 +6,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import { defineConfig } from 'eslint/config';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import unusedImports from 'eslint-plugin-unused-imports';
 import prettier from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
@@ -20,12 +21,18 @@ export default defineConfig([
       ' **/*.test.ts',
       '**/*.test.tsx,',
       '**/__tests__/**',
-      '**/tests/**'
+      '**/tests/**',
+      '**/test_page/**'
     ]
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-    plugins: { js, 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
+    plugins: {
+      js,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+      'unused-imports': unusedImports
+    },
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -49,9 +56,10 @@ export default defineConfig([
     rules: {
       'no-unused-vars': 'error',
       'no-undef': 'error',
-      'no-console': 'warn',
+      'no-console': 'off',
       'react/button-has-type': 'error',
       'react/react-in-jsx-scope': ['off'],
+      'unused-imports/no-unused-imports': 'error',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }]
     }
   }

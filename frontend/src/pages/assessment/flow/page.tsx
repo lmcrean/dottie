@@ -7,7 +7,6 @@ import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
 import { RadioGroup, RadioGroupItem } from '@/src/components/ui/!to-migrate/radio-group';
 import { Label } from '@/src/components/ui/!to-migrate/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
-import UserIcon from '@/src/components/navigation/UserIcon';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../page-transitions';
 
@@ -194,7 +193,7 @@ export default function FlowPage() {
                         ref={refTarget === "I'm not sure" ? radioRef : null}
                       />
                       <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                        <div className="font-medium">I'm not sure</div>
+                        <div className="font-medium">{"I'm not sure"}</div>
                         <p className="text-sm text-gray-500">
                           Need help determining flow heaviness
                         </p>

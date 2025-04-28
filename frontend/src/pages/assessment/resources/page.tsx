@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
 import { ExternalLink, Heart } from 'lucide-react';
-import UserIcon from '@/src/components/navigation/UserIcon';
 import PageTransition from '../page-transitions';
 
 export default function ResourcesPage() {
@@ -58,7 +57,7 @@ export default function ResourcesPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="mb-4 text-lg font-semibold">What's Next</h2>
+            <h2 className="mb-4 text-lg font-semibold">{`What's Next`}</h2>
 
             <div className="space-y-4">
               <Card className="mb-8 w-full shadow-md transition-shadow duration-300 hover:shadow-lg">
@@ -132,14 +131,14 @@ export default function ResourcesPage() {
                     A Note on Teen Menstrual Health
                   </h3>
                   <p className="mb-2 text-sm text-gray-600">
-                    It's completely normal for your periods to be irregular when you're first
+                    {`It's completely normal for your periods to be irregular when you're first
                     starting. For most people, it takes 2-3 years after your first period for cycles
-                    to become regular. During this time, cycle lengths can vary widely.
+                    to become regular. During this time, cycle lengths can vary widely.`}
                   </p>
                   <p className="text-sm text-gray-600">
-                    Learning about your body and tracking your cycle is a great first step towards
+                    {`   Learning about your body and tracking your cycle is a great first step towards
                     taking charge of your health. Remember that everyone's body is different, and
-                    what's "normal" varies from person to person.
+                    what's "normal" varies from person to person.`}
                   </p>
                 </div>
               </div>

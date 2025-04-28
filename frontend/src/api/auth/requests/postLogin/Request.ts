@@ -17,7 +17,9 @@ export const postLogin = async (credentials: LoginInput): Promise<AuthResponse> 
 
     // Use the centralized token manager to handle token storage
     const success = storeAuthData(response.data);
-
+    if (!success) {
+      throw new Error('Failed to store authentication data');
+    }
     return response.data;
   } catch (error) {
     console.error('Login failed:', error);

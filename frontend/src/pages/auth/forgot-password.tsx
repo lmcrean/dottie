@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import PasswordResetRequestForm from '../../pages/user/PasswordResetRequestForm';
 import AuthLayout from '../../components/AuthLayout';
+import PasswordResetRequestForm from '../../pages/user/PasswordResetRequestForm';
 
 export default function ForgotPasswordPage() {
   return (
@@ -9,7 +8,7 @@ export default function ForgotPasswordPage() {
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Forgot your password?</h1>
         <p className="text-sm text-muted-foreground">
-          No worries, we'll send you reset instructions.
+          {"No worries, we'll send you reset instructions."}
         </p>
       </div>
 

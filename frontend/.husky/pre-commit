@@ -1,1 +1,2 @@
-cd frontend && npx lint-staged
+cd frontend 
+npm run format

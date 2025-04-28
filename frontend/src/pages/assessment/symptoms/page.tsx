@@ -7,7 +7,6 @@ import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
 import { Checkbox } from '@/src/components/ui/!to-migrate/checkbox';
 import { Input } from '@/src/components/ui/!to-migrate/input';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
-import UserIcon from '@/src/components/navigation/UserIcon';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../page-transitions';
 
@@ -16,7 +15,7 @@ export default function SymptomsPage() {
   const [emotionalSymptoms, setEmotionalSymptoms] = useState<string[]>([]);
   const [otherSymptoms, setOtherSymptoms] = useState('');
   const [refTarget, setRefTarget] = useState('');
-  const symptomRef = useRef<HTMLDivElement | null>(null);
+  const symptomRef = useRef<HTMLButtonElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
 
@@ -199,9 +198,10 @@ export default function SymptomsPage() {
                 { id: 'hot-flashes', label: 'Hot flashes', emoji: '🔥' },
                 { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' }
               ].map((symptom) => (
-                <div
+                <button
+                  type="button"
                   key={symptom.id}
-                  className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                  className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
                     physicalSymptoms.includes(symptom.id)
                       ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
                       : 'hover:bg-gray-50'
@@ -217,7 +217,7 @@ export default function SymptomsPage() {
                     onCheckedChange={() => togglePhysicalSymptom(symptom.id)}
                     className="sr-only"
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -245,9 +245,10 @@ export default function SymptomsPage() {
                 },
                 { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
               ].map((symptom) => (
-                <div
+                <button
+                  type="button"
                   key={symptom.id}
-                  className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                  className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
                     emotionalSymptoms.includes(symptom.id)
                       ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
                       : 'hover:bg-gray-50'
@@ -263,7 +264,7 @@ export default function SymptomsPage() {
                     onCheckedChange={() => toggleEmotionalSymptom(symptom.id)}
                     className="sr-only"
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -284,8 +285,8 @@ export default function SymptomsPage() {
                 <div>
                   <h3 className="mb-1 font-semibold text-gray-800">About Period Symptoms</h3>
                   <p className="text-sm text-gray-600">
-                    It's normal to experience several symptoms during your menstrual cycle. Hormonal
-                    fluctuations can affect your body in many ways beyond just bleeding.
+                    {`It's normal to experience several symptoms during your menstrual cycle. Hormonal
+                    fluctuations can affect your body in many ways beyond just bleeding.`}
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
                     However, symptoms that significantly interfere with daily life are not normal

@@ -9,8 +9,6 @@ import PageTransition from '../page-transitions';
 export default function HistoryPage() {
   // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
-  // hack for type script errors
-  // const [assessments, setAssessments] = useState<any[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +35,7 @@ export default function HistoryPage() {
       if (!isValid(date)) return 'Invalid date';
       return format(date, 'MMM d, yyyy');
     } catch (error) {
+      console.warn(error);
       return 'Invalid date';
     }
   };
@@ -93,8 +92,9 @@ export default function HistoryPage() {
               <h3 className="mt-2 text-sm font-medium text-gray-900">{error}</h3>
               <div className="mt-6">
                 <button
+                  type="button"
                   onClick={() => window.location.reload()}
-                  className="inline-flex items-center rounded-lg bg-pink-600 px-4 py-2 text-white transition-colors hover:bg-pink-700"
+                  className="inline-flex w-full items-center rounded-lg bg-pink-600 px-4 py-2 text-white transition-colors hover:bg-pink-700"
                 >
                   Retry
                 </button>

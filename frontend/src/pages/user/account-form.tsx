@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { userApi } from '@/src/api/user';
 import { User } from '@/src/api/auth/types';
@@ -51,6 +51,7 @@ export default function AccountForm({ user }: AccountFormProps) {
           </p>
           <div className="mt-4 flex justify-end space-x-2">
             <button
+              type="button"
               onClick={() => {
                 toast.dismiss(t);
                 setShowDeleteConfirmation(false);
@@ -60,6 +61,7 @@ export default function AccountForm({ user }: AccountFormProps) {
               Cancel
             </button>
             <button
+              type="button"
               onClick={async () => {
                 toast.dismiss(t);
                 setIsLoading(true);
@@ -139,6 +141,7 @@ export default function AccountForm({ user }: AccountFormProps) {
             Once you delete your account, there is no going back. Please be certain.
           </p>
           <button
+            type="button"
             onClick={handleDeleteAccount}
             disabled={isLoading}
             className="mt-4 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"

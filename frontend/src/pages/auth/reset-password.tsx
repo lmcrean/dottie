@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import PasswordResetCompletionForm from '../../pages/user/PasswordResetCompletionForm';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import AuthLayout from '../../components/AuthLayout';
+import PasswordResetCompletionForm from '../../pages/user/PasswordResetCompletionForm';
 
 export default function ResetPasswordPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 

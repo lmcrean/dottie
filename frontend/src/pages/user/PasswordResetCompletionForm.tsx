@@ -14,6 +14,7 @@ import {
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '@/src/api';
 
 // Define a schema directly here for simplicity
 const PasswordResetCompletionSchema = z
@@ -61,7 +62,7 @@ export const PasswordResetCompletionForm: React.FC<PasswordResetCompletionFormPr
         ...data,
         token
       };
-
+      await apiClient.post('/api/user/pw/reset', resetData);
       // Simulate API success
       setIsResetComplete(true);
       reset();

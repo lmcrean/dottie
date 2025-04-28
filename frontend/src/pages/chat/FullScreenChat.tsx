@@ -4,7 +4,6 @@ import { Input } from '@/src/components/ui/!to-migrate/input';
 import { ScrollArea } from '@/src/components/ui/!to-migrate/scroll-area';
 import { Send, Loader2, X, Minimize2 } from 'lucide-react';
 import { getAIFeedback } from '@/src/services/ai';
-import axios from 'axios';
 import getHistory from '@/src/api/message/requests/getHistory';
 import { Conversation, ApiMessage } from '@/src/api/message/utils/types';
 

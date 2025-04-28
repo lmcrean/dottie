@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UserCircle, Key, LogOut } from 'lucide-react';
 

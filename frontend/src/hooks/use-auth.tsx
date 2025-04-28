@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useState, useEffect, useContext, ReactNode, useCallback } from 'react';
+import { pass } from 'three/src/nodes/TSL.js';
 
 // Define user interface
 interface User {
@@ -142,6 +143,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Update state
       setUser(user);
       checkTokens();
+      console.log('user:', user, password);
 
       // Dispatch event to notify other tabs
       window.dispatchEvent(new Event('authToken_changed'));

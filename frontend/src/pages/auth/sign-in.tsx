@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import AuthLayout from '@/src/components/AuthLayout';
 import { useEffect, useState } from 'react';
 import { PasswordInput } from '@/src/components/ui/PasswordInput';
-import axios from 'axios';
 import AnimatedLogo from '@/src/components/AnimatedLogo';
 
 export default function SignInPage() {
@@ -53,7 +52,7 @@ export default function SignInPage() {
     try {
       await login(data);
       toast.success('Successfully signed in!');
-
+      console.log('data from login:', data);
       // Debug: Log authentication token and user data
       console.log('[Auth Debug] After login - localStorage items:', {
         authToken: localStorage.getItem('authToken'),
@@ -154,7 +153,7 @@ export default function SignInPage() {
       </form>
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+          {"Don't have an account?"}{' '}
           <Link to="/auth/sign-up" className="text-sm text-pink-600 hover:text-pink-700">
             Sign up
           </Link>

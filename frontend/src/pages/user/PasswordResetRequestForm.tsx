@@ -63,16 +63,16 @@ export const PasswordResetRequestForm: React.FC = () => {
       <Card className="mx-auto w-full max-w-md">
         <CardHeader>
           <CardTitle>Check Your Email</CardTitle>
-          <CardDescription>We've sent reset instructions to your email</CardDescription>
+          <CardDescription>{"We've sent reset instructions to your email"}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="mb-4 text-sm text-muted-foreground">
-            We've sent instructions to reset your password to{' '}
+            {"We've sent instructions to reset your password to"}{' '}
             <span className="font-semibold">{watchEmail}</span>. Please check your inbox and follow
             the link provided.
           </p>
           <p className="text-sm text-muted-foreground">
-            Didn't receive an email? Check your spam folder or try again.
+            {"Didn't receive an email? Check your spam folder or try again."}
           </p>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
