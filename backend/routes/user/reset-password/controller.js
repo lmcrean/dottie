@@ -1,4 +1,4 @@
-import User from '../../../models/User.js';
+import User from '../../../models/user/User.js';
 import EmailService from '../../../services/emailService.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
