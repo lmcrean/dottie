@@ -5,13 +5,12 @@ import { test, expect } from '@playwright/test';
 const baseUrl = 'http://dottie-backend.vercel.app';
 
 test.describe('Basic API Endpoints Tests', () => {
-  // Test root endpoint if it exists
-  test('should access root endpoint', async ({ request }) => {
-    const response = await request.get(`${baseUrl}/api`);
+  // Test the hello endpoint since the root API endpoint returns 404
+  test('should check API health via hello endpoint', async ({ request }) => {
+    const response = await request.get(`${baseUrl}/api/setup/health/hello`);
     
     expect(response.status()).toBe(200);
+    const data = await response.json();
+    expect(data.message).toBe('Hello World from Dottie API!');
   });
-  
-  // Add any other basic API endpoints that should be tested
-  // but are not part of other specific categories
 }); 
