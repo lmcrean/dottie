@@ -15,7 +15,7 @@ The primary authentication hook that provides:
 ### Usage
 
 ```tsx
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/context/AuthContext';
 
 function MyComponent() {
   const {
@@ -61,7 +61,7 @@ function MyComponent() {
 Make sure to wrap your application with the `AuthProvider`:
 
 ```tsx
-import { AuthProvider } from '@/hooks/use-auth';
+import { AuthProvider } from '@/context/AuthContext';
 
 function App() {
   return <AuthProvider>{/* Your app components */}</AuthProvider>;

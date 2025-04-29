@@ -52,7 +52,7 @@ export default function SignInPage() {
     try {
       await login(data);
       toast.success('Successfully signed in!');
-      console.log('data from login:', data);
+
       // Debug: Log authentication token and user data
       console.log('[Auth Debug] After login - localStorage items:', {
         authToken: localStorage.getItem('authToken'),

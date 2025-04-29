@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Use the token manager to store auth data
       storeAuthData(response);
-
+      console.log('login from AuthContext');
       setState({
         user: response.user,
         isAuthenticated: true,
