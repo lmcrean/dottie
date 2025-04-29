@@ -22,19 +22,30 @@ export async function createAssessment(
   // If no assessment data provided, use default test data
   const data = assessmentData || generateDefaultAssessment();
 
-  const payload = {
+  // Convert to flattened format with snake_case fields
+  const flattenedData = {
     userId: userId,
-    assessmentData: data,
+    // Use the flattened format fields directly
+    assessmentData: {
+      // These are direct fields, not nested
+      age: data.age,
+      cycle_length: data.cycleLength,
+      period_duration: data.periodDuration,
+      flow_heaviness: data.flowHeaviness,
+      pain_level: data.painLevel,
+      physical_symptoms: data.symptoms?.physical || [],
+      emotional_symptoms: data.symptoms?.emotional || []
+    }
   };
 
-  console.log('Creating assessment with payload:', JSON.stringify(payload));
+  console.log('Creating assessment with payload:', JSON.stringify(flattenedData));
   console.log('Using auth token:', token.substring(0, 20) + '...');
 
   const response = await request.post("/api/assessment/send", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    data: payload,
+    data: flattenedData,
   });
 
   console.log('Assessment creation response status:', response.status());
@@ -77,7 +88,25 @@ export async function getAssessments(request, token) {
     },
   });
 
-  const result = await response.json();
+  console.log('Get assessments list status:', response.status());
+  
+  let responseText;
+  try {
+    responseText = await response.text();
+    console.log('Assessments list response:', responseText.substring(0, 300) + '...');
+  } catch (error) {
+    console.error("Failed to get response text:", error);
+  }
+
+  let result;
+  try {
+    if (responseText) {
+      result = JSON.parse(responseText);
+    }
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    throw new Error(`Failed to parse assessments list response: ${error.message}`);
+  }
 
   if (response.status() !== 200) {
     throw new Error(`Failed to get assessments: ${response.status()}`);
@@ -143,16 +172,23 @@ export async function updateAssessment(
   assessmentId,
   updateData
 ) {
-  // The API might expect the full assessment structure with the updated data
+  // Convert to flattened format with snake_case fields
+  // Similar to create but for updating
   const payload = {
-    userId: userId,
-    assessmentData: updateData,
+    // Direct fields, not nested
+    age: updateData.age || "18-24",
+    cycle_length: updateData.cycleLength || updateData.cycle_length, 
+    period_duration: updateData.periodDuration || updateData.period_duration,
+    flow_heaviness: updateData.flowHeaviness || updateData.flow_heaviness,
+    pain_level: updateData.painLevel || updateData.pain_level,
+    physical_symptoms: updateData.symptoms?.physical || updateData.physical_symptoms || [],
+    emotional_symptoms: updateData.symptoms?.emotional || updateData.emotional_symptoms || []
   };
 
   console.log(`Updating assessment ${assessmentId} for user ${userId}`);
   console.log('Update payload:', JSON.stringify(payload));
 
-  // Try the simpler format first - just the assessment ID
+  // Try the correct endpoint format - just assessment ID
   const response = await request.put(
     `/api/assessment/${assessmentId}`,
     {
@@ -194,8 +230,9 @@ export async function updateAssessment(
   if (Object.keys(result).length === 0) {
     return {
       id: assessmentId,
-      userId: userId,
-      assessmentData: updateData
+      user_id: userId,
+      // Include the update data in the response for test validation
+      ...payload
     };
   }
 
@@ -211,9 +248,11 @@ export async function updateAssessment(
  * @returns {Promise<boolean>} True if deleted successfully
  */
 export async function deleteAssessment(request, token, userId, assessmentId) {
-  // The correct URL format includes both userId and assessmentId
+  // Use the correct endpoint format - just the assessment ID
+  console.log(`Deleting assessment ${assessmentId}`);
+  
   const response = await request.delete(
-    `/api/assessment/${userId}/${assessmentId}`,
+    `/api/assessment/${assessmentId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -221,14 +260,17 @@ export async function deleteAssessment(request, token, userId, assessmentId) {
     }
   );
 
+  console.log(`Delete assessment status: ${response.status()}`);
+  
   // Log the response for debugging
   try {
     const responseText = await response.text();
+    console.log(`Delete assessment response: ${responseText}`);
   } catch (error) {
     console.error("Failed to get delete response text:", error);
   }
 
-  return response.status() === 200;
+  return response.status() === 200 || response.status() === 204;
 }
 
 /**

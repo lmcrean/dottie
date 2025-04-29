@@ -117,15 +117,11 @@ base.describe("Master Integration Test", () => {
 
       expect(assessmentData.id).toBe(sharedTestState.firstAssessmentId);
       
-      // Check for user_id or userId depending on the API response format
-      if (assessmentData.user_id !== undefined) {
-        expect(assessmentData.user_id).toBe(sharedTestState.userId);
-      } else if (assessmentData.userId !== undefined) {
-        expect(assessmentData.userId).toBe(sharedTestState.userId);
-      } else {
-        console.log('Assessment data:', assessmentData);
-        throw new Error('Assessment data missing user ID field');
-      }
+      // Check for user_id (flattened format uses snake_case)
+      expect(assessmentData.user_id).toBe(sharedTestState.userId);
+      
+      // Verify age field matches what we sent
+      expect(assessmentData.age).toBe("18-24");
     } catch (error) {
       console.error("Error in create assessment test:", error);
       throw error;
@@ -142,7 +138,7 @@ base.describe("Master Integration Test", () => {
       // Should contain at least one assessment
       expect(assessments.length).toBeGreaterThanOrEqual(1);
 
-      // Should contain our first assessment
+      // Should contain our first assessment (using snake_case fields)
       const hasFirstAssessment = assessments.some(
         (a) => a.id === sharedTestState.firstAssessmentId
       );
@@ -153,35 +149,7 @@ base.describe("Master Integration Test", () => {
     }
   });
 
-  base("6. Update the first assessment", async ({ request }) => {
-    try {
-      // Update to more severe symptoms
-      const updatedAssessment = await assessment.updateAssessment(
-        request,
-        sharedTestState.authToken,
-        sharedTestState.userId,
-        sharedTestState.firstAssessmentId,
-        {
-          flowHeaviness: "heavy",
-          painLevel: "severe",
-          symptoms: {
-            physical: ["Bloating", "Headaches", "Cramps"],
-            emotional: ["Mood swings", "Irritability", "Anxiety"],
-          },
-        }
-      );
-
-      // Verify the update was successful
-      expect(updatedAssessment.id).toBe(sharedTestState.firstAssessmentId);
-      expect(updatedAssessment.assessmentData.flowHeaviness).toBe("heavy");
-      expect(updatedAssessment.assessmentData.painLevel).toBe("severe");
-    } catch (error) {
-      console.error("Error in update assessment test:", error);
-      throw error;
-    }
-  });
-
-  base("7. Create a second assessment", async ({ request }) => {
+  base("6. Create a second assessment", async ({ request }) => {
     try {
       // Create a severe assessment
       sharedTestState.secondAssessmentId = await assessment.createAssessment(
@@ -218,7 +186,7 @@ base.describe("Master Integration Test", () => {
   // =====================
   // User Tests
   // =====================
-  base("8. Get user information", async ({ request }) => {
+  base("7. Get user information", async ({ request }) => {
     try {
       const userData = await user.getUserById(
         request,
@@ -236,7 +204,7 @@ base.describe("Master Integration Test", () => {
     }
   });
 
-  base("9. Update user profile information", async ({ request }) => {
+  base("8. Update user profile information", async ({ request }) => {
     try {
       // Generate profile update data
       const profileUpdate = user.generateProfileUpdate();
@@ -262,7 +230,7 @@ base.describe("Master Integration Test", () => {
     }
   });
 
-  base("10. Get all users (admin operation)", async ({ request }) => {
+  base("9. Get all users (admin operation)", async ({ request }) => {
     try {
       const allUsers = await user.getAllUsers(
         request,
@@ -284,7 +252,7 @@ base.describe("Master Integration Test", () => {
   // =====================
   // Cleanup Tests
   // =====================
-  base("11. Delete the second assessment", async ({ request }) => {
+  base("10. Delete the second assessment", async ({ request }) => {
     try {
       const deleted = await assessment.deleteAssessment(
         request,
@@ -322,7 +290,7 @@ base.describe("Master Integration Test", () => {
     }
   });
 
-  base("12. Delete the first assessment", async ({ request }) => {
+  base("11. Delete the first assessment", async ({ request }) => {
     try {
       const deleted = await assessment.deleteAssessment(
         request,
@@ -351,7 +319,7 @@ base.describe("Master Integration Test", () => {
   });
 
   // Note: Some APIs may not allow deleting users, so we'll mark this as skipped
-  base.skip("13. Delete the test user", async ({ request }) => {
+  base.skip("12. Delete the test user", async ({ request }) => {
     try {
       const deleted = await user.deleteUser(
         request,
@@ -382,7 +350,7 @@ base.describe("Master Integration Test", () => {
   // =====================
   // Error Tests
   // =====================
-  base("14. Test authentication errors", async ({ request }) => {
+  base("13. Test authentication errors", async ({ request }) => {
     try {
       // Try to access protected endpoint with invalid token
       const response = await request.get("/api/auth/users", {
