@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/src/components/ui/!to-migrate/button';
+import { Alert, AlertDescription } from '@/src/components/ui/alert';
 import {
   Card,
-  CardHeader,
-  CardTitle,
+  CardContent,
   CardDescription,
-  CardContent
+  CardHeader,
+  CardTitle
 } from '@/src/components/ui/card';
 import {
   Form,
@@ -18,11 +15,14 @@ import {
   FormItem,
   FormMessage
 } from '@/src/components/ui/form';
-import { useToast } from '@/src/components/ui/use-toast';
-import { Alert, AlertDescription } from '@/src/components/ui/alert';
-import { useAuth } from '@/src/context/AuthContext';
 import { PasswordInput } from '@/src/components/ui/PasswordInput';
+import { useToast } from '@/src/components/ui/use-toast';
+import { useAuth } from '@/src/context/AuthContext';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import * as z from 'zod';
 
 const passwordUpdateSchema = z
   .object({

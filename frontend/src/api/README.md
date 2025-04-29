@@ -44,7 +44,7 @@ const login = async () => {
   try {
     const response = await authApi.login({
       email: 'user@example.com',
-      password: 'password123',
+      password: 'password123'
     });
     // Handle successful login
   } catch (error) {

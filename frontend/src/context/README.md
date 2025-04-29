@@ -26,7 +26,7 @@ function MyComponent() {
     authToken, // Current auth token from localStorage
     login, // Function to login: (email, password) => Promise<User>
     logout, // Function to logout: () => void
-    updatePassword, // Function to update password: (current, new) => Promise<boolean>
+    updatePassword // Function to update password: (current, new) => Promise<boolean>
   } = useAuth();
 
   // Example usage
