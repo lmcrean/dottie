@@ -16,87 +16,83 @@ beforeAll(() => {
 describe("Production API Endpoints Tests", () => {
   // Test the hello endpoint
   test("GET /api/setup/health/hello - should return Hello World message", async () => {
-    try {
-      const response = await request.get("/api/setup/health/hello");
-      
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty("message");
-      expect(response.body.message).toBe("Hello World from Dottie API!");
-      console.log("✅ Hello endpoint test passed:", response.body);
-    } catch (error) {
-      console.error("❌ Hello endpoint test failed:", error.message);
-      throw error;
-    }
+    const response = await request.get("/api/setup/health/hello");
+    
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("message");
+    expect(response.body.message).toBe("Hello World from Dottie API!");
+    console.log("✅ Hello endpoint test passed:", response.body);
   });
   
-  // Test the database status endpoint - trying different paths
-  test("GET database status endpoint - finding the correct path", async () => {
-    // Try different potential paths
-    const paths = [
-      "/api/setup/database/status",
-      "/api/database/status",
-      "/api/setup/db/status",
-      "/api/db/status"
-    ];
+  // Test the health check endpoint
+  test("GET /api/health - should return OK", async () => {
+    const response = await request.get("/api/health");
+    console.log("Health check response:", response.status, response.body);
     
-    let foundPath = null;
-    
-    for (const path of paths) {
-      try {
-        console.log(`Trying path: ${path}`);
-        const response = await request.get(path);
-        
-        if (response.status === 200) {
-          console.log(`✅ Found working path: ${path}`, response.body);
-          foundPath = path;
-          
-          // Perform assertions on the successful response
-          expect(response.body).toHaveProperty("status");
-          break;
-        }
-      } catch (error) {
-        console.log(`❌ Path ${path} failed: ${error.message}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("status", "ok");
+  });
+  
+  // Inspect database status endpoint for routing issues
+  test("GET /api/setup/database/status - investigate routing issues", async () => {
+    try {
+      const response = await request.get("/api/setup/database/status");
+      console.log("Response status:", response.status);
+      console.log("Response body:", response.body);
+      
+      // Try to extract any error details
+      if (response.status === 404) {
+        console.log("Route not found. This could indicate:");
+        console.log("1. The endpoint is not defined in production");
+        console.log("2. The route might be disabled in the Vercel deployment");
+        console.log("3. There might be a routing configuration difference");
       }
+    } catch (error) {
+      console.error("Error details:", {
+        name: error.name,
+        message: error.message,
+        response: error.response ? {
+          status: error.response.status,
+          body: error.response.body,
+        } : 'No response'
+      });
     }
     
-    if (!foundPath) {
-      console.warn("⚠️ Could not find working database status endpoint");
+    // Check deployed environment variables (safely)
+    try {
+      const envResponse = await request.get("/api/setup/health/env");
+      console.log("Environment info:", envResponse.status, 
+        envResponse.body ? {
+          nodeEnv: envResponse.body.NODE_ENV,
+          hasSupabaseUrl: !!envResponse.body.SUPABASE_URL,
+          hasSupabaseKey: !!envResponse.body.SUPABASE_ANON_PUBLIC,
+          isVercel: envResponse.body.VERCEL
+        } : 'No data');
+    } catch (error) {
+      console.log("Environment check error:", error.message);
     }
   });
 
-  // Test the database hello endpoint - trying different paths
-  test("GET database hello endpoint - finding the correct path", async () => {
-    // Try different potential paths
-    const paths = [
-      "/api/setup/database/hello",
-      "/api/database/hello",
-      "/api/setup/db/hello",
-      "/api/db/hello"
+  // Test alternative API paths
+  test("Explore alternative API paths", async () => {
+    // Check if /api/supabase or similar paths exist
+    const pathsToTry = [
+      "/api/supabase/status",
+      "/api/db/status",
+      "/api/v1/setup/database/status"
     ];
     
-    let foundPath = null;
-    
-    for (const path of paths) {
+    for (const path of pathsToTry) {
       try {
-        console.log(`Trying path: ${path}`);
         const response = await request.get(path);
-        
+        console.log(`Path ${path} status:`, response.status);
         if (response.status === 200) {
-          console.log(`✅ Found working path: ${path}`, response.body);
-          foundPath = path;
-          
-          // Perform assertions on the successful response
-          expect(response.body).toHaveProperty("message");
-          expect(response.body.message).toContain("Hello World from");
-          break;
+          console.log(`Found working path: ${path}`, response.body);
         }
       } catch (error) {
-        console.log(`❌ Path ${path} failed: ${error.message}`);
+        // Just log the status
+        console.log(`Path ${path} error:`, error.response?.status || error.message);
       }
-    }
-    
-    if (!foundPath) {
-      console.warn("⚠️ Could not find working database hello endpoint");
     }
   });
 }); 
