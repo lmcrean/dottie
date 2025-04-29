@@ -116,7 +116,16 @@ base.describe("Master Integration Test", () => {
       );
 
       expect(assessmentData.id).toBe(sharedTestState.firstAssessmentId);
-      expect(assessmentData.userId).toBe(sharedTestState.userId);
+      
+      // Check for user_id or userId depending on the API response format
+      if (assessmentData.user_id !== undefined) {
+        expect(assessmentData.user_id).toBe(sharedTestState.userId);
+      } else if (assessmentData.userId !== undefined) {
+        expect(assessmentData.userId).toBe(sharedTestState.userId);
+      } else {
+        console.log('Assessment data:', assessmentData);
+        throw new Error('Assessment data missing user ID field');
+      }
     } catch (error) {
       console.error("Error in create assessment test:", error);
       throw error;

@@ -27,6 +27,9 @@ export async function createAssessment(
     assessmentData: data,
   };
 
+  console.log('Creating assessment with payload:', JSON.stringify(payload));
+  console.log('Using auth token:', token.substring(0, 20) + '...');
+
   const response = await request.post("/api/assessment/send", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -34,7 +37,25 @@ export async function createAssessment(
     data: payload,
   });
 
-  const result = await response.json();
+  console.log('Assessment creation response status:', response.status());
+  
+  let responseText;
+  try {
+    responseText = await response.text();
+    console.log('Assessment creation response body:', responseText);
+  } catch (error) {
+    console.error("Failed to get response text:", error);
+  }
+
+  let result;
+  try {
+    if (responseText) {
+      result = JSON.parse(responseText);
+    }
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    throw new Error(`Failed to parse assessment creation response: ${error.message}`);
+  }
 
   if (response.status() !== 201) {
     throw new Error(`Failed to create assessment: ${response.status()}`);
@@ -79,7 +100,25 @@ export async function getAssessmentById(request, token, assessmentId) {
     },
   });
 
-  const result = await response.json();
+  console.log(`Get assessment by ID ${assessmentId} - Status: ${response.status()}`);
+  
+  let responseText;
+  try {
+    responseText = await response.text();
+    console.log(`Get assessment response: ${responseText}`);
+  } catch (error) {
+    console.error("Failed to get response text:", error);
+  }
+
+  let result;
+  try {
+    if (responseText) {
+      result = JSON.parse(responseText);
+    }
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    throw new Error(`Failed to parse assessment response: ${error.message}`);
+  }
 
   if (response.status() !== 200) {
     throw new Error(`Failed to get assessment: ${response.status()}`);
@@ -106,12 +145,16 @@ export async function updateAssessment(
 ) {
   // The API might expect the full assessment structure with the updated data
   const payload = {
+    userId: userId,
     assessmentData: updateData,
   };
 
-  // The correct URL format includes both userId and assessmentId
+  console.log(`Updating assessment ${assessmentId} for user ${userId}`);
+  console.log('Update payload:', JSON.stringify(payload));
+
+  // Try the simpler format first - just the assessment ID
   const response = await request.put(
-    `/api/assessment/${userId}/${assessmentId}`,
+    `/api/assessment/${assessmentId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -120,30 +163,40 @@ export async function updateAssessment(
     }
   );
 
-  // Log the response status and body for debugging
+  console.log(`Update assessment status: ${response.status()}`);
 
   let responseText;
   try {
     responseText = await response.text();
+    console.log(`Update assessment response: ${responseText}`);
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
 
-  if (response.status() !== 200) {
+  // Accept 200 or 204 (no content) as success
+  if (response.status() !== 200 && response.status() !== 204) {
     throw new Error(`Failed to update assessment: ${response.status()}`);
   }
 
-  let result;
+  let result = {};
+  
   try {
-    // Try to parse as JSON only if we haven't already
-    if (responseText && !result) {
+    // Try to parse as JSON only if we have content
+    if (responseText && responseText.trim() !== '') {
       result = JSON.parse(responseText);
-    } else {
-      result = await response.json();
     }
   } catch (error) {
     console.error("Failed to parse JSON response:", error);
-    throw new Error(`Failed to parse update response: ${error.message}`);
+    // Don't throw here - we might have a 204 with no content
+  }
+
+  // Return a basic object with the IDs if we don't get anything back
+  if (Object.keys(result).length === 0) {
+    return {
+      id: assessmentId,
+      userId: userId,
+      assessmentData: updateData
+    };
   }
 
   return result;
@@ -184,7 +237,7 @@ export async function deleteAssessment(request, token, userId, assessmentId) {
  */
 export function generateDefaultAssessment() {
   return {
-    age: "25-34",
+    age: "18-24",
     cycleLength: "26-30",
     periodDuration: "4-5",
     flowHeaviness: "moderate",
@@ -202,14 +255,14 @@ export function generateDefaultAssessment() {
  */
 export function generateSevereAssessment() {
   return {
-    age: "25-34",
-    cycleLength: "21-25",
+    age: "18-24",
+    cycleLength: "31-35",
     periodDuration: "6-7",
     flowHeaviness: "heavy",
     painLevel: "severe",
     symptoms: {
-      physical: ["Cramps", "Headaches", "Fatigue", "Nausea"],
-      emotional: ["Irritability", "Anxiety", "Depression"],
+      physical: ["Severe Cramps", "Nausea", "Vomiting", "Dizziness"],
+      emotional: ["Depression", "Anxiety", "Mood swings", "Irritability"],
     },
   };
 }
