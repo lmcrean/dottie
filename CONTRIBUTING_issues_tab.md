@@ -1,3 +1,9 @@
+# Using the Issues Tab
+
+The issues tab is where new issues are posted. 
+
+To understand what peers are working on, make sure you have read the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls) first.
+
 # How to open a new issue
 
 if you spot an issue please open in the [Issues Tab](https://github.com/lmcrean/dottie/issues)
@@ -20,3 +26,20 @@ click to open: example issue with best practise of labelling documentation and s
 ![image](https://github.com/user-attachments/assets/7833d04a-c163-4e2e-8d08-f8bcc5d172ad)
 
 </details>
+
+# Using a template vs. making a note
+
+There are 2 Templates available
+
+- Bug Report
+- Feature Request
+
+These are both formal templates with guidelines
+
+Altneratively, if you'd prefer to take time to collect your thoughts and don't yet have a formal acceptance criteria, you can include `(Draft)` in the title.
+
+# Leaving comments on the issues
+
+- Leaving comments on issues is primarily used for discussion and clarification.
+- You can leave a comment like `I'm on this`. Just be aware primarily we use Draft Pull Requests to self-assign.
+- If a peer has left such a comment with no Draft Pull Request, the issue can be considered as open. Use common sense.
