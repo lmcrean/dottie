@@ -16,13 +16,13 @@ import {
   FormMessage
 } from '@/src/components/ui/form';
 import { PasswordInput } from '@/src/components/ui/PasswordInput';
-import { useToast } from '@/src/components/ui/use-toast';
-import { useAuth } from '@/src/context/AuthContext';
+import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as z from 'zod';
+import { useAuth } from '@/src/context/useAuthContext';
 
 const passwordUpdateSchema = z
   .object({
@@ -50,7 +50,6 @@ type PasswordUpdateFormValues = z.infer<typeof passwordUpdateSchema>;
 export function PasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { toast } = useToast();
   const { updatePassword, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -86,23 +85,22 @@ export function PasswordForm() {
       setIsSuccess(true);
       form.reset();
 
-      toast({
-        title: 'Password updated',
+      toast.success('Password updated', {
         description: 'Your password has been updated successfully.'
       });
 
-      await logout(); // Logout after password update
-      toast({
-        title: 'Logged out',
-        description: 'You have been logged out due to a password change. Please log in again.'
-      });
-      navigate('/auth/sign-in'); // Redirect to sign-in page
+      // Wait 2 secs before logging out to allow toast to notify
+      setTimeout(async () => {
+        await logout(); // Logout after password update
+        toast.message('Logged out', {
+          description: 'You have been logged out due to a password change. Please log in again.'
+        });
+        navigate('/auth/sign-in'); // Redirect to sign-in page
+      }, 2000);
     } catch (error) {
       console.error(error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update password. Please check your current password and try again.',
-        variant: 'destructive'
+      toast.error('Error', {
+        description: 'Failed to update password. Please check your current password and try again.'
       });
     } finally {
       setIsLoading(false);

@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { toast } from 'sonner';
+// import { User } from '@/src/api/auth/types';
 import { userApi } from '@/src/api/user';
-import { User } from '@/src/api/auth/types';
+import { useAuth } from '@/src/context/useAuthContext';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/src/context/AuthContext';
+import { toast } from 'sonner';
 
-interface AccountFormProps {
-  user: User;
-}
+export default function AccountForm() {
+  const { user } = useAuth();
 
-export default function AccountForm({ user }: AccountFormProps) {
   const [formData, setFormData] = useState({
-    name: user.name || '',
-    email: user.email || ''
+    name: user?.name || '',
+    email: user?.email || ''
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const navigate = useNavigate();
@@ -67,8 +66,10 @@ export default function AccountForm({ user }: AccountFormProps) {
                 setIsLoading(true);
                 setShowDeleteConfirmation(false);
                 try {
-                  await userApi.delete(user.id);
-                  toast.success('Account deleted successfully');
+                  if (user) {
+                    await userApi.delete(user.id);
+                    toast.success('Account deleted successfully');
+                  }
                   await logout();
                   navigate('/');
                 } catch (error) {
@@ -106,7 +107,7 @@ export default function AccountForm({ user }: AccountFormProps) {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-800 dark:bg-gray-900 dark:text-slate-200 md:w-3/4 lg:w-1/2"
+            className="w-full rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 md:w-3/4 lg:w-1/2"
           />
         </div>
 
@@ -120,7 +121,7 @@ export default function AccountForm({ user }: AccountFormProps) {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-800 dark:bg-gray-900 dark:text-slate-200 md:w-3/4 lg:w-1/2"
+            className="w-full rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 md:w-3/4 lg:w-1/2"
           />
         </div>
 
@@ -133,7 +134,7 @@ export default function AccountForm({ user }: AccountFormProps) {
         </button>
       </form>
 
-      <div className="border-t pt-6">
+      <div className="border-t border-slate-200 pt-6 dark:border-slate-600">
         <h2 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-200">Danger Zone</h2>
         <div className="rounded-md border border-red-200 bg-red-50 p-4">
           <h3 className="text-sm font-medium text-red-800">Delete Account</h3>

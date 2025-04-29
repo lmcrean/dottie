@@ -65,6 +65,7 @@ const Header = ({
             {/* Mobile Menu Button - shown only on mobile and when not logged in */}
             {isMobile && !isLoggedIn && (
               <button
+                type="button"
                 className="flex flex-col"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle mobile menu"

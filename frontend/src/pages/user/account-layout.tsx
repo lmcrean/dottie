@@ -20,7 +20,7 @@ export default function AccountLayout({ children, title, description }: AccountL
       <div className="flex flex-col gap-8 md:flex-row">
         <AccountSidebar />
 
-        <main className="flex-1 rounded-lg border border-gray-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gray-900">
+        <main className="flex-1 rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-600 dark:bg-gray-900">
           {children}
         </main>
       </div>

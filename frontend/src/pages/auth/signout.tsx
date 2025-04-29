@@ -1,7 +1,7 @@
+import { useAuth } from '@/src/context/useAuthContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useAuth } from '@/src/context/AuthContext';
 
 export default function SignOut() {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ export default function SignOut() {
   const handleCancel = () => {
     // Optional: navigate back to home or dashboard
     navigate(-1); // go back to the previous page
+    setShowModal(false);
   };
 
   return (
@@ -32,12 +33,14 @@ export default function SignOut() {
           <h2 className="mb-4 text-xl font-semibold">Are you sure you want to sign out?</h2>
           <div className="mt-6 flex justify-center gap-4">
             <button
+              type="button"
               onClick={handleCancel}
               className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
             >
               Cancel
             </button>
             <button
+              type="button"
               onClick={handleConfirm}
               className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
             >

@@ -1,6 +1,6 @@
-import { useAuth } from '@/src/context/AuthContext';
 import AccountLayout from './account-layout';
 import AccountForm from './account-form';
+import { useAuth } from '@/src/context/useAuthContext';
 
 export default function ProfilePage() {
   const { user, isLoading, error } = useAuth();
@@ -30,7 +30,7 @@ export default function ProfilePage() {
       title="Profile Settings"
       description="Manage your account details and preferences."
     >
-      {user && <AccountForm user={user} />}
+      {user && <AccountForm />}
     </AccountLayout>
   );
 }

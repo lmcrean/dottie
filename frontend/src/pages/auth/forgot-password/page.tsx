@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { completePasswordReset } from '../../../api/user/requests/passwordReset/Request';
 import { Button } from '../../../components/ui/button';
@@ -39,6 +39,7 @@ export default function ForgotPasswordPage() {
       navigate('/auth/sign-in');
     } catch (error) {
       toast.error('Failed to reset password. Please try again.');
+      console.error('Rest password failed:', error);
     } finally {
       setIsLoading(false);
     }

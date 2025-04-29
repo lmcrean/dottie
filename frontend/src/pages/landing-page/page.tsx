@@ -4,9 +4,11 @@ import { Calendar, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import DottieMascot3D from '@/src/components/DottieMascot3D';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/src/context/useAuthContext';
 
-export default function LandingPage(): JSX.Element {
+// import { ReactElement } from 'react';
+
+export default function LandingPage() {
   const { isAuthenticated } = useAuth();
 
   return (

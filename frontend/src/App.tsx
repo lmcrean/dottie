@@ -28,13 +28,15 @@ import LandingPage from './pages/landing-page/page';
 import UITestPageSwitch from './components/navigation/UITestPageSwitch';
 
 import Header from './components/navigation/Header';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContextProvider';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
 // Dark mode
 import { ThemeProvider } from './context/ThemeContext';
+import { ReactElement } from 'react';
+import { useAuth } from '@/src/context/useAuthContext';
 
-function AppContent(): JSX.Element {
+function AppContent(): ReactElement {
   const { isAuthenticated } = useAuth();
 
   return (
@@ -99,7 +101,7 @@ function AppContent(): JSX.Element {
   );
 }
 
-export default function App(): JSX.Element {
+export default function App(): ReactElement {
   return (
     <ThemeProvider>
       <AuthProvider>

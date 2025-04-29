@@ -3,6 +3,8 @@
  * Handles consistent storage and retrieval of auth tokens across the application
  */
 
+import { User } from '@/src/api/auth';
+
 // Constants for token keys to ensure consistency
 export const TOKEN_KEYS = {
   AUTH_TOKEN: 'authToken',
@@ -66,7 +68,7 @@ export const setRefreshToken = (token: string): boolean => {
 /**
  * Set user data in localStorage and memory
  */
-export const setUserData = (user: any): boolean => {
+export const setUserData = (user: User): boolean => {
   if (!user) return false;
 
   try {

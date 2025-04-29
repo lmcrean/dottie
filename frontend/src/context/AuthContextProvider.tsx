@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { authApi } from '@/src/api/auth/index';
-import { User, LoginInput, SignupInput } from '@/src/api/auth/types';
+import { LoginInput, SignupInput, User } from '@/src/api/auth/types';
 import { userApi } from '@/src/api/user/index';
-import { storeAuthData, getAuthToken, getUserData, clearAllTokens } from '../api/core/tokenManager';
+import { ReactNode, useEffect, useState } from 'react';
+import { clearAllTokens, getAuthToken, getUserData, storeAuthData } from '../api/core/tokenManager';
+import { AuthContext } from '@/src/context/AuthContext';
 
 interface AuthState {
   user: User | null;
@@ -11,7 +12,7 @@ interface AuthState {
   error: string | null;
 }
 
-interface AuthContextType extends AuthState {
+export interface AuthContextType extends AuthState {
   login: (credentials: LoginInput) => Promise<void>;
   signup: (userData: SignupInput) => Promise<User>;
   logout: () => Promise<void>;
@@ -19,7 +20,7 @@ interface AuthContextType extends AuthState {
   clearError: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Helper function to get stored auth data
 const getStoredAuthData = (): { user: User | null; token: string | null } => {
@@ -57,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             error: null
           });
         } catch (error) {
+          console.error(`Error setting user's state`, error);
           setState((prev) => ({ ...prev, isLoading: false }));
         }
       } else {
@@ -116,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signup = async (userData: SignupInput): Promise<any> => {
+  const signup = async (userData: SignupInput): Promise<User> => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
       const response = await authApi.signup(userData);
@@ -159,7 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updatePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
     try {
-      const response = await userApi.updatePassword({
+      await userApi.updatePassword({
         currentPassword,
         newPassword
       });
@@ -188,12 +190,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 }

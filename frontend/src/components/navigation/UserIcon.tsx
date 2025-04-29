@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { User, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/src/context/AuthContext';
 import { assessmentApi } from '@/src/api/assessment';
+import { useAuth } from '@/src/context/useAuthContext';
 
 const UserIcon: React.FC = () => {
   const { isAuthenticated } = useAuth();

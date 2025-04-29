@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/src/context/AuthContext';
 import { signUpSchema, type SignUpFormData } from '@/src/lib/validations/auth';
 import { FormInput } from '@/src/components/ui/!to-migrate/form-input';
 import { Button } from '@/src/components/ui/!to-migrate/button';
@@ -10,6 +9,7 @@ import AuthLayout from '@/src/components/AuthLayout';
 import { useState } from 'react';
 import { PasswordInput } from '@/src/components/ui/PasswordInput';
 import AnimatedLogo from '@/src/components/AnimatedLogo';
+import { useAuth } from '@/src/context/useAuthContext';
 
 export default function SignUpPage() {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { Input } from '@/src/components/ui/!to-migrate/input';
 import { ScrollArea } from '@/src/components/ui/!to-migrate/scroll-area';
@@ -10,7 +10,7 @@ import { Conversation, ApiMessage } from '@/src/api/message/utils/types';
 interface FullscreenChatProps {
   onClose: () => void;
   initialMessage?: string;
-  setIsFullscreen: (isFullscreen: boolean) => void;
+  setIsFullscreen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Message {
@@ -23,12 +23,24 @@ export function FullscreenChat({ onClose, initialMessage, setIsFullscreen }: Ful
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hasSentInitialMessage = useRef(false);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    const sendInitialMessage = async () => {
+      if (initialMessage && messages.length === 0 && !hasSentInitialMessage.current) {
+        hasSentInitialMessage.current = true;
+        await handleSend(initialMessage);
+      }
+    };
+
+    sendInitialMessage();
+  }, [initialMessage]);
 
   useEffect(() => {
     const fetchHistory = async () => {

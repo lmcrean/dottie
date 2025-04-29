@@ -54,7 +54,17 @@ export default defineConfig([
       }
     },
     rules: {
-      'no-unused-vars': 'error',
+      'no-unused-vars': 'off',
+
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
       'no-undef': 'error',
       'no-console': 'off',
       'react/button-has-type': 'error',
