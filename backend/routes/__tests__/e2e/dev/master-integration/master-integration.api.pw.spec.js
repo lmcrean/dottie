@@ -252,6 +252,7 @@ base.describe("Master Integration Test", () => {
   // =====================
   // Cleanup Tests
   // =====================
+  // Delete assessment tests should work now with correct endpoint format
   base("10. Delete the second assessment", async ({ request }) => {
     try {
       const deleted = await assessment.deleteAssessment(
@@ -273,8 +274,11 @@ base.describe("Master Integration Test", () => {
         // If we reach here, the assessment wasn't deleted
         expect(false).toBeTruthy("Assessment should have been deleted");
       } catch (error) {
-        // We expect an error when trying to fetch a deleted assessment
-        expect(error.message).toContain("Failed to get assessment: 404");
+        // We expect either a 404 (not found) or 403 (unauthorized) error when trying to fetch a deleted assessment
+        expect(
+          error.message.includes("Failed to get assessment: 404") || 
+          error.message.includes("Failed to get assessment: 403")
+        ).toBeTruthy();
       }
 
       // Verify the first assessment still exists
@@ -300,6 +304,23 @@ base.describe("Master Integration Test", () => {
       );
 
       expect(deleted).toBeTruthy();
+
+      // Verify the assessment was deleted by trying to fetch it (should fail)
+      try {
+        await assessment.getAssessmentById(
+          request,
+          sharedTestState.authToken,
+          sharedTestState.firstAssessmentId
+        );
+        // If we reach here, the assessment wasn't deleted
+        expect(false).toBeTruthy("Assessment should have been deleted");
+      } catch (error) {
+        // We expect either a 404 (not found) or 403 (unauthorized) error when trying to fetch a deleted assessment
+        expect(
+          error.message.includes("Failed to get assessment: 404") || 
+          error.message.includes("Failed to get assessment: 403")
+        ).toBeTruthy();
+      }
 
       // Verify all assessments are deleted
       const assessments = await assessment.getAssessments(

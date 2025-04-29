@@ -98,6 +98,12 @@ export async function getAssessments(request, token) {
     console.error("Failed to get response text:", error);
   }
 
+  // If we get a 404 (no assessments found), return an empty array
+  if (response.status() === 404) {
+    console.log('No assessments found - returning empty array');
+    return [];
+  }
+
   let result;
   try {
     if (responseText) {
@@ -248,11 +254,11 @@ export async function updateAssessment(
  * @returns {Promise<boolean>} True if deleted successfully
  */
 export async function deleteAssessment(request, token, userId, assessmentId) {
-  // Use the correct endpoint format - just the assessment ID
-  console.log(`Deleting assessment ${assessmentId}`);
+  // Use the correct endpoint format with both userId and assessmentId
+  console.log(`Deleting assessment ${assessmentId} for user ${userId}`);
   
   const response = await request.delete(
-    `/api/assessment/${assessmentId}`,
+    `/api/assessment/${userId}/${assessmentId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
