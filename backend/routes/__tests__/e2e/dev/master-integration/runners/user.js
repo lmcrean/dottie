@@ -116,6 +116,7 @@ export async function deleteUser(request, token, userId) {
 
   try {
     const responseText = await response.text();
+    console.log(`Delete user response:`, responseText.substring(0, 150));
   } catch (error) {
     console.error("Failed to get delete response text:", error);
   }
