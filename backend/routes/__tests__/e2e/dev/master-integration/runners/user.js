@@ -9,23 +9,32 @@
  * Get user information by ID
  * @param {Object} request - Playwright request object
  * @param {string} token - Authentication token
- * @param {string} userId - User ID
+ * @param {string} userId - User ID (not used directly but kept for API compatibility)
  * @returns {Promise<Object>} User data
  */
 export async function getUserById(request, token, userId) {
-  const response = await request.get(`/api/auth/users/${userId}`, {
+  // Use the /me endpoint which returns the current user based on the token
+  const response = await request.get(`/api/auth/users/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
-  const data = await response.json();
+  // Get response as text first
+  const responseText = await response.text();
+  console.log(`Get user response:`, responseText.substring(0, 150));
 
   if (response.status() !== 200) {
     throw new Error(`Failed to get user info: ${response.status()}`);
   }
 
-  return data;
+  // Parse the JSON response
+  try {
+    return JSON.parse(responseText);
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    throw new Error(`Failed to parse user info response: ${error.message}`);
+  }
 }
 
 /**
@@ -41,25 +50,34 @@ export async function getAllUsers(request, token) {
     },
   });
 
-  const data = await response.json();
+  // Get response as text first
+  const responseText = await response.text();
+  console.log(`Get all users response:`, responseText.substring(0, 150));
 
   if (response.status() !== 200) {
     throw new Error(`Failed to get all users: ${response.status()}`);
   }
 
-  return data;
+  // Parse the JSON response
+  try {
+    return JSON.parse(responseText);
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    throw new Error(`Failed to parse users list response: ${error.message}`);
+  }
 }
 
 /**
  * Update user profile information
  * @param {Object} request - Playwright request object
  * @param {string} token - Authentication token
- * @param {string} userId - User ID
+ * @param {string} userId - User ID (not used directly but kept for API compatibility)
  * @param {Object} profileData - Updated profile data
  * @returns {Promise<Object>} Updated user data
  */
 export async function updateUserProfile(request, token, userId, profileData) {
-  const response = await request.put(`/api/auth/users/${userId}`, {
+  // Use the /me endpoint which updates the current user based on the token
+  const response = await request.put(`/api/auth/users/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -67,6 +85,7 @@ export async function updateUserProfile(request, token, userId, profileData) {
   });
 
   const responseText = await response.text();
+  console.log(`Update user response:`, responseText.substring(0, 150));
 
   if (response.status() !== 200) {
     throw new Error(`Failed to update user profile: ${response.status()}`);
