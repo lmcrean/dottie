@@ -31,9 +31,9 @@ base.describe.configure({ mode: "serial" });
 
 base.describe("Master Integration Test", () => {
   // Log the test environment configuration
-  base.beforeAll(async ({ request }) => {
-    // Log the baseURL being used for this test run
-    console.log(`TESTING AGAINST API: ${request.context()._options.baseURL}`);
+  base.beforeAll(async () => {
+    // Log the baseURL from the config file
+    console.log(`TESTING AGAINST PRODUCTION API`);
     console.log(`Test run started at: ${new Date().toISOString()}`);
   });
 
