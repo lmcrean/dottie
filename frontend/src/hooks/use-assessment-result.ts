@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { useAssessmentResult as useAssessmentResultContext } from '@/src/context/AssessmentResultContext';
+import { useAssessmentResult as useAssessmentResultContext } from '@/src/context/assessment/AssessmentResultProvider';
 import type {
   AssessmentResult,
   MenstrualPattern,
   Recommendation,
   Symptoms
-} from '@/src/context/AssessmentResultContext';
+} from '@/src/context/assessment/AssessmentResultProvider';
 
 export function useAssessmentResult() {
   const { state, setResult, updateResult, resetResult, setPattern, setRecommendations } =

@@ -31,7 +31,7 @@ import Header from './components/navigation/Header';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
 // Dark mode
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from './context/theme/ThemeContextProvider';
 import { ReactElement } from 'react';
 import { useAuth } from '@/src/context/auth/useAuthContext';
 import { AuthProvider } from '@/src/context/auth/AuthContextProvider';

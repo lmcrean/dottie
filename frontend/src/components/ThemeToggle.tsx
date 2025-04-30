@@ -1,4 +1,4 @@
-import { useTheme } from '@/src/context/ThemeContext';
+import { useTheme } from '@/src/context/theme/useTheme';
 import { SunIcon, MoonIcon } from 'lucide-react';
 
 const ThemeToggle = () => {

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { AssessmentResultContext } from '@/src/context/assessment/AssessmentResultContext';
+import { ReactNode, useReducer } from 'react';
 
 // Types
 export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
@@ -38,7 +39,7 @@ export interface AssessmentResult {
   recommendations?: Recommendation[];
 }
 
-interface AssessmentResultState {
+export interface AssessmentResultState {
   result: AssessmentResult | null;
   isComplete: boolean;
 }
@@ -50,23 +51,11 @@ type AssessmentResultAction =
   | { type: 'SET_PATTERN'; payload: MenstrualPattern }
   | { type: 'SET_RECOMMENDATIONS'; payload: Recommendation[] };
 
-interface AssessmentResultContextType {
-  state: AssessmentResultState;
-  setResult: (result: AssessmentResult) => void;
-  updateResult: (updates: Partial<AssessmentResult>) => void;
-  resetResult: () => void;
-  setPattern: (pattern: MenstrualPattern) => void;
-  setRecommendations: (recommendations: Recommendation[]) => void;
-}
-
 // Initial state
 const initialState: AssessmentResultState = {
   result: null,
   isComplete: false
 };
-
-// Context
-const AssessmentResultContext = createContext<AssessmentResultContextType | undefined>(undefined);
 
 // Reducer
 function assessmentResultReducer(
@@ -140,13 +129,4 @@ export function AssessmentResultProvider({ children }: { children: ReactNode }) 
       {children}
     </AssessmentResultContext.Provider>
   );
-}
-
-// Custom hook
-export function useAssessmentResult() {
-  const context = useContext(AssessmentResultContext);
-  if (context === undefined) {
-    throw new Error('useAssessmentResult must be used within an AssessmentResultProvider');
-  }
-  return context;
 }
