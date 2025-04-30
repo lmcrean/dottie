@@ -30,6 +30,13 @@ const sharedTestState = {
 base.describe.configure({ mode: "serial" });
 
 base.describe("Master Integration Test", () => {
+  // Log the test environment configuration
+  base.beforeAll(async ({ request }) => {
+    // Log the baseURL being used for this test run
+    console.log(`TESTING AGAINST API: ${request.context()._options.baseURL}`);
+    console.log(`Test run started at: ${new Date().toISOString()}`);
+  });
+
   // =====================
   // Authentication Tests
   // =====================
