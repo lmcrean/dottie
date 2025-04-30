@@ -35,6 +35,7 @@ const CommandDialog = ({ children, ...props }: DialogProps) => {
   );
 };
 
+/* eslint-disable react/no-unknown-property */
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>

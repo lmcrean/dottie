@@ -1,3 +1,4 @@
+import { User } from '@/src/api/auth';
 import { apiClient } from './apiClient';
 
 /**
@@ -22,7 +23,7 @@ export const checkDbConnection = async (): Promise<{ status: string; message: st
  * @param userId - The ID of the user to fetch
  * @returns Promise with user data
  */
-export const fetchUserData = async (userId: string): Promise<any> => {
+export const fetchUserData = async (userId: string): Promise<User> => {
   try {
     const response = await apiClient.get(`/api/users/${userId}`);
     return response.data;

@@ -3,6 +3,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { process } from 'process';
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
@@ -18,13 +19,14 @@ function isPortInUse(port) {
     execSync(command, { stdio: 'ignore' });
     return true;
   } catch (e) {
+    console.error(`Failed to connect to port: ${port}`, e);
     return false;
   }
 }
 
 // Define constants
 const API_PORT = process.env.PORT || 5000;
-const API_URL = `http://localhost:${API_PORT}`;
+// const API_URL = `http://localhost:${API_PORT}`;
 
 if (isPortInUse(API_PORT)) {
   runTests();

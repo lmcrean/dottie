@@ -286,6 +286,7 @@ const SidebarRail = React.forwardRef<HTMLButtonElement, React.ComponentProps<'bu
 
     return (
       <button
+        type="button"
         ref={ref}
         data-sidebar="rail"
         aria-label="Toggle Sidebar"
@@ -712,7 +713,7 @@ const SidebarMenuSubButton = React.forwardRef<
   );
 });
 SidebarMenuSubButton.displayName = 'SidebarMenuSubButton';
-
+/* eslint-disable react-refresh/only-export-components */
 export {
   Sidebar,
   SidebarContent,

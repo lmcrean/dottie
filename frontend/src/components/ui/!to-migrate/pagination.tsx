@@ -2,7 +2,8 @@ import * as React from 'react';
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
 import { cn } from '@/src/lib/utils';
-import { ButtonProps, buttonVariants } from '@/src/components/ui/!to-migrate/button';
+import { ButtonProps } from '@/src/components/ui/!to-migrate/button';
+import { buttonVariants } from '@/src/components/ui/variants/button/buttonVariants';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
@@ -30,7 +31,7 @@ type PaginationLinkProps = {
   isActive?: boolean;
 } & Pick<ButtonProps, 'size'> &
   React.ComponentProps<'a'>;
-
+/* eslint-disable jsx-a11y/anchor-has-content */
 const PaginationLink = ({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? 'page' : undefined}

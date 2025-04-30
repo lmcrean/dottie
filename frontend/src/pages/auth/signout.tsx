@@ -1,4 +1,4 @@
-import { useAuth } from '@/src/context/useAuthContext';
+import { useAuth } from '@/src/context/auth/useAuthContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';

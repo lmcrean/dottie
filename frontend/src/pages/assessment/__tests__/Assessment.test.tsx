@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '@/src/context/AuthContextProvider';
 
 // Import all assessment pages
 import AgeVerificationPage from '../age-verification/page';
@@ -11,6 +10,7 @@ import FlowPage from '../flow/page';
 import PainPage from '../pain/page';
 import SymptomsPage from '../symptoms/page';
 import ResultsPage from '../results/page';
+import { AuthProvider } from '@/src/context/auth/AuthContextProvider';
 
 // Wrap component with BrowserRouter for React Router compatibility
 const renderWithRouter = (component: React.ReactNode) => {

@@ -55,14 +55,14 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': 'off',
-
+      'react/prop-types': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
           vars: 'all',
           args: 'after-used',
           argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_'
+          varsIgnorePattern: '/^_/u'
         }
       ],
       'no-undef': 'error',

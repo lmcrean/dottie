@@ -12,7 +12,7 @@ afterEach(() => {
 
 // Mock localStorage for tests
 class LocalStorageMock implements Storage {
-  [name: string]: any;
+  [name: string]: unknown;
   length: number = 0;
   store: Record<string, string> = {};
 

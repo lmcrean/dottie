@@ -3,7 +3,7 @@
  * Handles consistent storage and retrieval of auth tokens across the application
  */
 
-import { User } from '@/src/api/auth';
+import { AuthResponse, User } from '@/src/api/auth';
 
 // Constants for token keys to ensure consistency
 export const TOKEN_KEYS = {
@@ -193,7 +193,7 @@ export const clearAllTokens = (): void => {
 /**
  * Store complete authentication data from login/signup response
  */
-export const storeAuthData = (data: any): boolean => {
+export const storeAuthData = (data: AuthResponse): boolean => {
   if (!data) return false;
 
   try {
@@ -205,8 +205,8 @@ export const storeAuthData = (data: any): boolean => {
 
     // Find and store auth token
     for (const field of possibleTokenFields) {
-      if (data[field]) {
-        setAuthToken(data[field]);
+      if (field in data && typeof data[field as keyof AuthResponse] === 'string') {
+        setAuthToken(data[field as keyof AuthResponse] as string);
         success = true;
         break;
       }
@@ -214,8 +214,8 @@ export const storeAuthData = (data: any): boolean => {
 
     // Find and store refresh token
     for (const field of possibleRefreshTokenFields) {
-      if (data[field]) {
-        setRefreshToken(data[field]);
+      if (field in data && typeof data[field as keyof AuthResponse] === 'string') {
+        setRefreshToken(data[field as keyof AuthResponse] as string);
         break;
       }
     }

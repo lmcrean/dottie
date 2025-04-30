@@ -54,6 +54,7 @@ function TeardropBody() {
   });
 
   return (
+    /* eslint-disable react/no-unknown-property */
     <group ref={mascotRef} scale={[1.2, 1.2, 1.2]} position={[0, 1, 0]}>
       {/* Main body */}
       <mesh ref={latheRef} rotation={[Math.PI, 0, 0]}>
@@ -196,3 +197,5 @@ export default function TeardropShape3D() {
     </div>
   );
 }
+
+/* eslint-enable react/no-unknown-property */

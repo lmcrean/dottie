@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
-import { AuthProvider } from '@/src/context/AuthContextProvider';
 
 // Import all assessment pages
 import AgeVerificationPage from '../age-verification/page';
@@ -12,6 +11,7 @@ import FlowPage from '../flow/page';
 import PainPage from '../pain/page';
 import SymptomsPage from '../symptoms/page';
 import ResultsPage from '../results/page';
+import { AuthProvider } from '@/src/context/auth/AuthContextProvider';
 
 // Mock router
 vi.mock('react-router-dom', async () => {

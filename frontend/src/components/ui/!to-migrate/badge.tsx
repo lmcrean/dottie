@@ -21,7 +21,7 @@ const badgeVariants = cva(
     }
   }
 );
-
+/* eslint-disable react-refresh/only-export-components */
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}

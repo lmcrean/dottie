@@ -2,8 +2,13 @@ import { authApi } from '@/src/api/auth/index';
 import { LoginInput, SignupInput, User } from '@/src/api/auth/types';
 import { userApi } from '@/src/api/user/index';
 import { ReactNode, useEffect, useState } from 'react';
-import { clearAllTokens, getAuthToken, getUserData, storeAuthData } from '../api/core/tokenManager';
-import { AuthContext } from '@/src/context/AuthContext';
+import { AuthContext } from '@/src/context/auth/AuthContext';
+import {
+  clearAllTokens,
+  getAuthToken,
+  getUserData,
+  storeAuthData
+} from '@/src/api/core/tokenManager';
 
 interface AuthState {
   user: User | null;
@@ -100,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Use the token manager to store auth data
       storeAuthData(response);
-      console.log('login from AuthContext');
+
       setState({
         user: response.user,
         isAuthenticated: true,
