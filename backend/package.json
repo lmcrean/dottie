@@ -68,7 +68,6 @@
     "@google/genai": "^0.7.0",
     "@google/generative-ai": "^0.24.0",
     "@supabase/supabase-js": "^2.49.4",
-    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -84,9 +83,10 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
+    "axios": "^1.9.0",
     "cross-env": "^7.0.3",
     "nodemon": "^3.1.9",
     "supertest": "^7.1.0",
-    "vitest": "^3.0.8"
+    "vitest": "^3.1.2"
   }
 }
