@@ -40,14 +40,18 @@ The test is designed with a modular approach:
 
 ## Running Tests
 
-To run the integration test:
+To run the playwright test:
 
 ```bash
 # From the backend directory
-npx playwright test dev/tests/master-integration/master-integration.api.pw.spec.js --headed
+cd backend; npx playwright test routes/__tests__/e2e/dev/master-integration/master-integration.api.pw.spec.js --config=playwright.config.js
 ```
 
-The `--headed` flag will show the test execution in the browser window.
+To run the vitest test:
+
+```bash
+cd backend;     npm test -- "routes/__tests__/e2e/dev/master-integration/master-integration.api.vitest.test.js"
+```
 
 ## Adding More Tests
 
@@ -56,20 +60,3 @@ To add more functionality:
 1. Add new utility functions to the appropriate file in the `runners/` directory
 2. Update the master integration test to use these new functions
 3. Maintain the logical order: authentication → assessment → user actions
-
-## Debugging
-
-If a test fails, you can debug it using several approaches:
-
-1. Check the Playwright report for detailed error information
-2. Look for console log messages that indicate which operation failed
-3. Inspect the specific module where the failure occurred
-
-## Test Data
-
-The test utilities provide functions to generate test data:
-
-- `auth.generateTestUser()` - Creates user data for registration
-- `assessment.generateDefaultAssessment()` - Creates a default assessment
-- `assessment.generateSevereAssessment()` - Creates an assessment with severe symptoms
-- `user.generateProfileUpdate()` - Creates data for profile updates 
