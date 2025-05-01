@@ -123,9 +123,10 @@ export async function verifyToken(request, token) {
  */
 export function generateTestUser() {
   const timestamp = Date.now();
+  const randomId = Math.random().toString(36).substring(2, 10);
   return {
-    username: `testuser_${timestamp}`,  // Use underscore instead of hyphen
-    email: `test.user.${timestamp}@gmail.com`,  // Use gmail.com domain
-    password: "TestPassword123!#",  // Add more special characters
+    username: `prod_test_${randomId}_${timestamp}`,  // Highly unique username with prefix
+    email: `prod.test.${randomId}.${timestamp}@testmail.com`,  // Use testmail.com domain
+    password: "TestPassword123!#@",  // Add even more special characters for stronger password
   };
 } 
