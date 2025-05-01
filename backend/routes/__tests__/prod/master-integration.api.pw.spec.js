@@ -6,10 +6,10 @@ import * as assessment from "./runners/assessment.js";
 import * as user from "./runners/user.js";
 
 /**
- * Master Integration Test
+ * Master Integration Test for Production
  *
  * This test suite tests all endpoints in sequence to ensure
- * they work together as expected in a real-world scenario.
+ * they work together as expected in a real-world scenario in production.
  *
  * The test follows this flow:
  * 1. Authentication: Register user and login
@@ -65,13 +65,20 @@ base.describe("Master Integration Test", () => {
       // Generate test user data
       sharedTestState.testUser = auth.generateTestUser();
 
-      // Register the user using the auth module
-      const result = await auth.registerUser(request, sharedTestState.testUser);
-      sharedTestState.userId = result.userId;
+      // Try to register the user using the auth module
+      try {
+        const result = await auth.registerUser(request, sharedTestState.testUser);
+        sharedTestState.userId = result.userId;
 
-      // Verify we got a valid user ID
-      expect(sharedTestState.userId).toBeTruthy();
-      expect(result.userData.username).toBe(sharedTestState.testUser.username);
+        // Verify we got a valid user ID
+        expect(sharedTestState.userId).toBeTruthy();
+        expect(result.userData.username).toBe(sharedTestState.testUser.username);
+        
+      } catch (regError) {
+        // If registration fails, log the error and let the test fail
+        console.error("Registration failed:", regError);
+        throw regError; // Re-throw the error to fail the test
+      }
     } catch (error) {
       console.error("Error in user registration test:", error);
       throw error;
@@ -81,19 +88,26 @@ base.describe("Master Integration Test", () => {
   base("3. Login with the registered user", async ({ request }) => {
     try {
       // Log in with the user we just created
-      sharedTestState.authToken = await auth.loginUser(request, {
-        email: sharedTestState.testUser.email,
-        password: sharedTestState.testUser.password,
-      });
+      try {
+        sharedTestState.authToken = await auth.loginUser(request, {
+          email: sharedTestState.testUser.email,
+          password: sharedTestState.testUser.password,
+        });
 
-      // Verify the token is valid
-      expect(sharedTestState.authToken).toBeTruthy();
+        // Verify the token is valid
+        expect(sharedTestState.authToken).toBeTruthy();
 
-      const isValid = await auth.verifyToken(
-        request,
-        sharedTestState.authToken
-      );
-      expect(isValid).toBeTruthy();
+        const isValid = await auth.verifyToken(
+          request,
+          sharedTestState.authToken
+        );
+        expect(isValid).toBeTruthy();
+        
+      } catch (loginError) {
+        console.error("Login failed:", loginError);
+        // Re-throw the error to fail the test
+        throw loginError;
+      }
     } catch (error) {
       console.error("Error in login test:", error);
       throw error;
@@ -347,7 +361,7 @@ base.describe("Master Integration Test", () => {
   });
 
   // Note: Some APIs may not allow deleting users, so we'll mark this as skipped
-  base.skip("12. Delete the test user", async ({ request }) => {
+  base("12. Delete the test user", async ({ request }) => {
     try {
       const deleted = await user.deleteUser(
         request,
