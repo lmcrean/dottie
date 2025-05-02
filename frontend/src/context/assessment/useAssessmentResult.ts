@@ -1,7 +1,7 @@
 import { AssessmentResultContext } from '@/src/context/assessment/AssessmentResultContext';
 import { useContext } from 'react';
 
-export function useAssessmentResult() {
+export function useAssessmentResultContext() {
   const context = useContext(AssessmentResultContext);
   if (context === undefined) {
     throw new Error('useAssessmentResult must be used within an AssessmentResultProvider');
