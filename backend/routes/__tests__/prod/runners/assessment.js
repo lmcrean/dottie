@@ -22,30 +22,32 @@ export async function createAssessment(
   // If no assessment data provided, use default test data
   const data = assessmentData || generateDefaultAssessment();
 
-  // Convert to flattened format with snake_case fields
-  const flattenedData = {
-    userId: userId,
-    // Use the flattened format fields directly
+  // Use only snake_case format for PostgreSQL compatibility
+  // Keep assessmentData as the top-level container to match API expectations
+  const payload = {
     assessmentData: {
-      // These are direct fields, not nested
-      age: data.age,
-      cycle_length: data.cycleLength,
-      period_duration: data.periodDuration,
-      flow_heaviness: data.flowHeaviness,
-      pain_level: data.painLevel,
-      physical_symptoms: data.symptoms?.physical || [],
-      emotional_symptoms: data.symptoms?.emotional || []
+      // Only include the snake_case format for database columns to match PostgreSQL schema
+      user_id: userId,
+      
+      // Direct fields with snake_case naming
+      age: data.age || "18-24",
+      cycle_length: data.cycleLength || data.cycle_length || "26-30",
+      period_duration: data.periodDuration || data.period_duration || "4-5",
+      flow_heaviness: data.flowHeaviness || data.flow_heaviness || "moderate",
+      pain_level: data.painLevel || data.pain_level || "moderate",
+      physical_symptoms: data.symptoms?.physical || data.physical_symptoms || ["Bloating", "Headaches"],
+      emotional_symptoms: data.symptoms?.emotional || data.emotional_symptoms || ["Mood swings", "Irritability"]
     }
   };
 
-  console.log('Creating assessment with payload:', JSON.stringify(flattenedData));
+  console.log('Creating assessment with payload:', JSON.stringify(payload));
   console.log('Using auth token:', token.substring(0, 20) + '...');
 
   const response = await request.post("/api/assessment/send", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    data: flattenedData,
+    data: payload,
   });
 
   console.log('Assessment creation response status:', response.status());
@@ -62,6 +64,14 @@ export async function createAssessment(
   try {
     if (responseText) {
       result = JSON.parse(responseText);
+      
+      // Log detailed error information if available
+      if (response.status() !== 201 && result.error) {
+        console.error('Error creating assessment:', result.error);
+        if (result.details) {
+          console.error('Error details:', result.details);
+        }
+      }
     }
   } catch (error) {
     console.error("Failed to parse JSON response:", error);
