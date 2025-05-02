@@ -26,8 +26,8 @@ export async function createAssessment(
   // Keep assessmentData as the top-level container to match API expectations
   const payload = {
     assessmentData: {
-      // Only include the snake_case format for database columns to match PostgreSQL schema
-      user_id: userId,
+      // Don't include user_id or userId - let the API use it from the auth token
+      // The API will get the user ID from the req.user object after token authentication
       
       // Direct fields with snake_case naming
       age: data.age || "18-24",
