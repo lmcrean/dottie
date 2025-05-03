@@ -1,6 +1,7 @@
 # Test Page Wireframe
 
 ## Overview
+
 The test page provides a comprehensive interface to test all API endpoints documented in the Endpoints-master.md file. It displays multiple tables organized by endpoint category, allowing users to test each endpoint, view expected output, and see actual results from API calls.
 
 ## Layout
@@ -126,17 +127,20 @@ The test page provides a comprehensive interface to test all API endpoints docum
 ## Interaction Details
 
 1. **For each endpoint button:**
+
    - Click button to make API call
    - Display loading state during API call
    - Show success/error status after completion
    - Populate the "Actual Output" column with JSON response or error
 
 2. **Visual Indicators:**
+
    - Green button for successful calls
    - Red button for failed calls
    - Yellow button for partial success
 
 3. **Input Handling:**
+
    - For endpoints requiring body parameters (POST/PUT), show an input form
    - For endpoints requiring path parameters, show an input field
    - Default test values are pre-populated
@@ -148,6 +152,7 @@ The test page provides a comprehensive interface to test all API endpoints docum
 ## Mobile Responsiveness
 
 On smaller screens:
+
 - Stack the columns vertically
 - Collapse tables to show one endpoint at a time
-- Add expandable sections for each endpoint category 
+- Add expandable sections for each endpoint category

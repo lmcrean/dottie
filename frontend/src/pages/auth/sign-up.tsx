@@ -1,16 +1,15 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/src/context/AuthContext";
-import { signUpSchema, type SignUpFormData } from "@/src/lib/validations/auth";
-import { FormInput } from "@/src/components/ui/!to-migrate/form-input";
-import { Button } from "@/src/components/ui/!to-migrate/button";
-import { toast } from "sonner";
-import AuthLayout from "@/src/components/AuthLayout";
-import { useState } from "react";
-import { PasswordInput } from "@/src/components/ui/PasswordInput";
-import AnimatedLogo  from "@/src/components/AnimatedLogo";
-
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useNavigate } from 'react-router-dom';
+import { signUpSchema, type SignUpFormData } from '@/src/lib/validations/auth';
+import { FormInput } from '@/src/components/ui/!to-migrate/form-input';
+import { Button } from '@/src/components/ui/!to-migrate/button';
+import { toast } from 'sonner';
+import AuthLayout from '@/src/components/AuthLayout';
+import { useState } from 'react';
+import { PasswordInput } from '@/src/components/ui/PasswordInput';
+import AnimatedLogo from '@/src/components/AnimatedLogo';
+import { useAuth } from '@/src/context/auth/useAuthContext';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -24,9 +23,9 @@ export default function SignUpPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting }
   } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpSchema)
   });
 
   const onSubmit = async (data: SignUpFormData) => {
@@ -34,17 +33,15 @@ export default function SignUpPage() {
       await signup(data);
 
       // Store signup credentials for autofill in the login form
-      localStorage.setItem("login_email", data.email);
-      localStorage.setItem("login_password", data.password);
+      localStorage.setItem('login_email', data.email);
+      localStorage.setItem('login_password', data.password);
 
-      toast.success("Account created successfully!");
-      navigate("/auth/sign-in");
+      toast.success('Account created successfully!');
+      navigate('/auth/sign-in');
     } catch (error) {
       if (error instanceof Error) {
         toast.error(
-          error.message === "Failed to create user"
-            ? "Username Already Taken"
-            : error.message
+          error.message === 'Failed to create user' ? 'Username Already Taken' : error.message
         );
       }
     }
@@ -52,17 +49,22 @@ export default function SignUpPage() {
 
   return (
     <AuthLayout>
-      <h1 className="text-2xl font-bold text-center mb-6">Create Account</h1>
-      <AnimatedLogo borderColor="border-pink-600" size={80} logoSize={48} logoSrc="/logo-mascot.png"/>
+      <h1 className="mb-6 text-center text-2xl font-bold">Create Account</h1>
+      <AnimatedLogo
+        borderColor="border-pink-600"
+        size={80}
+        logoSize={48}
+        logoSrc="/logo/logo-mascot.svg"
+      />
       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-        <div className="rounded-md shadow-sm space-y-4">
+        <div className="space-y-4 rounded-md shadow-sm">
           <FormInput
             id="name"
             type="text"
             label="Full name"
             autoComplete="name"
             required
-            {...register("name")}
+            {...register('name')}
             error={errors.name?.message}
           />
           <FormInput
@@ -71,7 +73,7 @@ export default function SignUpPage() {
             label="Username"
             autoComplete="username"
             required
-            {...register("username")}
+            {...register('username')}
             error={errors.username?.message}
           />
           <FormInput
@@ -80,10 +82,10 @@ export default function SignUpPage() {
             label="Email address"
             autoComplete="email"
             required
-            {...register("email")}
+            {...register('email')}
             error={errors.email?.message}
           />
-            {/* <FormInput
+          {/* <FormInput
               id="password"
               type={passwordVisible ? "text" : "password"}
               label="Password"
@@ -93,7 +95,7 @@ export default function SignUpPage() {
               error={errors.password?.message}
               
             /> */}
-            {/* <FormInput
+          {/* <FormInput
               id="confirmPassword"
               type={passwordVisible ? "text" : "password"}
               label="Confirm password"
@@ -124,14 +126,18 @@ export default function SignUpPage() {
           />
         </div>
         <div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account..." : "Create account"}
+          <Button
+            type="submit"
+            className="btn-primary w-full hover:bg-pink-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Creating account...' : 'Create account'}
           </Button>
         </div>
       </form>
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link to="/auth/sign-in" className="text-pink-600 hover:text-pink-700">
             Sign in
           </Link>

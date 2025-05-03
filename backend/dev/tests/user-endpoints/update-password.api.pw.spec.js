@@ -27,7 +27,7 @@ test.describe('User API - Update Password', () => {
       newPassword: 'NewPassword456!'
     };
     
-    console.log('Updating password for user with ID:', userId);
+    
     
     // Update password
     const response = await request.post(`/api/user/pw/update/${userId}`, {
@@ -37,8 +37,7 @@ test.describe('User API - Update Password', () => {
       data: passwordData
     });
     
-    // Log response status for debugging
-    console.log('Update password response status:', response.status());
+ 
     
     // Verify successful update
     expect(response.status()).toBe(200);

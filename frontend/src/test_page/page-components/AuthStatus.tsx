@@ -19,10 +19,10 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const userString = localStorage.getItem('auth_user');
-    
+
     if (token) {
       setIsAuthenticated(true);
-      
+
       if (userString) {
         try {
           setUser(JSON.parse(userString));
@@ -56,16 +56,14 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
       // First update our UI state
       setIsAuthenticated(false);
       setUser(null);
-      
+
       // Then try to call the logout API
       onLogout();
-      
+
       // Clear any localStorage items regardless of API success
       localStorage.removeItem('authToken');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('auth_user');
-      
-      console.log('Logged out successfully');
     } catch (error) {
       console.error('Error during logout:', error);
       // Still update UI and clear storage even if API call failed
@@ -80,148 +78,143 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
   // Auth-Flow utility function
   const runAuthFlow = async () => {
     if (isFlowRunning) return;
-    
+
     setIsFlowRunning(true);
     try {
       // Helper function to scroll element into view
       const scrollToElement = (element: HTMLElement) => {
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       };
-      
+
       // Helper function to wait with a message
       const wait = async (ms: number, message: string) => {
-        console.log(`Waiting ${ms}ms: ${message}`);
-        await new Promise(resolve => setTimeout(resolve, ms));
+        await new Promise((resolve) => setTimeout(resolve, ms));
       };
-      
-      console.log('Starting auth flow...');
-      
+
       // Step 1: Find and click the "Generate Random User" button
-      const generateButton = Array.from(document.querySelectorAll('button'))
-        .find(button => button.textContent?.includes('Generate Random User'));
-      
+      const generateButton = Array.from(document.querySelectorAll('button')).find((button) =>
+        button.textContent?.includes('Generate Random User')
+      );
+
       if (generateButton) {
         scrollToElement(generateButton as HTMLElement);
         await wait(300, 'Scrolling to Generate Random User button');
-        
-        console.log('Clicking Generate Random User button...');
         (generateButton as HTMLButtonElement).click();
-        
+
         // Wait for the credentials to be generated
         await wait(800, 'Waiting for user credentials to be generated');
-        
+
         // Step 2: Find and click the signup button
-        const signupButton = document.querySelector('button[data-testid="test-post -api-auth-signup-button"]') as HTMLButtonElement;
+        const signupButton = document.querySelector(
+          'button[data-testid="test-post -api-auth-signup-button"]'
+        ) as HTMLButtonElement;
         if (signupButton) {
           scrollToElement(signupButton as HTMLElement);
           await wait(300, 'Scrolling to Signup button');
-          
-          console.log('Clicking Signup button...');
+
           signupButton.click();
-          
+
           // Wait for the form to appear
           await wait(800, 'Waiting for signup form to appear');
-          
+
           // Step 3: Find and click the "Send POST Request" button for signup
           // Look for the Send POST Request button within the signup section
           const signupForms = document.querySelectorAll('form');
           let sendSignupButton: HTMLButtonElement | null = null;
-          
+
           // Search through all forms for the one with email and password and username fields
           for (const form of Array.from(signupForms)) {
             const hasEmailField = form.querySelector('input[name="email"]');
             const hasPasswordField = form.querySelector('input[name="password"]');
             const hasUsernameField = form.querySelector('input[name="username"]');
-            
+
             if (hasEmailField && hasPasswordField && hasUsernameField) {
               // This is likely the signup form
               sendSignupButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
               break;
             }
           }
-          
+
           if (sendSignupButton) {
             scrollToElement(sendSignupButton as HTMLElement);
             await wait(300, 'Scrolling to Send POST Request button');
-            
-            console.log('Clicking Send POST Request for signup...');
+
             sendSignupButton.click();
-            
+
             // Wait for signup to complete
             await wait(1500, 'Waiting for signup to complete');
-            
+
             // Step 4: Find and click the login button
-            const loginButton = document.querySelector('button[data-testid="test-post -api-auth-login-button"]') as HTMLButtonElement;
+            const loginButton = document.querySelector(
+              'button[data-testid="test-post -api-auth-login-button"]'
+            ) as HTMLButtonElement;
             if (loginButton) {
               scrollToElement(loginButton as HTMLElement);
               await wait(300, 'Scrolling to Login button');
-              
-              console.log('Clicking Login button...');
+
               loginButton.click();
-              
+
               // Wait for the form to appear
               await wait(800, 'Waiting for login form to appear');
-              
+
               // Step 5: Find and click "Use Latest Signup Credentials" button
-              const useCredentialsButton = Array.from(document.querySelectorAll('button'))
-                .find(button => button.textContent?.includes('Use Latest Signup Credentials'));
-              
+              const useCredentialsButton = Array.from(document.querySelectorAll('button')).find(
+                (button) => button.textContent?.includes('Use Latest Signup Credentials')
+              );
+
               if (useCredentialsButton) {
                 scrollToElement(useCredentialsButton as HTMLElement);
                 await wait(300, 'Scrolling to Use Latest Signup Credentials button');
-                
-                console.log('Clicking Use Latest Signup Credentials button...');
                 (useCredentialsButton as HTMLButtonElement).click();
-                
+
                 // Wait for credentials to be populated
                 await wait(800, 'Waiting for credentials to be populated');
-                
+
                 // Step 6: Find and click the "Send POST Request" button for login
                 // Look for the Send POST Request button within the login section
                 const loginForms = document.querySelectorAll('form');
                 let sendLoginButton: HTMLButtonElement | null = null;
-                
+
                 // Search through all forms for the one with email and password fields but no username
                 for (const form of Array.from(loginForms)) {
                   const hasEmailField = form.querySelector('input[name="email"]');
                   const hasPasswordField = form.querySelector('input[name="password"]');
                   const hasUsernameField = form.querySelector('input[name="username"]');
-                  
+
                   if (hasEmailField && hasPasswordField && !hasUsernameField) {
                     // This is likely the login form
-                    sendLoginButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+                    sendLoginButton = form.querySelector(
+                      'button[type="submit"]'
+                    ) as HTMLButtonElement;
                     break;
                   }
                 }
-                
+
                 if (sendLoginButton) {
                   scrollToElement(sendLoginButton as HTMLElement);
                   await wait(300, 'Scrolling to Send POST Request button for login');
-                  
-                  console.log('Clicking Send POST Request for login...');
+
                   sendLoginButton.click();
-                  
+
                   // Wait for login to complete - use a longer delay to ensure token is saved
                   await wait(2500, 'Waiting for login to complete and token to be saved');
-                  
+
                   // Check if authentication worked - more comprehensive check
                   const authToken = localStorage.getItem('authToken');
                   const userString = localStorage.getItem('auth_user');
-                  const isAuthSuccess = authToken || userString || document.querySelector('.bg-green-500');
-                  
+                  const isAuthSuccess =
+                    authToken || userString || document.querySelector('.bg-green-500');
+
                   if (isAuthSuccess) {
-                    console.log('Auth flow completed successfully!');
-                    
                     // Refresh auth status from localStorage
                     if (userString) {
                       try {
                         const userData = JSON.parse(userString);
                         setIsAuthenticated(true);
                         setUser({ email: userData.email });
-                        
+
                         // Scroll back to the top to show the authentication status
                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                        
                       } catch (error) {
                         console.error('Error parsing user data:', error);
                         // Still consider success if we found a token or green status indicator
@@ -234,8 +227,10 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                   } else {
-                    console.warn('Auth flow completed but no token found. This may still have worked correctly - check UI for login status.');
-                    
+                    console.warn(
+                      'Auth flow completed but no token found. This may still have worked correctly - check UI for login status.'
+                    );
+
                     // Refresh the auth status for reliability
                     const hasGreenStatus = document.querySelector('.bg-green-500');
                     if (hasGreenStatus) {
@@ -244,7 +239,9 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
                       alert('Auth flow likely succeeded - UI shows logged in state.');
                     } else {
                       console.error('Auth flow likely failed - UI shows not logged in.');
-                      alert('Auth flow may have failed: No authentication indicators found. Check your login status in the UI.');
+                      alert(
+                        'Auth flow may have failed: No authentication indicators found. Check your login status in the UI.'
+                      );
                     }
                   }
                 } else {
@@ -273,78 +270,80 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
   };
 
   return (
-    <div className="mb-8 bg-gray-800 rounded-lg p-4">
-      <div className="flex flex-col md:flex-row justify-between items-center">
+    <div className="mb-8 rounded-lg bg-gray-800 p-4">
+      <div className="flex flex-col items-center justify-between md:flex-row">
         <div className="mb-4 md:mb-0">
           <h2 className="text-xl font-semibold">Authentication Status</h2>
-          <div className="flex items-center mt-2">
-            <div className={`w-3 h-3 rounded-full mr-2 ${isAuthenticated ? 'bg-green-500' : 'bg-red-500'}`}></div>
+          <div className="mt-2 flex items-center">
+            <div
+              className={`mr-2 h-3 w-3 rounded-full ${
+                isAuthenticated ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            ></div>
             <span>{isAuthenticated ? 'Authenticated' : 'Not authenticated'}</span>
           </div>
           {isAuthenticated && user && (
-            <div className="mt-2 text-sm text-gray-300">
-              Logged in as: {user.email}
-            </div>
+            <div className="mt-2 text-sm text-gray-300">Logged in as: {user.email}</div>
           )}
         </div>
-        
+
         <div className="flex space-x-3">
           {isAuthenticated ? (
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              className="rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
             >
               Logout
             </button>
           ) : (
             <button
               onClick={() => setShowLoginForm(!showLoginForm)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
             >
               {showLoginForm ? 'Cancel' : ' Login'}
             </button>
           )}
-          
+
           {/* Auth-Flow utility button */}
-          <div className="px-14 relative">
+          <div className="relative px-14">
             <button
               onClick={runAuthFlow}
               disabled={isFlowRunning}
-              className={`px-4 py-2 text-white rounded-md transition-colors ${
-                isFlowRunning ? 'bg-gray-600 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+              className={`rounded-md px-4 py-2 text-white transition-colors ${
+                isFlowRunning
+                  ? 'cursor-not-allowed bg-gray-600'
+                  : 'bg-purple-600 hover:bg-purple-700'
               }`}
               title="Utility: generates random user and signs in"
             >
               {isFlowRunning ? 'Running...' : 'Auth-Flow'}
-              {isFlowRunning && (
-                <span className="ml-2 inline-block animate-spin">⟳</span>
-              )}
+              {isFlowRunning && <span className="ml-2 inline-block animate-spin">⟳</span>}
             </button>
-            <div className="text-xs text-gray-300 mt-1 absolute md:relative md:mt-2">
+            <div className="absolute mt-1 text-xs text-gray-300 md:relative md:mt-2">
               Click to quickly signup and login with a random user
             </div>
           </div>
         </div>
       </div>
-      
+
       {showLoginForm && !isAuthenticated && (
-        <div className="mt-4 p-4 bg-gray-700 rounded-md">
-          <h3 className="text-lg font-medium mb-2">Login</h3>
+        <div className="mt-4 rounded-md bg-gray-700 p-4">
+          <h3 className="mb-2 text-lg font-medium">Login</h3>
           <InputForm
             fields={[
               {
-                name: "email",
-                label: "Email",
-                type: "email",
+                name: 'email',
+                label: 'Email',
+                type: 'email',
                 required: true,
-                placeholder: "user@example.com"
+                placeholder: 'user@example.com'
               },
               {
-                name: "password",
-                label: "Password",
-                type: "password",
+                name: 'password',
+                label: 'Password',
+                type: 'password',
                 required: true,
-                placeholder: "Your password"
+                placeholder: 'Your password'
               }
             ]}
             onSubmit={handleLogin}
@@ -355,4 +354,4 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
       )}
     </div>
   );
-} 
+}

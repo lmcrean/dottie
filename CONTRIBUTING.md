@@ -2,12 +2,18 @@
 
 We use a Draft Pull Request workflow to manage contributions effectively.
 
+This tab is the central space for communication to see what peers are working on.
+
 ![image](https://github.com/user-attachments/assets/f8063ac8-6021-4ed0-82aa-1bf424fc1923)
+
+# Choosing an issue to work on
+
+1. Pick and issue from the [Issues tab](https://github.com/lmcrean/dottie/issues), consider using a suitable filter like [good first issue](https://github.com/lmcrean/dottie/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22). (See also [CONTRIBUTING_issues_tab.md](/CONTRIBUTING_issues_tab.md))
+2. Check the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls).
 
 # How to contribute a pull request
 
-1. Check the [Issues](https://github.com/lmcrean/dottie/issues) tab.
-2. submit an initial commit and convert to a `pull request`.
+1. Submit an initial commit and convert to a `pull request`.
 3. convert your pull request to `draft` (illustration below)
 4. reference the existing issue with the # feature e.g. `#134`.
 5. **convert the PR to an open pull request when ready!**
@@ -21,11 +27,7 @@ We use a Draft Pull Request workflow to manage contributions effectively.
 
 </details>
 
-# What to check before starting a pull request
 
-- [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls): check the existing drafts. *This is the central space for being aware of current progress.*
-
-*It may be worth reaching out to that peer in the PR comments and offering to contribute an isolated issue to their branch.*
 
 # What to include before completing a pull request
 
@@ -56,6 +58,21 @@ template provided [here](/pull_request_template.md).
 example labels:
 
 ![image](https://github.com/user-attachments/assets/094c94b7-ed90-4211-997b-116dc70ba3fa)
+
+# Frequently asked Questions
+
+Q: How do I get assigned to an issue?
+A: The best way to self-assign is by drafting a Pull Request. Just check the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls) for potential overlap.
+
+Q: I want to work on an issue. Is it acceptable to pull request an initial commit with no changes?
+A: Yes! Just make sure it is marked as `draft`.
+
+Q: I want to work on an issue but someone has started working on it in the Pull Request drafts.
+A: If someone has started on the [Pull Requests Tab](https://github.com/lmcrean/dottie/pulls), consider reaching out to that peer in the comments and offering to contribute an isolated issue to their branch.
+
+# Using the issues tab
+
+Please read [CONTRIBUTING_issues_tab.md](/CONTRIBUTING_issues_tab.md) for further guidance on using the issues tab.
 
 # join our discord channel 
 

@@ -1,6 +1,6 @@
 /**
  * Authentication Utilities for Integration Tests
- * 
+ *
  * This file contains helper functions for authentication-related operations
  * in integration tests, like user registration, login, and token management.
  */
@@ -12,27 +12,24 @@
  * @returns {Promise<Object>} Result with user ID and token
  */
 export async function registerUser(request, userData) {
-  console.log('Registering user:', userData.username);
-  
-  const response = await request.post('/api/auth/signup', {
-    data: userData
+  const response = await request.post("/api/auth/signup", {
+    data: userData,
   });
-  
+
   const data = await response.json();
-  console.log('Registration response:', data);
-  
+
   if (response.status() !== 201) {
-    console.error('Registration failed:', data);
+    console.error("Registration failed:", data);
     throw new Error(`Failed to register user: ${response.status()}`);
   }
-  
+
   // The API directly returns the user object and doesn't wrap it in a 'user' property
   // and the token is generated separately - we'll handle this by logging in after registration
   return {
     userId: data.id, // Use the user ID directly from the response
     userData: data,
     // We'll need to log in to get the token
-    token: null
+    token: null,
   };
 }
 
@@ -43,28 +40,25 @@ export async function registerUser(request, userData) {
  * @returns {Promise<string>} Authentication token
  */
 export async function loginUser(request, credentials) {
-  console.log('Logging in user:', credentials.email);
-  
-  const response = await request.post('/api/auth/login', {
+  const response = await request.post("/api/auth/login", {
     data: {
       email: credentials.email,
-      password: credentials.password
-    }
+      password: credentials.password,
+    },
   });
-  
+
   const data = await response.json();
-  console.log('Login response:', data);
-  
+
   if (response.status() !== 200) {
-    console.error('Login failed:', data);
+    console.error("Login failed:", data);
     throw new Error(`Failed to login: ${response.status()}`);
   }
-  
+
   if (!data.token) {
-    console.error('No token in login response:', data);
-    throw new Error('Invalid login response format');
+    console.error("No token in login response:", data);
+    throw new Error("Invalid login response format");
   }
-  
+
   return data.token;
 }
 
@@ -76,23 +70,22 @@ export async function loginUser(request, credentials) {
  */
 export async function verifyToken(request, token) {
   // Try to access a protected endpoint to verify the token
-  console.log('Verifying token validity');
-  
+
   if (!token) {
-    console.error('No token provided for verification');
+    console.error("No token provided for verification");
     return false;
   }
-  
+
   try {
-    const response = await request.get('/api/auth/users', {
+    const response = await request.get("/api/auth/users", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    
+
     return response.status() === 200;
   } catch (error) {
-    console.error('Token verification error:', error);
+    console.error("Token verification error:", error);
     return false;
   }
 }
@@ -106,6 +99,6 @@ export function generateTestUser() {
   return {
     username: `testuser-${timestamp}`,
     email: `test-${timestamp}@example.com`,
-    password: 'TestPassword123!'
+    password: "TestPassword123!",
   };
-} 
+}

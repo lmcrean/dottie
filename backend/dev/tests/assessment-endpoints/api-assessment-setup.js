@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { v4 as uuidv4 } from 'uuid';
+import { test, expect } from "@playwright/test";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Common setup and utilities for assessment API endpoint tests
@@ -10,7 +10,7 @@ const timestamp = Date.now();
 const testUser = {
   username: `assessuser-${timestamp}`,
   email: `assess-${timestamp}@example.com`,
-  password: 'Password123!'
+  password: "Password123!",
 };
 
 // Sample assessment data
@@ -23,9 +23,9 @@ const assessmentData = {
     painLevel: "moderate",
     symptoms: {
       physical: ["Bloating", "Headaches"],
-      emotional: ["Mood swings", "Irritability"]
-    }
-  }
+      emotional: ["Mood swings", "Irritability"],
+    },
+  },
 };
 
 /**
@@ -36,11 +36,8 @@ async function setupUser(request) {
   // Create mock values
   const userId = uuidv4();
   const authToken = `mock_token_${timestamp}`;
-  
-  console.log('Using mock user ID:', userId);
-  console.log('Using mock auth token:', authToken);
-  
+
   return { authToken, userId };
 }
 
-export { testUser, assessmentData, setupUser }; 
+export { testUser, assessmentData, setupUser };

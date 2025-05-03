@@ -1,3 +1,3 @@
 export { getHealthHello } from './getHealthHello';
 export { getDatabaseStatus } from './getDatabaseStatus';
-export { getDatabaseHello } from './getDatabaseHello'; 
+export { getDatabaseHello } from './getDatabaseHello';

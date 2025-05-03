@@ -8,4 +8,4 @@ export const setupApi = {
   getDatabaseHello
 };
 
-export default setupApi; 
+export default setupApi;

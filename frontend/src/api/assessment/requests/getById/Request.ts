@@ -1,6 +1,6 @@
-import { apiClient } from "../../../core/apiClient";
-import { Assessment } from "../../types";
-import { getUserData } from "../../../core/tokenManager";
+import { apiClient } from '../../../core/apiClient';
+import { Assessment } from '../../types';
+import { getUserData } from '../../../core/tokenManager';
 
 /**
  * Get assessment by ID
@@ -13,7 +13,7 @@ export const getById = async (id: string): Promise<Assessment> => {
     if (!userData || !userData.id) {
       throw new Error('User ID not found. Please login again.');
     }
-    
+
     const response = await apiClient.get(`/api/assessment/${id}`);
     return response.data;
   } catch (error) {
@@ -22,4 +22,4 @@ export const getById = async (id: string): Promise<Assessment> => {
   }
 };
 
-export default getById; 
+export default getById;

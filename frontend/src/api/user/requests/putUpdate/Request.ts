@@ -1,5 +1,5 @@
-import { apiClient } from "../../../core/apiClient";
-import { UserProfile } from "../../types";
+import { apiClient } from '../../../core/apiClient';
+import { UserProfile } from '../../types';
 
 /**
  * Update user profile
@@ -15,4 +15,4 @@ export const putUpdate = async (userData: Partial<UserProfile>): Promise<UserPro
   }
 };
 
-export default putUpdate; 
+export default putUpdate;

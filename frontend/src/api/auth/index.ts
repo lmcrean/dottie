@@ -1,10 +1,16 @@
-import { postLogin, postSignup, postLogout, postRefreshToken, getTokenVerification } from "./requests";
+import {
+  postLogin,
+  postSignup,
+  postLogout,
+  postRefreshToken,
+  getTokenVerification
+} from './requests';
 
 // Export types
-export * from "./types";
+export * from './types';
 
 // Export schemas
-export * from "./schemas";
+export * from './schemas';
 
 // Export individual endpoints
 export {
@@ -24,4 +30,4 @@ export const authApi = {
   verifyToken: getTokenVerification
 };
 
-export default authApi; 
+export default authApi;

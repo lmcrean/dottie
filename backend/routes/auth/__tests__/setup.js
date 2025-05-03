@@ -1,11 +1,14 @@
 // Test setup file for initializing database
 // Set test mode before importing db
-process.env.TEST_MODE = 'true';
+process.env.TEST_MODE = "true";
 
-import db from '../../../db/index.js';
-import { createTables, dropTables } from '../../../db/migrations/initialSchema.js';
-import bcrypt from 'bcrypt';
-import { generateUser } from '../../../test-utilities/testFixtures.js';
+import db from "../../../db/index.js";
+import {
+  createTables,
+  dropTables,
+} from "../../../db/migrations/initialSchema.js";
+import bcrypt from "bcrypt";
+import { generateUser } from "../../../test-utilities/testFixtures.js";
 
 /**
  * Initialize the test database
@@ -13,50 +16,44 @@ import { generateUser } from '../../../test-utilities/testFixtures.js';
  */
 export async function initTestDatabase() {
   try {
-    console.log('Setting up test database...');
-    
     // First ensure we have a clean start for test database
     // Check if tables exist and recreate them if needed
-    const hasUsersTable = await db.schema.hasTable('users');
-    
+    const hasUsersTable = await db.schema.hasTable("users");
+
     if (!hasUsersTable) {
-      console.log('Users table not found, creating all tables...');
       await createTables(db);
-      
+
       // Seed with initial test data
       await seedTestData();
-    } else {
-      console.log('Tables already exist, continuing...');
     }
-    
+
     // Verify tables were created successfully
     const tablesExist = await Promise.all([
-      db.schema.hasTable('users'),
-      db.schema.hasTable('period_logs'),
-      db.schema.hasTable('symptoms'),
-      db.schema.hasTable('assessments')
+      db.schema.hasTable("users"),
+      db.schema.hasTable("period_logs"),
+      db.schema.hasTable("symptoms"),
+      db.schema.hasTable("assessments"),
     ]);
-    
-    if (!tablesExist.every(exists => exists)) {
-      console.error('Failed to create all required tables!');
+
+    if (!tablesExist.every((exists) => exists)) {
+      console.error("Failed to create all required tables!");
       // Force recreation of all tables
       await dropTables(db);
       await createTables(db);
-      
+
       // Seed with initial test data
       await seedTestData();
-      
+
       // Check again
-      const tablesCreated = await db.schema.hasTable('users');
+      const tablesCreated = await db.schema.hasTable("users");
       if (!tablesCreated) {
-        throw new Error('Failed to create database tables after retry!');
+        throw new Error("Failed to create database tables after retry!");
       }
     }
-    
-    console.log('Test database setup complete');
+
     return true;
   } catch (error) {
-    console.error('Error setting up test database:', error);
+    console.error("Error setting up test database:", error);
     return false;
   }
 }
@@ -66,33 +63,30 @@ export async function initTestDatabase() {
  */
 async function seedTestData() {
   try {
-    console.log('Seeding test database with initial data...');
-    
     // Create standard test users
     const testUsers = [
       generateUser({
-        id: 'test-user-1',
-        username: 'testuser1',
-        email: 'test1@example.com',
-        password_hash: await bcrypt.hash('Password123!', 10)
+        id: "test-user-1",
+        username: "testuser1",
+        email: "test1@example.com",
+        password_hash: await bcrypt.hash("Password123!", 10),
       }),
       generateUser({
-        id: 'test-user-2',
-        username: 'testuser2',
-        email: 'test2@example.com',
-        password_hash: await bcrypt.hash('Password123!', 10)
-      })
+        id: "test-user-2",
+        username: "testuser2",
+        email: "test2@example.com",
+        password_hash: await bcrypt.hash("Password123!", 10),
+      }),
     ];
-    
+
     // Insert users
     for (const user of testUsers) {
-      await db('users').insert(user);
+      await db("users").insert(user);
     }
-    
-    console.log(`Seeded database with ${testUsers.length} test users`);
+
     return true;
   } catch (error) {
-    console.error('Error seeding test database:', error);
+    console.error("Error seeding test database:", error);
     return false;
   }
 }
@@ -102,19 +96,17 @@ async function seedTestData() {
  */
 export async function clearDatabase() {
   try {
-    // console.log('Clearing test database...');
-    await db('assessments').delete();
-    await db('symptoms').delete();
-    await db('period_logs').delete();
-    await db('users').delete();
-    
+    await db("assessments").delete();
+    await db("symptoms").delete();
+    await db("period_logs").delete();
+    await db("users").delete();
+
     // Reseed with initial test data
     await seedTestData();
-    
-    // console.log('Test database cleared and reseeded');
+
     return true;
   } catch (error) {
-    console.error('Error clearing test database:', error);
+    console.error("Error clearing test database:", error);
     return false;
   }
 }
@@ -126,11 +118,11 @@ export async function clearDatabase() {
  */
 export async function createTestUser(userData) {
   try {
-    await db('users').insert(userData);
-    const user = await db('users').where('id', userData.id).first();
+    await db("users").insert(userData);
+    const user = await db("users").where("id", userData.id).first();
     return user;
   } catch (error) {
-    console.error('Error creating test user:', error);
+    console.error("Error creating test user:", error);
     return null;
   }
-} 
+}

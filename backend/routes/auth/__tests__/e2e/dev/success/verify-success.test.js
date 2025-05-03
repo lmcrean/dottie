@@ -1,9 +1,9 @@
 // @ts-check
-import { describe, test, expect, beforeAll, afterAll } from 'vitest';
-import supertest from 'supertest';
-import app from '../../../../../../server.js';
-import { createServer } from 'http';
-import jwt from 'jsonwebtoken';
+import { describe, test, expect, beforeAll, afterAll } from "vitest";
+import supertest from "supertest";
+import app from "../../../../../../server.js";
+import { createServer } from "http";
+import jwt from "jsonwebtoken";
 
 // Create a supertest instance
 const request = supertest(app);
@@ -22,8 +22,8 @@ const TEST_PORT = 5014;
 const createToken = (userId) => {
   return jwt.sign(
     { id: userId, email: `verify_${Date.now()}@example.com` },
-    process.env.JWT_SECRET || 'dev-jwt-secret',
-    { expiresIn: '1h' }
+    process.env.JWT_SECRET || "dev-jwt-secret",
+    { expiresIn: "1h" }
   );
 };
 
@@ -31,49 +31,48 @@ const createToken = (userId) => {
 beforeAll(async () => {
   try {
     server = createServer(app);
-    await new Promise(/** @param {(value: unknown) => void} resolve */ (resolve) => {
-      server.listen(TEST_PORT, () => {
-        console.log(`Verify success test server started on port ${TEST_PORT}`);
-        resolve(true);
-      });
-    });
+    await new Promise(
+      /** @param {(value: unknown) => void} resolve */ (resolve) => {
+        server.listen(TEST_PORT, () => {
+          resolve(true);
+        });
+      }
+    );
 
     // Create test user
     const testUser = {
       username: `verifytest_${Date.now()}`,
       email: `verifytest_${Date.now()}@example.com`,
       password: "Password123!",
-      age: "18_24"
+      age: "18_24",
     };
 
-    const response = await request
-      .post("/api/auth/signup")
-      .send(testUser);
+    const response = await request.post("/api/auth/signup").send(testUser);
 
     expect(response.status).toBe(201);
     testUserId = response.body.id;
     expect(testUserId).toBeTruthy();
-    
+
     // Generate token
     testToken = createToken(testUserId);
     expect(testToken).toBeTruthy();
-    
+
     setupSuccessful = true;
-    console.log('Test setup successful, token created');
   } catch (error) {
-    console.error('Error during test setup:', error.message);
+    console.error("Error during test setup:", error.message);
     // The test will fail in the describe block if setupSuccessful remains false
   }
 }, 15000);
 
 // Close server after all tests
 afterAll(async () => {
-  await new Promise(/** @param {(value: unknown) => void} resolve */ (resolve) => {
-    server.close(() => {
-      console.log('Verify success test server closed');
-      resolve(true);
-    });
-  });
+  await new Promise(
+    /** @param {(value: unknown) => void} resolve */ (resolve) => {
+      server.close(() => {
+        resolve(true);
+      });
+    }
+  );
 }, 15000);
 
 describe("Token Verification - Success Scenarios", () => {
@@ -81,7 +80,7 @@ describe("Token Verification - Success Scenarios", () => {
     // Fail test if prerequisites aren't met
     expect(setupSuccessful).toBe(true);
     expect(testToken).toBeTruthy();
-    
+
     const response = await request
       .get("/api/auth/verify")
       .set("Authorization", `Bearer ${testToken}`);
@@ -100,33 +99,31 @@ describe("Token Verification - Success Scenarios", () => {
         username: `login_verify_${Date.now()}`,
         email: `login_verify_${Date.now()}@example.com`,
         password: "Password123!",
-        age: "18_24"
+        age: "18_24",
       };
-  
+
       // Create the user
       const signupResponse = await request
         .post("/api/auth/signup")
         .send(testUser);
-      
+
       expect(signupResponse.status).toBe(201);
-      
+
       // Login to get token
-      const loginResponse = await request
-        .post("/api/auth/login")
-        .send({
-          email: testUser.email,
-          password: testUser.password
-        });
-      
+      const loginResponse = await request.post("/api/auth/login").send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+
       expect(loginResponse.status).toBe(200);
       loginToken = loginResponse.body.token;
       expect(loginToken).toBeTruthy();
-      
+
       // Verify the token
       const verifyResponse = await request
         .get("/api/auth/verify")
         .set("Authorization", `Bearer ${loginToken}`);
-      
+
       expect(verifyResponse.status).toBe(200);
       expect(verifyResponse.body).toHaveProperty("authenticated", true);
       expect(verifyResponse.body.user).toHaveProperty("email", testUser.email);
@@ -136,4 +133,4 @@ describe("Token Verification - Success Scenarios", () => {
       expect(error).toBeUndefined();
     }
   });
-}); 
+});
