@@ -15,4 +15,4 @@ export interface DatabaseStatusResponse extends SetupApiResponse {
 
 export interface DatabaseHelloResponse extends SetupApiResponse {
   connectionId: string;
-} 
+}

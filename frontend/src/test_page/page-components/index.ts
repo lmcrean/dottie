@@ -8,11 +8,11 @@ import AuthStatus from './AuthStatus';
 
 // Create a utility for test credential management
 export const testCredentialsManager = {
-  storeCredentials: (credentials: { email: string, password: string, username?: string }) => {
+  storeCredentials: (credentials: { email: string; password: string; username?: string }) => {
     localStorage.setItem('test_signup_credentials', JSON.stringify(credentials));
     window.dispatchEvent(new CustomEvent('signup_credentials_updated'));
   },
-  
+
   getCredentials: () => {
     const storedData = localStorage.getItem('test_signup_credentials');
     if (storedData) {
@@ -35,4 +35,4 @@ export {
   InputForm,
   EndpointTable,
   AuthStatus
-}; 
+};

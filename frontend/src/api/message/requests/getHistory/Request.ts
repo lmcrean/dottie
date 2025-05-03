@@ -1,5 +1,5 @@
-import { apiClient } from "../../../core/apiClient";
-import { Conversation } from "../../types";
+import { apiClient } from '../../../core/apiClient';
+import { Conversation } from '../../types';
 
 /**
  * Get chat history for authenticated user
@@ -15,4 +15,4 @@ export const getHistory = async (): Promise<Conversation[]> => {
   }
 };
 
-export default getHistory; 
+export default getHistory;

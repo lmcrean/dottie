@@ -5,10 +5,10 @@ import {
   postPasswordUpdate,
   requestPasswordReset,
   completePasswordReset
-} from "./requests";
+} from './requests';
 
 // Export types
-export * from "./types";
+export * from './types';
 
 // Export individual endpoints
 export {
@@ -32,4 +32,4 @@ export const userApi = {
   }
 };
 
-export default userApi; 
+export default userApi;

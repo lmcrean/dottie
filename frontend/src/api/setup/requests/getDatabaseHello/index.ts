@@ -7,4 +7,4 @@ import { apiClient } from '../../../core/apiClient';
 export const getDatabaseHello = async (): Promise<GetDatabaseHelloResponse> => {
   const response = await apiClient.get<GetDatabaseHelloResponse>('/setup/database/hello');
   return response.data;
-}; 
+};

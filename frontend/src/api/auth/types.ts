@@ -13,12 +13,12 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuthResponse {
   token: string;
   refreshToken?: string;
   user: User;
-} 
+}

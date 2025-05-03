@@ -1,6 +1,6 @@
 // Message API Types
 export interface ApiMessage {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   timestamp: string;
 }
@@ -15,4 +15,4 @@ export interface Conversation {
 export interface ChatResponse {
   message: string;
   conversationId: string;
-} 
+}

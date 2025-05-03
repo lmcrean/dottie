@@ -6,9 +6,18 @@ import { type User, type LoginInput, type SignupInput, type AuthResponse } from 
 
 import { assessmentApi, type Assessment } from './assessment';
 import { chatApi, type ApiMessage, type Conversation, type ChatResponse } from './message';
-import { userApi, type UserProfile, type PasswordResetRequest, type PasswordUpdateRequest } from './user';
+import {
+  userApi,
+  type UserProfile,
+  type PasswordResetRequest,
+  type PasswordUpdateRequest
+} from './user';
 import setupApi from './setup';
-import { type HealthResponse, type DatabaseStatusResponse, type DatabaseHelloResponse } from './setup/types';
+import {
+  type HealthResponse,
+  type DatabaseStatusResponse,
+  type DatabaseHelloResponse
+} from './setup/types';
 
 // Export all API modules
 export {
@@ -18,7 +27,7 @@ export {
   isServerError,
   checkDbConnection,
   fetchUserData,
-  
+
   // Auth exports
   authApi,
   login,
@@ -29,23 +38,23 @@ export {
   LoginInput,
   SignupInput,
   AuthResponse,
-  
+
   // Assessment exports
   assessmentApi,
   Assessment,
-  
+
   // Chat exports
   chatApi,
   ApiMessage,
   Conversation,
   ChatResponse,
-  
+
   // User exports
   userApi,
   UserProfile,
   PasswordResetRequest,
   PasswordUpdateRequest,
-  
+
   // Setup exports
   setupApi,
   HealthResponse,
@@ -62,4 +71,4 @@ export default {
   user: userApi,
   setup: setupApi,
   db: { checkDbConnection, fetchUserData }
-}; 
+};

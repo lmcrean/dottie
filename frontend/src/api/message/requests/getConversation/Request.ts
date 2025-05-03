@@ -1,5 +1,5 @@
-import { apiClient } from "../../../core/apiClient";
-import { Conversation } from "../../types";
+import { apiClient } from '../../../core/apiClient';
+import { Conversation } from '../../types';
 
 /**
  * Get a specific conversation by ID
@@ -15,4 +15,4 @@ export const getConversation = async (conversationId: string): Promise<Conversat
   }
 };
 
-export default getConversation; 
+export default getConversation;

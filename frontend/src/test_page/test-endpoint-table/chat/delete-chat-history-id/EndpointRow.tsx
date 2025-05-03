@@ -3,12 +3,12 @@ import { EndpointRow as BaseEndpointRow } from '../../../page-components';
 
 export default function EndpointRow() {
   return (
-    <BaseEndpointRow 
+    <BaseEndpointRow
       method="DELETE"
       endpoint="/api/chat/history/:conversationId"
-      expectedOutput={{ message: "Conversation deleted" }}
+      expectedOutput={{ message: 'Conversation deleted' }}
       requiresAuth={true}
-      pathParams={["conversationId"]}
+      pathParams={['conversationId']}
     />
   );
-} 
+}

@@ -1,18 +1,22 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { AssessmentResultContext } from '@/src/context/assessment/AssessmentResultContext';
+import { ReactNode, useReducer } from 'react';
 
 // Types
-export type AgeRange = "under-13" | "13-17" | "18-24" | "25-plus";
-export type CycleLength = "less-than-21" | "21-25" | "26-30" | "31-35" | "36-40" | "irregular" | "not-sure" | "other";
-export type PeriodDuration = "1-3" | "4-5" | "6-7" | "8-plus" | "varies"| "not-sure" | "other";
-export type FlowHeaviness = "light" | "moderate" | "heavy" | "very-heavy" | "varies" | "not-sure";
-export type PainLevel = "no-pain" | "mild" | "moderate" | "severe" | "debilitating" | "varies";
+export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
+export type CycleLength =
+  | 'less-than-21'
+  | '21-25'
+  | '26-30'
+  | '31-35'
+  | '36-40'
+  | 'irregular'
+  | 'not-sure'
+  | 'other';
+export type PeriodDuration = '1-3' | '4-5' | '6-7' | '8-plus' | 'varies' | 'not-sure' | 'other';
+export type FlowHeaviness = 'light' | 'moderate' | 'heavy' | 'very-heavy' | 'varies' | 'not-sure';
+export type PainLevel = 'no-pain' | 'mild' | 'moderate' | 'severe' | 'debilitating' | 'varies';
 
-export type MenstrualPattern = 
-  | "regular" 
-  | "irregular" 
-  | "heavy" 
-  | "pain" 
-  | "developing";
+export type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
 
 export interface Recommendation {
   title: string;
@@ -35,7 +39,7 @@ export interface AssessmentResult {
   recommendations?: Recommendation[];
 }
 
-interface AssessmentResultState {
+export interface AssessmentResultState {
   result: AssessmentResult | null;
   isComplete: boolean;
 }
@@ -47,23 +51,11 @@ type AssessmentResultAction =
   | { type: 'SET_PATTERN'; payload: MenstrualPattern }
   | { type: 'SET_RECOMMENDATIONS'; payload: Recommendation[] };
 
-interface AssessmentResultContextType {
-  state: AssessmentResultState;
-  setResult: (result: AssessmentResult) => void;
-  updateResult: (updates: Partial<AssessmentResult>) => void;
-  resetResult: () => void;
-  setPattern: (pattern: MenstrualPattern) => void;
-  setRecommendations: (recommendations: Recommendation[]) => void;
-}
-
 // Initial state
 const initialState: AssessmentResultState = {
   result: null,
-  isComplete: false,
+  isComplete: false
 };
-
-// Context
-const AssessmentResultContext = createContext<AssessmentResultContextType | undefined>(undefined);
 
 // Reducer
 function assessmentResultReducer(
@@ -75,24 +67,24 @@ function assessmentResultReducer(
       return {
         ...state,
         result: action.payload,
-        isComplete: true,
+        isComplete: true
       };
     case 'UPDATE_RESULT':
       return {
         ...state,
-        result: state.result ? { ...state.result, ...action.payload } : null,
+        result: state.result ? { ...state.result, ...action.payload } : null
       };
     case 'RESET_RESULT':
       return initialState;
     case 'SET_PATTERN':
       return {
         ...state,
-        result: state.result ? { ...state.result, pattern: action.payload } : null,
+        result: state.result ? { ...state.result, pattern: action.payload } : null
       };
     case 'SET_RECOMMENDATIONS':
       return {
         ...state,
-        result: state.result ? { ...state.result, recommendations: action.payload } : null,
+        result: state.result ? { ...state.result, recommendations: action.payload } : null
       };
     default:
       return state;
@@ -131,19 +123,10 @@ export function AssessmentResultProvider({ children }: { children: ReactNode }) 
         updateResult,
         resetResult,
         setPattern,
-        setRecommendations,
+        setRecommendations
       }}
     >
       {children}
     </AssessmentResultContext.Provider>
   );
 }
-
-// Custom hook
-export function useAssessmentResult() {
-  const context = useContext(AssessmentResultContext);
-  if (context === undefined) {
-    throw new Error('useAssessmentResult must be used within an AssessmentResultProvider');
-  }
-  return context;
-} 
