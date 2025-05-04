@@ -1,52 +1,55 @@
 /**
  * Fix Assessment Schema Script
  * 
- * This script directly recreates the assessments table with the correct schema for tests.
- * It's a targeted fix for the integration test issues.
+ * This script directly recreates the assessments table with the correct schema for tests
+ * using raw SQL for maximum reliability.
  */
 
 import db from '../db/index.js';
-import logger from '../services/logger/index.js';
 
 async function fixAssessmentSchema() {
   try {
-    logger.info('Starting assessment schema fix...');
+    console.log('Starting assessment schema fix...');
 
     // Drop the assessments table if it exists
     if (await db.schema.hasTable('assessments')) {
-      logger.info('Dropping existing assessments table...');
+      console.log('Dropping existing assessments table...');
       await db.schema.dropTable('assessments');
-      logger.info('Assessments table dropped.');
+      console.log('Assessments table dropped.');
     }
 
-    // Create the assessments table with the required columns
-    logger.info('Creating assessments table with updated schema...');
-    await db.schema.createTable('assessments', (table) => {
-      table.string('id').primary();
-      table.string('user_id').notNullable();
-      table.string('created_at').notNullable();
-      table.string('updated_at').notNullable();
-      table.string('age');
-      table.string('pattern');
-      table.string('cycle_length');
-      table.string('period_duration');
-      table.string('flow_heaviness');
-      table.string('pain_level');
-      table.text('physical_symptoms');
-      table.text('emotional_symptoms');
-      table.text('recommendations');
-      table.text('assessment_data'); // Keep for backward compatibility
-    });
-
-    logger.info('Assessments table created with updated schema.');
+    // Create the assessments table with the required columns using direct SQL
+    console.log('Creating assessments table with updated schema using raw SQL...');
+    
+    const createTableSQL = `
+      CREATE TABLE assessments (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        age TEXT,
+        pattern TEXT,
+        cycle_length TEXT,
+        period_duration TEXT,
+        flow_heaviness TEXT,
+        pain_level TEXT,
+        physical_symptoms TEXT,
+        emotional_symptoms TEXT,
+        recommendations TEXT,
+        assessment_data TEXT
+      );
+    `;
+    
+    await db.raw(createTableSQL);
+    console.log('Assessments table created with updated schema.');
 
     // Confirm the new schema
-    const columnInfo = await db('assessments').columnInfo();
-    logger.info('New assessments table schema:', Object.keys(columnInfo));
+    const columns = await db.raw('PRAGMA table_info(assessments)');
+    console.log('New assessments table schema columns:', columns.map(col => col.name));
     
-    logger.info('Assessment schema fix completed successfully!');
+    console.log('Assessment schema fix completed successfully!');
   } catch (error) {
-    logger.error('Error fixing assessment schema:', error);
+    console.error('Error fixing assessment schema:', error);
   } finally {
     // Close database connection
     await db.destroy();
