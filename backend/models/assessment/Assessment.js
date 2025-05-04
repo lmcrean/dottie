@@ -1,5 +1,6 @@
 import LegacyAssessment from './LegacyAssessment.js';
 import FlattenedAssessment from './FlattenedAssessment.js';
+import { testAssessments, isTestMode } from './AssessmentBase.js';
 
 class Assessment {
   /**
@@ -8,6 +9,11 @@ class Assessment {
    * @returns {Promise<Object|null>} Assessment object or null if not found
    */
   static async findById(id) {    
+    // Check test mode first
+    if (isTestMode && testAssessments[id]) {
+      return testAssessments[id];
+    }
+    
     // Get the raw record first to determine its format
     const DbService = (await import('../../services/dbService.js')).default;
     const rawRecord = await DbService.findById('assessments', id);
