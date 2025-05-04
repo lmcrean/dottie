@@ -18,7 +18,7 @@ export async function updateAssessmentSchema(db) {
     table.string("id").primary(); // Use string ID for test IDs
     table.string("user_id").notNullable();
     table.string("created_at").notNullable();
-    table.string("updated_at").notNullable();
+    table.string("updated_at");
     table.string("age");
     table.string("pattern");
     table.string("cycle_length");
