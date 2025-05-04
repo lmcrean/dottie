@@ -1,0 +1,91 @@
+/**
+ * Simple Fix Schema Script
+ * 
+ * This script uses the sqlite3 package directly to fix the database schema.
+ */
+
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const fs = require('fs');
+
+// Get the path to the SQLite database file
+const dbPath = path.join(__dirname, '..', 'dev.sqlite3');
+
+console.log('Database path:', dbPath);
+
+// Check if the database file exists
+if (!fs.existsSync(dbPath)) {
+  console.error('Database file does not exist:', dbPath);
+  process.exit(1);
+}
+
+// Open the database
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Error opening database:', err.message);
+    process.exit(1);
+  }
+  console.log('Connected to the SQLite database.');
+});
+
+// Run the schema updates
+db.serialize(() => {
+  // First, drop the assessments table if it exists
+  db.run('DROP TABLE IF EXISTS assessments', (err) => {
+    if (err) {
+      console.error('Error dropping assessments table:', err.message);
+      return;
+    }
+    console.log('Assessments table dropped (if it existed).');
+
+    // Create the assessments table with the correct schema
+    const createTable = `
+      CREATE TABLE assessments (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        age TEXT,
+        pattern TEXT,
+        cycle_length TEXT,
+        period_duration TEXT,
+        flow_heaviness TEXT,
+        pain_level TEXT,
+        physical_symptoms TEXT,
+        emotional_symptoms TEXT,
+        recommendations TEXT,
+        assessment_data TEXT
+      );
+    `;
+
+    db.run(createTable, (err) => {
+      if (err) {
+        console.error('Error creating assessments table:', err.message);
+        return;
+      }
+      console.log('Assessments table created with updated schema.');
+
+      // Verify the schema
+      db.all('PRAGMA table_info(assessments);', (err, rows) => {
+        if (err) {
+          console.error('Error getting table info:', err.message);
+          return;
+        }
+        
+        console.log('Assessments table columns:');
+        rows.forEach((row) => {
+          console.log(`- ${row.name} (${row.type})`);
+        });
+
+        // Close the database
+        db.close((err) => {
+          if (err) {
+            console.error('Error closing database:', err.message);
+            return;
+          }
+          console.log('Schema update completed successfully and database closed.');
+        });
+      });
+    });
+  });
+}); 

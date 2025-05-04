@@ -14,6 +14,7 @@
     "db:init:sqlite": "node db/init-sqlite.js",
     "db:reset": "node scripts/reset-db.js",
     "fix:assessment-schema": "node scripts/fix-assessment-schema.js",
+    "fix:schema:simple": "node scripts/simple-fix-schema.js",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
