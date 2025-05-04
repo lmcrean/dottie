@@ -8,7 +8,7 @@ import { deleteConversation as deleteConversationModel } from '../../../models/c
  */
 export const deleteConversation = async (req, res) => {
   try {
-    const userId = req.user.userId
+    const userId = req.user.id;
     const { conversationId } = req.params;
     
     if (!conversationId) {
@@ -19,13 +19,12 @@ export const deleteConversation = async (req, res) => {
     const success = await deleteConversationModel(conversationId, userId);
     
     if (!success) {
-      return res.status(404).json({ error: 'Conversation not found or already deleted' });
+      return res.status(404).json({ error: 'Conversation not found' });
     }
     
     // Return success response
     return res.status(200).json({
-      message: 'Conversation deleted successfully',
-      id: conversationId
+      message: 'Conversation deleted successfully'
     });
   } catch (error) {
     logger.error('Error in deleteConversation controller:', error);
