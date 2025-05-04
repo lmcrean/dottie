@@ -3,7 +3,7 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 // import axios from "axios";
 
 // Import setup utilities
-import { setupTestClient, closeTestServer } from "../../../../../test-utilities/setup.js";
+import { setupTestClient, closeTestServer } from "../../../../test-utilities/setup.js";
 
 // Import utility modules (will now use the 'request' object from setup)
 import * as auth from "./runners/auth.vitest.js";

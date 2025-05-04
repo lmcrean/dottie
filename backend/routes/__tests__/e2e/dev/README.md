@@ -1,97 +1,62 @@
-# Dottie API End-to-End Tests
+# Integration Testing for Dottie API
 
-This directory contains Playwright end-to-end tests for the Dottie API endpoints.
+This directory contains integration tests for the Dottie API backend.
 
-## Setup
+## Directory Structure
 
-The tests are configured to use only Safari browser for UI tests as per project requirements.
+- `master-integration.api.pw.spec.js` - Main integration test file that tests all endpoints in a logical sequence
+- `runners/` - Directory containing modular utility files for different test areas:
+  - `auth.js` - Authentication utilities (user registration, login, token management)
+  - `assessment.js` - Assessment utilities (creating, updating, getting assessments)
+  - `user.js` - User utilities (profile management, user information)
 
-## File Naming Convention
+## Test Flow
 
-To avoid conflicts between Playwright and Vitest, we use the following naming convention:
-- Playwright API tests: `*.api.pw.spec.js`
-- Playwright UI tests: `*.ui.pw.spec.js`
-- Vitest tests (in other directories): `*.test.js`
+The integration tests follow this flow, separating concerns into logical modules:
 
-This separation ensures that Playwright doesn't try to run Vitest tests and vice versa.
+1. **Authentication**:
+   - Register a new user
+   - Login with the created user
+   - Verify authentication tokens
 
-## Test Order
+2. **Assessment**:
+   - Create assessments
+   - Get assessment lists
+   - Get specific assessments
+   - Update assessments
+   - Delete assessments
 
-When running tests, it's important to follow this order:
-1. Setup endpoints tests
-2. Basic API endpoints tests 
-3. Authentication endpoints tests
-4. Assessment endpoints tests
-5. User endpoints tests
+3. **User**:
+   - Get user information
+   - Update user profiles
+   - Manage user accounts
+## Modular Design
 
-This order ensures that dependencies between tests are respected (e.g., auth tests need to run before user tests).
+The test is designed with a modular approach:
 
-## Automatic Server Management
-
-These tests run against the actual backend server. The Playwright configuration includes a `webServer` setting that automatically:
-
-- Starts the backend server before tests run
-- Waits for it to be available at http://localhost:5000
-- Runs the tests
-- Shuts down the server when tests complete
+- Each domain area (auth, assessment, user) has its own utility file with specialized functions
+- The master integration test imports these utilities and uses them in the correct order
+- This approach makes the tests more maintainable and easier to extend
 
 ## Running Tests
 
-From the `backend` directory, run:
+To run the playwright test:
 
 ```bash
-# Run all tests
-npx playwright test
-
-# Run tests in the correct order
-npm run test:api:ordered
-
-# Run specific test suites
-npx playwright test -g "setup"
-npx playwright test -g "Basic API"
-npx playwright test -g "Authentication"
-npx playwright test -g "Assessment"  
-npx playwright test -g "User"
-
-# Run only API tests (without browser)
-npx playwright test --project=api
-
-# Run only browser tests (with Safari)
-npx playwright test --project=browser
+# From the backend directory
+cd backend; npx playwright test routes/__tests__/e2e/dev/master-integration/master-integration.api.pw.spec.js --config=playwright.config.js
 ```
 
-## Viewing Reports
+To run the vitest test:
 
-After running tests, you can view the generated HTML report:
 ```bash
-npm run test:api:report
+cd backend;     npm test -- "routes/__tests__/e2e/dev/master-integration/master-integration.api.vitest.test.js"
 ```
 
-## Test Files
+## Adding More Tests
 
-- `api-basic-endpoints.api.pw.spec.js` - Tests for basic endpoints:
-  - `/api/hello` - Simple greeting endpoint
-  - `/api/setup/database/status` - Database connection status
-- `api-auth-endpoints.api.pw.spec.js` - Tests for authentication-related endpoints:
-  - `/api/auth/signup` - Register a new user
-  - `/api/auth/login` - Authenticate and get token
-  - `/api/auth/users` - Get all users
-  - `/api/auth/users/:id` - Get specific user
-  - `/api/auth/logout` - Logout user
-- `api-assessment-endpoints.api.pw.spec.js` - Tests for assessment-related endpoints:
-  - `/api/assessment/send` - Submit a new assessment
-  - `/api/assessment/list` - Get all assessments
-  - `/api/assessment/:id` - Get, update or delete specific assessment
-- `api-setup-endpoints.api.pw.spec.js` - Tests for setup-related endpoints:
-  - `/api/setup/health/hello` - Health check endpoint
-  - `/api/setup/database/status` - Database connection status
-  - `/api/setup/database/hello` - Database connectivity test with query
-- `api-user-endpoints.api.pw.spec.js` - Tests for user-related endpoints (using auth routes):
-  - `/api/auth/users` - List all users
-  - `/api/auth/users/:id` - Get, update and delete specific users
+To add more functionality:
 
-## Notes
-
-- The `webServer` feature automatically manages the backend server for live testing
-- Some tests may be skipped if prerequisites aren't met (e.g., authentication token not available)
-- Test user data includes timestamps to avoid conflicts with existing data 
+1. Add new utility functions to the appropriate file in the `runners/` directory
+2. Update the master integration test to use these new functions
+3. Maintain the logical order: authentication → assessment → user actions
