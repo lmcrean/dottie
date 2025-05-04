@@ -2,7 +2,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './routes/__tests__/prod',
+  testDir: './routes/__tests__/e2e/prod',
   timeout: 30000,
   expect: {
     timeout: 5000,
