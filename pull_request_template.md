@@ -23,7 +23,7 @@ Before submitting this PR, the following **must** be confirmed:
 - [ ] Added Screenshots to the PR where applicable. Screenshots are mandatory for any frontend, styling, or layout changes.
 
 ## Issue Links
-Mention Related Issues (e.g. Fixes #123, Closes #456, as per [closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)). When updating you can also use the PR sidebar on the rightand link via the `development` tab -- this will automatically close the issue when the PR gets merged
+Mention Related Issues (e.g. Fixes #123, Closes #456, as per [closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) guidance). When updating you can also use the PR sidebar on the rightand link via the `development` tab -- this will automatically close the issue when the PR gets merged
 
 ## Additional Notes
 (Any additional information for reviewers, like known bugs, workarounds, or future improvements.)
