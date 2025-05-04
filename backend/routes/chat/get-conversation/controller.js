@@ -8,8 +8,17 @@ import { getConversation as getConversationModel } from '../../../models/chat/ch
  */
 export const getConversation = async (req, res) => {
   try {
-    const userId = req.user.id;
+    // Get userId from req.user, supporting both id and userId fields
+    const userId = req.user.userId || req.user.id;
     const { conversationId } = req.params;
+    
+    // Log the user ID for debugging
+    logger.info(`Getting conversation ${conversationId} for user: ${userId}`);
+
+    if (!userId) {
+      logger.error('User ID is missing in the request');
+      return res.status(400).json({ error: 'User identification is required' });
+    }
     
     if (!conversationId) {
       return res.status(400).json({ error: 'Conversation ID is required' });

@@ -8,7 +8,16 @@ import { getUserConversations } from '../../../models/chat/chat.js';
  */
 export const getHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    // Get userId from req.user, supporting both id and userId fields
+    const userId = req.user.userId || req.user.id;
+    
+    // Log the user ID for debugging
+    logger.info(`Getting conversation history for user: ${userId}`);
+
+    if (!userId) {
+      logger.error('User ID is missing in the request');
+      return res.status(400).json({ error: 'User identification is required' });
+    }
     
     // Get all conversations for this user
     const conversations = await getUserConversations(userId);
