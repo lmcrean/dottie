@@ -1,4 +1,4 @@
-import { apiClient } from "../../core/apiClient";
+import { apiClient } from '../../core/apiClient';
 
 /**
  * Delete a specific conversation
@@ -13,4 +13,4 @@ export const deleteConversation = async (conversationId: string): Promise<void> 
   }
 };
 
-export default deleteConversation; 
+export default deleteConversation;

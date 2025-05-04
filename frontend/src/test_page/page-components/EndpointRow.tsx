@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
-import EndpointButton from "./EndpointButton";
-import JsonDisplay from "./JsonDisplay";
-import ApiResponse from "./ApiResponse";
-import InputForm from "./InputForm";
-import { apiClient } from "../../api";
-import { authApi } from "../../api/auth";
-import { AxiosError } from "axios";
+import React, { useState, useEffect } from 'react';
+import EndpointButton from './EndpointButton';
+import JsonDisplay from './JsonDisplay';
+import ApiResponse from './ApiResponse';
+import InputForm from './InputForm';
+import { apiClient } from '../../api';
+import { authApi } from '../../api/auth';
+import { AxiosError } from 'axios';
 
 interface InputField {
   name: string;
   label: string;
-  type: "text" | "email" | "password" | "number" | "textarea" | "json";
+  type: 'text' | 'email' | 'password' | 'number' | 'textarea' | 'json';
   placeholder?: string;
   defaultValue?: string;
   required?: boolean;
 }
 
 interface EndpointRowProps {
-  method: "GET" | "POST" | "PUT" | "DELETE";
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   endpoint: string;
   expectedOutput: any;
   requiresAuth?: boolean;
@@ -38,23 +38,19 @@ export default function EndpointRow({
   requiresParams = false,
   inputFields = [],
   pathParams = [],
-  onCustomButtonClick,
+  onCustomButtonClick
 }: EndpointRowProps) {
   const [response, setResponse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState<
-    "idle" | "success" | "error" | "partial"
-  >("idle");
+  const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'partial'>('idle');
   const [showInputForm, setShowInputForm] = useState(false);
-  const [pathParamValues, setPathParamValues] = useState<
-    Record<string, string>
-  >({});
+  const [pathParamValues, setPathParamValues] = useState<Record<string, string>>({});
   const [authError, setAuthError] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   // Check authentication status on component mount
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem('authToken');
     setIsAuthenticated(!!token);
   }, []);
 
@@ -62,25 +58,20 @@ export default function EndpointRow({
   const pathParamFields: InputField[] = pathParams.map((param) => ({
     name: param,
     label: `${param} (path parameter)`,
-    type: "text",
+    type: 'text',
     required: true,
-    placeholder: `Enter value for ${param}`,
+    placeholder: `Enter value for ${param}`
   }));
 
   // Replace path parameters in endpoint
-  const getProcessedEndpoint = (
-    overridePathParams?: Record<string, string>
-  ) => {
+  const getProcessedEndpoint = (overridePathParams?: Record<string, string>) => {
     let processedEndpoint = endpoint;
     // Use overridePathParams if provided, otherwise use state
     const paramsToUse = overridePathParams || pathParamValues;
 
     pathParams.forEach((param) => {
       if (paramsToUse[param]) {
-        processedEndpoint = processedEndpoint.replace(
-          `:${param}`,
-          paramsToUse[param]
-        );
+        processedEndpoint = processedEndpoint.replace(`:${param}`, paramsToUse[param]);
       }
     });
 
@@ -92,7 +83,7 @@ export default function EndpointRow({
     overridePathParams?: Record<string, string>
   ) => {
     setIsLoading(true);
-    setStatus("idle");
+    setStatus('idle');
     setAuthError(false);
 
     try {
@@ -100,83 +91,75 @@ export default function EndpointRow({
       const processedEndpoint = getProcessedEndpoint(overridePathParams);
 
       // Check authentication if required - special case for logout which should still work
-      if (
-        requiresAuth &&
-        !localStorage.getItem("authToken") &&
-        endpoint !== "/api/auth/logout"
-      ) {
+      if (requiresAuth && !localStorage.getItem('authToken') && endpoint !== '/api/auth/logout') {
         setAuthError(true);
-        throw new Error("Authentication required. Please login first.");
+        throw new Error('Authentication required. Please login first.');
       }
 
       // API client already handles auth headers through interceptors
 
       // Make appropriate API call based on method
       switch (method) {
-        case "GET":
+        case 'GET':
           result = await apiClient.get(processedEndpoint);
           break;
-        case "POST":
+        case 'POST':
           // Special case for logout endpoint
-          if (endpoint === "/api/auth/logout") {
+          if (endpoint === '/api/auth/logout') {
             try {
               // Get tokens before clearing storage
-              const refreshToken = localStorage.getItem("refresh_token");
-              const authToken = localStorage.getItem("authToken");
+              const refreshToken = localStorage.getItem('refresh_token');
+              const authToken = localStorage.getItem('authToken');
 
               // Try the API call with the tokens we have
               try {
                 // Set up the headers directly for this call
-                const headers = authToken
-                  ? { Authorization: `Bearer ${authToken}` }
-                  : {};
+                const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
 
                 // Directly use axios to have more control over the request
                 const response = await fetch(processedEndpoint, {
-                  method: "POST",
+                  method: 'POST',
                   headers: {
-                    "Content-Type": "application/json",
-                    ...(authToken
-                      ? { Authorization: `Bearer ${authToken}` }
-                      : {}),
+                    'Content-Type': 'application/json',
+                    ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
                   },
-                  body: JSON.stringify({ refreshToken }),
+                  body: JSON.stringify({ refreshToken })
                 });
 
                 if (response.ok) {
-                  console.log("[Logout Debug] Logout API call succeeded");
+                  console.log('[Logout Debug] Logout API call succeeded');
                 } else {
                   const errorData = await response.json();
                 }
               } catch (error: any) {
-                console.log("[Logout Debug] API call error:", error);
+                console.log('[Logout Debug] API call error:', error);
               }
 
               // Clear local storage tokens after API call attempt
 
-              localStorage.removeItem("authToken");
-              localStorage.removeItem("refresh_token");
-              localStorage.removeItem("auth_user");
+              localStorage.removeItem('authToken');
+              localStorage.removeItem('refresh_token');
+              localStorage.removeItem('auth_user');
 
-              result = { data: { message: "Logged out successfully" } };
+              result = { data: { message: 'Logged out successfully' } };
             } catch (error) {
-              console.error("[Logout Debug] Error during logout:", error);
+              console.error('[Logout Debug] Error during logout:', error);
               throw error;
             }
           } else {
             result = await apiClient.post(processedEndpoint, formData || {});
           }
           break;
-        case "PUT":
+        case 'PUT':
           result = await apiClient.put(processedEndpoint, formData || {});
           break;
-        case "DELETE":
+        case 'DELETE':
           result = await apiClient.delete(processedEndpoint);
           break;
       }
 
       setResponse(result.data);
-      setStatus("success");
+      setStatus('success');
 
       // Hide form after successful call
       if (requiresParams) {
@@ -184,14 +167,14 @@ export default function EndpointRow({
       }
     } catch (error: unknown) {
       console.error(`Error calling ${endpoint}:`, error);
-      console.error("Full error details:", {
-        message: error instanceof Error ? error.message : "Unknown error",
+      console.error('Full error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
         response: (error as AxiosError)?.response?.data,
         status: (error as AxiosError)?.response?.status,
-        headers: (error as AxiosError)?.response?.headers,
+        headers: (error as AxiosError)?.response?.headers
       });
       setResponse(error);
-      setStatus("error");
+      setStatus('error');
     } finally {
       setIsLoading(false);
     }
@@ -259,14 +242,10 @@ export default function EndpointRow({
           />
 
           {requiresAuth && !isAuthenticated && (
-            <div
-              className={`text-xs ${
-                authError ? "text-red-400" : "text-yellow-400"
-              } mt-1`}
-            >
+            <div className={`text-xs ${authError ? 'text-red-400' : 'text-yellow-400'} mt-1`}>
               {authError
-                ? "Authentication required. Please login first."
-                : "Requires authentication"}
+                ? 'Authentication required. Please login first.'
+                : 'Requires authentication'}
             </div>
           )}
 

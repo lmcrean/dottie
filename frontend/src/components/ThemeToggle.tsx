@@ -1,14 +1,15 @@
-import { useTheme } from '@/src/context/ThemeContext';
+import { useTheme } from '@/src/context/theme/useTheme';
 import { SunIcon, MoonIcon } from 'lucide-react';
 
-const ThemeToggle = (): JSX.Element => {
+const ThemeToggle = () => {
   const { isDarkMode, toggleTheme } = useTheme();
-  
+
   return (
-    <button 
-      onClick={toggleTheme} 
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:text-yellow-600 dark:hover:text-yellow-400 border border-gray-300 dark:border dark:border-gray-900"
-      aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="rounded-full border border-gray-300 bg-gray-200 p-2 text-gray-800 hover:text-yellow-600 dark:border dark:border-gray-900 dark:bg-gray-700 dark:text-gray-200 dark:hover:text-yellow-400"
+      aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDarkMode ? <SunIcon size={18} /> : <MoonIcon size={18} />}
     </button>

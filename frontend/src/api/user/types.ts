@@ -5,8 +5,8 @@ export interface UserProfile {
   name: string;
   bio?: string;
   avatar?: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PasswordUpdateRequest {
@@ -22,4 +22,4 @@ export interface PasswordResetCompletion {
   email: string;
   newPassword: string;
   confirmPassword: string;
-} 
+}

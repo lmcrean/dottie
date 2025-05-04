@@ -3,7 +3,7 @@ import { EndpointRow as BaseEndpointRow } from '../../../page-components';
 
 export default function EndpointRow() {
   return (
-    <BaseEndpointRow 
+    <BaseEndpointRow
       method="POST"
       endpoint="/api/assessment/send"
       expectedOutput={{ 
@@ -33,9 +33,9 @@ export default function EndpointRow() {
       requiresParams={true}
       inputFields={[
         {
-          name: "assessmentData",
-          label: "Assessment Data",
-          type: "json",
+          name: 'assessmentData',
+          label: 'Assessment Data',
+          type: 'json',
           required: true,
           defaultValue: JSON.stringify({
             age: "18-24",

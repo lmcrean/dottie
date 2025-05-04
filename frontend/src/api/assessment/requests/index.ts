@@ -3,12 +3,7 @@ import getList from './getList/Request';
 import deleteById from './deleteById/Request';
 import postSend from './postSend/Request';
 
-export {
-  getById,
-  getList,
-  deleteById,
-  postSend,
-};
+export { getById, getList, deleteById, postSend, putUpdate };
 
 // For backward compatibility with default exports
 export default {
@@ -16,4 +11,5 @@ export default {
   getList,
   delete: deleteById,
   postSend,
-}; 
+  putUpdate
+};

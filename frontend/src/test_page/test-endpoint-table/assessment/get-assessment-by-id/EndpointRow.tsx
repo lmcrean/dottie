@@ -3,7 +3,7 @@ import { EndpointRow as BaseEndpointRow } from '../../../page-components';
 
 export default function EndpointRow() {
   return (
-    <BaseEndpointRow 
+    <BaseEndpointRow
       method="GET"
       endpoint="/api/assessment/:id"
       expectedOutput={{ 
@@ -22,8 +22,7 @@ export default function EndpointRow() {
         recommendations: []
       }}
       requiresAuth={true}
-      pathParams={["id"]}
+      pathParams={['id']}
     />
   );
-} 
-
+}

@@ -1,5 +1,5 @@
-import { apiClient } from "../../core/apiClient";
-import { ApiMessage, ChatResponse } from "../utils/types";
+import { apiClient } from '../../core/apiClient';
+import { ApiMessage, ChatResponse } from '../utils/types';
 
 /**
  * Send a message to the chat API
@@ -15,4 +15,4 @@ export const sendMessage = async (message: ApiMessage): Promise<ChatResponse> =>
   }
 };
 
-export default sendMessage; 
+export default sendMessage;

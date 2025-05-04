@@ -1,5 +1,5 @@
-import { apiClient } from "../../../core/apiClient";
-import { getUserData } from "../../../core/tokenManager";
+import { apiClient } from '../../../core/apiClient';
+import { getUserData } from '../../../core/tokenManager';
 
 /**
  * Delete assessment by ID
@@ -11,7 +11,7 @@ export const deleteById = async (id: string): Promise<void> => {
     if (!userData || !userData.id) {
       throw new Error('User ID not found. Please login again.');
     }
-    
+
     await apiClient.delete(`/api/assessment/${userData.id}/${id}`);
   } catch (error) {
     console.error('Failed to delete assessment:', error);
@@ -19,4 +19,4 @@ export const deleteById = async (id: string): Promise<void> => {
   }
 };
 
-export default deleteById; 
+export default deleteById;

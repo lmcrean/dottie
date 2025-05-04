@@ -3,7 +3,7 @@ import { EndpointRow as BaseEndpointRow } from '../../../page-components';
 
 export default function EndpointRow() {
   return (
-    <BaseEndpointRow 
+    <BaseEndpointRow
       method="GET"
       endpoint="/api/assessment/list"
       expectedOutput={[
@@ -41,4 +41,4 @@ export default function EndpointRow() {
       requiresAuth={true}
     />
   );
-} 
+}

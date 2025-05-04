@@ -3,11 +3,11 @@ import { EndpointRow as BaseEndpointRow } from '../../../page-components';
 
 export default function EndpointRow() {
   return (
-    <BaseEndpointRow 
+    <BaseEndpointRow
       method="POST"
       endpoint="/api/auth/logout"
-      expectedOutput={{ message: "Logged out successfully" }}
+      expectedOutput={{ message: 'Logged out successfully' }}
       requiresAuth={true}
     />
   );
-} 
+}
