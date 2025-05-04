@@ -77,15 +77,11 @@ export const getConversation = async (conversationId, userId) => {
     const messages = await DbService.findBy('chat_messages', 'conversation_id', conversationId);
     
     return {
-      // ...conversation[0],
-      // userId: conversation[0].user_id,
-      // createdAt: conversation[0].created_at,
-      // updatedAt: conversation[0].updated_at,
       id: conversationId,
       messages: messages.map(msg => ({
         role: msg.role,
         content: msg.content,
-        createdAt: msg.created_at
+        created_at: msg.created_at // Keep snake_case consistent
       }))
     };
   } catch (error) {
