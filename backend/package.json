@@ -15,6 +15,7 @@
     "db:reset": "node scripts/reset-db.js",
     "fix:assessment-schema": "node scripts/fix-assessment-schema.js",
     "fix:schema:simple": "node scripts/simple-fix-schema.js",
+    "clear:schema-cache": "node scripts/clear-schema-cache.js",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
