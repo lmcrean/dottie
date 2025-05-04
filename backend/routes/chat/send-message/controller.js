@@ -53,7 +53,7 @@ const getMockResponse = (message) => {
 export const sendMessage = async (req, res) => {
   try {    
     const { message, conversationId } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
