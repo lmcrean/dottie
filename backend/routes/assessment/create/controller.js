@@ -15,6 +15,9 @@ export const createAssessment = async (req, res) => {
     const userId = req.user.userId;
     const { assessmentData } = req.body;
 
+    console.log("Assessment creation payload:", JSON.stringify(req.body));
+    console.log("User ID from token:", userId);
+
     // Validate assessment data
     if (!assessmentData) {
       return res.status(400).json({ error: "Assessment data is required" });
@@ -112,16 +115,24 @@ export const createAssessment = async (req, res) => {
     // Validate assessment data using our shared validator
     const validationError = validateAssessmentData(assessmentData);
     if (!validationError.isValid) {
+      console.log("Validation error:", JSON.stringify(validationError));
       return res.status(400).json({ error: validationError });
     }
     
     // Create assessment using the model layer
     // This will automatically handle both flattened and nested formats
-    const newAssessment = await Assessment.create(assessmentData, userId);
-
-    res.status(201).json(newAssessment);
+    console.log("Creating assessment with model layer, data:", JSON.stringify(assessmentData));
+    try {
+      const newAssessment = await Assessment.create(assessmentData, userId);
+      console.log("Successfully created assessment:", newAssessment.id);
+      res.status(201).json(newAssessment);
+    } catch (modelError) {
+      console.error("Error in Assessment.create:", modelError);
+      throw modelError;
+    }
   } catch (error) {
-    console.error("Error creating assessment:", error);
-    res.status(500).json({ error: "Failed to create assessment" });
+    console.error("Error creating assessment:", error.message);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ error: "Failed to create assessment", details: error.message });
   }
 };
