@@ -43,14 +43,12 @@ base.describe("Master Integration Test", () => {
 
     // Test database status endpoint
     const dbStatusResponse = await request.get("/api/setup/database/status");
-    // Accept both 200 and 500 status codes for database status
-    expect([200, 500]).toContain(dbStatusResponse.status());
+    // Only accept 200 as valid status code - we want to know if database isn't responding
+    expect(dbStatusResponse.status()).toBe(200);
     
-    // If response is 200, check the data
-    if (dbStatusResponse.status() === 200) {
-      const dbStatusData = await dbStatusResponse.json();
-      expect(dbStatusData).toHaveProperty('status');
-    }
+    // Check the data
+    const dbStatusData = await dbStatusResponse.json();
+    expect(dbStatusData).toHaveProperty('status');
   });
 
   base("2. Register a new test user", async ({ request }) => {
