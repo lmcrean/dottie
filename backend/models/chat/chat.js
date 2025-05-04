@@ -101,7 +101,7 @@ export const getUserConversations = async (userId) => {
     
     return conversations.map(conversation => ({
       id: conversation.id,
-      lastMessageDate: conversation.lastMessageDate,
+      last_message_date: conversation.lastMessageDate,
       preview: conversation.preview 
         ? conversation.preview + (conversation.preview.length >= 50 ? '...' : '')
         : 'No messages yet'
