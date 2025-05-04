@@ -1,9 +1,10 @@
 import { test as base, expect } from "@playwright/test";
 
-// Import utility modules in order: auth → assessment → user
+// Import utility modules in order: auth → assessment → user → chat
 import * as auth from "./runners/auth.js";
 import * as assessment from "./runners/assessment.js";
 import * as user from "./runners/user.js";
+import * as chat from "./runners/chat.js";
 
 /**
  * Master Integration Test for Production
@@ -15,6 +16,8 @@ import * as user from "./runners/user.js";
  * 1. Authentication: Register user and login
  * 2. Assessment: Create and manage assessments
  * 3. User: Update and manage user information
+ * 4. Chat: Create and manage chat conversations
+ * 5. Cleanup: Delete resources created during testing
  */
 
 // Create a shared test state object
@@ -24,6 +27,7 @@ const sharedTestState = {
   firstAssessmentId: null,
   secondAssessmentId: null,
   testUser: null,
+  conversationId: null,
 };
 
 // Configure tests to run in sequence, not in parallel
@@ -271,10 +275,147 @@ base.describe("Master Integration Test", () => {
   });
 
   // =====================
+  // Chat Tests
+  // =====================
+  base("10. Send a message to start a new conversation", async ({ request }) => {
+    try {
+      // Generate and send a test message without specifying a conversation ID
+      const message = chat.generateTestMessage();
+      
+      const result = await chat.sendMessage(
+        request,
+        sharedTestState.authToken,
+        message
+      );
+
+      // Verify we got a response and a conversation ID
+      expect(result.message).toBeTruthy();
+      expect(result.conversationId).toBeTruthy();
+
+      // Store the conversation ID for later tests
+      sharedTestState.conversationId = result.conversationId;
+    } catch (error) {
+      console.error("Error in send message test:", error);
+      throw error;
+    }
+  });
+
+  base("11. Get chat history for the user", async ({ request }) => {
+    try {
+      const conversations = await chat.getConversationHistory(
+        request,
+        sharedTestState.authToken
+      );
+
+      // Should have at least one conversation
+      expect(conversations.length).toBeGreaterThanOrEqual(1);
+
+      // Should contain our conversation
+      const hasConversation = conversations.some(
+        (c) => c.id === sharedTestState.conversationId
+      );
+      expect(hasConversation).toBeTruthy();
+    } catch (error) {
+      console.error("Error in get chat history test:", error);
+      throw error;
+    }
+  });
+
+  base("12. Get a specific conversation by ID", async ({ request }) => {
+    try {
+      const conversation = await chat.getConversation(
+        request,
+        sharedTestState.authToken,
+        sharedTestState.conversationId
+      );
+
+      // Verify the conversation ID matches
+      expect(conversation.id).toBe(sharedTestState.conversationId);
+
+      // Should have at least two messages (user query and AI response)
+      expect(conversation.messages.length).toBeGreaterThanOrEqual(2);
+
+      // First message should be from the user
+      expect(conversation.messages[0].role).toBe("user");
+    } catch (error) {
+      console.error("Error in get conversation test:", error);
+      throw error;
+    }
+  });
+
+  base("13. Send a second message to the existing conversation", async ({ request }) => {
+    try {
+      // Send another message to the same conversation
+      const message = "Tell me more about managing menstrual symptoms";
+      
+      const result = await chat.sendMessage(
+        request,
+        sharedTestState.authToken,
+        message,
+        sharedTestState.conversationId
+      );
+
+      // Verify the conversation ID matches
+      expect(result.conversationId).toBe(sharedTestState.conversationId);
+
+      // Check that the message was added to the conversation
+      const updatedConversation = await chat.getConversation(
+        request,
+        sharedTestState.authToken,
+        sharedTestState.conversationId
+      );
+
+      // Should now have at least 4 messages (2 user queries and 2 AI responses)
+      expect(updatedConversation.messages.length).toBeGreaterThanOrEqual(4);
+    } catch (error) {
+      console.error("Error in send second message test:", error);
+      throw error;
+    }
+  });
+
+  base("14. Delete the conversation", async ({ request }) => {
+    try {
+      const deleted = await chat.deleteConversation(
+        request,
+        sharedTestState.authToken,
+        sharedTestState.conversationId
+      );
+
+      expect(deleted).toBeTruthy();
+
+      // Verify the conversation was deleted by trying to fetch it (should fail)
+      try {
+        await chat.getConversation(
+          request,
+          sharedTestState.authToken,
+          sharedTestState.conversationId
+        );
+        // If we reach here, the conversation wasn't deleted
+        expect(false).toBeTruthy("Conversation should have been deleted");
+      } catch (error) {
+        // We expect an error when trying to fetch a deleted conversation
+        expect(error.message).toContain("Failed to get conversation: 404");
+      }
+
+      // Verify no conversations in history
+      const conversations = await chat.getConversationHistory(
+        request,
+        sharedTestState.authToken
+      );
+      const hasDeletedConversation = conversations.some(
+        (c) => c.id === sharedTestState.conversationId
+      );
+      expect(hasDeletedConversation).toBeFalsy();
+    } catch (error) {
+      console.error("Error in delete conversation test:", error);
+      throw error;
+    }
+  });
+
+  // =====================
   // Cleanup Tests
   // =====================
-  // Delete assessment tests should work now with correct endpoint format
-  base("10. Delete the second assessment", async ({ request }) => {
+  base("15. Delete the second assessment", async ({ request }) => {
     try {
       const deleted = await assessment.deleteAssessment(
         request,
@@ -315,7 +456,7 @@ base.describe("Master Integration Test", () => {
     }
   });
 
-  base("11. Delete the first assessment", async ({ request }) => {
+  base("16. Delete the first assessment", async ({ request }) => {
     try {
       const deleted = await assessment.deleteAssessment(
         request,
@@ -361,7 +502,7 @@ base.describe("Master Integration Test", () => {
   });
 
   // Note: Some APIs may not allow deleting users, so we'll mark this as skipped
-  base("12. Delete the test user", async ({ request }) => {
+  base("17. Delete the test user", async ({ request }) => {
     try {
       const deleted = await user.deleteUser(
         request,
@@ -392,7 +533,7 @@ base.describe("Master Integration Test", () => {
   // =====================
   // Error Tests
   // =====================
-  base("13. Test authentication errors", async ({ request }) => {
+  base("18. Test authentication errors", async ({ request }) => {
     try {
       // Try to access protected endpoint with invalid token
       const response = await request.get("/api/auth/users", {
