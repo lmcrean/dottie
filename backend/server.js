@@ -84,7 +84,11 @@ app.use("/api", routes);
 
 // Health check for Vercel
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok", message: "Server is running" });
+  res.status(200).json({ 
+    status: "ok", 
+    message: "Server is running",
+    environment: process.env.NODE_ENV || "development"
+  });
 });
 
 // Global error handler
