@@ -1,5 +1,15 @@
 -- Supabase SQL Schema for Dottie Application
 
+-- healthcheck table
+CREATE TABLE IF NOT EXISTS public.healthcheck (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  checked_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert dummy row if table is empty
+INSERT INTO public.healthcheck DEFAULT VALUES
+WHERE NOT EXISTS (SELECT 1 FROM public.healthcheck);
+
 -- Users table
 CREATE TABLE IF NOT EXISTS public.users (
   id UUID PRIMARY KEY,

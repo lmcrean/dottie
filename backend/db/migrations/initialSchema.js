@@ -11,6 +11,17 @@ import { updateAssessmentSchema } from "./assessmentSchema.js";
 export async function createTables(db) {
   const isSQLite = db.client.config.client === "sqlite3";
 
+  // Check if the healthcheck table exists
+  if (!(await db.schema.hasTable("healthcheck"))) {
+    // Create the healthcheck table
+    await db.schema.createTable("healthcheck", (table) => {
+      table.increments("id").primary();
+      table.timestamp("checked_at").defaultTo(db.fn.now());
+    });    
+    // Insert a dummy record to ensure the table is not empty
+    await db("healthcheck").insert({});
+  }
+
   // Users table
   if (!(await db.schema.hasTable("users"))) {
     await db.schema.createTable("users", (table) => {
