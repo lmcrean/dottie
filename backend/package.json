@@ -12,6 +12,7 @@
     "dev": "npm i && node scripts/setup-env.js && nodemon server.js",
     "db:init": "node db/init.js",
     "db:init:sqlite": "node db/init-sqlite.js",
+    "db:reset": "node scripts/reset-db.js",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
