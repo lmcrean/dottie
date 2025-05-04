@@ -109,17 +109,17 @@ class AssessmentBase {
         return testAssessments[assessmentId].user_id === userId;
       }
       
-      // Database check using DbService
-      const assessment = await DbService.findBy('assessments', 'id', assessmentId);
+      // Database check using direct query for reliability
+      const assessment = await db('assessments')
+        .where('id', assessmentId)
+        .where('user_id', userId)
+        .first();
       
-      // If assessment exists, check if user is the owner
-      if (assessment && assessment.length > 0) {
-        return assessment[0].user_id === userId;
-      }
-      
-      return false;
+      // If assessment exists and user is the owner, return true
+      return !!assessment;
     } catch (error) {
-      throw error;
+      console.error('Error validating ownership:', error);
+      return false;
     }
   }
 }
