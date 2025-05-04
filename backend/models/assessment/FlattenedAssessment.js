@@ -25,7 +25,6 @@ class FlattenedAssessment extends AssessmentBase {
           id,
           user_id: userId,
           created_at: now,
-          updated_at: now,
           age,
           pattern,
           cycle_length,
@@ -85,8 +84,6 @@ class FlattenedAssessment extends AssessmentBase {
    */
   static async update(id, assessmentData) {
     try {
-      const now = new Date();
-
       // Use in-memory store for tests
       if (isTestMode) {
         if (!testAssessments[id]) {
@@ -102,7 +99,6 @@ class FlattenedAssessment extends AssessmentBase {
         // Update with snake_case keys
         testAssessments[id] = {
           ...testAssessments[id],
-          updated_at: now,
           age,
           pattern,
           cycle_length,
@@ -125,8 +121,6 @@ class FlattenedAssessment extends AssessmentBase {
       
       // Use flattened format
       const updates = {
-        updated_at: now,
-        
         // Flattened fields
         age,
         pattern,

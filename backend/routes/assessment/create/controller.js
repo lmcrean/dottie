@@ -39,7 +39,6 @@ export const createAssessment = async (req, res) => {
             id: id,
             user_id: userId,
             created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
             
             // Flattened fields
             age: assessmentData.age,
@@ -70,7 +69,6 @@ export const createAssessment = async (req, res) => {
             id: id,
             user_id: userId,
             created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
             
             // Store legacy format as-is
             assessment_data: JSON.stringify(assessmentData.assessment_data),
@@ -103,7 +101,6 @@ export const createAssessment = async (req, res) => {
           id: id,
           userId: userId,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
           assessmentData: assessmentData
         });
       } catch (dbError) {
