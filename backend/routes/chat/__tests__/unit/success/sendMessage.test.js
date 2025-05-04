@@ -24,11 +24,13 @@ vi.mock('@google/generative-ai', () => {
 });
 
 vi.mock('../../../../../services/logger', () => ({
-  error: vi.fn(),
-  info: vi.fn()
+  default: {
+    error: vi.fn(),
+    info: vi.fn()
+  }
 }));
 
-vi.mock('../../../../../models/chat', () => ({
+vi.mock('../../../../../models/chat/chat.js', () => ({
   insertChatMessage: vi.fn().mockResolvedValue(true),
   createConversation: vi.fn().mockResolvedValue('new-conversation-id'),
   getConversation: vi.fn().mockImplementation((conversationId) => {
