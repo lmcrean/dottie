@@ -24,6 +24,7 @@ export const getAssessmentDetail = async (req, res) => {
     }
 
     const isOwner = await Assessment.validateOwnership(assessmentId, userId);
+    
     if (!isOwner) {
       return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
     }
@@ -132,6 +133,7 @@ export const getAssessmentDetail = async (req, res) => {
     
     // Use Assessment model to find (handles both formats automatically)
     const assessment = await Assessment.findById(assessmentId);
+    
     if (!assessment) {
       return res.status(404).json({ error: 'Assessment not found' });
     }
