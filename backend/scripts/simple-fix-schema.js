@@ -4,9 +4,13 @@
  * This script uses the sqlite3 package directly to fix the database schema.
  */
 
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const fs = require('fs');
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Get the path to the SQLite database file
 const dbPath = path.join(__dirname, '..', 'dev.sqlite3');
@@ -44,7 +48,7 @@ db.serialize(() => {
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
         created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
+        updated_at TEXT,
         age TEXT,
         pattern TEXT,
         cycle_length TEXT,
