@@ -8,7 +8,7 @@ import { getUserConversations } from '../../../models/chat/chat.js';
  */
 export const getHistory = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     
     // Get all conversations for this user
     const conversations = await getUserConversations(userId);
