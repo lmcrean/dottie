@@ -14,8 +14,7 @@
     "test:screenshots": "npx playwright test --project=safari",
     "test:e2e:dev:regular": "npx playwright test src/components/assessment/__tests__/e2e/development/RegularCycle.spec.ts --headed --timeout=120000",
     "test:api": "node start-api-and-test.js",
-    "test:devmode": "npx playwright test src/test_page/__tests__/dev/test-page-integration.spec.ts --headed --timeout=60000",
-    "test:devmode:1": "npx playwright test \"src/test_page/__tests__/dev/test-page-integration.spec.ts\" --grep \"1. Navigate to test page\"",
+    "test:devmode": "npx playwright test src/test_page/__tests__/dev/master-integration.spec.ts --headed --timeout=60000",
     "test:basic": "npx playwright test src/test_page/__tests__/dev/basic-test.spec.ts --headed --timeout=60000",
     "prepare": "cd .. && husky frontend/.husky"
   },
