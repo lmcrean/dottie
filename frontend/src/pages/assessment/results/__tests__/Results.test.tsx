@@ -3,13 +3,22 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import ResultsPage from '../page'
 import { AuthContext } from '@/src/context/auth/AuthContext'
-import { AssessmentResultContext } from '@/src/context/assessment/AssessmentResultContext'
 import { postSend } from '@/src/api/assessment/requests/postSend/Request'
+import * as useAssessmentResultModule from '@/src/hooks/use-assessment-result'
+
+// Mock the assessment result hook
+vi.mock('@/src/hooks/use-assessment-result', async () => {
+  const actual = await vi.importActual('@/src/hooks/use-assessment-result');
+  return {
+    ...actual,
+    useAssessmentResult: vi.fn()
+  };
+});
 
 // Mock API call
 vi.mock('@/src/api/assessment/requests/postSend/Request', () => ({
   postSend: vi.fn().mockResolvedValue({ id: 'mock-assessment-id' })
-}))
+}));
 
 // Mock AuthContext
 const mockAuthContext = {
@@ -24,42 +33,6 @@ const mockAuthContext = {
   error: null,
   severity: null
 } as any;
-
-// Create a function to get a customized mock for AssessmentResultContext
-const getMockAssessmentResultContext = (pattern = 'regular') => ({
-  state: {
-    result: {
-      pattern,
-      recommendations: [],
-      age: '18-24',
-      cycleLength: '26-30',
-      periodDuration: '4-5',
-      flowHeaviness: 'moderate',
-      painLevel: 'mild',
-      symptoms: {
-        physical: [],
-        emotional: []
-      }
-    },
-    isComplete: true
-  },
-  setResult: vi.fn(),
-  updateResult: vi.fn(),
-  resetResult: vi.fn(),
-  setPattern: vi.fn(),
-  setRecommendations: vi.fn(),
-  transformToFlattenedFormat: vi.fn().mockReturnValue({
-    age: '18-24',
-    pattern: pattern,
-    cycle_length: '26-30',
-    period_duration: '4-5',
-    flow_heaviness: 'moderate',
-    pain_level: 'mild',
-    physical_symptoms: [],
-    emotional_symptoms: [],
-    recommendations: []
-  })
-} as any);
 
 // Mock sessionStorage
 const mockSessionStorage = (() => {
@@ -81,18 +54,66 @@ Object.defineProperty(window, 'sessionStorage', {
   value: mockSessionStorage
 });
 
+// Helper to create a complete mock of the useAssessmentResult hook
+const createMockHook = (pattern = 'regular') => {
+  const mockResult = {
+    pattern,
+    recommendations: [],
+    age: '18-24',
+    cycleLength: '26-30',
+    periodDuration: '4-5',
+    flowHeaviness: 'moderate',
+    painLevel: 'mild',
+    symptoms: { physical: [], emotional: [] }
+  };
+  
+  const transformSpy = vi.fn().mockReturnValue({
+    age: '18-24',
+    pattern: pattern,
+    cycle_length: '26-30',
+    period_duration: '4-5',
+    flow_heaviness: 'moderate',
+    pain_level: 'mild',
+    physical_symptoms: [],
+    emotional_symptoms: [],
+    recommendations: []
+  });
+  
+  return {
+    result: mockResult,
+    state: {
+      result: mockResult,
+      isComplete: true
+    },
+    determinePattern: vi.fn(),
+    generateRecommendations: vi.fn(),
+    saveToSessionStorage: vi.fn(),
+    loadFromSessionStorage: vi.fn(),
+    updateSymptoms: vi.fn(),
+    completeAssessment: vi.fn(),
+    clearAssessment: vi.fn(),
+    setResult: vi.fn(),
+    updateResult: vi.fn(),
+    resetResult: vi.fn(),
+    setPattern: vi.fn(),
+    setRecommendations: vi.fn(),
+    transformToFlattenedFormat: transformSpy
+  };
+};
+
 // Wrap component with providers
 const renderWithProviders = (component: React.ReactNode, pattern = 'regular') => {
+  // Set up the hook mock for this specific test
+  vi.mocked(useAssessmentResultModule.useAssessmentResult).mockReturnValue(createMockHook(pattern));
+  
   return render(
     <AuthContext.Provider value={mockAuthContext}>
-      <AssessmentResultContext.Provider value={getMockAssessmentResultContext(pattern)}>
-        <BrowserRouter>
-          {component}
-        </BrowserRouter>
-      </AssessmentResultContext.Provider>
+      <BrowserRouter>
+        {component}
+      </BrowserRouter>
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
 describe('Assessment Results Page', () => {
   beforeEach(() => {
@@ -224,14 +245,26 @@ describe('Assessment Results Page', () => {
 
   // Test save functionality using FlattenedAssessment format
   it('saves assessment in flattened format when clicking Save button', async () => {
-    renderWithProviders(<ResultsPage />);
+    // Create a full mock of the hook with all required properties
+    const mockHook = createMockHook('regular');
+    
+    // Use the mock directly
+    vi.mocked(useAssessmentResultModule.useAssessmentResult).mockReturnValue(mockHook);
+    
+    render(
+      <AuthContext.Provider value={mockAuthContext}>
+        <BrowserRouter>
+          <ResultsPage />
+        </BrowserRouter>
+      </AuthContext.Provider>
+    );
     
     // Click Save button
     fireEvent.click(screen.getByText('Save Results'));
     
-    // Check that transformToFlattenedFormat was called
+    // Check that transformToFlattenedFormat was called with the result object
     await waitFor(() => {
-      expect(getMockAssessmentResultContext().transformToFlattenedFormat).toHaveBeenCalled();
+      expect(mockHook.transformToFlattenedFormat).toHaveBeenCalledWith(mockHook.result);
     });
     
     // Check that postSend was called with the correct flattened format
