@@ -17,14 +17,27 @@ import { runAssessmentTests, testDeleteAssessments } from './runners/assessment.
 // Configure tests to run in sequence
 test.describe.configure({ mode: 'serial' });
 
+// Define types for state objects
+interface AuthState {
+  userId: string;
+  username: string;
+  email: string;
+  [key: string]: unknown;
+}
+
+interface AssessmentState {
+  assessmentIds: string[];
+  [key: string]: unknown;
+}
+
 // Main test state object shared between all tests
 const testState = {
   username: `testuser_${Date.now()}`,
   email: `test_${Date.now()}@example.com`,
   password: 'Test1234!',
-  userId: null,
-  assessmentIds: [],
-  conversationId: null,
+  userId: null as string | null,
+  assessmentIds: [] as string[],
+  conversationId: null as string | null,
 };
 
 test.describe('Test Page Integration', () => {
@@ -62,7 +75,7 @@ test.describe('Test Page Integration', () => {
   // =====================
   test('3. Test authentication endpoints', async ({ page }) => {
     // Run auth tests and update shared test state
-    const authState = await runAuthTests(page);
+    const authState = await runAuthTests(page) as AuthState;
     
     // Update global test state with user ID
     testState.userId = authState.userId;
@@ -77,7 +90,7 @@ test.describe('Test Page Integration', () => {
   // =====================
   test('4. Test assessment endpoints', async ({ page }) => {
     // Run assessment tests with shared state
-    const updatedState = await runAssessmentTests(page, testState);
+    const updatedState = await runAssessmentTests(page, testState) as AssessmentState;
     
     // Update global state with assessment IDs
     testState.assessmentIds = updatedState.assessmentIds;
