@@ -48,7 +48,7 @@ const testState = {
 test.describe('Frontend Pages Integration', () => {
   
   // Save screenshot with sequential numbering
-  const saveScreenshot = async (page, name) => {
+  const saveScreenshot = async (page: any, name: string) => {
     testState.screenshotCount++;
     const filename = `${screenshotDir}/${String(testState.screenshotCount).padStart(2, '0')}-${name}.png`;
     await page.screenshot({ path: filename, fullPage: true });

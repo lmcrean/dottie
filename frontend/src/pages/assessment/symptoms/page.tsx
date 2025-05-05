@@ -15,7 +15,7 @@ export default function SymptomsPage() {
   const [emotionalSymptoms, setEmotionalSymptoms] = useState<string[]>([]);
   const [otherSymptoms, setOtherSymptoms] = useState('');
   const [refTarget, setRefTarget] = useState('');
-  const symptomRef = useRef<HTMLButtonElement | null>(null);
+  const symptomRef = useRef<HTMLDivElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
 
