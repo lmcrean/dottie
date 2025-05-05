@@ -1,17 +1,33 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState, useMemo } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { format, isValid, parseISO } from 'date-fns';
-import { ArrowLeft, Calendar, Activity, Droplet, Heart, Brain } from 'lucide-react';
+import { ArrowLeft, Calendar, Activity, Droplet, Heart, Brain, X } from 'lucide-react';
 import { Assessment } from '@/src/api/assessment/types';
 import { assessmentApi } from '@/src/api/assessment';
 import { toast } from 'sonner';
 
+// Utility function to ensure data is an array
+// Returns unknown[] to accommodate different array types like recommendations
+const ensureArrayFormat = (data: unknown): unknown[] => {
+  if (Array.isArray(data)) {
+    return data;
+  }
+  // Add specific parsing logic here if needed, e.g., for JSON strings
+  // For now, just return empty array if not already an array
+  return [];
+};
+
 export default function AssessmentDetailsPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  // Determine data format
+  const hasLegacyFormat = !!assessment?.assessment_data;
+  // Assume flattened if not legacy and assessment exists
+  const hasFlattenedFormat = !!assessment && !assessment.assessment_data;
 
   useEffect(() => {
     const fetchAssessment = async () => {
@@ -23,9 +39,14 @@ export default function AssessmentDetailsPage() {
       try {
         const data = await assessmentApi.getById(id);
         if (data) {
-          data.physical_symptoms = ensureArrayFormat(data.physical_symptoms);
-          data.emotional_symptoms = ensureArrayFormat(data.emotional_symptoms);
           setAssessment(data);
+          // Ensure symptoms arrays are in the correct format after fetching
+          // This logic might be adjusted based on actual API response structure
+          if (data && !data.assessment_data) {
+            // If flattened format
+            data.physical_symptoms = ensureArrayFormat(data.physical_symptoms);
+            data.emotional_symptoms = ensureArrayFormat(data.emotional_symptoms);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch assessment:', error);
@@ -38,51 +59,22 @@ export default function AssessmentDetailsPage() {
     fetchAssessment();
   }, [id]);
 
-  const openDeleteModal = () => {
-    setDeleteModalOpen(true);
-  };
-
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
   };
 
   const handleDelete = async () => {
     if (!id) return;
-    
+
     try {
       await assessmentApi.delete(id);
-      toast.success("Assessment deleted successfully");
-      navigate("/assessment/history");
+      toast.success('Assessment deleted successfully');
+      navigate('/assessment/history');
     } catch (error) {
-      console.error("Error deleting assessment:", error);
-      toast.error("Failed to delete assessment");
+      console.error('Error deleting assessment:', error);
+      toast.error('Failed to delete assessment');
     } finally {
       closeDeleteModal();
-    }
-  };
-
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return 'Unknown date';
-
-    try {
-      // Special handling for numeric timestamp strings
-      if (/^\d+(\.\d+)?$/.test(dateString)) {
-        // Convert from milliseconds to date
-        const timestamp = parseFloat(dateString);
-        const date = new Date(timestamp);
-        if (isValid(date)) {
-          return format(date, "MMMM d, yyyy");
-        }
-      }
-      
-      // Try standard date parsing
-      const date = parseISO(dateString);
-      if (!isValid(date)) return 'Invalid date';
-
-      return format(date, 'MMMM d, yyyy');
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'Invalid date format';
     }
   };
 
@@ -130,18 +122,49 @@ export default function AssessmentDetailsPage() {
   // Extract data using the correct path based on format
   let physicalSymptoms: string[] = [];
   let emotionalSymptoms: string[] = [];
-  let recommendations: {title: string, description: string}[] = [];
+  let recommendations: Array<{ title: string; description: string }> = [];
 
-  if (hasLegacyFormat) {
-    physicalSymptoms = assessmentData.symptoms?.physical || [];
-    emotionalSymptoms = assessmentData.symptoms?.emotional || [];
-    recommendations = assessmentData.recommendations || [];
-  } else if (hasFlattenedFormat) {
-    // Ensure we're getting arrays, parse if needed
-    physicalSymptoms = ensureArrayFormat(assessment?.physical_symptoms) || [];
-    emotionalSymptoms = ensureArrayFormat(assessment?.emotional_symptoms) || [];
-    recommendations = assessment?.recommendations || [];
+  if (hasLegacyFormat && assessment?.assessment_data) {
+    physicalSymptoms = ensureArrayFormat(assessment.assessment_data.symptoms?.physical) as string[];
+    emotionalSymptoms = ensureArrayFormat(
+      assessment.assessment_data.symptoms?.emotional
+    ) as string[];
+    // Cast the result of ensureArrayFormat to the expected recommendations type
+    recommendations = ensureArrayFormat(assessment.assessment_data.recommendations) as Array<{
+      title: string;
+      description: string;
+    }>;
+  } else if (hasFlattenedFormat && assessment) {
+    physicalSymptoms = ensureArrayFormat(assessment.physical_symptoms) as string[];
+    emotionalSymptoms = ensureArrayFormat(assessment.emotional_symptoms) as string[];
+    // Cast the result of ensureArrayFormat to the expected recommendations type
+    recommendations = ensureArrayFormat(assessment.recommendations) as Array<{
+      title: string;
+      description: string;
+    }>;
   }
+
+  // Handle potential loading state for date formatting
+  const formattedDate = useMemo(() => {
+    let dateToFormat: string | undefined;
+    if (hasLegacyFormat && assessment?.assessment_data?.date) {
+      dateToFormat = assessment.assessment_data.date;
+    } else if (hasFlattenedFormat && assessment?.created_at) {
+      dateToFormat = assessment.created_at;
+    }
+
+    if (dateToFormat) {
+      try {
+        const parsedDate = parseISO(dateToFormat);
+        if (isValid(parsedDate)) {
+          return format(parsedDate, 'PPP'); // Format like 'Jun 15, 2024'
+        }
+      } catch (e) {
+        console.error('Error parsing date:', dateToFormat, e);
+      }
+    }
+    return 'Date not available';
+  }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -160,9 +183,7 @@ export default function AssessmentDetailsPage() {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">
                 Assessment Details
               </h1>
-              <p className="text-sm text-gray-500 dark:text-slate-200">
-                {formatDate(hasLegacyFormat ? assessmentData.date : assessment?.created_at)}
-              </p>
+              <p className="text-sm text-gray-500 dark:text-slate-200">{formattedDate}</p>
             </div>
             <span className="inline-flex items-center rounded-full bg-pink-100 px-3 py-1 text-sm font-medium text-pink-800">
               {formatValue(assessmentData.pattern)}
@@ -283,14 +304,15 @@ export default function AssessmentDetailsPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6 shadow-xl">
-            <div className="flex justify-between items-center mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+            <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">Confirm Delete</h3>
-              <button 
+              <button
+                type="button"
                 onClick={closeDeleteModal}
                 className="text-gray-400 hover:text-gray-500"
               >
@@ -304,14 +326,16 @@ export default function AssessmentDetailsPage() {
             </div>
             <div className="flex justify-end space-x-4">
               <button
+                type="button"
                 onClick={closeDeleteModal}
-                className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors"
+                className="rounded-lg bg-gray-100 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-200"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
               >
                 Delete
               </button>
