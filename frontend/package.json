@@ -16,6 +16,7 @@
     "test:api": "node start-api-and-test.js",
     "test:devmode": "npx playwright test src/test_page/__tests__/dev/master-integration.spec.ts --headed --timeout=60000",
     "test:basic": "npx playwright test src/test_page/__tests__/dev/basic-test.spec.ts --headed --timeout=60000",
+    "test:master": "npx playwright test src/pages/__tests__/dev/master-integration.spec.ts --project=safari --timeout=120000",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
