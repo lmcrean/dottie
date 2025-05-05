@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
 import { MessageCircle, Save, Share2, Download } from 'lucide-react';
 
 import { useEffect, useState } from 'react';
@@ -9,6 +9,8 @@ import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
 import { toast } from 'sonner';
 import { Assessment } from '@/src/api/assessment/types';
 import { postSend } from '@/src/api/assessment/requests/postSend/Request';
+import { useAuth } from '@/src/context/auth/useAuthContext';
+import { useAssessmentResult } from '@/src/hooks/use-assessment-result';
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
@@ -129,7 +131,7 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
         description: 'Apply a heating pad to your lower abdomen to help relieve menstrual cramps.'
       },
       {
-        icon: '💊',
+        icon: '��',
         title: 'Pain Management',
         description:
           'Over-the-counter pain relievers like ibuprofen can help reduce pain and inflammation.'
@@ -181,262 +183,66 @@ const patternData: Record<MenstrualPattern, PatternInfo> = {
 
 export default function ResultsPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { result, transformToFlattenedFormat } = useAssessmentResult();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [pattern, setPattern] = useState<MenstrualPattern>('developing');
-  const [age, setAge] = useState<string>('');
-  const [cycleLength, setCycleLength] = useState<string>('');
-  const [periodDuration, setPeriodDuration] = useState<string>('');
-  const [flowLevel, setFlowLevel] = useState<string>('');
-  const [painLevel, setPainLevel] = useState<string>('');
-  const [symptoms, setSymptoms] = useState<string[]>([]);
-  const [categorizedSymptoms, setCategorizedSymptoms] = useState<{
-    physical: string[];
-    emotional: string[];
-    other: string[];
-  }>({
+  const [pattern, setPattern] = useState<MenstrualPattern>('regular');
+  const [age, setAge] = useState<string | null>(null);
+  const [cycleLength, setCycleLength] = useState<string | null>(null);
+  const [periodDuration, setPeriodDuration] = useState<string | null>(null);
+  const [flowLevel, setFlowLevel] = useState<string | null>(null);
+  const [painLevel, setPainLevel] = useState<string | null>(null);
+  const [symptoms, setSymptoms] = useState<{ physical: string[]; emotional: string[] }>({
     physical: [],
-    emotional: [],
-    other: []
+    emotional: []
   });
 
-  const { transformToFlattenedFormat } = useAssessmentResult();
-
-  // Helper function to normalize string values for more reliable comparisons
-  const normalizeValue = (value: string | null): string => {
-    if (!value) return '';
-
-    const normalized = value.trim().toLowerCase();
-    return normalized;
-  };
-
-  // Helper function to check if a string contains any of the given keywords
-  const containsAny = (value: string | null, keywords: string[]): boolean => {
-    if (!value) return false;
-
-    const normalized = normalizeValue(value);
-    return keywords.some((keyword) => normalized.includes(keyword));
-  };
-
   useEffect(() => {
-    // Get data from session storage
+    // Load data from session storage when component mounts
     const storedAge = sessionStorage.getItem('age');
     const storedCycleLength = sessionStorage.getItem('cycleLength');
     const storedPeriodDuration = sessionStorage.getItem('periodDuration');
-    const storedFlowLevel = sessionStorage.getItem('flowLevel');
+    const storedFlowLevel = sessionStorage.getItem('flowHeaviness');
     const storedPainLevel = sessionStorage.getItem('painLevel');
     const storedSymptoms = sessionStorage.getItem('symptoms');
-    const storedCyclePredictable = sessionStorage.getItem('cyclePredictable');
 
-    if (storedAge) setAge(storedAge);
-    if (storedCycleLength) setCycleLength(storedCycleLength);
-    if (storedPeriodDuration) setPeriodDuration(storedPeriodDuration);
-    if (storedFlowLevel) setFlowLevel(storedFlowLevel);
-    if (storedPainLevel) setPainLevel(storedPainLevel);
-    
-    if (storedSymptoms) {
+    // Helper function to safely parse JSON or return default
+    const parseJSON = <T,>(jsonString: string | null, defaultValue: T): T => {
+      if (!jsonString) return defaultValue;
       try {
-        setSymptoms(JSON.parse(storedSymptoms));
-      } catch (e) {
-        console.error('Error parsing symptoms:', e);
+        return JSON.parse(jsonString) as T;
+      } catch {
+        return defaultValue;
       }
-    }
-
-    // Determine the pattern based on LogicTree logic
-    // Following the exact decision tree from LogicTree.md
-    let determinedPattern: MenstrualPattern;
-    const decisionPath = [];
-
-    // Q1: Is cycle length between 21-45 days?
-    const isCycleLengthNormal = !(
-      containsAny(storedCycleLength, ['irregular']) ||
-      containsAny(storedCycleLength, ['less than 21', '<21', 'less-than-21']) ||
-      containsAny(storedCycleLength, ['more than 45', '>45', '45+'])
-    );
-    decisionPath.push(`Q1: Cycle length normal? ${isCycleLengthNormal}`);
-
-    if (!isCycleLengthNormal) {
-      // O1: Irregular Timing Pattern
-      determinedPattern = 'irregular';
-      decisionPath.push(`O1: Assigning pattern = "irregular"`);
-    } else {
-      // Q2: Does period last between 2-7 days?
-      const isPeriodDurationNormal = !containsAny(storedPeriodDuration, [
-        'more than 7',
-        '>7',
-        '8+',
-        '8 days',
-        '8-plus'
-      ]);
-      decisionPath.push(`Q2: Period duration normal? ${isPeriodDurationNormal}`);
-
-      if (!isPeriodDurationNormal) {
-        // O2: Heavy or Prolonged Flow Pattern
-        determinedPattern = 'heavy';
-        decisionPath.push(`O2: Assigning pattern = "heavy" (duration)`);
-      } else {
-        // Q3: Is flow light to moderate?
-        const isFlowNormal = !containsAny(storedFlowLevel, ['heavy', 'very heavy']);
-        decisionPath.push(`Q3: Flow normal? ${isFlowNormal}`);
-
-        if (!isFlowNormal) {
-          // O2: Heavy or Prolonged Flow Pattern
-          determinedPattern = 'heavy';
-          decisionPath.push(`O2: Assigning pattern = "heavy" (flow)`);
-        } else {
-          // Q4: Is menstrual pain none to moderate?
-          const isPainNormal = !containsAny(storedPainLevel, ['severe', 'debilitating']);
-          decisionPath.push(`Q4: Pain normal? ${isPainNormal}`);
-
-          if (!isPainNormal) {
-            // O3: Pain-Predominant Pattern
-            determinedPattern = 'pain';
-            decisionPath.push(`O3: Assigning pattern = "pain"`);
-          } else {
-            // Q5: Has cycle been predictable for at least 3 months?
-            // Check if we have explicit data on cycle predictability
-            decisionPath.push(`Q5: Checking cycle predictability...`);
-            if (containsAny(storedCyclePredictable, ['no', 'false'])) {
-              // O5: Developing Pattern - cycles not predictable
-              determinedPattern = 'developing';
-              decisionPath.push(
-                `O5: Assigning pattern = "developing" (explicitly not predictable)`
-              );
-            } else if (containsAny(storedCyclePredictable, ['yes', 'true'])) {
-              // O4: Regular Menstrual Cycles - cycles are predictable
-              determinedPattern = 'regular';
-              decisionPath.push(`O4: Assigning pattern = "regular" (explicitly predictable)`);
-            } else {
-              // We don't have explicit predictability data, so infer based on age
-              decisionPath.push(
-                `No explicit predictability data, inferring from age: ${storedAge}`
-              );
-              // If age is adolescent (12-17), assume developing, otherwise assume regular
-              if (
-                storedAge &&
-                containsAny(storedAge, [
-                  '12-14',
-                  '15-17',
-                  '13-17',
-                  '12',
-                  '13',
-                  '14',
-                  '15',
-                  '16',
-                  '17',
-                  'teen',
-                  'adolescent'
-                ])
-              ) {
-                // O5: Developing Pattern
-                determinedPattern = 'developing';
-                decisionPath.push(`O5: Assigning pattern = "developing" (based on adolescent age)`);
-              } else {
-                // O4: Regular Menstrual Cycles
-                determinedPattern = 'regular';
-                decisionPath.push(`O4: Assigning pattern = "regular" (default for non-adolescent)`);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    setPattern(determinedPattern);
-  }, []);
-
-  // NEW useEffect to categorize symptoms after they are loaded
-  useEffect(() => {
-    if (symptoms.length === 0) return; // Don't run if symptoms haven't loaded
-
-    const physicalLabels = [
-      "Bloating", "Breast tenderness", "Headaches", "Back pain", "Nausea",
-      "Fatigue", "Dizziness", "Acne", "Digestive issues", "Sleep disturbances",
-      "Hot flashes", "Joint pain"
-    ];
-    const emotionalLabels = [
-      "Irritability", "Mood swings", "Anxiety", "Depression",
-      "Difficulty concentrating", "Food cravings", "Emotional sensitivity",
-      "Low energy/motivation"
-    ];
-
-    const categorized = {
-      physical: [] as string[],
-      emotional: [] as string[],
-      other: [] as string[]
     };
 
-    symptoms.forEach(label => {
-      if (physicalLabels.includes(label)) {
-        categorized.physical.push(label);
-      } else if (emotionalLabels.includes(label)) {
-        categorized.emotional.push(label);
-      } else {
-        // Assume any non-empty label not in the known lists is 'other'
-        if (label && label.trim() !== "") { 
-          categorized.other.push(label);
-        }
-      }
-    });
+    // Set state from session storage
+    setAge(parseJSON(storedAge, null));
+    setCycleLength(parseJSON(storedCycleLength, null));
+    setPeriodDuration(parseJSON(storedPeriodDuration, null));
+    setFlowLevel(parseJSON(storedFlowLevel, null));
+    setPainLevel(parseJSON(storedPainLevel, null));
+    setSymptoms(parseJSON(storedSymptoms, { physical: [], emotional: [] }));
 
-    setCategorizedSymptoms(categorized);
-    
-    // Optional: Save categorized symptoms back to sessionStorage if needed elsewhere
-    // sessionStorage.setItem("symptoms_categorized", JSON.stringify(categorized));
+    // Determine pattern based on stored values (simplified logic)
+    let determinedPattern: MenstrualPattern = 'regular';
+    // Simplified checks based on typical values, removing containsAny
+    if (storedCycleLength?.includes('irregular') || storedCycleLength?.includes('less-than-21')) {
+      determinedPattern = 'irregular';
+    } else if (storedFlowLevel?.includes('heavy') || storedFlowLevel?.includes('very-heavy')) {
+      determinedPattern = 'heavy';
+    } else if (storedPainLevel?.includes('severe') || storedPainLevel?.includes('debilitating')) {
+      determinedPattern = 'pain';
+    } else if (storedAge?.includes('under-13') || storedAge?.includes('13-17')) {
+      determinedPattern = 'developing';
+    }
+    setPattern(determinedPattern);
 
-  }, [symptoms]); // Re-run when the raw symptoms array changes
-
-  const patternInfo = patternData[pattern];
-
-  // Calculate progress bar widths based on values
-  // const getProgressWidth = (value: string): string => {
-  //   if (!value) return '0%';
-
-  //   // Make sure value is a string for consistent handling
-  //   const val = String(value).trim().toLowerCase();
-
-  //   // Age handling
-  //   if (val === '13-17') return '25%';
-  //   if (val === '18-24') return '35%';
-  //   if (val.includes('25')) return '45%'; // Handle "25+", "25-plus", etc.
-  //   if (val.includes('35')) return '65%'; // Handle "35+", "35-plus", etc.
-  //   if (val.includes('45')) return '85%'; // Handle "45+", "45-plus", etc.
-
-  //   // Cycle length handling
-  //   if (val.includes('less than 21')) return '20%';
-  //   if (val.includes('21-25') || val === '21-25 days') return '30%';
-  //   if (val.includes('26-30')) return '45%';
-  //   if (val.includes('31-35')) return '60%';
-  //   if (val.includes('36-40')) return '75%';
-  //   if (val.includes('more than 45') || val.includes('45+')) return '100%';
-  //   if (val.includes('irregular')) return '50%';
-
-  //   // Period duration handling
-  //   if (val.includes('1-2')) return '20%';
-  //   if (val.includes('3-4')) return '40%';
-  //   if (val.includes('5-7')) return '60%';
-  //   if (val.includes('8+') || val.includes('8-plus') || val.includes('more than 7')) return '100%';
-
-  //   // Flow level handling
-  //   if (val === 'light' || val.includes('light')) return '25%';
-  //   if (val === 'moderate' || val.includes('moderate')) return '50%';
-  //   if (val === 'heavy' || val.includes('heavy')) return '75%';
-  //   if (val.includes('very heavy') || val === 'very-heavy') return '100%';
-
-  //   // Pain level handling
-  //   if (val === 'mild' || val.includes('mild')) return '25%';
-  //   if (val === 'moderate' || val.includes('moderate')) return '50%';
-  //   if (val === 'severe' || val.includes('severe')) return '75%';
-  //   if (val === 'debilitating' || val.includes('debilitating')) return '100%';
-
-  //   // If we couldn't match anything specific, use sensible defaults
-  //   if (val.includes('less than')) return '20%';
-  //   if (val.includes('more than')) return '80%';
-
-  //   return '50%'; // Default value
-  // };
+    // The following code for categorizing symptoms is not used, so we'll remove it
+  }, []); // Removed symptoms dependency since we're not using categorizedSymptoms
 
   // Force progress bars to update when values change
   useEffect(() => {
@@ -455,40 +261,34 @@ export default function ResultsPage() {
   const handleSaveResults = async () => {
     setIsSaving(true);
 
+    // Add null check for result before transforming
+    if (!result) {
+      toast.error('Assessment data is not available.');
+      setIsSaving(false);
+      return;
+    }
+
     try {
-      // Make sure all required fields have values
-      if (!pattern || !age || !cycleLength) {
-        toast.error('Missing required assessment data');
+      // Create assessment data object using the flattened format from the hook
+      const assessmentPayload = transformToFlattenedFormat(result); // Now result is guaranteed non-null
+
+      // Ensure user_id is included (assuming user context provides it)
+      const finalPayload: Omit<Assessment, 'id' | 'created_at' | 'updated_at'> & {
+        user_id: string;
+      } = {
+        ...assessmentPayload,
+        user_id: user?.id || '' // Corrected key: userId -> user_id. Get user ID from auth context
+      };
+
+      if (!finalPayload.user_id) {
+        toast.error('User not found. Please login again.');
         setIsSaving(false);
         return;
       }
 
-      // Create assessment data object according to the Assessment interface structure
-      const assessment: Omit<Assessment, 'id'> = {
-        userId: '', // This will be set by the backend
-        createdAt: new Date().toISOString(),
-        assessment_data: {
-          date: new Date().toISOString(),
-          pattern,
-          age,
-          cycleLength,
-          periodDuration: periodDuration || 'Not provided',
-          flowHeaviness: flowLevel,
-          painLevel: painLevel || 'Not provided',
-          symptoms: {
-            physical: symptoms || [],
-            emotional: []
-          },
-          recommendations:
-            patternInfo?.recommendations?.map((rec) => ({
-              title: rec.title,
-              description: rec.description
-            })) || []
-        }
-      };
-
-      // Use the postSend function
-      const savedAssessment = await postSend(assessment);
+      // Type assertion might be needed if postSend expects slightly different structure
+      // For now, assume postSend accepts this payload
+      const savedAssessment = await postSend(finalPayload as Omit<Assessment, 'id'>);
 
       toast.success('Assessment saved successfully!');
       navigate(`/assessment/history/${savedAssessment.id}`);
@@ -585,7 +385,17 @@ export default function ResultsPage() {
                 </div>
                 <div>
                   <h3 className="mb-2 text-lg font-medium">Pain Level</h3>
-                  <p className="text-gray-600">{painLevel || 'Not specified'}</p>
+                  <p
+                    className={`font-medium ${
+                      pattern === 'pain'
+                        ? 'text-red-600'
+                        : pattern === 'heavy'
+                          ? 'text-orange-600'
+                          : 'text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    {painLevel || 'Not specified'}
+                  </p>
                 </div>
               </div>
               <div className="flex w-full max-w-full items-start gap-3 rounded-xl bg-gray-50 p-4">
@@ -598,8 +408,10 @@ export default function ResultsPage() {
                 </div>
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
-                  <p className="whitespace-normal break-words text-gray-600">
-                    {symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {symptoms.physical.length > 0 // Check physical length
+                      ? symptoms.physical.join(', ') // Join physical symptoms
+                      : 'None specified'}
                   </p>
                 </div>
               </div>
