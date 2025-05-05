@@ -409,8 +409,8 @@ export default function ResultsPage() {
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {symptoms.physical.length > 0 // Check physical length
-                      ? symptoms.physical.join(', ') // Join physical symptoms
+                    {symptoms?.physical?.length > 0
+                      ? symptoms.physical.join(', ')
                       : 'None specified'}
                   </p>
                 </div>
