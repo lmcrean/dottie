@@ -1,9 +1,67 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import ResultsPage from '../page'
+import { AuthContext } from '@/src/context/auth/AuthContext'
+import { AssessmentResultContext } from '@/src/context/assessment/AssessmentResultContext'
+import { postSend } from '@/src/api/assessment/requests/postSend/Request'
 
-// Mock sessionStorage for setting specific test data
+// Mock API call
+vi.mock('@/src/api/assessment/requests/postSend/Request', () => ({
+  postSend: vi.fn().mockResolvedValue({ id: 'mock-assessment-id' })
+}))
+
+// Mock AuthContext
+const mockAuthContext = {
+  user: { id: 'mock-user-id' },
+  login: vi.fn(),
+  logout: vi.fn(),
+  signup: vi.fn(),
+  updatePassword: vi.fn(),
+  clearError: vi.fn(),
+  isAuthenticated: true,
+  isLoading: false,
+  error: null,
+  severity: null
+} as any;
+
+// Create a function to get a customized mock for AssessmentResultContext
+const getMockAssessmentResultContext = (pattern = 'regular') => ({
+  state: {
+    result: {
+      pattern,
+      recommendations: [],
+      age: '18-24',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: [],
+        emotional: []
+      }
+    },
+    isComplete: true
+  },
+  setResult: vi.fn(),
+  updateResult: vi.fn(),
+  resetResult: vi.fn(),
+  setPattern: vi.fn(),
+  setRecommendations: vi.fn(),
+  transformToFlattenedFormat: vi.fn().mockReturnValue({
+    age: '18-24',
+    pattern: pattern,
+    cycle_length: '26-30',
+    period_duration: '4-5',
+    flow_heaviness: 'moderate',
+    pain_level: 'mild',
+    physical_symptoms: [],
+    emotional_symptoms: [],
+    recommendations: []
+  })
+} as any);
+
+// Mock sessionStorage
 const mockSessionStorage = (() => {
   let store: Record<string, string> = {};
   return {
@@ -23,180 +81,177 @@ Object.defineProperty(window, 'sessionStorage', {
   value: mockSessionStorage
 });
 
-// Wrap component with BrowserRouter for React Router compatibility
-const renderWithRouter = (component: React.ReactNode) => {
+// Wrap component with providers
+const renderWithProviders = (component: React.ReactNode, pattern = 'regular') => {
   return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
+    <AuthContext.Provider value={mockAuthContext}>
+      <AssessmentResultContext.Provider value={getMockAssessmentResultContext(pattern)}>
+        <BrowserRouter>
+          {component}
+        </BrowserRouter>
+      </AssessmentResultContext.Provider>
+    </AuthContext.Provider>
   )
 }
 
-describe('Results Page', () => {
+describe('Assessment Results Page', () => {
   beforeEach(() => {
-    // Clear session storage before each test
     window.sessionStorage.clear();
+    vi.clearAllMocks();
   });
 
-  it('should render common UI elements on the results page', () => {
-    renderWithRouter(<ResultsPage />)
+  it('renders common UI elements', () => {
+    renderWithProviders(<ResultsPage />);
     
-    // Check if the page header is displayed
-    expect(screen.getByText('Dottie')).toBeInTheDocument()
-    
-    // Check if cycle summary is displayed
-    expect(screen.getByText('Your Cycle Summary')).toBeInTheDocument()
-    
-    // Check if buttons are displayed
-    expect(screen.getByText('Ask Dottie').closest('button')).toBeInTheDocument()
-    expect(screen.getByText('Save Results').closest('button')).toBeInTheDocument()
-    expect(screen.getByText('View Resources & Next Steps').closest('a')).toBeInTheDocument()
-    
-    // Check if recommendations section is displayed
-    expect(screen.getByText('Personalized Recommendations')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Your Assessment Results')).toBeInTheDocument();
+    expect(screen.getByText('Chat with Dottie')).toBeInTheDocument();
+    expect(screen.getByText('Save Results')).toBeInTheDocument();
+    expect(screen.getByText('View History')).toBeInTheDocument();
+    expect(screen.getByText('Recommendations')).toBeInTheDocument();
+  });
 
-  // Test for O4: Regular Menstrual Cycles
-  it('should render regular menstrual cycle outcome correctly', () => {
-    // Set up session storage with data indicating regular cycle
-    window.sessionStorage.setItem('cycleLength', '26-30 days');
-    window.sessionStorage.setItem('periodDuration', '4-5 days');
-    window.sessionStorage.setItem('flowLevel', 'Moderate');
-    window.sessionStorage.setItem('painLevel', 'Mild');
-    window.sessionStorage.setItem('age', '18-24 years');
+  // Test all 5 patterns from LogicTree.md
+  // Pattern 1: Regular Cycles (O4 in LogicTree)
+  it('renders regular menstrual cycle pattern correctly', () => {
+    // Set up session storage with regular cycle data 
+    window.sessionStorage.setItem('cycleLength', JSON.stringify('26-30'));
+    window.sessionStorage.setItem('periodDuration', JSON.stringify('4-5'));
+    window.sessionStorage.setItem('flowHeaviness', JSON.stringify('moderate'));
+    window.sessionStorage.setItem('painLevel', JSON.stringify('mild'));
+    window.sessionStorage.setItem('age', JSON.stringify('18-24'));
     
-    renderWithRouter(<ResultsPage />)
+    renderWithProviders(<ResultsPage />, 'regular');
     
-    // Check for regular cycle heading
-    expect(screen.getByText(/Regular Menstrual Cycles/i, { exact: false })).toBeInTheDocument()
+    // Check for correct pattern title and recommendations
+    expect(screen.getByText('Regular Menstrual Cycles')).toBeInTheDocument();
+    expect(screen.getByText('Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.')).toBeInTheDocument();
     
-    // Check metrics display correctly
-    expect(screen.getByText(/Cycle Length/i).nextSibling).toHaveTextContent(/26-30 days/i)
-    expect(screen.getByText(/Period Duration/i).nextSibling).toHaveTextContent(/4-5 days/i)
-    expect(screen.getByText(/Flow Heaviness/i).nextSibling).toHaveTextContent(/Moderate/i)
-    expect(screen.getByText(/Pain Level/i).nextSibling).toHaveTextContent(/Mild/i)
-    
-    // Check for regular cycle recommendations
-    expect(screen.getByText(/Track Your Cycle/i)).toBeInTheDocument()
-    expect(screen.getByText(/Exercise Regularly/i)).toBeInTheDocument()
-    expect(screen.getByText(/Maintain a Balanced Diet/i)).toBeInTheDocument()
-  })
+    // Check recommendations specific to regular pattern
+    expect(screen.getByText('Track Your Cycle')).toBeInTheDocument();
+    expect(screen.getByText('Exercise Regularly')).toBeInTheDocument();
+    expect(screen.getByText('Maintain a Balanced Diet')).toBeInTheDocument();
+    expect(screen.getByText('Prioritize Sleep')).toBeInTheDocument();
+  });
 
-  // Test for O1: Irregular Timing Pattern
-  it('should render irregular timing pattern outcome correctly', () => {
-    // Set up session storage with data indicating irregular cycle
-    window.sessionStorage.setItem('cycleLength', 'Irregular');
-    window.sessionStorage.setItem('age', '25+ years');
+  // Pattern 2: Irregular Timing Pattern (O1 in LogicTree)
+  it('renders irregular timing pattern correctly', () => {
+    // Set up session storage with irregular cycle data
+    window.sessionStorage.setItem('cycleLength', JSON.stringify('irregular'));
+    window.sessionStorage.setItem('age', JSON.stringify('25-35'));
     
-    renderWithRouter(<ResultsPage />)
+    renderWithProviders(<ResultsPage />, 'irregular');
     
-    // Check for irregular cycle heading
-    expect(screen.getByText(/Irregular Timing Pattern/i, { exact: false })).toBeInTheDocument()
+    // Check for irregular pattern title and description
+    expect(screen.getByText('Irregular Timing Pattern')).toBeInTheDocument();
+    expect(screen.getByText('Your cycle length is outside the typical range, which may indicate hormonal fluctuations.')).toBeInTheDocument();
     
-    // Check explanation for irregular cycles
-    expect(screen.getByText(/Your cycle length is outside the typical range/i, { exact: false })).toBeInTheDocument()
-    
-    // Check metrics display correctly
-    const cycleElements = screen.getAllByText(/Cycle Length/i);
-    expect(cycleElements[1].nextSibling).toHaveTextContent(/Irregular/i)
-    
-    // Check for irregular cycle recommendations
-    expect(screen.getByText(/Track Your Cycle/i)).toBeInTheDocument()
-    expect(screen.getByText(/Consult a Healthcare Provider/i, { exact: false })).toBeInTheDocument()
-  })
+    // Check recommendations specific to irregular pattern
+    expect(screen.getByText('Track Your Cycle')).toBeInTheDocument();
+    expect(screen.getByText('Consult a Healthcare Provider')).toBeInTheDocument();
+    expect(screen.getByText('Focus on Nutrition')).toBeInTheDocument();
+    expect(screen.getByText('Stress Management')).toBeInTheDocument();
+  });
 
-  // Test for O2: Heavy or Prolonged Flow Pattern
-  it('should render heavy flow pattern outcome correctly', () => {
-    // Set up session storage with data indicating heavy flow
-    window.sessionStorage.setItem('cycleLength', '26-30 days');
-    window.sessionStorage.setItem('periodDuration', '8+ days');
-    window.sessionStorage.setItem('flowLevel', 'Heavy');
-    window.sessionStorage.setItem('age', '18-24 years');
+  // Pattern 3: Heavy or Prolonged Flow (O2 in LogicTree)
+  it('renders heavy flow pattern correctly', () => {
+    // Set up session storage with heavy flow data
+    window.sessionStorage.setItem('flowHeaviness', JSON.stringify('heavy'));
+    window.sessionStorage.setItem('periodDuration', JSON.stringify('8-plus'));
     
-    renderWithRouter(<ResultsPage />)
+    renderWithProviders(<ResultsPage />, 'heavy');
     
-    // Check for heavy flow heading
-    expect(screen.getByText(/Heavy.*Flow Pattern/i, { exact: false })).toBeInTheDocument()
+    // Check for heavy flow pattern title and description
+    expect(screen.getByText('Heavy or Prolonged Flow Pattern')).toBeInTheDocument();
+    expect(screen.getByText('Your flow is heavier or longer than typical, which could impact your daily activities.')).toBeInTheDocument();
     
-    // Check explanation for heavy flow
-    expect(screen.getByText(/Your flow is heavier or longer than typical/i, { exact: false })).toBeInTheDocument()
-    
-    // Check metrics display correctly
-    expect(screen.getByText(/Period Duration/i).nextSibling).toHaveTextContent(/8\+|more than 7/i)
-    expect(screen.getByText(/Flow Heaviness/i).nextSibling).toHaveTextContent(/Heavy/i)
-    
-    // Check for heavy flow recommendations
-    expect(screen.getByText(/Iron-rich Foods/i, { exact: false })).toBeInTheDocument()
-    expect(screen.getByText(/Stay Hydrated/i, { exact: false })).toBeInTheDocument()
-  })
+    // Check recommendations specific to heavy flow pattern
+    expect(screen.getByText('Iron-rich Foods')).toBeInTheDocument();
+    expect(screen.getByText('Stay Hydrated')).toBeInTheDocument();
+    expect(screen.getByText('Medical Evaluation')).toBeInTheDocument();
+    expect(screen.getByText('Plan Ahead')).toBeInTheDocument();
+  });
 
-  // Test for O3: Pain-Predominant Pattern
-  it('should render pain-predominant pattern outcome correctly', () => {
-    // Set up session storage with data indicating severe pain
-    window.sessionStorage.setItem('cycleLength', '26-30 days');
-    window.sessionStorage.setItem('periodDuration', '4-5 days');
-    window.sessionStorage.setItem('flowLevel', 'Moderate');
-    window.sessionStorage.setItem('painLevel', 'Severe');
-    window.sessionStorage.setItem('age', '18-24 years');
+  // Pattern 4: Pain-Predominant Pattern (O3 in LogicTree)
+  it('renders pain-predominant pattern correctly', () => {
+    // Set up session storage with severe pain data
+    window.sessionStorage.setItem('painLevel', JSON.stringify('severe'));
     
-    renderWithRouter(<ResultsPage />)
+    renderWithProviders(<ResultsPage />, 'pain');
     
-    // Check for pain-predominant heading
-    expect(screen.getByText(/Pain.*Predominant Pattern/i, { exact: false })).toBeInTheDocument()
+    // Check for pain pattern title and description
+    expect(screen.getByText('Pain-Predominant Pattern')).toBeInTheDocument();
+    expect(screen.getByText('Your menstrual pain is higher than typical and may interfere with daily activities.')).toBeInTheDocument();
     
-    // Check explanation for pain pattern
-    expect(screen.getByText(/Your menstrual pain is higher than typical/i, { exact: false })).toBeInTheDocument()
-    
-    // Check metrics display correctly
-    expect(screen.getByText(/Pain Level/i).nextSibling).toHaveTextContent(/Severe/i)
-    
-    // Check for pain management recommendations
-    expect(screen.getByText(/Heat therapy/i, { exact: false })).toBeInTheDocument()
-    expect(screen.getByText(/pain.*management/i, { exact: false })).toBeInTheDocument()
-  })
+    // Check recommendations specific to pain pattern
+    expect(screen.getByText('Heat Therapy')).toBeInTheDocument();
+    expect(screen.getByText('Pain Management')).toBeInTheDocument();
+    expect(screen.getByText('Gentle Exercise')).toBeInTheDocument();
+    expect(screen.getByText('Medical Support')).toBeInTheDocument();
+  });
 
-  // Test for O5: Developing Pattern
-  it('should render developing pattern outcome correctly', () => {
-    // Set up session storage with data indicating developing pattern
-    window.sessionStorage.setItem('cycleLength', 'Variable');
-    window.sessionStorage.setItem('age', '13-17 years');
+  // Pattern 5: Developing Pattern (O5 in LogicTree)
+  it('renders developing pattern correctly', () => {
+    // Set up session storage with adolescent data
+    window.sessionStorage.setItem('age', JSON.stringify('13-17'));
     
-    renderWithRouter(<ResultsPage />)
+    renderWithProviders(<ResultsPage />, 'developing');
     
-    // Check for developing pattern heading
-    expect(screen.getByText(/Developing Pattern/i, { exact: false })).toBeInTheDocument()
+    // Check for developing pattern title and description
+    expect(screen.getByText('Developing Pattern')).toBeInTheDocument();
+    expect(screen.getByText('Your cycles are still establishing a regular pattern, which is normal during adolescence.')).toBeInTheDocument();
     
-    // Check explanation for developing pattern
-    expect(screen.getByText(/Your cycles are still establishing a regular pattern/i, { exact: false })).toBeInTheDocument()
-    
-    // Check age information is displayed correctly
-    expect(screen.getByText(/Age/i).nextSibling).toHaveTextContent(/13-17|Adolescence/i)
-    
-    // Check for adolescent-specific recommendations
-    expect(screen.getByText(/Be Patient/i)).toBeInTheDocument()
-    expect(screen.getByText(/normal.*irregular during adolescence/i, { exact: false })).toBeInTheDocument()
-  })
+    // Check recommendations specific to developing pattern
+    expect(screen.getByText('Be Patient')).toBeInTheDocument();
+    expect(screen.getByText('Track Your Cycle')).toBeInTheDocument();
+    expect(screen.getByText('Learn About Your Body')).toBeInTheDocument();
+    expect(screen.getByText('Talk to Someone You Trust')).toBeInTheDocument();
+  });
 
-  it('should navigate to resources when clicking the resources button', () => {
-    renderWithRouter(<ResultsPage />)
-    
-    // Check if the View Resources link navigates to the resources page
-    const resourcesButton = screen.getByText('View Resources & Next Steps').closest('a')
-    expect(resourcesButton).toHaveAttribute('href', '/assessment/resources')
-  })
-
-  it('should display the selected symptoms from storage', () => {
+  // Test symptoms display
+  it('displays symptoms correctly', () => {
     // Set up session storage with symptoms data
-    window.sessionStorage.setItem('symptoms', JSON.stringify(['Bloating', 'Headaches', 'Mood swings']));
+    window.sessionStorage.setItem('symptoms', JSON.stringify({
+      physical: ['Bloating', 'Headaches'],
+      emotional: ['Mood swings']
+    }));
     
-    renderWithRouter(<ResultsPage />)
+    renderWithProviders(<ResultsPage />);
     
-    // Check if the symptoms section is displayed
-    expect(screen.getByText('Symptoms')).toBeInTheDocument()
+    // Check if symptoms are displayed
+    expect(screen.getByText('Symptoms')).toBeInTheDocument();
+    expect(screen.getByText(/Bloating, Headaches/)).toBeInTheDocument();
+  });
+
+  // Test save functionality using FlattenedAssessment format
+  it('saves assessment in flattened format when clicking Save button', async () => {
+    renderWithProviders(<ResultsPage />);
     
-    // Check if selected symptoms are listed
-    expect(screen.getByText('Bloating')).toBeInTheDocument()
-    expect(screen.getByText('Headaches')).toBeInTheDocument()
-    expect(screen.getByText('Mood swings')).toBeInTheDocument()
-  })
-}) 
+    // Click Save button
+    fireEvent.click(screen.getByText('Save Results'));
+    
+    // Check that transformToFlattenedFormat was called
+    await waitFor(() => {
+      expect(getMockAssessmentResultContext().transformToFlattenedFormat).toHaveBeenCalled();
+    });
+    
+    // Check that postSend was called with the correct flattened format
+    await waitFor(() => {
+      expect(postSend).toHaveBeenCalledWith(expect.objectContaining({
+        user_id: 'mock-user-id',
+        pattern: 'regular',
+        cycle_length: '26-30',
+        period_duration: '4-5',
+        flow_heaviness: 'moderate',
+        pain_level: 'mild'
+      }));
+    });
+  });
+
+  // Test that View History link navigates to the correct route
+  it('navigates to history page when clicking View History', () => {
+    renderWithProviders(<ResultsPage />);
+    
+    const historyLink = screen.getByText('View History').closest('a');
+    expect(historyLink).toHaveAttribute('href', '/assessment/history');
+  });
+}); 
