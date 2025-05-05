@@ -8,13 +8,13 @@ import { toast } from 'sonner';
 
 // Utility function to ensure data is an array
 // Returns unknown[] to accommodate different array types like recommendations
-const ensureArrayFormat = (data: unknown): unknown[] => {
+const ensureArrayFormat = <T = string,>(data: unknown): T[] => {
   if (Array.isArray(data)) {
-    return data;
+    return data as T[];
   }
   // Add specific parsing logic here if needed, e.g., for JSON strings
   // For now, just return empty array if not already an array
-  return [];
+  return [] as T[];
 };
 
 export default function AssessmentDetailsPage() {
@@ -44,8 +44,8 @@ export default function AssessmentDetailsPage() {
           // This logic might be adjusted based on actual API response structure
           if (data && !data.assessment_data) {
             // If flattened format
-            data.physical_symptoms = ensureArrayFormat(data.physical_symptoms);
-            data.emotional_symptoms = ensureArrayFormat(data.emotional_symptoms);
+            data.physical_symptoms = ensureArrayFormat<string>(data.physical_symptoms);
+            data.emotional_symptoms = ensureArrayFormat<string>(data.emotional_symptoms);
           }
         }
       } catch (error) {
