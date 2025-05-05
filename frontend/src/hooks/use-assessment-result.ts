@@ -203,6 +203,7 @@ export function useAssessmentResult() {
     loadFromSessionStorage,
     updateSymptoms,
     completeAssessment,
-    clearAssessment
+    clearAssessment,
+    transformToFlattenedFormat
   };
 }
