@@ -54,8 +54,6 @@ export default function SymptomsPage() {
 
     const random = symptomsList[Math.floor(Math.random() * symptomsList.length)].id;
     setRefTarget(random);
-
-
   }, [isQuickResponse]);
 
   useEffect(() => {
@@ -198,8 +196,9 @@ export default function SymptomsPage() {
                 { id: 'hot-flashes', label: 'Hot flashes', emoji: '🔥' },
                 { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' }
               ].map((symptom) => (
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   key={symptom.id}
                   className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
                     physicalSymptoms.includes(symptom.id)
@@ -208,6 +207,11 @@ export default function SymptomsPage() {
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
                   onClick={() => togglePhysicalSymptom(symptom.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      togglePhysicalSymptom(symptom.id);
+                    }
+                  }}
                 >
                   <span className="mb-1 text-2xl">{symptom.emoji}</span>
                   <span className="text-center text-sm">{symptom.label}</span>
@@ -217,7 +221,7 @@ export default function SymptomsPage() {
                     onCheckedChange={() => togglePhysicalSymptom(symptom.id)}
                     className="sr-only"
                   />
-                </button>
+                </div>
               ))}
             </div>
           </div>
@@ -245,8 +249,9 @@ export default function SymptomsPage() {
                 },
                 { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
               ].map((symptom) => (
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   key={symptom.id}
                   className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
                     emotionalSymptoms.includes(symptom.id)
@@ -255,6 +260,11 @@ export default function SymptomsPage() {
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
                   onClick={() => toggleEmotionalSymptom(symptom.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      toggleEmotionalSymptom(symptom.id);
+                    }
+                  }}
                 >
                   <span className="mb-1 text-2xl">{symptom.emoji}</span>
                   <span className="text-center text-sm">{symptom.label}</span>
@@ -264,7 +274,7 @@ export default function SymptomsPage() {
                     onCheckedChange={() => toggleEmotionalSymptom(symptom.id)}
                     className="sr-only"
                   />
-                </button>
+                </div>
               ))}
             </div>
           </div>
