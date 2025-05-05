@@ -1,5 +1,8 @@
 import { apiClient } from '../../../core/apiClient';
 import { SignupInput, AuthResponse } from '../../types';
+// import { API_BASE_URL } from "@/config/api"; // Removed this unused import
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 
 /**
  * Register a new user
