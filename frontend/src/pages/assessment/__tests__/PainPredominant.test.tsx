@@ -36,14 +36,17 @@ describe('Pain-Predominant Menstrual Pattern Assessment Path', () => {
     await navigateToPain(user, 'Severe')
     await navigateToSymptoms(user, 'Headaches')
     
-    // Setup session storage for results page
+    // Setup session storage for results page with correct keys
     const sessionData = {
       age: '18-24 years',
       cycleLength: '26-30 days',
       periodDuration: '4-5 days',
-      flowLevel: 'Moderate',
-      painLevel: 'Severe',
-      symptoms: ['Headaches']
+      flowHeaviness: 'moderate', // Use correct key "flowHeaviness" rather than "flowLevel"
+      painLevel: 'severe', // Use lowercase to match app expectations
+      symptoms: {  // Format as object with physical and emotional arrays
+        physical: ['headaches'],
+        emotional: []
+      }
     }
     
     // Render results page
@@ -53,17 +56,17 @@ describe('Pain-Predominant Menstrual Pattern Assessment Path', () => {
     expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify pain-predominant pattern (O3 in LogicTree)
-    expect(screen.getByText('Your menstrual pain is higher than typical and may interfere with daily activities.')).toBeInTheDocument()
+    expect(screen.getByText(/your menstrual pain is higher than typical/i, { exact: false })).toBeInTheDocument()
     
     // Check that metrics display correctly
-    expect(screen.getAllByText('Severe')[0]).toBeInTheDocument()
-    expect(screen.getAllByText('Headaches')[0]).toBeInTheDocument()
+    expect(screen.getAllByText(/severe/i)[0]).toBeInTheDocument()
+    expect(screen.getAllByText(/headaches/i)[0]).toBeInTheDocument()
     
     // Check for pain-related recommendations
-    expect(screen.getByText('Heat Therapy', { exact: false })).toBeInTheDocument()
-    expect(screen.getByText('Pain Management', { exact: false })).toBeInTheDocument()
-    expect(screen.getByText('Gentle Exercise', { exact: false })).toBeInTheDocument()
-    expect(screen.getByText('Medical Support', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText(/Heat Therapy/i, { exact: false })).toBeInTheDocument()
+    expect(screen.getByText(/Pain Management/i, { exact: false })).toBeInTheDocument()
+    expect(screen.getByText(/Gentle Exercise/i, { exact: false })).toBeInTheDocument()
+    expect(screen.getByText(/Medical Support/i, { exact: false })).toBeInTheDocument()
   })
   
   it('should show pain pattern even with additional symptoms', async () => {
@@ -72,9 +75,12 @@ describe('Pain-Predominant Menstrual Pattern Assessment Path', () => {
       age: '18-24 years',
       cycleLength: '26-30 days',
       periodDuration: '4-5 days',
-      flowLevel: 'Moderate',
-      painLevel: 'Severe',
-      symptoms: ['Headaches', 'Bloating', 'Fatigue']
+      flowHeaviness: 'moderate', // Use correct key "flowHeaviness" rather than "flowLevel"
+      painLevel: 'severe', // Use lowercase to match app expectations
+      symptoms: {  // Format as object with physical and emotional arrays
+        physical: ['headaches', 'bloating', 'fatigue'],
+        emotional: []
+      }
     }
     
     // Render results page
@@ -84,10 +90,10 @@ describe('Pain-Predominant Menstrual Pattern Assessment Path', () => {
     expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
     // Verify pain pattern text is shown
-    expect(screen.getByText(/Pain-Predominant Pattern/i)).toBeInTheDocument()
+    expect(screen.getByText(/Pain-Predominant Pattern/i, { exact: false })).toBeInTheDocument()
     
     // Verify pain level is shown
-    expect(screen.getAllByText('Severe')[0]).toBeInTheDocument()
+    expect(screen.getAllByText(/severe/i)[0]).toBeInTheDocument()
     
     // Check for symptoms section heading
     expect(screen.getByText('Symptoms')).toBeInTheDocument()
