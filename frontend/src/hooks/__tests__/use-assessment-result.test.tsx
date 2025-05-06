@@ -1,29 +1,26 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { useAssessmentResult } from '../use-assessment-result';
-import { AssessmentResultProvider } from '@/src/context/AssessmentResultContext';
+import { AssessmentResultProvider } from '@/src/hooks/use-assessment-result';
+import { vi } from 'vitest';
 
-// Mock the context to prevent warnings
-vi.mock('@/src/context/AssessmentResultContext', async () => {
-  const actual = await vi.importActual('@/src/context/AssessmentResultContext');
+// Mock the context
+vi.mock('@/src/hooks/use-assessment-result', async () => {
+  const actual = await vi.importActual('@/src/hooks/use-assessment-result');
   return {
     ...actual,
-    useAssessmentResult: () => ({
+    useAssessmentResultContext: () => ({
       state: {
         result: {
-          age: "25-plus",
-          cycleLength: "26-30",
-          periodDuration: "4-5",
-          flowHeaviness: "moderate",
-          painLevel: "mild",
+          age: '25-plus',
+          cycleLength: '26-30',
+          periodDuration: '4-5',
+          flowHeaviness: 'moderate',
+          painLevel: 'mild',
           symptoms: {
-            physical: ["Bloating", "Headache"],
-            emotional: ["Irritability"]
+            physical: ['Bloating'],
+            emotional: []
           },
-          pattern: "regular",
-          recommendations: [
-            { title: "Track Your Cycle", description: "Keep a record of your cycle" }
-          ]
+          pattern: 'regular'
         },
         isComplete: true
       },
@@ -36,52 +33,150 @@ vi.mock('@/src/context/AssessmentResultContext', async () => {
   };
 });
 
+// Create a wrapper for the context provider
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <AssessmentResultProvider>{children}</AssessmentResultProvider>
+);
+
 describe('useAssessmentResult', () => {
-  it('transforms assessment result to flattened format with snake_case keys', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <AssessmentResultProvider>{children}</AssessmentResultProvider>
-    );
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  });
 
+  it('should return the assessment result state', () => {
     const { result } = renderHook(() => useAssessmentResult(), { wrapper });
-
-    const assessmentResult = {
-      age: "25-plus",
-      cycleLength: "26-30",
-      periodDuration: "4-5",
-      flowHeaviness: "moderate",
-      painLevel: "mild",
+    
+    expect(result.current.result).toEqual({
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
       symptoms: {
-        physical: ["Bloating", "Headache"],
-        emotional: ["Irritability"]
+        physical: ['Bloating'],
+        emotional: []
       },
-      pattern: "regular",
-      recommendations: [
-        { title: "Track Your Cycle", description: "Keep a record of your cycle" }
-      ]
-    };
-
-    const transformed = result.current.transformToFlattenedFormat(assessmentResult);
-
-    // Verify the transformed object has snake_case keys
-    expect(transformed).toEqual({
-      age: "25-plus",
-      pattern: "regular",
-      cycle_length: "26-30",
-      period_duration: "4-5",
-      flow_heaviness: "moderate",
-      pain_level: "mild",
-      physical_symptoms: ["Bloating", "Headache"],
-      emotional_symptoms: ["Irritability"],
-      recommendations: [
-        { title: "Track Your Cycle", description: "Keep a record of your cycle" }
-      ]
+      pattern: 'regular'
     });
+    expect(result.current.isComplete).toBe(true);
+  });
 
-    // Ensure camelCase keys are not present
-    expect(transformed).not.toHaveProperty("cycleLength");
-    expect(transformed).not.toHaveProperty("periodDuration");
-    expect(transformed).not.toHaveProperty("flowHeaviness");
-    expect(transformed).not.toHaveProperty("painLevel");
-    expect(transformed).not.toHaveProperty("symptoms");
+  it('should determine the correct pattern for regular cycles', () => {
+    const { result } = renderHook(() => useAssessmentResult(), { wrapper });
+    
+    const testData = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: [],
+        emotional: []
+      }
+    };
+    
+    expect(result.current.determinePattern(testData)).toBe('regular');
+  });
+
+  it('should determine the correct pattern for irregular cycles', () => {
+    const { result } = renderHook(() => useAssessmentResult(), { wrapper });
+    
+    const testData = {
+      age: '25-plus',
+      cycleLength: 'irregular',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: [],
+        emotional: []
+      }
+    };
+    
+    expect(result.current.determinePattern(testData)).toBe('irregular');
+  });
+
+  it('should determine the correct pattern for heavy flow', () => {
+    const { result } = renderHook(() => useAssessmentResult(), { wrapper });
+    
+    const testData = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'heavy',
+      painLevel: 'mild',
+      symptoms: {
+        physical: [],
+        emotional: []
+      }
+    };
+    
+    expect(result.current.determinePattern(testData)).toBe('heavy');
+  });
+
+  it('should determine the correct pattern for severe pain', () => {
+    const { result } = renderHook(() => useAssessmentResult(), { wrapper });
+    
+    const testData = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'severe',
+      symptoms: {
+        physical: [],
+        emotional: []
+      }
+    };
+    
+    expect(result.current.determinePattern(testData)).toBe('pain');
+  });
+
+  it('should determine the correct pattern for adolescents', () => {
+    const { result } = renderHook(() => useAssessmentResult(), { wrapper });
+    
+    const testData = {
+      age: '13-17',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: [],
+        emotional: []
+      }
+    };
+    
+    expect(result.current.determinePattern(testData)).toBe('developing');
+  });
+
+  it('should generate appropriate recommendations', () => {
+    const { result } = renderHook(() => useAssessmentResult(), { wrapper });
+    
+    const testData = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      pattern: 'regular',
+      symptoms: {
+        physical: ['Fatigue'],
+        emotional: ['Irritability']
+      }
+    };
+    
+    const recommendations = result.current.generateRecommendations(testData);
+    
+    // Should have base recommendation
+    expect(recommendations.some(r => r.title === 'Track Your Cycle')).toBe(true);
+    
+    // Should have fatigue recommendation
+    expect(recommendations.some(r => r.title === 'Rest and Sleep')).toBe(true);
+    
+    // Should have emotional recommendation
+    expect(recommendations.some(r => r.title === 'Emotional Support')).toBe(true);
   });
 }); 
