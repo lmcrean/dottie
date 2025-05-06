@@ -1,0 +1,191 @@
+import { describe, it, expect } from 'vitest';
+import { assessmentResultReducer } from '../reducer';
+import { 
+  initialState, 
+  AssessmentResult, 
+  MenstrualPattern, 
+  Recommendation 
+} from '../types';
+
+describe('assessmentResultReducer', () => {
+  it('should return initial state for unknown action', () => {
+    // @ts-ignore - Testing with invalid action type
+    const newState = assessmentResultReducer(initialState, { type: 'UNKNOWN_ACTION' });
+    expect(newState).toEqual(initialState);
+  });
+
+  it('should handle SET_RESULT action', () => {
+    const mockResult: AssessmentResult = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: ['bloating'],
+        emotional: ['irritability']
+      }
+    };
+
+    const newState = assessmentResultReducer(initialState, { 
+      type: 'SET_RESULT', 
+      payload: mockResult 
+    });
+
+    expect(newState).toEqual({
+      result: mockResult,
+      isComplete: true
+    });
+  });
+
+  it('should handle UPDATE_RESULT action', () => {
+    // First set an initial result
+    const initialResult: AssessmentResult = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: ['bloating'],
+        emotional: ['irritability']
+      }
+    };
+
+    const stateWithResult = {
+      ...initialState,
+      result: initialResult
+    };
+
+    // Then update a part of it
+    const update = {
+      painLevel: 'severe' as const,
+      flowHeaviness: 'heavy' as const
+    };
+
+    const newState = assessmentResultReducer(stateWithResult, { 
+      type: 'UPDATE_RESULT', 
+      payload: update 
+    });
+
+    expect(newState.result).toEqual({
+      ...initialResult,
+      ...update
+    });
+  });
+
+  it('should handle RESET_RESULT action', () => {
+    // First set a result
+    const stateWithResult = {
+      result: {
+        age: '25-plus',
+        cycleLength: '26-30',
+        periodDuration: '4-5',
+        flowHeaviness: 'moderate',
+        painLevel: 'mild',
+        symptoms: {
+          physical: ['bloating'],
+          emotional: ['irritability']
+        }
+      },
+      isComplete: true
+    };
+
+    const newState = assessmentResultReducer(stateWithResult, { type: 'RESET_RESULT' });
+    expect(newState).toEqual(initialState);
+  });
+
+  it('should handle SET_PATTERN action', () => {
+    const initialResult: AssessmentResult = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: ['bloating'],
+        emotional: ['irritability']
+      }
+    };
+
+    const stateWithResult = {
+      ...initialState,
+      result: initialResult
+    };
+
+    const pattern: MenstrualPattern = 'regular';
+
+    const newState = assessmentResultReducer(stateWithResult, { 
+      type: 'SET_PATTERN', 
+      payload: pattern 
+    });
+
+    expect(newState.result).toEqual({
+      ...initialResult,
+      pattern
+    });
+  });
+
+  it('should handle SET_RECOMMENDATIONS action', () => {
+    const initialResult: AssessmentResult = {
+      age: '25-plus',
+      cycleLength: '26-30',
+      periodDuration: '4-5',
+      flowHeaviness: 'moderate',
+      painLevel: 'mild',
+      symptoms: {
+        physical: ['bloating'],
+        emotional: ['irritability']
+      }
+    };
+
+    const stateWithResult = {
+      ...initialState,
+      result: initialResult
+    };
+
+    const recommendations: Recommendation[] = [
+      {
+        title: 'Track your cycle',
+        description: 'Keep track of your cycle to identify patterns.'
+      },
+      {
+        title: 'Exercise regularly',
+        description: 'Regular exercise can help reduce menstrual pain.'
+      }
+    ];
+
+    const newState = assessmentResultReducer(stateWithResult, { 
+      type: 'SET_RECOMMENDATIONS', 
+      payload: recommendations 
+    });
+
+    expect(newState.result).toEqual({
+      ...initialResult,
+      recommendations
+    });
+  });
+
+  it('should return original state when no result exists for update actions', () => {
+    // Test UPDATE_RESULT
+    const stateAfterUpdate = assessmentResultReducer(initialState, { 
+      type: 'UPDATE_RESULT', 
+      payload: { painLevel: 'severe' as const } 
+    });
+    expect(stateAfterUpdate.result).toBeNull();
+    
+    // Test SET_PATTERN
+    const stateAfterSetPattern = assessmentResultReducer(initialState, { 
+      type: 'SET_PATTERN', 
+      payload: 'regular' 
+    });
+    expect(stateAfterSetPattern.result).toBeNull();
+    
+    // Test SET_RECOMMENDATIONS
+    const stateAfterSetRecommendations = assessmentResultReducer(initialState, { 
+      type: 'SET_RECOMMENDATIONS', 
+      payload: [{ title: 'Test', description: 'Test description' }] 
+    });
+    expect(stateAfterSetRecommendations.result).toBeNull();
+  });
+}); 
