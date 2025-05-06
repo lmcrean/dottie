@@ -1,5 +1,8 @@
 import { ReactNode, createContext, useCallback, useContext, useReducer } from 'react';
 import React from 'react';
+import { determinePattern } from '../services/assessment/determinePattern';
+import { generateRecommendations } from '../services/assessment/generateRecommendations';
+import { transformToFlattenedFormat } from '../services/assessment/transformToFlattenedFormat';
 
 // Types
 export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
@@ -156,98 +159,6 @@ export function useAssessmentResult() {
   const { state, setResult, updateResult, resetResult, setPattern, setRecommendations } =
     useAssessmentResultContext();
 
-  // Utility function to determine the menstrual pattern based on assessment results
-  const determinePattern = useCallback((result: AssessmentResult): MenstrualPattern => {
-    const { age, cycleLength, periodDuration, flowHeaviness, painLevel } = result;
-
-    // Developing Pattern (O5)
-    if (age === 'under-13' || age === '13-17') {
-      return 'developing';
-    }
-
-    // Irregular Timing Pattern (O1)
-    if (cycleLength === 'irregular' || cycleLength === 'less-than-21' || cycleLength === '36-40') {
-      return 'irregular';
-    }
-
-    // Heavy Flow Pattern (O2)
-    if (
-      flowHeaviness === 'heavy' ||
-      flowHeaviness === 'very-heavy' ||
-      periodDuration === '8-plus'
-    ) {
-      return 'heavy';
-    }
-
-    // Pain-Predominant Pattern (O3)
-    if (painLevel === 'severe' || painLevel === 'debilitating') {
-      return 'pain';
-    }
-
-    // Regular Menstrual Cycles (O4)
-    return 'regular';
-  }, []);
-
-  // Function to generate recommendations based on assessment results
-  const generateRecommendations = useCallback((result: AssessmentResult): Recommendation[] => {
-    const recommendations: Recommendation[] = [];
-    const { pattern, symptoms } = result;
-
-    // Base recommendations for all patterns
-    recommendations.push({
-      title: 'Track Your Cycle',
-      description: 'Keep a record of when your period starts and stops to identify patterns.'
-    });
-
-    // Pattern-specific recommendations
-    switch (pattern) {
-      case 'irregular':
-        recommendations.push({
-          title: 'Consult a Healthcare Provider',
-          description: 'Irregular cycles may need medical evaluation to identify underlying causes.'
-        });
-        break;
-      case 'heavy':
-        recommendations.push({
-          title: 'Iron-Rich Diet',
-          description:
-            'Consider increasing iron intake through diet or supplements to prevent anemia.'
-        });
-        break;
-      case 'pain':
-        recommendations.push({
-          title: 'Pain Management',
-          description: 'Over-the-counter pain relievers like ibuprofen can help with cramps.'
-        });
-        break;
-      case 'developing':
-        recommendations.push({
-          title: 'Be Patient',
-          description:
-            "Your cycles are still establishing. It's normal for them to be irregular during adolescence."
-        });
-        break;
-    }
-
-    // Symptom-specific recommendations
-    if (symptoms.physical.includes('Fatigue')) {
-      recommendations.push({
-        title: 'Rest and Sleep',
-        description: 'Ensure you get adequate rest and maintain a regular sleep schedule.'
-      });
-    }
-
-    if (symptoms.emotional.length > 0) {
-      recommendations.push({
-        title: 'Emotional Support',
-        description:
-          'Consider talking to a counselor or joining a support group about emotional symptoms.'
-      });
-    }
-
-    return recommendations;
-  }, []);
-
   // Function to save assessment result to session storage
   const saveToSessionStorage = useCallback((result: AssessmentResult) => {
     Object.entries(result).forEach(([key, value]) => {
@@ -309,7 +220,7 @@ export function useAssessmentResult() {
       setResult(completeResult);
       saveToSessionStorage(completeResult);
     },
-    [determinePattern, generateRecommendations, setResult, saveToSessionStorage]
+    [setResult, saveToSessionStorage]
   );
 
   // Function to clear assessment data
@@ -317,22 +228,6 @@ export function useAssessmentResult() {
     resetResult();
     sessionStorage.clear();
   }, [resetResult]);
-
-  // Function to transform assessment result to flattened format for API submission
-  const transformToFlattenedFormat = useCallback((result: AssessmentResult) => {
-    // Transform assessment data from camelCase to snake_case and flatten the structure
-    return {
-      age: result.age,
-      pattern: result.pattern || '',
-      cycle_length: result.cycleLength,
-      period_duration: result.periodDuration,
-      flow_heaviness: result.flowHeaviness,
-      pain_level: result.painLevel,
-      physical_symptoms: result.symptoms.physical,
-      emotional_symptoms: result.symptoms.emotional,
-      recommendations: result.recommendations || []
-    };
-  }, []);
 
   return {
     ...state,
