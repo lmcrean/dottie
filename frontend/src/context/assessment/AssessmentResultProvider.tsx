@@ -1,13 +1,8 @@
 import React, { ReactNode } from 'react';
 import { AssessmentResultContext } from './AssessmentResultContext';
-import {
-  AssessmentResult,
-  MenstrualPattern,
-  Recommendation,
-  assessmentResultReducer,
-  initialState
-} from '@/src/hooks/use-assessment-result';
 import { useReducer } from 'react';
+import { assessmentResultReducer } from './reducer';
+import { AssessmentResult, initialState, MenstrualPattern, Recommendation } from './types';
 
 // Types
 export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
