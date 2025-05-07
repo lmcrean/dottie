@@ -34,6 +34,5 @@ export const generateRecommendations = (result: AssessmentResult) => {
     }
   }
 
-  // Convert Set to Array and sort by priority
-  return Array.from(recommendations).sort((a, b) => b.priority - a.priority);
+  return Array.from(recommendations);
 };
