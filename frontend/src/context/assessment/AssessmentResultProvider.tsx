@@ -4,26 +4,6 @@ import { useReducer } from 'react';
 import { assessmentResultReducer } from './reducer';
 import { AssessmentResult, initialState, MenstrualPattern, Recommendation } from './types';
 
-// Types
-export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
-export type CycleLength =
-  | 'less-than-21'
-  | '21-25'
-  | '26-30'
-  | '31-35'
-  | '36-40'
-  | 'irregular'
-  | 'not-sure'
-  | 'other';
-export type PeriodDuration = '1-3' | '4-5' | '6-7' | '8-plus' | 'varies' | 'not-sure' | 'other';
-export type FlowHeaviness = 'light' | 'moderate' | 'heavy' | 'very-heavy' | 'varies' | 'not-sure';
-export type PainLevel = 'no-pain' | 'mild' | 'moderate' | 'severe' | 'debilitating' | 'varies';
-
-export interface Symptoms {
-  physical: string[];
-  emotional: string[];
-}
-
 // Provider component
 export function AssessmentResultProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(assessmentResultReducer, initialState);
