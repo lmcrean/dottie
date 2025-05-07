@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { Assessment } from '@/src/api/assessment/types';
 import { postSend } from '@/src/api/assessment/requests/postSend/Request';
 import { useAuth } from '@/src/context/auth/useAuthContext';
-import { useAssessmentResult } from '@/src/hooks/use-assessment-result';
+import { useAssessmentResult } from '@/src/hooks/assessment/use-assessment-result';
 
 // Define the types of menstrual patterns as per LogicTree.md
 type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
