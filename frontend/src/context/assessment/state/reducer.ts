@@ -1,4 +1,4 @@
-import { AssessmentResultState, initialState } from '../types/types';
+import { AssessmentResultState, initialState } from '../types';
 import { setResult, updateResult, resetResult, setPattern, setRecommendations } from './actions';
 
 type AssessmentResultAction =

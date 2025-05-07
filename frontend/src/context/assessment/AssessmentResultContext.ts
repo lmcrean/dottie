@@ -1,10 +1,5 @@
 import { createContext } from 'react';
-import {
-  AssessmentResult,
-  AssessmentResultState,
-  MenstrualPattern,
-  Recommendation
-} from './types/types';
+import { AssessmentResult, AssessmentResultState, MenstrualPattern, Recommendation } from './types';
 
 // Context type
 export interface AssessmentResultContextType {

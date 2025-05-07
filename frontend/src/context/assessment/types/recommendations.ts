@@ -1,4 +1,4 @@
-import { Recommendation } from './types';
+import { Recommendation } from '.';
 
 export const RECOMMENDATIONS: Record<string, Recommendation> = {
   // General recommendations -- always show

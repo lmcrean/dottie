@@ -1,4 +1,4 @@
-import { AssessmentResult, MenstrualPattern, Recommendation } from '../types/types';
+import { AssessmentResult, MenstrualPattern, Recommendation } from '../types';
 
 export const setResult = (result: AssessmentResult) => ({
   type: 'SET_RESULT' as const,

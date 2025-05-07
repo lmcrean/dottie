@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { AssessmentResultContext } from './AssessmentResultContext';
 import { useReducer } from 'react';
 import { assessmentResultReducer } from './state/reducer';
-import { initialState } from './types/types';
+import { initialState } from './types';
 import {
   setResult,
   updateResult,
