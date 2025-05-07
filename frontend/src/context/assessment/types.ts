@@ -24,21 +24,11 @@ export type PainLevel = 'no-pain' | 'mild' | 'moderate' | 'severe' | 'debilitati
 // Pattern types based on logic tree outcomes
 export type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
 
-// Recommendation categories
-export type RecommendationCategory =
-  | 'general' // General recommendations for all users
-  | 'pattern' // Pattern-specific recommendations
-  | 'physical' // Physical symptom recommendations
-  | 'emotional' // Emotional symptom recommendations
-  | 'lifestyle'; // Lifestyle recommendations
-
-// Recommendation interface
+// Simple recommendation interface
 export interface Recommendation {
   id: string;
   title: string;
   description: string;
-  category: RecommendationCategory;
-  priority: number; // Higher number = higher priority
 }
 
 // Physical symptom types
