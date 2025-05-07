@@ -1,63 +1,51 @@
-import { AssessmentResult, Recommendation } from '../../hooks/use-assessment-result';
+import { AssessmentResult } from '../../context/assessment/types';
+import { RECOMMENDATIONS } from '../../context/assessment/recommendations';
 
 /**
  * Generates recommendations based on assessment results and pattern
  */
-export const generateRecommendations = (result: AssessmentResult): Recommendation[] => {
-  const recommendations: Recommendation[] = [];
-  const { pattern, symptoms } = result;
-
-  // Base recommendations for all patterns
-  recommendations.push({
-    title: 'Track Your Cycle',
-    description: 'Keep a record of when your period starts and stops to identify patterns.'
-  });
+export const generateRecommendations = (result: AssessmentResult) => {
+  const recommendations = new Set([RECOMMENDATIONS.track_cycle]); // Always include tracking
 
   // Pattern-specific recommendations
-  switch (pattern) {
-    case 'irregular':
-      recommendations.push({
-        title: 'Consult a Healthcare Provider',
-        description: 'Irregular cycles may need medical evaluation to identify underlying causes.'
-      });
-      break;
-    case 'heavy':
-      recommendations.push({
-        title: 'Iron-Rich Diet',
-        description:
-          'Consider increasing iron intake through diet or supplements to prevent anemia.'
-      });
-      break;
-    case 'pain':
-      recommendations.push({
-        title: 'Pain Management',
-        description: 'Over-the-counter pain relievers like ibuprofen can help with cramps.'
-      });
-      break;
-    case 'developing':
-      recommendations.push({
-        title: 'Be Patient',
-        description:
-          "Your cycles are still establishing. It's normal for them to be irregular during adolescence."
-      });
-      break;
+  if (result.pattern) {
+    switch (result.pattern) {
+      case 'irregular':
+        recommendations.add(RECOMMENDATIONS.irregular_consult);
+        break;
+      case 'heavy':
+        recommendations.add(RECOMMENDATIONS.heavy_iron);
+        break;
+      case 'pain':
+        recommendations.add(RECOMMENDATIONS.pain_management);
+        break;
+      case 'developing':
+        recommendations.add(RECOMMENDATIONS.developing_patience);
+        break;
+    }
   }
 
-  // Symptom-specific recommendations
-  if (symptoms.physical.includes('Fatigue')) {
-    recommendations.push({
-      title: 'Rest and Sleep',
-      description: 'Ensure you get adequate rest and maintain a regular sleep schedule.'
-    });
+  // Physical symptom recommendations
+  if (result.physical_symptoms.includes('fatigue')) {
+    recommendations.add(RECOMMENDATIONS.fatigue_rest);
+  }
+  if (result.physical_symptoms.includes('nausea')) {
+    recommendations.add(RECOMMENDATIONS.nausea_management);
+  }
+  if (result.physical_symptoms.includes('headaches')) {
+    recommendations.add(RECOMMENDATIONS.headache_management);
   }
 
-  if (symptoms.emotional.length > 0) {
-    recommendations.push({
-      title: 'Emotional Support',
-      description:
-        'Consider talking to a counselor or joining a support group about emotional symptoms.'
-    });
+  // Emotional symptom recommendations
+  if (result.emotional_symptoms.length > 0) {
+    recommendations.add(RECOMMENDATIONS.emotional_support);
+    recommendations.add(RECOMMENDATIONS.stress_management);
   }
 
-  return recommendations;
+  // Add lifestyle recommendations
+  recommendations.add(RECOMMENDATIONS.exercise);
+  recommendations.add(RECOMMENDATIONS.nutrition);
+
+  // Convert Set to Array and sort by priority
+  return Array.from(recommendations).sort((a, b) => b.priority - a.priority);
 };
