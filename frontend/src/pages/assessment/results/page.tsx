@@ -194,7 +194,7 @@ export default function ResultsPage() {
   const [symptoms, setSymptoms] = useState<string[]>([]);
   const [expandableSymptoms, setExpandableSymptoms] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
-  const ref = useRef(null);
+  const ref = useRef<HTMLParagraphElement>(null);
 
   // Helper function to normalize string values for more reliable comparisons
   const normalizeValue = (value: string | null): string => {
