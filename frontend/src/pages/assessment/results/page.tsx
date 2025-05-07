@@ -555,7 +555,7 @@ export default function ResultsPage() {
                 </div>
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
-                  <p title={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'} ref={ref} className={`whitespace-normal break-words text-gray-600 ${expandableSymptoms ? '' : 'line-clamp-2'} whitespace-pre-line`}>
+                  <p id="symptoms-content" title={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'} aria-label={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'} ref={ref} tabIndex={0} className={`whitespace-normal break-words text-gray-600 ${expandableSymptoms ? '' : 'line-clamp-2'} whitespace-pre-line`}>
                     {symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
                   </p>
 
@@ -563,7 +563,7 @@ export default function ResultsPage() {
                     <button
                     onClick={() => setExpandableSymptoms((prev) => !prev)}
                     className="text-sm text-pink-600 hover:text-pink-700"
-                    aria-expanded={expandableSymptoms}   
+                    aria-expanded={expandableSymptoms}
                     aria-controls="symptoms-content"
                   >
                     {expandableSymptoms ? 'View Less' : 'View More'}
