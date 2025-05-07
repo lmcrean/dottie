@@ -20,14 +20,40 @@ export interface Recommendation {
   description: string;
 }
 
+// Physical symptom types
+export type PhysicalSymptomId =
+  | 'bloating'
+  | 'breast-tenderness'
+  | 'headaches'
+  | 'back-pain'
+  | 'nausea'
+  | 'fatigue'
+  | 'dizziness'
+  | 'acne'
+  | 'digestive-issues'
+  | 'sleep-disturbances'
+  | 'hot-flashes'
+  | 'joint-pain';
+
+// Emotional symptom types
+export type EmotionalSymptomId =
+  | 'irritability'
+  | 'mood-swings'
+  | 'anxiety'
+  | 'depression'
+  | 'difficulty-concentrating'
+  | 'food-cravings'
+  | 'emotional-sensitivity'
+  | 'low-energy';
+
 export interface AssessmentResult {
   age: AgeRange;
   cycle_length: CycleLength;
   period_duration: PeriodDuration;
   flow_heaviness: FlowHeaviness;
   pain_level: PainLevel;
-  physical_symptoms: string[];
-  emotional_symptoms: string[];
+  physical_symptoms: PhysicalSymptomId[];
+  emotional_symptoms: EmotionalSymptomId[];
   pattern?: MenstrualPattern;
   recommendations?: Recommendation[];
 }
