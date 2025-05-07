@@ -18,15 +18,30 @@ It separates UI components from the underlying business logic, making the codeba
 
 The assessment context follows the React Context + Reducer pattern for state management:
 
+### Folder Structure
+
+```
+frontend/src/context/assessment/
+├── state/                  # State management logic
+│   ├── actions.ts          # Action creators for state changes
+│   └── reducer.ts          # Reducer logic for state transitions
+├── types/                  # Type definitions
+│   ├── types.ts            # TypeScript interfaces and types
+│   └── recommendations.ts  # Pre-defined recommendation data
+├── AssessmentResultContext.ts     # React Context definition
+├── AssessmentResultProvider.tsx   # Context Provider component
+└── README.md                      # Documentation
+```
+
 ### Core Files
 
-- **types.ts**: Defines all TypeScript interfaces and types used across the system, including assessment input fields, result states, patterns, and recommendations.
+- **types/types.ts**: Defines all TypeScript interfaces and types used across the system, including assessment input fields, result states, patterns, and recommendations.
 
-- **actions.ts**: Contains action creator functions that components use to dispatch state changes in a type-safe manner.
+- **types/recommendations.ts**: Maintains a collection of predefined recommendation objects that can be assigned based on assessment patterns.
 
-- **reducer.ts**: Implements state management logic that determines how the application state changes in response to dispatched actions.
+- **state/actions.ts**: Contains action creator functions that components use to dispatch state changes in a type-safe manner.
 
-- **recommendations.ts**: Maintains a collection of predefined recommendation objects that can be assigned based on assessment patterns.
+- **state/reducer.ts**: Implements state management logic that determines how the application state changes in response to dispatched actions.
 
 - **AssessmentResultContext.ts**: Creates and defines the React Context interface with state and available action methods.
 
