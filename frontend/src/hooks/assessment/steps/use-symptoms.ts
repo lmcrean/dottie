@@ -1,0 +1,28 @@
+import { useCallback } from 'react';
+import { useAssessmentContext } from '../use-assessment-context';
+import { PhysicalSymptomId, EmotionalSymptomId } from '../../../context/assessment/types';
+
+export function useSymptoms() {
+  const { state, updateResult } = useAssessmentContext();
+
+  const setPhysicalSymptoms = useCallback(
+    (symptoms: PhysicalSymptomId[]) => {
+      updateResult({ physical_symptoms: symptoms });
+    },
+    [updateResult]
+  );
+
+  const setEmotionalSymptoms = useCallback(
+    (symptoms: EmotionalSymptomId[]) => {
+      updateResult({ emotional_symptoms: symptoms });
+    },
+    [updateResult]
+  );
+
+  return {
+    physicalSymptoms: state.result?.physical_symptoms || [],
+    emotionalSymptoms: state.result?.emotional_symptoms || [],
+    setPhysicalSymptoms,
+    setEmotionalSymptoms
+  };
+}
