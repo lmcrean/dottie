@@ -1,13 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { assessmentResultReducer } from '../reducer';
+import { assessmentResultReducer } from '../state/reducer';
 import { 
   initialState, 
-  AssessmentResult, 
+  AssessmentResult,
   MenstrualPattern, 
-  Recommendation 
+  Recommendation
 } from '../types';
 
 describe('assessmentResultReducer', () => {
+  // Create a valid test result that meets all type requirements
+  const createValidResult = (): AssessmentResult => ({
+    age: '25-plus',
+    cycle_length: '26-30',
+    period_duration: '4-5',
+    flow_heaviness: 'moderate',
+    pain_level: 'mild',
+    physical_symptoms: ['bloating'],
+    emotional_symptoms: ['irritability']
+  });
+
   it('should return initial state for unknown action', () => {
     // @ts-ignore - Testing with invalid action type
     const newState = assessmentResultReducer(initialState, { type: 'UNKNOWN_ACTION' });
@@ -15,17 +26,7 @@ describe('assessmentResultReducer', () => {
   });
 
   it('should handle SET_RESULT action', () => {
-    const mockResult: AssessmentResult = {
-      age: '25-plus',
-      cycleLength: '26-30',
-      periodDuration: '4-5',
-      flowHeaviness: 'moderate',
-      painLevel: 'mild',
-      symptoms: {
-        physical: ['bloating'],
-        emotional: ['irritability']
-      }
-    };
+    const mockResult = createValidResult();
 
     const newState = assessmentResultReducer(initialState, { 
       type: 'SET_RESULT', 
@@ -40,18 +41,7 @@ describe('assessmentResultReducer', () => {
 
   it('should handle UPDATE_RESULT action', () => {
     // First set an initial result
-    const initialResult: AssessmentResult = {
-      age: '25-plus',
-      cycleLength: '26-30',
-      periodDuration: '4-5',
-      flowHeaviness: 'moderate',
-      painLevel: 'mild',
-      symptoms: {
-        physical: ['bloating'],
-        emotional: ['irritability']
-      }
-    };
-
+    const initialResult = createValidResult();
     const stateWithResult = {
       ...initialState,
       result: initialResult
@@ -59,8 +49,8 @@ describe('assessmentResultReducer', () => {
 
     // Then update a part of it
     const update = {
-      painLevel: 'severe' as const,
-      flowHeaviness: 'heavy' as const
+      pain_level: 'severe' as const,
+      flow_heaviness: 'heavy' as const
     };
 
     const newState = assessmentResultReducer(stateWithResult, { 
@@ -77,17 +67,7 @@ describe('assessmentResultReducer', () => {
   it('should handle RESET_RESULT action', () => {
     // First set a result
     const stateWithResult = {
-      result: {
-        age: '25-plus',
-        cycleLength: '26-30',
-        periodDuration: '4-5',
-        flowHeaviness: 'moderate',
-        painLevel: 'mild',
-        symptoms: {
-          physical: ['bloating'],
-          emotional: ['irritability']
-        }
-      },
+      result: createValidResult(),
       isComplete: true
     };
 
@@ -96,18 +76,7 @@ describe('assessmentResultReducer', () => {
   });
 
   it('should handle SET_PATTERN action', () => {
-    const initialResult: AssessmentResult = {
-      age: '25-plus',
-      cycleLength: '26-30',
-      periodDuration: '4-5',
-      flowHeaviness: 'moderate',
-      painLevel: 'mild',
-      symptoms: {
-        physical: ['bloating'],
-        emotional: ['irritability']
-      }
-    };
-
+    const initialResult = createValidResult();
     const stateWithResult = {
       ...initialState,
       result: initialResult
@@ -127,18 +96,7 @@ describe('assessmentResultReducer', () => {
   });
 
   it('should handle SET_RECOMMENDATIONS action', () => {
-    const initialResult: AssessmentResult = {
-      age: '25-plus',
-      cycleLength: '26-30',
-      periodDuration: '4-5',
-      flowHeaviness: 'moderate',
-      painLevel: 'mild',
-      symptoms: {
-        physical: ['bloating'],
-        emotional: ['irritability']
-      }
-    };
-
+    const initialResult = createValidResult();
     const stateWithResult = {
       ...initialState,
       result: initialResult
@@ -146,10 +104,12 @@ describe('assessmentResultReducer', () => {
 
     const recommendations: Recommendation[] = [
       {
+        id: 'track_cycle',
         title: 'Track your cycle',
         description: 'Keep track of your cycle to identify patterns.'
       },
       {
+        id: 'exercise_regularly',
         title: 'Exercise regularly',
         description: 'Regular exercise can help reduce menstrual pain.'
       }
@@ -170,7 +130,7 @@ describe('assessmentResultReducer', () => {
     // Test UPDATE_RESULT
     const stateAfterUpdate = assessmentResultReducer(initialState, { 
       type: 'UPDATE_RESULT', 
-      payload: { painLevel: 'severe' as const } 
+      payload: { pain_level: 'severe' as const } 
     });
     expect(stateAfterUpdate.result).toBeNull();
     
@@ -184,7 +144,7 @@ describe('assessmentResultReducer', () => {
     // Test SET_RECOMMENDATIONS
     const stateAfterSetRecommendations = assessmentResultReducer(initialState, { 
       type: 'SET_RECOMMENDATIONS', 
-      payload: [{ title: 'Test', description: 'Test description' }] 
+      payload: [{ id: 'test', title: 'Test', description: 'Test description' }] 
     });
     expect(stateAfterSetRecommendations.result).toBeNull();
   });
