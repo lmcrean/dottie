@@ -10,12 +10,12 @@ import PasswordPage from './pages/user/password';
 import { Toaster } from 'sonner';
 
 // Import assessment components
-import AgeVerification from './pages/assessment/age-verification/page';
-import CycleLength from './pages/assessment/cycle-length/page';
-import PeriodDuration from './pages/assessment/period-duration/page';
-import FlowLevel from './pages/assessment/flow/page';
-import PainLevel from './pages/assessment/pain/page';
-import Symptoms from './pages/assessment/symptoms/page';
+import AgeVerification from './pages/assessment/steps/age-verification/page';
+import CycleLength from './pages/assessment/steps/cycle-length/page';
+import PeriodDuration from './pages/assessment/steps/period-duration/page';
+import FlowLevel from './pages/assessment/steps/flow/page';
+import PainLevel from './pages/assessment/steps/pain/page';
+import Symptoms from './pages/assessment/steps/symptoms/page';
 import Results from './pages/assessment/results/page';
 import ResourcesPage from './pages/assessment/resources/page';
 import HistoryPage from './pages/assessment/history/page';

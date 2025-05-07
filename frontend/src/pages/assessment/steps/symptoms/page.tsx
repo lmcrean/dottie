@@ -8,7 +8,7 @@ import { Checkbox } from '@/src/components/ui/!to-migrate/checkbox';
 import { Input } from '@/src/components/ui/!to-migrate/input';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import PageTransition from '../page-transitions';
+import PageTransition from '../../page-transitions';
 
 export default function SymptomsPage() {
   const [physicalSymptoms, setPhysicalSymptoms] = useState<string[]>([]);

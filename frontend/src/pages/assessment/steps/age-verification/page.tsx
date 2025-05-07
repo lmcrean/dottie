@@ -8,7 +8,7 @@ import { Label } from '@/src/components/ui/!to-migrate/label';
 import { RadioGroup, RadioGroupItem } from '@/src/components/ui/!to-migrate/radio-group';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import PageTransition from '../page-transitions';
+import PageTransition from '../../page-transitions';
 
 export default function AgeVerificationPage() {
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
