@@ -20,18 +20,14 @@ export interface Recommendation {
   description: string;
 }
 
-export interface Symptoms {
-  physical: string[];
-  emotional: string[];
-}
-
 export interface AssessmentResult {
   age: AgeRange;
-  cycleLength: CycleLength;
-  periodDuration: PeriodDuration;
-  flowHeaviness: FlowHeaviness;
-  painLevel: PainLevel;
-  symptoms: Symptoms;
+  cycle_length: CycleLength;
+  period_duration: PeriodDuration;
+  flow_heaviness: FlowHeaviness;
+  pain_level: PainLevel;
+  physical_symptoms: string[];
+  emotional_symptoms: string[];
   pattern?: MenstrualPattern;
   recommendations?: Recommendation[];
 }
