@@ -1,16 +1,13 @@
-Components using assessment data
-↓
-useAssessmentResult hook (frontend/src/hooks/use-assessment-result.ts)
-↓
-AssessmentResultContext (frontend/src/context/assessment/AssessmentResultContext.ts)
-↓
-Assessment state & actions (frontend/src/context/assessment/reducer.ts)
-↓
-Assessment services:
+# Assessment Dependency Chain
 
-- determinePattern (frontend/src/services/assessment/determinePattern.ts)
-- generateRecommendations (frontend/src/services/assessment/generateRecommendations.ts)
-- transformToFlattenedFormat (frontend/src/services/assessment/transformToFlattenedFormat.ts)
+1. Components using assessment data
+2. useAssessmentResult hook (frontend/src/hooks/use-assessment-result.ts)
+3. AssessmentResultContext (frontend/src/context/assessment/AssessmentResultContext.ts)
+4. Assessment state & actions (frontend/src/context/assessment/reducer.ts)
+5. Assessment services:
+   - determinePattern (frontend/src/services/assessment/determinePattern.ts)
+   - generateRecommendations (frontend/src/services/assessment/generateRecommendations.ts)
+   - transformToFlattenedFormat (frontend/src/services/assessment/transformToFlattenedFormat.ts)
 
 Related files:
 
