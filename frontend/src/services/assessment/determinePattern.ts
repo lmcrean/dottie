@@ -1,10 +1,10 @@
-import { AssessmentResult, MenstrualPattern } from '../../hooks/assessment/use-assessment-result';
+import { AssessmentResult, MenstrualPattern } from '../../context/assessment/types';
 
 /**
  * Determines the menstrual pattern based on assessment results
  */
 export const determinePattern = (result: AssessmentResult): MenstrualPattern => {
-  const { age, cycleLength, periodDuration, flowHeaviness, painLevel } = result;
+  const { age, cycle_length, period_duration, flow_heaviness, pain_level } = result;
 
   // Developing Pattern (O5)
   if (age === 'under-13' || age === '13-17') {
@@ -12,17 +12,21 @@ export const determinePattern = (result: AssessmentResult): MenstrualPattern => 
   }
 
   // Irregular Timing Pattern (O1)
-  if (cycleLength === 'irregular' || cycleLength === 'less-than-21' || cycleLength === '36-40') {
+  if (cycle_length === 'irregular' || cycle_length === 'less-than-21' || cycle_length === '36-40') {
     return 'irregular';
   }
 
   // Heavy Flow Pattern (O2)
-  if (flowHeaviness === 'heavy' || flowHeaviness === 'very-heavy' || periodDuration === '8-plus') {
+  if (
+    flow_heaviness === 'heavy' ||
+    flow_heaviness === 'very-heavy' ||
+    period_duration === '8-plus'
+  ) {
     return 'heavy';
   }
 
   // Pain-Predominant Pattern (O3)
-  if (painLevel === 'severe' || painLevel === 'debilitating') {
+  if (pain_level === 'severe' || pain_level === 'debilitating') {
     return 'pain';
   }
 
