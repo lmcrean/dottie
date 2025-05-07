@@ -1,5 +1,7 @@
 // Types for assessment result
 export type AgeRange = 'under-13' | '13-17' | '18-24' | '25-plus';
+
+// Cycle length types based on logic tree decision point
 export type CycleLength =
   | 'less-than-21'
   | '21-25'
@@ -9,15 +11,34 @@ export type CycleLength =
   | 'irregular'
   | 'not-sure'
   | 'other';
+
+// Period duration types based on logic tree decision point
 export type PeriodDuration = '1-3' | '4-5' | '6-7' | '8-plus' | 'varies' | 'not-sure' | 'other';
+
+// Flow heaviness types based on logic tree decision point
 export type FlowHeaviness = 'light' | 'moderate' | 'heavy' | 'very-heavy' | 'varies' | 'not-sure';
+
+// Pain level types based on logic tree decision point
 export type PainLevel = 'no-pain' | 'mild' | 'moderate' | 'severe' | 'debilitating' | 'varies';
 
+// Pattern types based on logic tree outcomes
 export type MenstrualPattern = 'regular' | 'irregular' | 'heavy' | 'pain' | 'developing';
 
+// Recommendation categories
+export type RecommendationCategory =
+  | 'general' // General recommendations for all users
+  | 'pattern' // Pattern-specific recommendations
+  | 'physical' // Physical symptom recommendations
+  | 'emotional' // Emotional symptom recommendations
+  | 'lifestyle'; // Lifestyle recommendations
+
+// Recommendation interface
 export interface Recommendation {
+  id: string;
   title: string;
   description: string;
+  category: RecommendationCategory;
+  priority: number; // Higher number = higher priority
 }
 
 // Physical symptom types
@@ -46,6 +67,7 @@ export type EmotionalSymptomId =
   | 'emotional-sensitivity'
   | 'low-energy';
 
+// Main assessment result interface
 export interface AssessmentResult {
   age: AgeRange;
   cycle_length: CycleLength;
@@ -58,11 +80,13 @@ export interface AssessmentResult {
   recommendations?: Recommendation[];
 }
 
+// Assessment state interface
 export interface AssessmentResultState {
   result: AssessmentResult | null;
   isComplete: boolean;
 }
 
+// Assessment action types
 export type AssessmentResultAction =
   | { type: 'SET_RESULT'; payload: AssessmentResult }
   | { type: 'UPDATE_RESULT'; payload: Partial<AssessmentResult> }
