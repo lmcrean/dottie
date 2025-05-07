@@ -3,48 +3,36 @@ import { RECOMMENDATIONS } from '../../context/assessment/recommendations';
 
 /**
  * Generates recommendations based on assessment results and pattern
+ * Follows the logic tree outcomes:
+ * O1: Irregular Timing Pattern
+ * O2: Heavy or Prolonged Flow Pattern
+ * O3: Pain-Predominant Pattern
+ * O4: Regular Menstrual Cycles
+ * O5: Developing Pattern
  */
 export const generateRecommendations = (result: AssessmentResult) => {
   const recommendations = new Set([RECOMMENDATIONS.track_cycle]); // Always include tracking
 
-  // Pattern-specific recommendations
+  // Pattern-specific recommendations based on logic tree outcomes
   if (result.pattern) {
     switch (result.pattern) {
-      case 'irregular':
+      case 'irregular': // O1: Irregular Timing Pattern
         recommendations.add(RECOMMENDATIONS.irregular_consult);
         break;
-      case 'heavy':
+      case 'heavy': // O2: Heavy or Prolonged Flow Pattern
         recommendations.add(RECOMMENDATIONS.heavy_iron);
         break;
-      case 'pain':
+      case 'pain': // O3: Pain-Predominant Pattern
         recommendations.add(RECOMMENDATIONS.pain_management);
         break;
-      case 'developing':
+      case 'regular': // O4: Regular Menstrual Cycles
+        recommendations.add(RECOMMENDATIONS.regular_maintenance);
+        break;
+      case 'developing': // O5: Developing Pattern
         recommendations.add(RECOMMENDATIONS.developing_patience);
         break;
     }
   }
-
-  // Physical symptom recommendations
-  if (result.physical_symptoms.includes('fatigue')) {
-    recommendations.add(RECOMMENDATIONS.fatigue_rest);
-  }
-  if (result.physical_symptoms.includes('nausea')) {
-    recommendations.add(RECOMMENDATIONS.nausea_management);
-  }
-  if (result.physical_symptoms.includes('headaches')) {
-    recommendations.add(RECOMMENDATIONS.headache_management);
-  }
-
-  // Emotional symptom recommendations
-  if (result.emotional_symptoms.length > 0) {
-    recommendations.add(RECOMMENDATIONS.emotional_support);
-    recommendations.add(RECOMMENDATIONS.stress_management);
-  }
-
-  // Add lifestyle recommendations
-  recommendations.add(RECOMMENDATIONS.exercise);
-  recommendations.add(RECOMMENDATIONS.nutrition);
 
   // Convert Set to Array and sort by priority
   return Array.from(recommendations).sort((a, b) => b.priority - a.priority);
