@@ -1,4 +1,12 @@
-import { AssessmentResultAction, AssessmentResultState, initialState } from './types';
+import { AssessmentResultState, initialState } from './types';
+import { setResult, updateResult, resetResult, setPattern, setRecommendations } from './actions';
+
+type AssessmentResultAction =
+  | ReturnType<typeof setResult>
+  | ReturnType<typeof updateResult>
+  | ReturnType<typeof resetResult>
+  | ReturnType<typeof setPattern>
+  | ReturnType<typeof setRecommendations>;
 
 // Reducer
 export function assessmentResultReducer(
