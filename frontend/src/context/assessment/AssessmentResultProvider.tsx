@@ -1,9 +1,15 @@
 import React, { ReactNode } from 'react';
 import { AssessmentResultContext } from './AssessmentResultContext';
 import { useReducer } from 'react';
-import { assessmentResultReducer } from './reducer';
-import { initialState } from './types';
-import { setResult, updateResult, resetResult, setPattern, setRecommendations } from './actions';
+import { assessmentResultReducer } from './state/reducer';
+import { initialState } from './types/types';
+import {
+  setResult,
+  updateResult,
+  resetResult,
+  setPattern,
+  setRecommendations
+} from './state/actions';
 
 // Provider component
 export function AssessmentResultProvider({ children }: { children: ReactNode }) {
