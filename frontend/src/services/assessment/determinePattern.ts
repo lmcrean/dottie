@@ -1,4 +1,4 @@
-import { AssessmentResult, MenstrualPattern } from '../../hooks/use-assessment-result';
+import { AssessmentResult, MenstrualPattern } from '../../hooks/assessment/use-assessment-result';
 
 /**
  * Determines the menstrual pattern based on assessment results
