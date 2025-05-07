@@ -10,7 +10,7 @@ export const RECOMMENDATIONS: Record<string, Recommendation> = {
     priority: 1
   },
 
-  // Pattern-specific recommendations
+  // Pattern-specific recommendations based on logic tree outcomes
   irregular_consult: {
     id: 'irregular_consult',
     title: 'Consult a Healthcare Provider',
