@@ -9,9 +9,11 @@ import { RadioGroup, RadioGroupItem } from '@/src/components/ui/!to-migrate/radi
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
+import { useAgeVerification } from '@/src/hooks/assessment/steps/use-age-verification';
+import { AgeRange } from '@/src/context/assessment/types';
 
 export default function AgeVerificationPage() {
-  const [selectedAge, setSelectedAge] = useState<string | null>(null);
+  const { age, setAge } = useAgeVerification();
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
   const radioRef = useRef<HTMLButtonElement | null>(null);
@@ -39,7 +41,7 @@ export default function AgeVerificationPage() {
   }, [isQuickResponse]);
 
   const handleAgeChange = (value: string) => {
-    setSelectedAge(value);
+    setAge(value as AgeRange);
     sessionStorage.setItem('age', value);
   };
 
@@ -71,11 +73,11 @@ export default function AgeVerificationPage() {
             </div>
             <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-1/2">
               <CardContent className="pb-8 pt-8">
-                <RadioGroup value={selectedAge || ''} onValueChange={handleAgeChange}>
+                <RadioGroup value={age || ''} onValueChange={handleAgeChange}>
                   <div className="space-y-4">
                     <div
                       className={`flex items-center space-x-3 rounded-xl border p-4 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedAge === 'under-13'
+                        age === 'under-13'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -94,7 +96,7 @@ export default function AgeVerificationPage() {
 
                     <div
                       className={`flex items-center space-x-3 rounded-xl border p-4 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedAge === '13-17'
+                        age === '13-17'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -113,7 +115,7 @@ export default function AgeVerificationPage() {
 
                     <div
                       className={`flex items-center space-x-3 rounded-xl border p-4 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedAge === '18-24'
+                        age === '18-24'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -132,7 +134,7 @@ export default function AgeVerificationPage() {
 
                     <div
                       className={`flex items-center space-x-3 rounded-xl border p-4 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedAge === '25-plus'
+                        age === '25-plus'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -167,7 +169,7 @@ export default function AgeVerificationPage() {
 
             <Link
               to={
-                selectedAge
+                age
                   ? `/assessment/cycle-length${
                       location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
                     }`
@@ -176,12 +178,12 @@ export default function AgeVerificationPage() {
             >
               <Button
                 className={`flex items-center px-6 py-6 text-lg ${
-                  selectedAge
+                  age
                     ? 'bg-pink-600 text-white hover:bg-pink-700'
                     : 'cursor-not-allowed bg-gray-300 text-gray-500'
                 }`}
                 ref={continueButtonRef}
-                disabled={!selectedAge}
+                disabled={!age}
               >
                 Continue
                 <ChevronRight className="ml-2 h-5 w-5" />
