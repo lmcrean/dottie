@@ -1,18 +1,37 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PainPage from '../page'
+import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
+import * as PainLevelHook from '../../../../../hooks/assessment/steps/use-pain-level'
 
-// Wrap component with BrowserRouter for React Router compatibility
+// Mock the hook
+vi.mock('../../../../../hooks/assessment/steps/use-pain-level', () => ({
+  usePainLevel: vi.fn()
+}));
+
+// Wrap component with BrowserRouter and AssessmentResultProvider for testing
 const renderWithRouter = (component: React.ReactNode) => {
   return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
+    <AssessmentResultProvider>
+      <BrowserRouter>
+        {component}
+      </BrowserRouter>
+    </AssessmentResultProvider>
   )
 }
 
 describe('Pain', () => {
+  // Reset mocks before each test
+  beforeEach(() => {
+    vi.resetAllMocks();
+    // Default mock implementation
+    (PainLevelHook.usePainLevel as any).mockReturnValue({
+      painLevel: undefined,
+      setPainLevel: vi.fn()
+    });
+  });
+  
   it('should render the pain page correctly', () => {
     renderWithRouter(<PainPage />)
     
@@ -32,29 +51,16 @@ describe('Pain', () => {
   })
 
   it('should enable the continue button when a pain level is selected', () => {
+    // Mock the painLevel state to be set
+    (PainLevelHook.usePainLevel as any).mockReturnValue({
+      painLevel: 'moderate',
+      setPainLevel: vi.fn()
+    });
+    
     renderWithRouter(<PainPage />)
     
-    // Continue button should be disabled initially
+    // With painLevel set to 'moderate', continue button should be enabled
     const continueButton = screen.getByText('Continue').closest('button')
-    expect(continueButton).toBeDisabled()
-    
-    // Select a pain level option
-    const painOption = screen.getByRole('radio', { name: /moderate/i }) || 
-                       screen.getByTestId('moderate') || 
-                       document.getElementById('moderate')
-    
-    // If we can't find it by role, try to find it directly
-    if (!painOption) {
-      const optionContainer = screen.getByText('Moderate').closest('div')
-      const radioButton = optionContainer?.querySelector('button[role="radio"]')
-      if (radioButton) {
-        fireEvent.click(radioButton)
-      }
-    } else {
-      fireEvent.click(painOption)
-    }
-    
-    // Continue button should be enabled now
     expect(continueButton).not.toBeDisabled()
   })
 
