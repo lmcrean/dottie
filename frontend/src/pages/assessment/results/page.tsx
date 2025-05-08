@@ -220,12 +220,12 @@ export default function ResultsPage() {
     };
 
     // Set state from session storage
-    setAge(parseJSON(storedAge, null));
-    setCycleLength(parseJSON(storedCycleLength, null));
-    setPeriodDuration(parseJSON(storedPeriodDuration, null));
-    setFlowLevel(parseJSON(storedFlowLevel, null));
-    setPainLevel(parseJSON(storedPainLevel, null));
-    setSymptoms(parseJSON(storedSymptoms, { physical: [], emotional: [] }));
+    setAge(parseJSON(storedAge, ''));
+    setCycleLength(parseJSON(storedCycleLength, ''));
+    setPeriodDuration(parseJSON(storedPeriodDuration, ''));
+    setFlowLevel(parseJSON(storedFlowLevel, ''));
+    setPainLevel(parseJSON(storedPainLevel, ''));
+    setSymptoms(parseJSON(storedSymptoms, []));
 
     // Determine pattern based on stored values (simplified logic)
     let determinedPattern: MenstrualPattern = 'regular';
