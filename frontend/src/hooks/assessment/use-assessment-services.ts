@@ -2,8 +2,6 @@ import { useCallback } from 'react';
 import { useAssessmentContext } from './use-assessment-context';
 import { determinePattern } from '../../services/assessment/determinePattern';
 import { generateRecommendations } from '../../services/assessment/generateRecommendations';
-import { transformToFlattenedFormat } from '../../services/assessment/transformToFlattenedFormat';
-
 /**
  * Hook that bridges assessment context with assessment services
  * Handles processing assessment data through various services and updating context
@@ -32,14 +30,6 @@ export function useAssessmentServices() {
   }, [state.result, setResult]);
 
   /**
-   * Transform context data to flattened format for API submission
-   */
-  const getFlattenedData = useCallback(() => {
-    if (!state.result) return null;
-    return transformToFlattenedFormat(state.result);
-  }, [state.result]);
-
-  /**
    * Reset the assessment data in context
    */
   const clearAssessment = useCallback(() => {
@@ -50,7 +40,6 @@ export function useAssessmentServices() {
     isComplete: state.isComplete,
     result: state.result,
     processAssessment,
-    getFlattenedData,
     clearAssessment
   };
 }
