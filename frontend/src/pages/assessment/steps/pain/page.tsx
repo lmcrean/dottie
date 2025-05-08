@@ -9,9 +9,11 @@ import { Label } from '@/src/components/ui/!to-migrate/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
+import { usePainLevel } from '@/src/hooks/assessment/steps/use-pain-level';
+import { PainLevel } from '@/src/context/assessment/types';
 
 export default function PainPage() {
-  const [selectedPain, setSelectedPain] = useState<string | null>(null);
+  const { painLevel, setPainLevel } = usePainLevel();
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
   const radioRef = useRef<HTMLButtonElement | null>(null);
@@ -20,7 +22,7 @@ export default function PainPage() {
 
   useEffect(() => {
     if (!isQuickResponse) return;
-    const options = ['no pain', 'mild', 'moderate', 'severe', 'debilitating', 'It varies'];
+    const options = ['no-pain', 'mild', 'moderate', 'severe', 'debilitating', 'varies'];
     const random = options[Math.floor(Math.random() * options.length)];
     setRefTarget(random);
 
@@ -38,8 +40,7 @@ export default function PainPage() {
   }, [isQuickResponse]);
 
   const handlePainChange = (value: string) => {
-    setSelectedPain(value);
-    sessionStorage.setItem('painLevel', value);
+    setPainLevel(value as PainLevel);
   };
 
   return (
@@ -75,14 +76,14 @@ export default function PainPage() {
             <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-1/2">
               <CardContent className="pb-8 pt-8">
                 <RadioGroup
-                  value={selectedPain || ''}
+                  value={painLevel || ''}
                   onValueChange={handlePainChange}
                   className="mb-6"
                 >
                   <div className="space-y-3">
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedPain === 'no-pain'
+                        painLevel === 'no-pain'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -90,7 +91,7 @@ export default function PainPage() {
                       <RadioGroupItem
                         value="no-pain"
                         id="no-pain"
-                        ref={refTarget === 'no pain' ? radioRef : null}
+                        ref={refTarget === 'no-pain' ? radioRef : null}
                       />
                       <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
                         <div className="font-medium">No Pain</div>
@@ -102,7 +103,7 @@ export default function PainPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedPain === 'mild'
+                        painLevel === 'mild'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -122,7 +123,7 @@ export default function PainPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedPain === 'moderate'
+                        painLevel === 'moderate'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -142,7 +143,7 @@ export default function PainPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedPain === 'severe'
+                        painLevel === 'severe'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -162,7 +163,7 @@ export default function PainPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedPain === 'debilitating'
+                        painLevel === 'debilitating'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -182,7 +183,7 @@ export default function PainPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedPain === 'varies'
+                        painLevel === 'varies'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -190,7 +191,7 @@ export default function PainPage() {
                       <RadioGroupItem
                         value="varies"
                         id="varies"
-                        ref={refTarget === 'It varies' ? radioRef : null}
+                        ref={refTarget === 'varies' ? radioRef : null}
                       />
                       <Label htmlFor="varies" className="flex-1 cursor-pointer">
                         <div className="font-medium">It varies</div>
@@ -243,7 +244,7 @@ export default function PainPage() {
 
             <Link
               to={
-                selectedPain
+                painLevel
                   ? `/assessment/symptoms${
                       location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
                     }`
@@ -251,12 +252,8 @@ export default function PainPage() {
               }
             >
               <Button
-                className={`flex items-center px-6 py-6 text-lg ${
-                  selectedPain
-                    ? 'bg-pink-600 text-white hover:bg-pink-700'
-                    : 'cursor-not-allowed bg-gray-300 text-gray-500'
-                }`}
-                disabled={!selectedPain}
+                className="flex items-center px-6 py-6 text-lg"
+                disabled={!painLevel}
                 ref={continueButtonRef}
               >
                 Continue

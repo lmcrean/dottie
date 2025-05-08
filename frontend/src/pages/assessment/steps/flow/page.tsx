@@ -9,9 +9,11 @@ import { Label } from '@/src/components/ui/!to-migrate/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
+import { useFlowHeaviness } from '@/src/hooks/assessment/steps/use-flow-heaviness';
+import { FlowHeaviness } from '@/src/context/assessment/types';
 
 export default function FlowPage() {
-  const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
+  const { flowHeaviness, setFlowHeaviness } = useFlowHeaviness();
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
   const radioRef = useRef<HTMLButtonElement | null>(null);
@@ -20,7 +22,7 @@ export default function FlowPage() {
 
   useEffect(() => {
     if (!isQuickResponse) return;
-    const options = ['light', 'moderate', 'heavy', 'very heavy', 'It varies', "I'm not sure"];
+    const options = ['light', 'moderate', 'heavy', 'very-heavy', 'varies', 'not-sure'];
     const random = options[Math.floor(Math.random() * options.length)];
     setRefTarget(random);
 
@@ -38,7 +40,7 @@ export default function FlowPage() {
   }, [isQuickResponse]);
 
   const handleFlowChange = (value: string) => {
-    setSelectedFlow(value);
+    setFlowHeaviness(value as FlowHeaviness);
     sessionStorage.setItem('flowLevel', value);
   };
 
@@ -75,14 +77,14 @@ export default function FlowPage() {
             <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-1/2">
               <CardContent className="pb-8 pt-8">
                 <RadioGroup
-                  value={selectedFlow || ''}
+                  value={flowHeaviness || ''}
                   onValueChange={handleFlowChange}
                   className="mb-6"
                 >
                   <div className="space-y-3">
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedFlow === 'light'
+                        flowHeaviness === 'light'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -102,7 +104,7 @@ export default function FlowPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedFlow === 'moderate'
+                        flowHeaviness === 'moderate'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -122,7 +124,7 @@ export default function FlowPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedFlow === 'heavy'
+                        flowHeaviness === 'heavy'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -142,7 +144,7 @@ export default function FlowPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedFlow === 'very-heavy'
+                        flowHeaviness === 'very-heavy'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -150,7 +152,7 @@ export default function FlowPage() {
                       <RadioGroupItem
                         value="very-heavy"
                         id="very-heavy"
-                        ref={refTarget === 'very heavy' ? radioRef : null}
+                        ref={refTarget === 'very-heavy' ? radioRef : null}
                       />
                       <Label htmlFor="very-heavy" className="flex-1 cursor-pointer">
                         <div className="font-medium">Very Heavy</div>
@@ -162,7 +164,7 @@ export default function FlowPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedFlow === 'varies'
+                        flowHeaviness === 'varies'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -170,7 +172,7 @@ export default function FlowPage() {
                       <RadioGroupItem
                         value="varies"
                         id="varies"
-                        ref={refTarget === 'It varies' ? radioRef : null}
+                        ref={refTarget === 'varies' ? radioRef : null}
                       />
                       <Label htmlFor="varies" className="flex-1 cursor-pointer">
                         <div className="font-medium">It varies</div>
@@ -182,7 +184,7 @@ export default function FlowPage() {
 
                     <div
                       className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        selectedFlow === 'not-sure'
+                        flowHeaviness === 'not-sure'
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
@@ -190,7 +192,7 @@ export default function FlowPage() {
                       <RadioGroupItem
                         value="not-sure"
                         id="not-sure"
-                        ref={refTarget === "I'm not sure" ? radioRef : null}
+                        ref={refTarget === 'not-sure' ? radioRef : null}
                       />
                       <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
                         <div className="font-medium">{"I'm not sure"}</div>
@@ -242,7 +244,7 @@ export default function FlowPage() {
 
             <Link
               to={
-                selectedFlow
+                flowHeaviness
                   ? `/assessment/pain${
                       location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
                     }`
@@ -251,12 +253,12 @@ export default function FlowPage() {
             >
               <Button
                 className={`flex items-center px-6 py-6 text-lg ${
-                  selectedFlow
+                  flowHeaviness
                     ? 'bg-pink-600 text-white hover:bg-pink-700'
                     : 'cursor-not-allowed bg-gray-300 text-gray-500'
                 }`}
                 ref={continueButtonRef}
-                disabled={!selectedFlow}
+                disabled={!flowHeaviness}
               >
                 Continue
                 <ChevronRight className="ml-2 h-5 w-5" />

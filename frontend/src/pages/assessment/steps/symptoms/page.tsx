@@ -9,10 +9,12 @@ import { Input } from '@/src/components/ui/!to-migrate/input';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
+import { useSymptoms } from '@/src/hooks/assessment/steps/use-symptoms';
+import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/context/assessment/types';
 
 export default function SymptomsPage() {
-  const [physicalSymptoms, setPhysicalSymptoms] = useState<string[]>([]);
-  const [emotionalSymptoms, setEmotionalSymptoms] = useState<string[]>([]);
+  const { physicalSymptoms, emotionalSymptoms, setPhysicalSymptoms, setEmotionalSymptoms } =
+    useSymptoms();
   const [otherSymptoms, setOtherSymptoms] = useState('');
   const [refTarget, setRefTarget] = useState('');
   const symptomRef = useRef<HTMLDivElement | null>(null);
@@ -67,7 +69,7 @@ export default function SymptomsPage() {
         });
       }
 
-      togglePhysicalSymptom(refTarget);
+      togglePhysicalSymptom(refTarget as PhysicalSymptomId);
     }, 100); // or 1000
 
     const continueTimeout = setTimeout(() => {
@@ -82,15 +84,19 @@ export default function SymptomsPage() {
     };
   }, [refTarget]);
 
-  const togglePhysicalSymptom = (symptom: string) => {
-    setPhysicalSymptoms((prev) =>
-      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
+  const togglePhysicalSymptom = (symptom: PhysicalSymptomId) => {
+    setPhysicalSymptoms(
+      physicalSymptoms.includes(symptom)
+        ? physicalSymptoms.filter((s) => s !== symptom)
+        : [...physicalSymptoms, symptom]
     );
   };
 
-  const toggleEmotionalSymptom = (symptom: string) => {
-    setEmotionalSymptoms((prev) =>
-      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
+  const toggleEmotionalSymptom = (symptom: EmotionalSymptomId) => {
+    setEmotionalSymptoms(
+      emotionalSymptoms.includes(symptom)
+        ? emotionalSymptoms.filter((s) => s !== symptom)
+        : [...emotionalSymptoms, symptom]
     );
   };
 
