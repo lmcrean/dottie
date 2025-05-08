@@ -9,5 +9,6 @@ export { useFlowHeaviness } from './steps/use-flow-heaviness';
 export { usePainLevel } from './steps/use-pain-level';
 export { useSymptoms } from './steps/use-symptoms';
 
-// Utility hook
-export { useAssessmentSubmission } from './use-assessment-submission';
+// Utility hooks
+export { useAssessmentServices } from './use-assessment-services';
+export { useAssessmentResult } from './use-assessment-result';
