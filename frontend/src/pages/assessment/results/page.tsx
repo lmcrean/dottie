@@ -3,7 +3,7 @@ import { Button } from '@/src/components/ui/!to-migrate/button';
 import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
 import { MessageCircle, Save, Share2, Download } from 'lucide-react';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ChatModal } from '@/src/pages/chat/page';
 import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
 import { toast } from 'sonner';
@@ -192,6 +192,9 @@ export default function ResultsPage() {
   const [flowLevel, setFlowLevel] = useState<string>('');
   const [painLevel, setPainLevel] = useState<string>('');
   const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [expandableSymptoms, setExpandableSymptoms] = useState(false);
+  const [isClamped, setIsClamped] = useState(false);
+  const ref = useRef<HTMLParagraphElement>(null);
 
   // Helper function to normalize string values for more reliable comparisons
   const normalizeValue = (value: string | null): string => {
@@ -447,6 +450,13 @@ export default function ResultsPage() {
     }
   };
 
+  useEffect(() => {
+    if (ref.current) {
+      const maxHeight = parseFloat(getComputedStyle(ref.current).lineHeight)* 2;
+      setIsClamped(ref.current.scrollHeight > maxHeight);
+    }
+  }, [symptoms]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="mx-auto w-full max-w-4xl flex-1 p-6">
@@ -477,7 +487,7 @@ export default function ResultsPage() {
               </p>
             </div>
 
-            <div className="mb-8 grid grid-cols-1 gap-6 dark:text-gray-900 md:grid-cols-2">
+            <div className="mb-8 grid grid-cols-1 gap-6 dark:text-gray-900 md:grid-cols-2 items-start">
               <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
                 <div>
                   <img src="/resultAssets/time.svg" className="h-[55px] w-[55px]" alt="time-icon" />
@@ -545,9 +555,24 @@ export default function ResultsPage() {
                 </div>
                 <div className="flex-1 overflow-x-auto">
                   <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
-                  <p className="whitespace-normal break-words text-gray-600">
+                  <p 
+                  id="symptoms-content" 
+                  title={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'} 
+                  aria-label={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'} 
+                  ref={ref} 
+                  className={`whitespace-normal break-words text-gray-600 ${expandableSymptoms ? '' : 'line-clamp-2'} whitespace-pre-line`}>
                     {symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
                   </p>
+
+                  {isClamped ? 
+                    <button
+                    onClick={() => setExpandableSymptoms((prev) => !prev)}
+                    className="text-sm text-pink-600 hover:text-pink-700"
+                    aria-expanded={expandableSymptoms}
+                    aria-controls="symptoms-content"
+                  >
+                    {expandableSymptoms ? 'View Less' : 'View More'}
+                  </button> : ''}
                 </div>
               </div>
             </div>
