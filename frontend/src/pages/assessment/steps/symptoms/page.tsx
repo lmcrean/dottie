@@ -12,6 +12,10 @@ import PageTransition from '../../page-transitions';
 import { useSymptoms } from '@/src/hooks/assessment/steps/use-symptoms';
 import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/context/assessment/types';
 
+// Type assertion helpers
+const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;
+const asEmotionalSymptomId = (id: string): EmotionalSymptomId => id as EmotionalSymptomId;
+
 export default function SymptomsPage() {
   const { physicalSymptoms, emotionalSymptoms, setPhysicalSymptoms, setEmotionalSymptoms } =
     useSymptoms();
@@ -207,15 +211,15 @@ export default function SymptomsPage() {
                   tabIndex={0}
                   key={symptom.id}
                   className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                    physicalSymptoms.includes(symptom.id)
+                    physicalSymptoms.includes(asPhysicalSymptomId(symptom.id))
                       ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
                       : 'hover:bg-gray-50'
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
-                  onClick={() => togglePhysicalSymptom(symptom.id)}
+                  onClick={() => togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      togglePhysicalSymptom(symptom.id);
+                      togglePhysicalSymptom(asPhysicalSymptomId(symptom.id));
                     }
                   }}
                 >
@@ -223,8 +227,8 @@ export default function SymptomsPage() {
                   <span className="text-center text-sm">{symptom.label}</span>
                   <Checkbox
                     id={`physical-${symptom.id}`}
-                    checked={physicalSymptoms.includes(symptom.id)}
-                    onCheckedChange={() => togglePhysicalSymptom(symptom.id)}
+                    checked={physicalSymptoms.includes(asPhysicalSymptomId(symptom.id))}
+                    onCheckedChange={() => togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))}
                     className="sr-only"
                   />
                 </div>
@@ -260,15 +264,15 @@ export default function SymptomsPage() {
                   tabIndex={0}
                   key={symptom.id}
                   className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                    emotionalSymptoms.includes(symptom.id)
+                    emotionalSymptoms.includes(asEmotionalSymptomId(symptom.id))
                       ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
                       : 'hover:bg-gray-50'
                   }`}
                   ref={refTarget === symptom.id ? symptomRef : null}
-                  onClick={() => toggleEmotionalSymptom(symptom.id)}
+                  onClick={() => toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      toggleEmotionalSymptom(symptom.id);
+                      toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id));
                     }
                   }}
                 >
@@ -276,8 +280,8 @@ export default function SymptomsPage() {
                   <span className="text-center text-sm">{symptom.label}</span>
                   <Checkbox
                     id={`emotional-${symptom.id}`}
-                    checked={emotionalSymptoms.includes(symptom.id)}
-                    onCheckedChange={() => toggleEmotionalSymptom(symptom.id)}
+                    checked={emotionalSymptoms.includes(asEmotionalSymptomId(symptom.id))}
+                    onCheckedChange={() => toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))}
                     className="sr-only"
                   />
                 </div>
