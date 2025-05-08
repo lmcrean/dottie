@@ -8,7 +8,8 @@ This directory contains React hooks for managing assessment state and functional
 assessment/
 │
 ├── use-assessment-context.ts     # Base hook for context access
-├── use-assessment-submission.ts  # Assessment completion and utilities
+├── use-assessment-services.ts    # Integration with assessment processing services
+├── use-assessment-result.ts      # Hook for results page and data transformation
 │
 └── steps/                        # Specialized hooks for each assessment step
     ├── use-age-verification.ts
@@ -28,12 +29,19 @@ assessment/
 - Performs error checking to ensure the hook is used within a provider
 - All other hooks build upon this hook
 
-### `use-assessment-submission.ts`
+### `use-assessment-services.ts`
 
-- Handles assessment completion process
-- Contains business logic for pattern determination and recommendation generation
-- Provides data transformation utilities for API submissions
+- Bridges assessment context with external assessment services
+- Processes assessment data to determine patterns and recommendations
+- Provides transformation utilities for API submissions
 - Includes assessment utility functions (e.g., clearing assessment data)
+
+### `use-assessment-result.ts`
+
+- Retrieves assessment data from context for use in the results page
+- Provides data transformation utilities to convert context data to API format
+- Includes pattern determination logic based on assessment data
+- Exposes recommendations based on determined pattern
 
 ## Step-Specific Hooks
 
@@ -59,18 +67,36 @@ function AgeVerificationPage() {
 }
 ```
 
-2. For components that need access to assessment completion or utility functions:
+2. For components that need access to assessment processing services:
 
 ```tsx
-import { useAssessmentSubmission } from '@/src/hooks/assessment';
+import { useAssessmentServices } from '@/src/hooks/assessment';
 
-function AssessmentResultsPage() {
-  const { completeAssessment, getFlattenedData, clearAssessment } = useAssessmentSubmission();
+function AssessmentSummaryPage() {
+  const { processAssessment, getFlattenedData, clearAssessment } = useAssessmentServices();
+
+  const handleComplete = () => {
+    processAssessment(); // Process and update context with pattern and recommendations
+  };
   // ...
 }
 ```
 
-3. Avoid using the context hook directly in components unless absolutely necessary:
+3. For the results page to access assessment data and transform it:
+
+```tsx
+import { useAssessmentResult } from '@/src/hooks/assessment';
+
+function ResultsPage() {
+  const { result, pattern, recommendations, transformToFlattenedFormat } = useAssessmentResult();
+
+  // Use transformToFlattenedFormat when sending data to API
+  const apiData = transformToFlattenedFormat(result);
+  // ...
+}
+```
+
+4. Avoid using the context hook directly in components unless absolutely necessary:
 
 ```tsx
 // Prefer NOT to use this directly in components
