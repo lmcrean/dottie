@@ -72,4 +72,12 @@ describe('CycleLength', () => {
     const backButton = screen.getByText('Back').closest('a')
     expect(backButton).toHaveAttribute('href', '/assessment/age-verification')
   })
+
+  it('should display privacy information', () => {
+    renderWithRouter(<CycleLengthPage />)
+    
+    // Check if the informational content is displayed instead of privacy text
+    expect(screen.getByText('About Menstrual Cycles')).toBeInTheDocument()
+    expect(screen.getByText(/A typical menstrual cycle can range from 21 to 35 days/i)).toBeInTheDocument()
+  })
 }) 
