@@ -184,6 +184,7 @@ export default function AgeVerificationPage() {
                 }`}
                 ref={continueButtonRef}
                 disabled={!age}
+                data-testid="continue-button"
               >
                 Continue
                 <ChevronRight className="ml-2 h-5 w-5" />

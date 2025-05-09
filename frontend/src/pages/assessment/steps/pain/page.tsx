@@ -255,6 +255,7 @@ export default function PainPage() {
                 className="flex items-center px-6 py-6 text-lg"
                 disabled={!painLevel}
                 ref={continueButtonRef}
+                data-testid="continue-button"
               >
                 Continue
                 <ChevronRight className="ml-2 h-5 w-5" />

@@ -259,6 +259,7 @@ export default function CycleLengthPage() {
                 }`}
                 disabled={!cycleLength}
                 ref={continueButtonRef}
+                data-testid="continue-button"
               >
                 Continue
                 <ChevronRight className="ml-2 h-5 w-5" />

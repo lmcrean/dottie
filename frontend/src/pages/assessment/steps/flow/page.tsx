@@ -259,6 +259,7 @@ export default function FlowPage() {
                 }`}
                 ref={continueButtonRef}
                 disabled={!flowHeaviness}
+                data-testid="continue-button"
               >
                 Continue
                 <ChevronRight className="ml-2 h-5 w-5" />
