@@ -11,12 +11,6 @@
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,md,json}\" --ignore-path .prettierignore",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",
-    "test:screenshots": "npx playwright test --project=safari",
-    "test:e2e:dev:regular": "npx playwright test src/components/assessment/__tests__/e2e/development/RegularCycle.spec.ts --headed --timeout=120000",
-    "test:api": "node start-api-and-test.js",
-    "test:devmode": "npx playwright test src/test_page/__tests__/dev/master-integration.spec.ts --headed --timeout=60000",
-    "test:basic": "npx playwright test src/test_page/__tests__/dev/basic-test.spec.ts --headed --timeout=60000",
-    "test:master": "npx playwright test src/pages/__tests__/dev/master-integration.spec.ts --project=safari --timeout=120000",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {

@@ -90,11 +90,11 @@ describe('Assessment User Journey', () => {
 
     // Verify period duration page renders
     expect(screen.getByRole('heading', { name: /question 3 of 6/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /how long does your period typically last\?/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /How many days does your period typically last\?/i })).toBeInTheDocument();
 
     // Select period duration
     await act(async () => {
-      const durationOption = screen.getByRole('radio', { name: /5 days/i });
+      const durationOption = screen.getByRole('radio', { name: /4-5 days/i });
       fireEvent.click(durationOption);
       await wait(100);
     });
@@ -120,11 +120,11 @@ describe('Assessment User Journey', () => {
 
     // Verify flow level page renders
     expect(screen.getByRole('heading', { name: /question 4 of 6/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /how would you describe your flow\?/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /How would you describe your menstrual flow\?/i })).toBeInTheDocument();
 
     // Select flow level
     await act(async () => {
-      const flowOption = screen.getByRole('radio', { name: /moderate/i });
+      const flowOption = screen.getByRole('radio', { name: /Moderate Regular bleeding, requires normal protection/i });
       fireEvent.click(flowOption);
       await wait(100);
     });
@@ -150,11 +150,11 @@ describe('Assessment User Journey', () => {
 
     // Verify pain level page renders
     expect(screen.getByRole('heading', { name: /question 5 of 6/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /how would you describe your pain level\?/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /How would you rate your menstrual pain\?/i })).toBeInTheDocument();
 
     // Select pain level
     await act(async () => {
-      const painOption = screen.getByRole('radio', { name: /mild/i });
+      const painOption = screen.getByRole('radio', { name: /Mild Noticeable but doesn't interfere with daily activities/i });
       fireEvent.click(painOption);
       await wait(100);
     });
@@ -180,18 +180,18 @@ describe('Assessment User Journey', () => {
 
     // Verify symptoms page renders
     expect(screen.getByRole('heading', { name: /question 6 of 6/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /what symptoms do you experience\?/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Do you experience any other symptoms with your period\?/i })).toBeInTheDocument();
 
     // Select symptoms
     await act(async () => {
-      const symptomOption = screen.getByRole('checkbox', { name: /cramps/i });
+      const symptomOption = screen.getByRole('button', { name: /🫃 Bloating/i });
       fireEvent.click(symptomOption);
       await wait(100);
     });
 
     // Enter additional symptoms
     await act(async () => {
-      const additionalInput = screen.getByPlaceholderText(/type any other symptoms here/i);
+      const additionalInput = screen.getByPlaceholderText(/Type any other symptoms here\.\.\./i);
       fireEvent.change(additionalInput, { target: { value: 'Headache' } });
       await wait(100);
     });
