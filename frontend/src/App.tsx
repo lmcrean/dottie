@@ -34,7 +34,7 @@ import { ProtectedRoute } from './routes/ProtectedRoute';
 import { ThemeProvider } from './context/theme/ThemeContextProvider';
 import { ReactElement } from 'react';
 import { useAuth } from '@/src/context/auth/useAuthContext';
-import { AuthProvider } from '@/src/context/auth/AuthContextProvider';
+import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
 
 function AppContent(): ReactElement {
   const { isAuthenticated } = useAuth();
@@ -61,20 +61,89 @@ function AppContent(): ReactElement {
             <Route path="/test-page" element={<TestPage />} />
 
             {/* Assessment routes */}
-
             <Route element={<ProtectedRoute />}>
               <Route path="/assessment">
                 <Route index element={<LandingPage />} />
-                <Route path="age-verification" element={<AgeVerification />} />
-                <Route path="cycle-length" element={<CycleLength />} />
-                <Route path="period-duration" element={<PeriodDuration />} />
-                <Route path="flow" element={<FlowLevel />} />
-                <Route path="pain" element={<PainLevel />} />
-                <Route path="symptoms" element={<Symptoms />} />
-                <Route path="results" element={<Results />} />
-                <Route path="resources" element={<ResourcesPage />} />
-                <Route path="history" element={<HistoryPage />} />
-                <Route path="history/:id" element={<DetailsPage />} />
+                <Route
+                  path="age-verification"
+                  element={
+                    <AssessmentResultProvider>
+                      <AgeVerification />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="cycle-length"
+                  element={
+                    <AssessmentResultProvider>
+                      <CycleLength />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="period-duration"
+                  element={
+                    <AssessmentResultProvider>
+                      <PeriodDuration />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="flow"
+                  element={
+                    <AssessmentResultProvider>
+                      <FlowLevel />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="pain"
+                  element={
+                    <AssessmentResultProvider>
+                      <PainLevel />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="symptoms"
+                  element={
+                    <AssessmentResultProvider>
+                      <Symptoms />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="results"
+                  element={
+                    <AssessmentResultProvider>
+                      <Results />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="resources"
+                  element={
+                    <AssessmentResultProvider>
+                      <ResourcesPage />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="history"
+                  element={
+                    <AssessmentResultProvider>
+                      <HistoryPage />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="history/:id"
+                  element={
+                    <AssessmentResultProvider>
+                      <DetailsPage />
+                    </AssessmentResultProvider>
+                  }
+                />
               </Route>
             </Route>
 
@@ -86,13 +155,9 @@ function AppContent(): ReactElement {
             <Route path="/auth/sign-up" element={<SignUp />} />
             <Route path="/auth/signout" element={<SignOut />} />
 
-            {/* Account management routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/account/profile" element={<ProfilePage />} />
-            </Route>
-            <Route element={<ProtectedRoute />}>
-              <Route path="/account/password" element={<PasswordPage />} />
-            </Route>
+            {/* User routes */}
+            <Route path="/user/profile" element={<ProfilePage />} />
+            <Route path="/user/password" element={<PasswordPage />} />
           </Routes>
           <UITestPageSwitch />
         </main>
@@ -104,9 +169,7 @@ function AppContent(): ReactElement {
 export default function App(): ReactElement {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }
