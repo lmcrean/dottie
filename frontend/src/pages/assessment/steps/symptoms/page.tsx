@@ -341,6 +341,7 @@ export default function SymptomsPage() {
               <Button
                 className="flex items-center bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
                 ref={continueButtonRef}
+                data-testid="continue-button"
               >
                 Finish Assessment
                 <ChevronRight className="ml-2 h-5 w-5" />
