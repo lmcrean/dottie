@@ -23,6 +23,7 @@ const assessmentBasePath = "/assessment";
 
 // Different assessment paths to test
 export const assessmentPaths = {
+  login: "/login",
   ageVerification: `${assessmentBasePath}/age-verification`,
   cycleLength: `${assessmentBasePath}/cycle-length`,
   periodDuration: `${assessmentBasePath}/period-duration`,
@@ -32,22 +33,54 @@ export const assessmentPaths = {
   results: `${assessmentBasePath}/results`,
 };
 
+// Authentication helper
+export const authenticateUser = async (page: Page) => {
+  console.log("Starting authentication process...");
+  
+  // Navigate to login page
+  await page.goto(assessmentPaths.login);
+  await page.waitForLoadState("networkidle");
+  
+  // Log the current state
+  console.log("Current URL:", page.url());
+  console.log("Page title:", await page.title());
+  
+  // Fill in login form
+  await page.getByLabel(/email/i).fill("test@example.com");
+  await page.getByLabel(/password/i).fill("password123");
+  
+  // Click login button
+  await page.getByRole("button", { name: /login/i }).click();
+  
+  // Wait for navigation to complete
+  await page.waitForLoadState("networkidle");
+  
+  // Verify we're logged in
+  const currentUrl = page.url();
+  console.log("Post-login URL:", currentUrl);
+  
+  // If we're still on the login page, something went wrong
+  if (currentUrl.includes("/login")) {
+    throw new Error("Failed to authenticate - still on login page");
+  }
+  
+  console.log("Authentication successful");
+};
+
 // Debug helper
 export const debugPage = async (page: Page) => {
   // Log all text content
   const textContent = await page.evaluate(() => document.body.textContent);
+  console.log("Page content:", textContent);
 
   // Log all buttons
   const buttons = await page.locator("button").all();
-
-  const radioButtons = await page.locator('button[role="radio"]').all();
-
-  const radioContainers = await page
-    .locator("div.space-y-4 > div, div.space-y-3 > div")
-    .all();
-
-  for (let i = 0; i < radioContainers.length; i++) {
-    const container = radioContainers[i];
+  console.log("\nButtons found:", buttons.length);
+  for (const button of buttons) {
+    const text = await button.textContent();
+    const role = await button.getAttribute('role');
+    const value = await button.getAttribute('value');
+    console.log(`Button: text="${text}", role=${role}, value=${value}`);
   }
 };
 
