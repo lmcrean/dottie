@@ -2,12 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AuthProvider } from '@/src/context/auth/AuthContextProvider';
 import AgeVerificationPage from '../age-verification/page';
 import CycleLengthPage from '../cycle-length/page';
 import PeriodDurationPage from '../period-duration/page';
 import FlowPage from '../flow/page';
 import PainPage from '../pain/page';
 import SymptomsPage from '../symptoms/page';
+import ResultsPage from '../../results/page';
 
 describe('Assessment User Journey', () => {
   beforeEach(() => {
@@ -169,13 +171,16 @@ describe('Assessment User Journey', () => {
 
     // Step 6: Symptoms
     const { unmount: unmountSymptoms } = render(
-      <MemoryRouter initialEntries={['/assessment/symptoms']}>
-        <AssessmentResultProvider>
-          <Routes>
-            <Route path="/assessment/symptoms" element={<SymptomsPage />} />
-          </Routes>
-        </AssessmentResultProvider>
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter initialEntries={['/assessment/symptoms']}>
+          <AssessmentResultProvider>
+            <Routes>
+              <Route path="/assessment/symptoms" element={<SymptomsPage />} />
+              <Route path="/assessment/results" element={<ResultsPage />} />
+            </Routes>
+          </AssessmentResultProvider>
+        </MemoryRouter>
+      </AuthProvider>
     );
 
     // Verify symptoms page renders
@@ -202,6 +207,10 @@ describe('Assessment User Journey', () => {
       fireEvent.click(symptomsContinueButton);
       await wait(100);
     });
+    
+    // Verify that we've navigated to the results page
+    expect(screen.getByText(/assessment results/i, { exact: false })).toBeInTheDocument();
+    
     unmountSymptoms();
   });
 }); 
