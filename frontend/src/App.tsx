@@ -27,7 +27,7 @@ import ScrollToTop from './test_page/page-components/scroll-to-top';
 import LandingPage from './pages/landing-page/page';
 import UITestPageSwitch from './components/developer-utils/UITestPageSwitch';
 
-import Header from './components/navigation/Header';
+import Header from './components/navbar/Header';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
 // Dark mode
