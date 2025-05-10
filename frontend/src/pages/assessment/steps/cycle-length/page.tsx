@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
@@ -14,11 +13,19 @@ import PageTransition from '../../page-transitions';
 
 export default function CycleLengthPage() {
   const { cycleLength, setCycleLength } = useCycleLength();
+  const [selectedLength, setSelectedLength] = useState<CycleLength | undefined>(cycleLength);
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
-  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const navigate = useNavigate();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (cycleLength) {
+      setSelectedLength(cycleLength);
+    }
+  }, [cycleLength]);
 
   useEffect(() => {
     if (!isQuickResponse) return;
@@ -27,8 +34,8 @@ export default function CycleLengthPage() {
     setRefTarget(random);
 
     setTimeout(() => {
-      if (radioRef.current) {
-        radioRef.current.click();
+      if (buttonRef.current) {
+        buttonRef.current.click();
       }
     }, 100);
 
@@ -39,22 +46,18 @@ export default function CycleLengthPage() {
     }, 100);
   }, [isQuickResponse]);
 
-  const handleLengthChange = (value: string) => {
-    setCycleLength(value as CycleLength);
-    sessionStorage.setItem('cycleLength', value);
-  };
-
-  // Create handlers for clicking or keyboard interaction with options
-  const handleOptionSelect = (value: CycleLength) => {
+  const handleOptionClick = (value: CycleLength) => {
+    setSelectedLength(value);
     setCycleLength(value);
     sessionStorage.setItem('cycleLength', value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, value: CycleLength) => {
-    // Handle Enter or Space key to select option
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleOptionSelect(value);
+  const handleContinue = () => {
+    if (selectedLength) {
+      const queryParams = location.search.includes('mode=quickresponse')
+        ? '?mode=quickresponse'
+        : '';
+      navigate(`/assessment/period-duration${queryParams}`);
     }
   };
 
@@ -90,174 +93,161 @@ export default function CycleLengthPage() {
 
             <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-1/2">
               <CardContent className="pb-8 pt-8">
-                <RadioGroup
-                  value={cycleLength || ''}
-                  onValueChange={handleLengthChange}
-                  className="mb-6"
-                >
-                  <div className="space-y-3">
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === '21-25'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('21-25')}
-                      onKeyDown={(e) => handleKeyDown(e, '21-25')}
-                      role="radio"
-                      aria-checked={cycleLength === '21-25'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="21-25"
-                        id="21-25"
-                        ref={refTarget === '21-25' ? radioRef : null}
-                      />
-                      <Label htmlFor="21-25" className="flex-1 cursor-pointer">
-                        <div className="font-medium">21-25 days</div>
-                        <p className="text-sm text-gray-500">Shorter than average</p>
-                      </Label>
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === '21-25'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('21-25')}
+                    ref={refTarget === '21-25' ? buttonRef : null}
+                    data-testid="option-21-25"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === '21-25' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">21-25 days</div>
+                      <p className="text-sm text-gray-500">Shorter than average</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === '26-30'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('26-30')}
-                      onKeyDown={(e) => handleKeyDown(e, '26-30')}
-                      role="radio"
-                      aria-checked={cycleLength === '26-30'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="26-30"
-                        id="26-30"
-                        ref={refTarget === '26-30' ? radioRef : null}
-                      />
-                      <Label htmlFor="26-30" className="flex-1 cursor-pointer">
-                        <div className="font-medium">26-30 days</div>
-                        <p className="text-sm text-gray-500">Average length</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === '26-30'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('26-30')}
+                    ref={refTarget === '26-30' ? buttonRef : null}
+                    data-testid="option-26-30"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === '26-30' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">26-30 days</div>
+                      <p className="text-sm text-gray-500">Average length</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === '31-35'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('31-35')}
-                      onKeyDown={(e) => handleKeyDown(e, '31-35')}
-                      role="radio"
-                      aria-checked={cycleLength === '31-35'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="31-35"
-                        id="31-35"
-                        ref={refTarget === '31-35' ? radioRef : null}
-                      />
-                      <Label htmlFor="31-35" className="flex-1 cursor-pointer">
-                        <div className="font-medium">31-35 days</div>
-                        <p className="text-sm text-gray-500">Longer than average</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === '31-35'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('31-35')}
+                    ref={refTarget === '31-35' ? buttonRef : null}
+                    data-testid="option-31-35"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === '31-35' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">31-35 days</div>
+                      <p className="text-sm text-gray-500">Longer than average</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === '36-40'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('36-40')}
-                      onKeyDown={(e) => handleKeyDown(e, '36-40')}
-                      role="radio"
-                      aria-checked={cycleLength === '36-40'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="36-40"
-                        id="36-40"
-                        ref={refTarget === '36-40' ? radioRef : null}
-                      />
-                      <Label htmlFor="36-40" className="flex-1 cursor-pointer">
-                        <div className="font-medium">36-40 days</div>
-                        <p className="text-sm text-gray-500">Extended cycle</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === '36-40'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('36-40')}
+                    ref={refTarget === '36-40' ? buttonRef : null}
+                    data-testid="option-36-40"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === '36-40' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">36-40 days</div>
+                      <p className="text-sm text-gray-500">Extended cycle</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === 'irregular'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('irregular')}
-                      onKeyDown={(e) => handleKeyDown(e, 'irregular')}
-                      role="radio"
-                      aria-checked={cycleLength === 'irregular'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="irregular"
-                        id="irregular"
-                        ref={refTarget === 'irregular' ? radioRef : null}
-                      />
-                      <Label htmlFor="irregular" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Irregular</div>
-                        <p className="text-sm text-gray-500">Varies by more than 7 days</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === 'irregular'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('irregular')}
+                    ref={refTarget === 'irregular' ? buttonRef : null}
+                    data-testid="option-irregular"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === 'irregular' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Irregular</div>
+                      <p className="text-sm text-gray-500">Varies by more than 7 days</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === 'not-sure'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('not-sure')}
-                      onKeyDown={(e) => handleKeyDown(e, 'not-sure')}
-                      role="radio"
-                      aria-checked={cycleLength === 'not-sure'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="not-sure"
-                        id="not-sure"
-                        ref={refTarget === 'not-sure' ? radioRef : null}
-                      />
-                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                        <div className="font-medium">{"I'm not sure"}</div>
-                        <p className="text-sm text-gray-500">Need help tracking</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === 'not-sure'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('not-sure')}
+                    ref={refTarget === 'not-sure' ? buttonRef : null}
+                    data-testid="option-not-sure"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === 'not-sure' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">{"I'm not sure"}</div>
+                      <p className="text-sm text-gray-500">Need help tracking</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        cycleLength === 'other'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleOptionSelect('other')}
-                      onKeyDown={(e) => handleKeyDown(e, 'other')}
-                      role="radio"
-                      aria-checked={cycleLength === 'other'}
-                      tabIndex={0}
-                    >
-                      <RadioGroupItem
-                        value="other"
-                        id="other"
-                        ref={refTarget === 'other' ? radioRef : null}
-                      />
-                      <Label htmlFor="other" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Other</div>
-                        <p className="text-sm text-gray-500">Specify your own cycle length</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedLength === 'other'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('other')}
+                    ref={refTarget === 'other' ? buttonRef : null}
+                    data-testid="option-other"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedLength === 'other' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
-                  </div>
-                </RadioGroup>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Other</div>
+                      <p className="text-sm text-gray-500">Specify your own cycle length</p>
+                    </Label>
+                  </button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -281,39 +271,29 @@ export default function CycleLengthPage() {
           </Card>
 
           <div className="mt-auto flex w-full justify-between">
-            <Link to="/assessment/age-verification">
-              <Button
-                variant="outline"
-                className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              >
-                <ChevronLeft className="mr-2 h-5 w-5" />
-                Back
-              </Button>
-            </Link>
-
-            <Link
-              to={
-                cycleLength
-                  ? `/assessment/period-duration${
-                      location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
-                    }`
-                  : '#'
-              }
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
+              onClick={() => navigate('/assessment/age-verification')}
             >
-              <Button
-                className={`flex items-center px-6 py-6 text-lg ${
-                  cycleLength
-                    ? 'bg-pink-600 text-white hover:bg-pink-700'
-                    : 'cursor-not-allowed bg-gray-300 text-gray-500'
-                }`}
-                disabled={!cycleLength}
-                ref={continueButtonRef}
-                data-testid="continue-button"
-              >
-                Continue
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+              <ChevronLeft className="mr-2 h-5 w-5" />
+              Back
+            </Button>
+
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${
+                selectedLength
+                  ? 'bg-pink-600 text-white hover:bg-pink-700'
+                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
+              }`}
+              disabled={!selectedLength}
+              ref={continueButtonRef}
+              data-testid="continue-button"
+              onClick={handleContinue}
+            >
+              Continue
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </main>
       </div>
