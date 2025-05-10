@@ -5,7 +5,7 @@ import { signInSchema, type SignInFormData } from '@/src/lib/validations/auth';
 import { FormInput } from '@/src/components/ui/!to-migrate/form-input';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { toast } from 'sonner';
-import AuthLayout from '@/src/components/AuthLayout';
+import AuthLayout from '@/src/pages/auth/AuthLayout';
 import { useEffect, useState } from 'react';
 import { PasswordInput } from '@/src/components/ui/PasswordInput';
 import AnimatedLogo from '@/src/components/AnimatedLogo';
