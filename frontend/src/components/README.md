@@ -10,17 +10,14 @@ This repository uses the following definitions for components and pages:
 the new file structure is as follows, it aims to be more direct than the legacy file structure.
 
 frontend/src/components/
-├── navbar/ # Navbar component
-├── footer/ # Footer component
-├── scrollbar/ # Scrollbar component
-├── buttons/ # button components
 ├── alerts/ # Error states, loading indicators, toasts
+├── buttons/ # button components
+├── developer-utils/ # developer utilities incl. UI Mode switch, Quick Complete button
+├── navbar/ # Navbar component
 ├── theme/ # Theme-related components to toggle dark and light mode
 ├── variants/ # Design system variations in tailwind css
-├── radio-group/ # Radio group components
-├── text-input/ # Text input components
+├── user-inputs/ # User input components
 ├── ui/ # everything else, including legacy components
-├── developer-utils/ # developer utilities incl. UI Mode switch, Quick Complete button
 
 # legacy file structure
 
