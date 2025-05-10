@@ -1,5 +1,5 @@
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Alert, AlertDescription } from '@/src/components/ui/alert';
+import { Button } from '@/src/components/buttons/button';
+import { Alert, AlertDescription } from '@/src/components/alerts/alert';
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import {
   FormItem,
   FormMessage
 } from '@/src/components/ui/form';
-import { PasswordInput } from '@/src/components/ui/PasswordInput';
+import { PasswordInput } from '@/src/components/user-inputs/PasswordInput';
 import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';

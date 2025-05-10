@@ -12,6 +12,8 @@ export default function HistoryPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [assessmentToDelete, setAssessmentToDelete] = useState<string | null>(null);
 
   const formatValue = (value: string | undefined): string => {
     if (!value) return 'Not provided';
@@ -31,6 +33,16 @@ export default function HistoryPage() {
     if (!dateString) return 'Unknown date';
 
     try {
+      // Handle numeric timestamp format (e.g., "1745679949668.0")
+      if (/^\d+(\.\d+)?$/.test(dateString)) {
+        const timestamp = parseFloat(dateString);
+        const date = new Date(timestamp);
+        if (isValid(date)) {
+          return format(date, "MMM d, yyyy");
+        }
+      }
+
+      // Standard date string handling
       const date = parseISO(dateString);
       if (!isValid(date)) return 'Invalid date';
       return format(date, 'MMM d, yyyy');

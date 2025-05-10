@@ -21,9 +21,7 @@ async function checkTables() {
 
     if (usersError) {
       console.error("Error accessing users table:", usersError.message);
-    } else {
-      console.log("Users table accessible:", users);
-    }
+    } 
 
     // List all tables in the public schema
 
@@ -33,8 +31,6 @@ async function checkTables() {
 
     if (tablesError) {
       console.error("Error listing tables:", tablesError.message);
-    } else {
-      console.log("Available tables:", tables);
     }
   } catch (error) {
     console.error("Unexpected error:", error);

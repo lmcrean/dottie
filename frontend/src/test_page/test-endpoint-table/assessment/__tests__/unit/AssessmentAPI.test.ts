@@ -15,14 +15,12 @@ vi.stubGlobal('localStorage', {
 describe('AssessmentAPI', () => {
   const mockAssessmentData = {
     age: "18-24",
-    cycleLength: "26-30",
-    periodDuration: "4-5",
-    flowHeaviness: "moderate",
-    painLevel: "moderate",
-    symptoms: {
-      physical: ["Bloating", "Headaches"],
-      emotional: ["Mood swings", "Irritability"]
-    }
+    cycle_length: "26-30",
+    period_duration: "4-5",
+    flow_heaviness: "moderate",
+    pain_level: "moderate",
+    physical_symptoms: ["Bloating", "Headaches"],
+    emotional_symptoms: ["Mood swings", "Irritability"]
   };
 
   const mockAssessmentResponse = {
@@ -37,19 +35,15 @@ describe('AssessmentAPI', () => {
 
   const mockAssessmentDetail = {
     id: "assessment-123",
-    data: {
-      age: "18_24",
-      symptoms: {
-        physical: ["Bloating"],
-        emotional: ["Mood swings"]
-      }
-    }
+    age: "18_24",
+    physical_symptoms: ["Bloating"],
+    emotional_symptoms: ["Mood swings"]
   };
 
   beforeEach(() => {
     vi.resetAllMocks();
     (axios.create as any).mockReturnValue(axios);
-    (axios.get as any).mockImplementation((url) => {
+    (axios.get as any).mockImplementation((url: string) => {
       if (url === '/api/assessment/list') {
         return Promise.resolve({ data: mockAssessmentList });
       } else if (url.match(/\/api\/assessment\/\w+/)) {
@@ -58,21 +52,21 @@ describe('AssessmentAPI', () => {
       return Promise.reject(new Error('Not found'));
     });
     
-    (axios.post as any).mockImplementation((url) => {
+    (axios.post as any).mockImplementation((url: string) => {
       if (url === '/api/assessment/send') {
         return Promise.resolve({ data: mockAssessmentResponse });
       }
       return Promise.reject(new Error('Not found'));
     });
     
-    (axios.put as any).mockImplementation((url) => {
+    (axios.put as any).mockImplementation((url: string) => {
       if (url.match(/\/api\/assessment\/\w+/)) {
         return Promise.resolve({ data: { message: "Assessment updated" } });
       }
       return Promise.reject(new Error('Not found'));
     });
     
-    (axios.delete as any).mockImplementation((url) => {
+    (axios.delete as any).mockImplementation((url: string) => {
       if (url.match(/\/api\/assessment\/\w+/)) {
         return Promise.resolve({ data: { message: "Assessment deleted" } });
       }
@@ -111,22 +105,7 @@ describe('AssessmentAPI', () => {
       expect(axios.get).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`);
       expect(response.data).toEqual(mockAssessmentDetail);
       expect(response.data.id).toBe(assessmentId);
-      expect(response.data.data.symptoms.physical).toContain("Bloating");
-    });
-  });
-
-  describe('PUT /api/assessment/:id', () => {
-    it('should update assessment and return success message', async () => {
-      const assessmentId = "assessment-123";
-      const updateData = {
-        flowHeaviness: "heavy",
-        painLevel: "severe"
-      };
-      
-      const response = await axios.put(`/api/assessment/${assessmentId}`, updateData);
-      
-      expect(axios.put).toHaveBeenCalledWith(`/api/assessment/${assessmentId}`, updateData);
-      expect(response.data.message).toBe("Assessment updated");
+      expect(response.data.physical_symptoms).toContain("Bloating");
     });
   });
 

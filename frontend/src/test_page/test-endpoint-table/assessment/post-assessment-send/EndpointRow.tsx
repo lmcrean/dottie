@@ -6,34 +6,28 @@ export default function EndpointRow() {
     <BaseEndpointRow
       method="POST"
       endpoint="/api/assessment/send"
-      expectedOutput={{
-        id: 'assessment-id',
-        userId: 'user-id',
-        assessment_data: {
-          date: 'date created',
-          pattern: 'Regular',
-          age: '18-24',
-          cycleLength: '26-30',
-          periodDuration: '4-5',
-          flowHeaviness: 'moderate',
-          painLevel: 'moderate',
-          symptoms: {
-            physical: ['Bloating', 'Headaches'],
-            emotional: []
+      expectedOutput={{ 
+        id: "assessment-id",
+        user_id: "user-id",
+        created_at: "created-date",
+        age: "18-24",
+        pattern: "Regular",
+        cycle_length: "26-30",
+        period_duration: "4-5",
+        flow_heaviness: "moderate",
+        pain_level: "moderate",
+        physical_symptoms: ["Bloating", "Headaches"],
+        emotional_symptoms: [],
+        recommendations: [
+          {
+            title: "Stay Hydrated",
+            description: "Drink at least 8 glasses of water daily to help reduce bloating."
           },
-          recommendations: [
-            {
-              title: 'Stay Hydrated',
-              description: 'Drink at least 8 glasses of water daily to help reduce bloating.'
-            },
-            {
-              title: 'Regular Exercise',
-              description: 'Engage in light activities like walking or yoga to ease cramps.'
-            }
-          ]
-        },
-        createdAt: 'created-date',
-        updatedAt: 'updated-date'
+          {
+            title: "Regular Exercise",
+            description: "Engage in light activities like walking or yoga to ease cramps."
+          }
+        ]
       }}
       requiresAuth={true}
       requiresParams={true}
@@ -43,37 +37,26 @@ export default function EndpointRow() {
           label: 'Assessment Data',
           type: 'json',
           required: true,
-          defaultValue: JSON.stringify(
-            {
-              userId: '', // set by backend
-              createdAt: new Date().toISOString(),
-              assessment_data: {
-                date: new Date().toISOString(),
-                pattern: 'Regular',
-                age: '18-24',
-                cycleLength: '26-30',
-                periodDuration: '4-5',
-                flowHeaviness: 'moderate',
-                painLevel: 'moderate',
-                symptoms: {
-                  physical: ['Bloating', 'Headaches'],
-                  emotional: []
-                },
-                recommendations: [
-                  {
-                    title: 'Stay Hydrated',
-                    description: 'Drink at least 8 glasses of water daily to help reduce bloating.'
-                  },
-                  {
-                    title: 'Regular Exercise',
-                    description: 'Engage in light activities like walking or yoga to ease cramps.'
-                  }
-                ]
+          defaultValue: JSON.stringify({
+            age: "18-24",
+            pattern: "Regular",
+            cycle_length: "26-30",
+            period_duration: "4-5",
+            flow_heaviness: "moderate",
+            pain_level: "moderate",
+            physical_symptoms: ["Bloating", "Headaches"],
+            emotional_symptoms: [],
+            recommendations: [
+              {
+                title: "Stay Hydrated",
+                description: "Drink at least 8 glasses of water daily to help reduce bloating."
+              },
+              {
+                title: "Regular Exercise",
+                description: "Engage in light activities like walking or yoga to ease cramps."
               }
-            },
-            null,
-            2
-          )
+            ]
+          }, null, 2)
         }
       ]}
     />

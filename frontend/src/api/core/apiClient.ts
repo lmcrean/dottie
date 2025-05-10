@@ -7,7 +7,10 @@ import { getAuthToken, setAuthToken, setRefreshToken } from './tokenManager';
  */
 // Determine API base URL with fallbacks
 const getBaseUrl = () => {
-  // First priority: Use environment variable if available
+  // First priority: Vercel deployment URL if we're connecting to the deployed backend
+  const vercelUrl = "https://dottie-backend.vercel.app";
+  
+  // Second priority: Use environment variable if available
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
@@ -27,8 +30,8 @@ const getBaseUrl = () => {
     return hostNameUrl;
   }
 
-  // Production fallback: assume API is at the same origin
-  return window.location.origin;
+  // Production fallback: use Vercel deployment
+  return vercelUrl;
 };
 
 // Expose a function to update the API URL at runtime

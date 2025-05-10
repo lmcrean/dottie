@@ -1,12 +1,8 @@
-import {
-  AssessmentResult,
-  AssessmentResultState,
-  MenstrualPattern,
-  Recommendation
-} from '@/src/context/assessment/AssessmentResultProvider';
 import { createContext } from 'react';
+import { AssessmentResult, AssessmentResultState, MenstrualPattern, Recommendation } from './types';
 
-interface AssessmentResultContextType {
+// Context type
+export interface AssessmentResultContextType {
   state: AssessmentResultState;
   setResult: (result: AssessmentResult) => void;
   updateResult: (updates: Partial<AssessmentResult>) => void;
@@ -15,6 +11,7 @@ interface AssessmentResultContextType {
   setRecommendations: (recommendations: Recommendation[]) => void;
 }
 
+// Create context
 export const AssessmentResultContext = createContext<AssessmentResultContextType | undefined>(
   undefined
 );

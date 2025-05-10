@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 // Import models and controllers directly from their absolute paths
 export const importModels = async () => {
   try {
-    const User = await import(resolveFromRoot('models/User.js')).then(m => m.default);
+    const User = await import(resolveFromRoot('models/user/User.js')).then(m => m.default);
     return { User };
   } catch (error) {
     console.error('Error importing models:', error);

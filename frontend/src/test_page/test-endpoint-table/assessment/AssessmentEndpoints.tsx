@@ -3,7 +3,6 @@ import { EndpointTable } from '../../page-components';
 import PostAssessmentSend from './post-assessment-send/EndpointRow';
 import GetAssessmentList from './get-assessment-list/EndpointRow';
 import GetAssessmentById from './get-assessment-by-id/EndpointRow';
-import PutAssessmentById from './put-assessment-by-id/EndpointRow';
 import DeleteAssessmentById from './delete-assessment-by-id/EndpointRow';
 
 /**
@@ -15,7 +14,6 @@ export default function AssessmentEndpoints() {
       <PostAssessmentSend />
       <GetAssessmentList />
       <GetAssessmentById />
-      <PutAssessmentById />
       <DeleteAssessmentById />
     </EndpointTable>
   );

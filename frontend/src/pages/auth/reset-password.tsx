@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import AuthLayout from '../../components/AuthLayout';
+import AuthLayout from './AuthLayout';
 import PasswordResetCompletionForm from '../../pages/user/PasswordResetCompletionForm';
 
 export default function ResetPasswordPage() {
