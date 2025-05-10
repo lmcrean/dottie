@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
-import { Checkbox } from '@/src/components/ui/!to-migrate/checkbox';
-import { Input } from '@/src/components/ui/!to-migrate/input';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
+import { Checkbox } from '@/src/components/ui/checkbox';
+import { Input } from '@/src/components/ui/input';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';

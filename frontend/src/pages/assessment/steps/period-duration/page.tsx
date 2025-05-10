@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
-import { RadioGroup, RadioGroupItem } from '@/src/components/ui/!to-migrate/radio-group';
-import { Label } from '@/src/components/ui/!to-migrate/label';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group';
+import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import { usePeriodDuration } from '@/src/hooks/assessment/steps/use-period-duration';
