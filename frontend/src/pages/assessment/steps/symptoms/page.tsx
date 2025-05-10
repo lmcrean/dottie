@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Checkbox } from '@/src/components/ui/checkbox';
@@ -21,6 +21,7 @@ export default function SymptomsPage() {
     useSymptoms();
   const [otherSymptoms, setOtherSymptoms] = useState('');
   const [refTarget, setRefTarget] = useState('');
+  const navigate = useNavigate();
   const symptomRef = useRef<HTMLDivElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
@@ -142,6 +143,9 @@ export default function SymptomsPage() {
 
     // Save to sessionStorage
     sessionStorage.setItem('symptoms', JSON.stringify(allSymptoms));
+
+    // Navigate to results page
+    navigate('/assessment/results');
   };
 
   return (
@@ -327,26 +331,24 @@ export default function SymptomsPage() {
           </p>
 
           <div className="mt-auto flex w-full justify-between">
-            <Link to="/assessment/pain">
-              <Button
-                variant="outline"
-                className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              >
-                <ChevronLeft className="mr-2 h-5 w-5" />
-                Back
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
+              onClick={() => navigate('/assessment/pain')}
+            >
+              <ChevronLeft className="mr-2 h-5 w-5" />
+              Back
+            </Button>
 
-            <Link to="/assessment/results" onClick={handleContinue}>
-              <Button
-                className="flex items-center bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
-                ref={continueButtonRef}
-                data-testid="continue-button"
-              >
-                Finish Assessment
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <Button
+              className="flex items-center bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
+              ref={continueButtonRef}
+              data-testid="continue-button"
+              onClick={handleContinue}
+            >
+              Finish Assessment
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </main>
       </div>

@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
@@ -14,11 +13,21 @@ import PageTransition from '../../page-transitions';
 
 export default function PeriodDurationPage() {
   const { periodDuration, setPeriodDuration } = usePeriodDuration();
+  const [selectedDuration, setSelectedDuration] = useState<PeriodDuration | undefined>(
+    periodDuration
+  );
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
-  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const navigate = useNavigate();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (periodDuration) {
+      setSelectedDuration(periodDuration);
+    }
+  }, [periodDuration]);
 
   useEffect(() => {
     if (!isQuickResponse) return;
@@ -27,8 +36,8 @@ export default function PeriodDurationPage() {
     setRefTarget(random);
 
     setTimeout(() => {
-      if (radioRef.current) {
-        radioRef.current.click();
+      if (buttonRef.current) {
+        buttonRef.current.click();
       }
     }, 100);
 
@@ -39,9 +48,19 @@ export default function PeriodDurationPage() {
     }, 100);
   }, [isQuickResponse]);
 
-  const handleDurationChange = (value: string) => {
-    setPeriodDuration(value as PeriodDuration);
+  const handleOptionClick = (value: PeriodDuration) => {
+    setSelectedDuration(value);
+    setPeriodDuration(value);
     sessionStorage.setItem('periodDuration', value);
+  };
+
+  const handleContinue = () => {
+    if (selectedDuration) {
+      const queryParams = location.search.includes('mode=quickresponse')
+        ? '?mode=quickresponse'
+        : '';
+      navigate(`/assessment/flow${queryParams}`);
+    }
   };
 
   return (
@@ -75,139 +94,161 @@ export default function PeriodDurationPage() {
 
             <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
               <CardContent className="pb-8 pt-8">
-                <RadioGroup
-                  value={periodDuration || ''}
-                  onValueChange={handleDurationChange}
-                  className="mb-6"
-                >
-                  <div className="space-y-3">
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === '1-3'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="1-3"
-                        id="1-3"
-                        ref={refTarget === '1-3' ? radioRef : null}
-                      />
-                      <Label htmlFor="1-3" className="flex-1 cursor-pointer">
-                        <div className="font-medium">1-3 days</div>
-                        <p className="text-sm text-gray-500">Shorter duration</p>
-                      </Label>
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === '1-3'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('1-3')}
+                    ref={refTarget === '1-3' ? buttonRef : null}
+                    data-testid="option-1-3"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === '1-3' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">1-3 days</div>
+                      <p className="text-sm text-gray-500">Shorter duration</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === '4-5'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="4-5"
-                        id="4-5"
-                        ref={refTarget === '4-5' ? radioRef : null}
-                      />
-                      <Label htmlFor="4-5" className="flex-1 cursor-pointer">
-                        <div className="font-medium">4-5 days</div>
-                        <p className="text-sm text-gray-500">Average duration</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === '4-5'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('4-5')}
+                    ref={refTarget === '4-5' ? buttonRef : null}
+                    data-testid="option-4-5"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === '4-5' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">4-5 days</div>
+                      <p className="text-sm text-gray-500">Average duration</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === '6-7'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="6-7"
-                        id="6-7"
-                        ref={refTarget === '6-7' ? radioRef : null}
-                      />
-                      <Label htmlFor="6-7" className="flex-1 cursor-pointer">
-                        <div className="font-medium">6-7 days</div>
-                        <p className="text-sm text-gray-500">Longer duration</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === '6-7'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('6-7')}
+                    ref={refTarget === '6-7' ? buttonRef : null}
+                    data-testid="option-6-7"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === '6-7' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">6-7 days</div>
+                      <p className="text-sm text-gray-500">Longer duration</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === '8-plus'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="8-plus"
-                        id="8-plus"
-                        ref={refTarget === '8+' ? radioRef : null}
-                      />
-                      <Label htmlFor="8-plus" className="flex-1 cursor-pointer">
-                        <div className="font-medium">8+ days</div>
-                        <p className="text-sm text-gray-500">Extended duration</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === '8-plus'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('8-plus')}
+                    ref={refTarget === '8-plus' ? buttonRef : null}
+                    data-testid="option-8-plus"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === '8-plus' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">8+ days</div>
+                      <p className="text-sm text-gray-500">Extended duration</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === 'varies'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="varies"
-                        id="varies"
-                        ref={refTarget === 'It varies' ? radioRef : null}
-                      />
-                      <Label htmlFor="varies" className="flex-1 cursor-pointer">
-                        <div className="font-medium">It varies</div>
-                        <p className="text-sm text-gray-500">Changes from cycle to cycle</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === 'varies'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('varies')}
+                    ref={refTarget === 'varies' ? buttonRef : null}
+                    data-testid="option-varies"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === 'varies' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">It varies</div>
+                      <p className="text-sm text-gray-500">Changes from cycle to cycle</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === 'not-sure'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="not-sure"
-                        id="not-sure"
-                        ref={refTarget === "I'm not sure" ? radioRef : null}
-                      />
-                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                        <div className="font-medium">{"I'm not sure"}</div>
-                        <p className="text-sm text-gray-500">Need help tracking</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === 'not-sure'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('not-sure')}
+                    ref={refTarget === 'not-sure' ? buttonRef : null}
+                    data-testid="option-not-sure"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === 'not-sure' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">{"I'm not sure"}</div>
+                      <p className="text-sm text-gray-500">Need help tracking</p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        periodDuration === 'other'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="other"
-                        id="other"
-                        ref={refTarget === 'Other' ? radioRef : null}
-                      />
-                      <Label htmlFor="other" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Other</div>
-                        <p className="text-sm text-gray-500">Specify your own period duration</p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedDuration === 'other'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('other')}
+                    ref={refTarget === 'other' ? buttonRef : null}
+                    data-testid="option-other"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedDuration === 'other' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
-                  </div>
-                </RadioGroup>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Other</div>
+                      <p className="text-sm text-gray-500">Specify your own period duration</p>
+                    </Label>
+                  </button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -236,39 +277,29 @@ export default function PeriodDurationPage() {
           </p>
 
           <div className="mt-auto flex w-full justify-between">
-            <Link to="/assessment/cycle-length">
-              <Button
-                variant="outline"
-                className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              >
-                <ChevronLeft className="mr-2 h-5 w-5" />
-                Back
-              </Button>
-            </Link>
-
-            <Link
-              to={
-                periodDuration
-                  ? `/assessment/flow${
-                      location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
-                    }`
-                  : '#'
-              }
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
+              onClick={() => navigate('/assessment/cycle-length')}
             >
-              <Button
-                className={`flex items-center px-6 py-6 text-lg ${
-                  periodDuration
-                    ? 'bg-pink-600 text-white hover:bg-pink-700'
-                    : 'cursor-not-allowed bg-gray-300 text-gray-500'
-                }`}
-                ref={continueButtonRef}
-                disabled={!periodDuration}
-                data-testid="continue-button"
-              >
-                Continue
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+              <ChevronLeft className="mr-2 h-5 w-5" />
+              Back
+            </Button>
+
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${
+                selectedDuration
+                  ? 'bg-pink-600 text-white hover:bg-pink-700'
+                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
+              }`}
+              ref={continueButtonRef}
+              disabled={!selectedDuration}
+              data-testid="continue-button"
+              onClick={handleContinue}
+            >
+              Continue
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </main>
       </div>

@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
@@ -14,11 +13,19 @@ import { FlowHeaviness } from '@/src/context/assessment/types';
 
 export default function FlowPage() {
   const { flowHeaviness, setFlowHeaviness } = useFlowHeaviness();
+  const [selectedFlow, setSelectedFlow] = useState<FlowHeaviness | undefined>(flowHeaviness);
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
-  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const navigate = useNavigate();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (flowHeaviness) {
+      setSelectedFlow(flowHeaviness);
+    }
+  }, [flowHeaviness]);
 
   useEffect(() => {
     if (!isQuickResponse) return;
@@ -27,8 +34,8 @@ export default function FlowPage() {
     setRefTarget(random);
 
     setTimeout(() => {
-      if (radioRef.current) {
-        radioRef.current.click();
+      if (buttonRef.current) {
+        buttonRef.current.click();
       }
     }, 100);
 
@@ -39,9 +46,19 @@ export default function FlowPage() {
     }, 100);
   }, [isQuickResponse]);
 
-  const handleFlowChange = (value: string) => {
-    setFlowHeaviness(value as FlowHeaviness);
+  const handleOptionClick = (value: FlowHeaviness) => {
+    setSelectedFlow(value);
+    setFlowHeaviness(value);
     sessionStorage.setItem('flowLevel', value);
+  };
+
+  const handleContinue = () => {
+    if (selectedFlow) {
+      const queryParams = location.search.includes('mode=quickresponse')
+        ? '?mode=quickresponse'
+        : '';
+      navigate(`/assessment/pain${queryParams}`);
+    }
   };
 
   return (
@@ -76,133 +93,149 @@ export default function FlowPage() {
 
             <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-1/2">
               <CardContent className="pb-8 pt-8">
-                <RadioGroup
-                  value={flowHeaviness || ''}
-                  onValueChange={handleFlowChange}
-                  className="mb-6"
-                >
-                  <div className="space-y-3">
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        flowHeaviness === 'light'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="light"
-                        id="light"
-                        ref={refTarget === 'light' ? radioRef : null}
-                      />
-                      <Label htmlFor="light" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Light</div>
-                        <p className="text-sm text-gray-500">
-                          Minimal bleeding, may only need panty liners
-                        </p>
-                      </Label>
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedFlow === 'light'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('light')}
+                    ref={refTarget === 'light' ? buttonRef : null}
+                    data-testid="option-light"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedFlow === 'light' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Light</div>
+                      <p className="text-sm text-gray-500">
+                        Minimal bleeding, may only need panty liners
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        flowHeaviness === 'moderate'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="moderate"
-                        id="moderate"
-                        ref={refTarget === 'moderate' ? radioRef : null}
-                      />
-                      <Label htmlFor="moderate" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Moderate</div>
-                        <p className="text-sm text-gray-500">
-                          Regular bleeding, requires normal protection
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedFlow === 'moderate'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('moderate')}
+                    ref={refTarget === 'moderate' ? buttonRef : null}
+                    data-testid="option-moderate"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedFlow === 'moderate' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Moderate</div>
+                      <p className="text-sm text-gray-500">
+                        Regular bleeding, requires normal protection
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        flowHeaviness === 'heavy'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="heavy"
-                        id="heavy"
-                        ref={refTarget === 'heavy' ? radioRef : null}
-                      />
-                      <Label htmlFor="heavy" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Heavy</div>
-                        <p className="text-sm text-gray-500">
-                          Substantial bleeding, requires frequent changes
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedFlow === 'heavy'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('heavy')}
+                    ref={refTarget === 'heavy' ? buttonRef : null}
+                    data-testid="option-heavy"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedFlow === 'heavy' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Heavy</div>
+                      <p className="text-sm text-gray-500">
+                        Substantial bleeding, requires frequent changes
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        flowHeaviness === 'very-heavy'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="very-heavy"
-                        id="very-heavy"
-                        ref={refTarget === 'very-heavy' ? radioRef : null}
-                      />
-                      <Label htmlFor="very-heavy" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Very Heavy</div>
-                        <p className="text-sm text-gray-500">
-                          Excessive bleeding, may soak through protection
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedFlow === 'very-heavy'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('very-heavy')}
+                    ref={refTarget === 'very-heavy' ? buttonRef : null}
+                    data-testid="option-very-heavy"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedFlow === 'very-heavy' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Very Heavy</div>
+                      <p className="text-sm text-gray-500">
+                        Excessive bleeding, may soak through protection
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        flowHeaviness === 'varies'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="varies"
-                        id="varies"
-                        ref={refTarget === 'varies' ? radioRef : null}
-                      />
-                      <Label htmlFor="varies" className="flex-1 cursor-pointer">
-                        <div className="font-medium">It varies</div>
-                        <p className="text-sm text-gray-500">
-                          Changes throughout your period or between cycles
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedFlow === 'varies'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('varies')}
+                    ref={refTarget === 'varies' ? buttonRef : null}
+                    data-testid="option-varies"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedFlow === 'varies' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">It varies</div>
+                      <p className="text-sm text-gray-500">
+                        Changes throughout your period or between cycles
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        flowHeaviness === 'not-sure'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="not-sure"
-                        id="not-sure"
-                        ref={refTarget === 'not-sure' ? radioRef : null}
-                      />
-                      <Label htmlFor="not-sure" className="flex-1 cursor-pointer">
-                        <div className="font-medium">{"I'm not sure"}</div>
-                        <p className="text-sm text-gray-500">
-                          Need help determining flow heaviness
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedFlow === 'not-sure'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('not-sure')}
+                    ref={refTarget === 'not-sure' ? buttonRef : null}
+                    data-testid="option-not-sure"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedFlow === 'not-sure' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
-                  </div>
-                </RadioGroup>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">{"I'm not sure"}</div>
+                      <p className="text-sm text-gray-500">Need help determining flow heaviness</p>
+                    </Label>
+                  </button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -232,39 +265,29 @@ export default function FlowPage() {
           </p>
 
           <div className="mt-auto flex w-full justify-between">
-            <Link to="/assessment/period-duration">
-              <Button
-                variant="outline"
-                className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              >
-                <ChevronLeft className="mr-2 h-5 w-5" />
-                Back
-              </Button>
-            </Link>
-
-            <Link
-              to={
-                flowHeaviness
-                  ? `/assessment/pain${
-                      location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
-                    }`
-                  : '#'
-              }
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
+              onClick={() => navigate('/assessment/period-duration')}
             >
-              <Button
-                className={`flex items-center px-6 py-6 text-lg ${
-                  flowHeaviness
-                    ? 'bg-pink-600 text-white hover:bg-pink-700'
-                    : 'cursor-not-allowed bg-gray-300 text-gray-500'
-                }`}
-                ref={continueButtonRef}
-                disabled={!flowHeaviness}
-                data-testid="continue-button"
-              >
-                Continue
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+              <ChevronLeft className="mr-2 h-5 w-5" />
+              Back
+            </Button>
+
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${
+                selectedFlow
+                  ? 'bg-pink-600 text-white hover:bg-pink-700'
+                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
+              }`}
+              ref={continueButtonRef}
+              disabled={!selectedFlow}
+              data-testid="continue-button"
+              onClick={handleContinue}
+            >
+              Continue
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </main>
       </div>

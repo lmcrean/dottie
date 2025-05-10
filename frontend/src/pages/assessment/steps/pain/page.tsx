@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
@@ -14,11 +13,19 @@ import { PainLevel } from '@/src/context/assessment/types';
 
 export default function PainPage() {
   const { painLevel, setPainLevel } = usePainLevel();
+  const [selectedPain, setSelectedPain] = useState<PainLevel | undefined>(painLevel);
   const [refTarget, setRefTarget] = useState('');
   const location = useLocation();
-  const radioRef = useRef<HTMLButtonElement | null>(null);
+  const navigate = useNavigate();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
+
+  useEffect(() => {
+    if (painLevel) {
+      setSelectedPain(painLevel);
+    }
+  }, [painLevel]);
 
   useEffect(() => {
     if (!isQuickResponse) return;
@@ -27,8 +34,8 @@ export default function PainPage() {
     setRefTarget(random);
 
     setTimeout(() => {
-      if (radioRef.current) {
-        radioRef.current.click();
+      if (buttonRef.current) {
+        buttonRef.current.click();
       }
     }, 100);
 
@@ -39,8 +46,18 @@ export default function PainPage() {
     }, 100);
   }, [isQuickResponse]);
 
-  const handlePainChange = (value: string) => {
-    setPainLevel(value as PainLevel);
+  const handleOptionClick = (value: PainLevel) => {
+    setSelectedPain(value);
+    setPainLevel(value);
+  };
+
+  const handleContinue = () => {
+    if (selectedPain) {
+      const queryParams = location.search.includes('mode=quickresponse')
+        ? '?mode=quickresponse'
+        : '';
+      navigate(`/assessment/symptoms${queryParams}`);
+    }
   };
 
   return (
@@ -75,133 +92,151 @@ export default function PainPage() {
 
             <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-1/2">
               <CardContent className="pb-8 pt-8">
-                <RadioGroup
-                  value={painLevel || ''}
-                  onValueChange={handlePainChange}
-                  className="mb-6"
-                >
-                  <div className="space-y-3">
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        painLevel === 'no-pain'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="no-pain"
-                        id="no-pain"
-                        ref={refTarget === 'no-pain' ? radioRef : null}
-                      />
-                      <Label htmlFor="no-pain" className="flex-1 cursor-pointer">
-                        <div className="font-medium">No Pain</div>
-                        <p className="text-sm text-gray-500">
-                          {" I don't experience any discomfort during my period"}
-                        </p>
-                      </Label>
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedPain === 'no-pain'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('no-pain')}
+                    ref={refTarget === 'no-pain' ? buttonRef : null}
+                    data-testid="option-no-pain"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedPain === 'no-pain' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">No Pain</div>
+                      <p className="text-sm text-gray-500">
+                        {" I don't experience any discomfort during my period"}
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        painLevel === 'mild'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="mild"
-                        id="mild"
-                        ref={refTarget === 'mild' ? radioRef : null}
-                      />
-                      <Label htmlFor="mild" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Mild</div>
-                        <p className="text-sm text-gray-500">
-                          {"Noticeable but doesn't interfere with daily activities"}
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedPain === 'mild'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('mild')}
+                    ref={refTarget === 'mild' ? buttonRef : null}
+                    data-testid="option-mild"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedPain === 'mild' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Mild</div>
+                      <p className="text-sm text-gray-500">
+                        {"Noticeable but doesn't interfere with daily activities"}
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        painLevel === 'moderate'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="moderate"
-                        id="moderate"
-                        ref={refTarget === 'moderate' ? radioRef : null}
-                      />
-                      <Label htmlFor="moderate" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Moderate</div>
-                        <p className="text-sm text-gray-500">
-                          Uncomfortable and may require pain relief
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedPain === 'moderate'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('moderate')}
+                    ref={refTarget === 'moderate' ? buttonRef : null}
+                    data-testid="option-moderate"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedPain === 'moderate' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Moderate</div>
+                      <p className="text-sm text-gray-500">
+                        Uncomfortable and may require pain relief
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        painLevel === 'severe'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="severe"
-                        id="severe"
-                        ref={refTarget === 'severe' ? radioRef : null}
-                      />
-                      <Label htmlFor="severe" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Severe</div>
-                        <p className="text-sm text-gray-500">
-                          Significant pain that limits normal activities
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedPain === 'severe'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('severe')}
+                    ref={refTarget === 'severe' ? buttonRef : null}
+                    data-testid="option-severe"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedPain === 'severe' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Severe</div>
+                      <p className="text-sm text-gray-500">
+                        Significant pain that limits normal activities
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        painLevel === 'debilitating'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="debilitating"
-                        id="debilitating"
-                        ref={refTarget === 'debilitating' ? radioRef : null}
-                      />
-                      <Label htmlFor="debilitating" className="flex-1 cursor-pointer">
-                        <div className="font-medium">Debilitating</div>
-                        <p className="text-sm text-gray-500">
-                          Extreme pain that prevents normal activities
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedPain === 'debilitating'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('debilitating')}
+                    ref={refTarget === 'debilitating' ? buttonRef : null}
+                    data-testid="option-debilitating"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedPain === 'debilitating' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">Debilitating</div>
+                      <p className="text-sm text-gray-500">
+                        Extreme pain that prevents normal activities
+                      </p>
+                    </Label>
+                  </button>
 
-                    <div
-                      className={`flex items-center space-x-2 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                        painLevel === 'varies'
-                          ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <RadioGroupItem
-                        value="varies"
-                        id="varies"
-                        ref={refTarget === 'varies' ? radioRef : null}
-                      />
-                      <Label htmlFor="varies" className="flex-1 cursor-pointer">
-                        <div className="font-medium">It varies</div>
-                        <p className="text-sm text-gray-500">
-                          Pain level changes throughout your period or between cycles
-                        </p>
-                      </Label>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center space-x-2 rounded-lg border p-3 text-left transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
+                      selectedPain === 'varies'
+                        ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleOptionClick('varies')}
+                    ref={refTarget === 'varies' ? buttonRef : null}
+                    data-testid="option-varies"
+                  >
+                    <div className="relative flex h-4 w-4 items-center justify-center rounded-full border border-primary text-primary">
+                      {selectedPain === 'varies' && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                      )}
                     </div>
-                  </div>
-                </RadioGroup>
+                    <Label className="flex-1 cursor-pointer">
+                      <div className="font-medium">It varies</div>
+                      <p className="text-sm text-gray-500">
+                        Pain level changes throughout your period or between cycles
+                      </p>
+                    </Label>
+                  </button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -232,35 +267,29 @@ export default function PainPage() {
           </p>
 
           <div className="mt-auto flex w-full justify-between">
-            <Link to="/assessment/flow">
-              <Button
-                variant="outline"
-                className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              >
-                <ChevronLeft className="mr-2 h-5 w-5" />
-                Back
-              </Button>
-            </Link>
-
-            <Link
-              to={
-                painLevel
-                  ? `/assessment/symptoms${
-                      location.search.includes('mode=quickresponse') ? '?mode=quickresponse' : ''
-                    }`
-                  : '#'
-              }
+            <Button
+              variant="outline"
+              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
+              onClick={() => navigate('/assessment/flow')}
             >
-              <Button
-                className="flex items-center px-6 py-6 text-lg"
-                disabled={!painLevel}
-                ref={continueButtonRef}
-                data-testid="continue-button"
-              >
-                Continue
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+              <ChevronLeft className="mr-2 h-5 w-5" />
+              Back
+            </Button>
+
+            <Button
+              className={`flex items-center px-6 py-6 text-lg ${
+                selectedPain
+                  ? 'bg-pink-600 text-white hover:bg-pink-700'
+                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
+              }`}
+              disabled={!selectedPain}
+              ref={continueButtonRef}
+              data-testid="continue-button"
+              onClick={handleContinue}
+            >
+              Continue
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </main>
       </div>
