@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Card, CardContent } from '@/src/components/ui/!to-migrate/card';
+import { Button } from '@/src/components/ui//button';
+import { Card, CardContent } from '@/src/components/ui/card';
 import { ExternalLink, Heart } from 'lucide-react';
 import PageTransition from '../page-transitions';
 

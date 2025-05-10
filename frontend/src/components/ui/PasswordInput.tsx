@@ -1,6 +1,6 @@
 import { EyeClosed, EyeIcon } from 'lucide-react';
 import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
-import { FormInput } from './!to-migrate/form-input';
+import { FormInput } from './form-input';
 
 interface PasswordInputProps<T extends FieldValues> {
   id: Path<T>;

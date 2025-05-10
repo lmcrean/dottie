@@ -1,7 +1,7 @@
 import React from 'react';
 import { forwardRef } from 'react';
 import { cn } from '@/src/lib/utils';
-import { Label } from '../label';
+import { Label } from './label';
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;

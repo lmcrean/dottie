@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Input } from '@/src/components/ui/!to-migrate/input';
-import { ScrollArea } from '@/src/components/ui/!to-migrate/scroll-area';
+import { Button } from '@/src/components/ui//button';
+import { Input } from '@/src/components/ui/input';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Send, Loader2, X, Minimize2 } from 'lucide-react';
 import { getAIFeedback } from '@/src/services/ai';
 import getHistory from '@/src/api/message/requests/getHistory';

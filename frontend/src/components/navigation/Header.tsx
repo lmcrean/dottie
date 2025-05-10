@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Button } from '@/src/components/ui/!to-migrate/button';
+import { Button } from '@/src/components/ui//button';
 import { useIsMobile } from '@/src/hooks/use-mobile';
 import UserIcon from '@/src/components/navigation/UserIcon';
 import ThemeToggle from '@/src/components/theme/ThemeToggle';
