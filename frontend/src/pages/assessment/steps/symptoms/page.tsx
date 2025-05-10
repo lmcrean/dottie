@@ -9,7 +9,6 @@ import { Input } from '@/src/components/user-inputs/input';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
-import { useSymptoms } from '@/src/hooks/assessment/steps/use-symptoms';
 import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/context/assessment/types';
 
 // Type assertion helpers
@@ -17,8 +16,9 @@ const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSym
 const asEmotionalSymptomId = (id: string): EmotionalSymptomId => id as EmotionalSymptomId;
 
 export default function SymptomsPage() {
-  const { physicalSymptoms, emotionalSymptoms, setPhysicalSymptoms, setEmotionalSymptoms } =
-    useSymptoms();
+  // Use local state instead of the context hook
+  const [physicalSymptoms, setPhysicalSymptoms] = useState<PhysicalSymptomId[]>([]);
+  const [emotionalSymptoms, setEmotionalSymptoms] = useState<EmotionalSymptomId[]>([]);
   const [otherSymptoms, setOtherSymptoms] = useState('');
   const [refTarget, setRefTarget] = useState('');
   const navigate = useNavigate();
@@ -90,18 +90,18 @@ export default function SymptomsPage() {
   }, [refTarget]);
 
   const togglePhysicalSymptom = (symptom: PhysicalSymptomId) => {
-    setPhysicalSymptoms(
-      physicalSymptoms.includes(symptom)
-        ? physicalSymptoms.filter((s) => s !== symptom)
-        : [...physicalSymptoms, symptom]
+    setPhysicalSymptoms((prevSymptoms) =>
+      prevSymptoms.includes(symptom)
+        ? prevSymptoms.filter((s) => s !== symptom)
+        : [...prevSymptoms, symptom]
     );
   };
 
   const toggleEmotionalSymptom = (symptom: EmotionalSymptomId) => {
-    setEmotionalSymptoms(
-      emotionalSymptoms.includes(symptom)
-        ? emotionalSymptoms.filter((s) => s !== symptom)
-        : [...emotionalSymptoms, symptom]
+    setEmotionalSymptoms((prevSymptoms) =>
+      prevSymptoms.includes(symptom)
+        ? prevSymptoms.filter((s) => s !== symptom)
+        : [...prevSymptoms, symptom]
     );
   };
 
