@@ -25,7 +25,7 @@ import DetailsPage from './pages/assessment/history/[id]/page';
 import TestPage from './test_page/page';
 import ScrollToTop from './test_page/page-components/scroll-to-top';
 import LandingPage from './pages/landing-page/page';
-import UITestPageSwitch from './components/navigation/UITestPageSwitch';
+import UITestPageSwitch from './components/developer-utils/UITestPageSwitch';
 
 import Header from './components/navigation/Header';
 import { ProtectedRoute } from './routes/ProtectedRoute';
