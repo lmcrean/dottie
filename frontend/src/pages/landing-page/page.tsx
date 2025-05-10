@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import DottieMascot3D from '@/src/pages/landing-page/DottieMascot3D';
-import ErrorBoundary from '@/src/components/ErrorBoundary';
+import ErrorBoundary from '@/src/components/alerts/ErrorBoundary';
 import { useAuth } from '@/src/context/auth/useAuthContext';
 
 // import { ReactElement } from 'react';
