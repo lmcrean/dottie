@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import AuthLayout from '@/src/pages/auth/AuthLayout';
 import { useState } from 'react';
 import { PasswordInput } from '@/src/components/ui/PasswordInput';
-import AnimatedLogo from '@/src/components/AnimatedLogo';
+import AnimatedLogo from '@/src/pages/landing-page/AnimatedLogo';
 import { useAuth } from '@/src/context/auth/useAuthContext';
 
 export default function SignUpPage() {
