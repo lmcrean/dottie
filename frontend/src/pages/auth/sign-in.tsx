@@ -2,12 +2,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInSchema, type SignInFormData } from '@/src/lib/validations/auth';
-import { FormInput } from '@/src/components/ui/form-input';
+import { FormInput } from '@/src/components/user-inputs/form-input';
 import { Button } from '@/src/components/buttons/button';
 import { toast } from 'sonner';
 import AuthLayout from '@/src/pages/auth/AuthLayout';
 import { useEffect, useState } from 'react';
-import { PasswordInput } from '@/src/components/ui/PasswordInput';
+import { PasswordInput } from '@/src/components/user-inputs/PasswordInput';
 import AnimatedLogo from '@/src/pages/landing-page/AnimatedLogo';
 import { useAuth } from '@/src/context/auth/useAuthContext';
 

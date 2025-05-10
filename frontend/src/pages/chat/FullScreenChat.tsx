@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/src/components/buttons/button';
-import { Input } from '@/src/components/ui/input';
+import { Input } from '@/src/components/user-inputs/input';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Send, Loader2, X, Minimize2 } from 'lucide-react';
 import { getAIFeedback } from '@/src/services/ai';

@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle
 } from '../../components/ui/card';
-import { Input } from '../../components/ui/input';
+import { Input } from '../../components/user-inputs/input';
 import { Label } from '../../components/ui/label';
 import { useNavigate } from 'react-router-dom';
 import { requestPasswordReset } from '../../api/user/requests/passwordReset/Request';
