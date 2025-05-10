@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'; // Vite not nextjs
 import { Wrench, Zap } from 'lucide-react'; // Or use emoji directly
-import { Button } from '@/src/components/ui//button';
+import { Button } from '@/src/components/ui/button';
 
 export default function UITestPageSwitch() {
   const location = useLocation();

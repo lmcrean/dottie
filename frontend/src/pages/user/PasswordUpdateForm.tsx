@@ -1,4 +1,4 @@
-import { Button } from '@/src/components/ui//button';
+import { Button } from '@/src/components/ui/button';
 import { Alert, AlertDescription } from '@/src/components/ui/alert';
 import {
   Card,

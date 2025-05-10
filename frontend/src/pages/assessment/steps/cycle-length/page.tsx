@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
@@ -42,6 +42,20 @@ export default function CycleLengthPage() {
   const handleLengthChange = (value: string) => {
     setCycleLength(value as CycleLength);
     sessionStorage.setItem('cycleLength', value);
+  };
+
+  // Create handlers for clicking or keyboard interaction with options
+  const handleOptionSelect = (value: CycleLength) => {
+    setCycleLength(value);
+    sessionStorage.setItem('cycleLength', value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, value: CycleLength) => {
+    // Handle Enter or Space key to select option
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleOptionSelect(value);
+    }
   };
 
   return (
@@ -88,6 +102,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('21-25')}
+                      onKeyDown={(e) => handleKeyDown(e, '21-25')}
+                      role="radio"
+                      aria-checked={cycleLength === '21-25'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="21-25"
@@ -106,6 +125,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('26-30')}
+                      onKeyDown={(e) => handleKeyDown(e, '26-30')}
+                      role="radio"
+                      aria-checked={cycleLength === '26-30'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="26-30"
@@ -124,6 +148,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('31-35')}
+                      onKeyDown={(e) => handleKeyDown(e, '31-35')}
+                      role="radio"
+                      aria-checked={cycleLength === '31-35'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="31-35"
@@ -142,6 +171,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('36-40')}
+                      onKeyDown={(e) => handleKeyDown(e, '36-40')}
+                      role="radio"
+                      aria-checked={cycleLength === '36-40'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="36-40"
@@ -160,6 +194,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('irregular')}
+                      onKeyDown={(e) => handleKeyDown(e, 'irregular')}
+                      role="radio"
+                      aria-checked={cycleLength === 'irregular'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="irregular"
@@ -178,6 +217,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('not-sure')}
+                      onKeyDown={(e) => handleKeyDown(e, 'not-sure')}
+                      role="radio"
+                      aria-checked={cycleLength === 'not-sure'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="not-sure"
@@ -196,6 +240,11 @@ export default function CycleLengthPage() {
                           ? 'border-pink-500 bg-pink-50 dark:text-gray-900'
                           : 'hover:bg-gray-50'
                       }`}
+                      onClick={() => handleOptionSelect('other')}
+                      onKeyDown={(e) => handleKeyDown(e, 'other')}
+                      role="radio"
+                      aria-checked={cycleLength === 'other'}
+                      tabIndex={0}
                     >
                       <RadioGroupItem
                         value="other"
