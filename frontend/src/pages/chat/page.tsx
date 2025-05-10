@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog';
-import { Button } from '@/src/components/ui/button';
+import { Button } from '@/src/components/buttons/button';
 import { Input } from '@/src/components/ui/input';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Send, Loader2, MessageCircle, Maximize2 } from 'lucide-react';

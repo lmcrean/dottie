@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInSchema, type SignInFormData } from '@/src/lib/validations/auth';
 import { FormInput } from '@/src/components/ui/form-input';
-import { Button } from '@/src/components/ui/button';
+import { Button } from '@/src/components/buttons/button';
 import { toast } from 'sonner';
 import AuthLayout from '@/src/pages/auth/AuthLayout';
 import { useEffect, useState } from 'react';
