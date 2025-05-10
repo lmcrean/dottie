@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/src/components/ui/!to-migrate/button';
 import { useIsMobile } from '@/src/hooks/use-mobile';
 import UserIcon from '@/src/components/navigation/UserIcon';
-import ThemeToggle from '@/src/components/ThemeToggle';
+import ThemeToggle from '@/src/components/theme/ThemeToggle';
 
 interface HeaderProps {
   logoSrc?: string;
