@@ -1,8 +1,15 @@
 import React from 'react';
 import { patternData } from '../../utils/patternData';
+import { MenstrualPattern } from '@/src/pages/assessment/context/types';
 
 interface PatternRecommendationsProps {
-  pattern: string;
+  pattern: MenstrualPattern;
+}
+
+interface Recommendation {
+  icon: string;
+  title: string;
+  description: string;
 }
 
 export const PatternRecommendations = ({ pattern }: PatternRecommendationsProps) => {
@@ -10,7 +17,7 @@ export const PatternRecommendations = ({ pattern }: PatternRecommendationsProps)
     <>
       <h3 className="mb-4 text-xl font-bold">Recommendations</h3>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {patternData[pattern].recommendations.map((rec, index) => (
+        {patternData[pattern].recommendations.map((rec: Recommendation, index: number) => (
           <div
             key={index}
             className="rounded-xl border p-4 transition-colors duration-300 hover:bg-pink-50 dark:border-slate-800 dark:hover:text-gray-900"

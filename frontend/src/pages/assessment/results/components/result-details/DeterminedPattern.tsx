@@ -1,8 +1,9 @@
 import React from 'react';
 import { patternData } from '../../utils/patternData';
+import { MenstrualPattern } from '@/src/pages/assessment/context/types';
 
 interface DeterminedPatternProps {
-  pattern: string;
+  pattern: MenstrualPattern;
 }
 
 export const DeterminedPattern = ({ pattern }: DeterminedPatternProps) => {

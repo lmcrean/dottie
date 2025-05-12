@@ -1,8 +1,9 @@
 import React from 'react';
+import { MenstrualPattern } from '@/src/pages/assessment/context/types';
 
 interface PainLevelProps {
   painLevel: string | null;
-  pattern: string;
+  pattern: MenstrualPattern;
 }
 
 export const PainLevel = ({ painLevel, pattern }: PainLevelProps) => {
