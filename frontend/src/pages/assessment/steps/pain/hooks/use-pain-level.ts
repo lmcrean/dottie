@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAssessmentContext } from '../../../hooks/use-assessment-context';
+import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
 import { PainLevel } from '../../../context/assessment/types';
 
 export function usePainLevel() {
