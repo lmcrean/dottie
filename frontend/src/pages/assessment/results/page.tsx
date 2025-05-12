@@ -7,9 +7,10 @@ import { useState, useEffect } from 'react';
 import { ChatModal } from '@/src/pages/chat/page';
 import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
 import { useAssessmentData } from './hooks/useAssessmentData';
-import { AssessmentDetails } from './components/AssessmentDetails';
+import { ResultsTable } from './components/ResultsTable';
 import { SaveResults } from './components/SaveResults';
 import { patternData } from './utils/patternData';
+import { DeterminedPattern } from './components/result-details';
 
 export default function ResultsPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -49,8 +50,10 @@ export default function ResultsPage() {
           </p>
         </div>
 
+        <DeterminedPattern pattern={assessmentData.pattern} />
+
         <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
-          <AssessmentDetails
+          <ResultsTable
             data={assessmentData}
             setIsClamped={assessmentData.setIsClamped}
             setExpandableSymptoms={assessmentData.setExpandableSymptoms}
