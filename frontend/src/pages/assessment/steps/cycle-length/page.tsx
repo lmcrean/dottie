@@ -2,15 +2,15 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/src/components/buttons/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
-import { ChevronLeft, InfoIcon } from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import { useCycleLength } from '@/src/pages/assessment/steps/cycle-length/hooks/use-cycle-length';
 import { CycleLength } from '@/src/pages/assessment/context/types';
 import PageTransition from '../../page-transitions';
 import ContinueButton from '../components/ContinueButton';
+import BackButton from '../components/BackButton';
 
 export default function CycleLengthPage() {
   const { cycleLength, setCycleLength } = useCycleLength();
@@ -272,14 +272,7 @@ export default function CycleLengthPage() {
           </Card>
 
           <div className="mt-auto flex w-full justify-between">
-            <Button
-              variant="outline"
-              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              onClick={() => navigate('/assessment/age-verification')}
-            >
-              <ChevronLeft className="mr-2 h-5 w-5" />
-              Back
-            </Button>
+            <BackButton destination="/assessment/age-verification" dataTestId="back-button" />
 
             <ContinueButton
               ref={continueButtonRef}

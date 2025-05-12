@@ -2,15 +2,15 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/src/components/buttons/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
-import { ChevronLeft, InfoIcon } from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
 import { useFlowHeaviness } from '@/src/pages/assessment/steps/flow/hooks/use-flow-heaviness';
 import { FlowHeaviness } from '@/src/pages/assessment/context/types';
 import ContinueButton from '../components/ContinueButton';
+import BackButton from '../components/BackButton';
 
 export default function FlowPage() {
   const { flowHeaviness, setFlowHeaviness } = useFlowHeaviness();
@@ -266,14 +266,7 @@ export default function FlowPage() {
           </p>
 
           <div className="mt-auto flex w-full justify-between">
-            <Button
-              variant="outline"
-              className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
-              onClick={() => navigate('/assessment/period-duration')}
-            >
-              <ChevronLeft className="mr-2 h-5 w-5" />
-              Back
-            </Button>
+            <BackButton destination="/assessment/period-duration" dataTestId="back-button" />
 
             <ContinueButton
               ref={continueButtonRef}
