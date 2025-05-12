@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useSymptoms } from '../../../../pages/assessment/steps/symptoms/hooks/use-symptoms';
-import * as AssessmentContextModule from '../../../../pages/assessment/context/hooks/use-assessment-context';
+import { useSymptoms } from '../hooks/use-symptoms';
+import * as AssessmentContextModule from '../../../context/hooks/use-assessment-context';
 import { PhysicalSymptomId, EmotionalSymptomId } from '../../../../context/assessment/types';
 
 // Mock the context hook
