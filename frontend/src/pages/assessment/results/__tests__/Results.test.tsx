@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import ResultsPage from '../page'
 import { AuthContext } from '@/src/context/auth/AuthContext'
 import { postSend } from '@/src/api/assessment/requests/postSend/Request'
-import * as useAssessmentResultModule from '@/src/hooks/assessment/use-assessment-result'
+import * as useAssessmentResultModule from '@/src/pages/assessment/hooks/use-assessment-result'
 
 // Mock the assessment result hook
 vi.mock('@/src/hooks/use-assessment-result', async () => {

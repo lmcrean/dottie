@@ -1,12 +1,19 @@
 import { useCallback } from 'react';
 import { useAssessmentContext } from './use-assessment-context';
-import { determinePattern } from '../../pages/assessment/services/determinePattern';
-import { generateRecommendations } from '../../pages/assessment/services/generateRecommendations';
-
-export function useAssessmentSubmission() {
+import { determinePattern } from '../services/determinePattern';
+import { generateRecommendations } from '../services/generateRecommendations';
+/**
+ * Hook that bridges assessment context with assessment services
+ * Handles processing assessment data through various services and updating context
+ */
+export function useAssessmentServices() {
   const { state, setResult, resetResult } = useAssessmentContext();
 
-  const completeAssessment = useCallback(() => {
+  /**
+   * Process the assessment data to determine pattern and recommendations
+   * Updates the context with the complete result
+   */
+  const processAssessment = useCallback(() => {
     if (!state.result) return null;
 
     const pattern = determinePattern(state.result);
@@ -22,6 +29,9 @@ export function useAssessmentSubmission() {
     return completeResult;
   }, [state.result, setResult]);
 
+  /**
+   * Reset the assessment data in context
+   */
   const clearAssessment = useCallback(() => {
     resetResult();
   }, [resetResult]);
@@ -29,7 +39,7 @@ export function useAssessmentSubmission() {
   return {
     isComplete: state.isComplete,
     result: state.result,
-    completeAssessment,
+    processAssessment,
     clearAssessment
   };
 }

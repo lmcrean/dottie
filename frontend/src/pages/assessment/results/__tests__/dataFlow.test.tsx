@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
 import ResultsPage from '@/src/pages/assessment/results/page';
-import { useAssessmentResult } from '@/src/hooks/assessment/use-assessment-result';
+import { useAssessmentResult } from '@/src/pages/assessment/hooks/use-assessment-result';
 import { useAgeVerification } from '@/src/hooks/assessment/steps/use-age-verification';
 import { AgeRange } from '@/src/context/assessment/types';
 

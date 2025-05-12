@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAssessmentContext } from '../use-assessment-context';
+import { useAssessmentContext } from '../../../pages/assessment/hooks/use-assessment-context';
 import { AgeRange } from '../../../context/assessment/types';
 
 export function useAgeVerification() {

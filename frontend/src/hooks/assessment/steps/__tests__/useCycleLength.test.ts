@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
 import { useCycleLength } from '../use-cycle-length';
-import { useAssessmentContext } from '../../use-assessment-context';
+import { useAssessmentContext } from '../../../../pages/assessment/hooks/use-assessment-context';
 
 // Mock the assessment context
 vi.mock('../../use-assessment-context', () => ({

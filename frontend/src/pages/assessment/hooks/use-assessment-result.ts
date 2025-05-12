@@ -1,6 +1,6 @@
 import { useAssessmentContext } from './use-assessment-context';
 import { AssessmentResult, MenstrualPattern } from '../../context/assessment/types/index';
-import { Assessment } from '../../api/assessment/types';
+import { Assessment } from '../../../api/assessment/types';
 
 /**
  * Hook to access assessment result data from context

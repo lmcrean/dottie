@@ -4,7 +4,7 @@ import { Button } from '@/src/components/buttons/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/context/auth/useAuthContext';
-import { useAssessmentResult } from '@/src/hooks/assessment/use-assessment-result';
+import { useAssessmentResult } from '@/src/pages/assessment/hooks/use-assessment-result';
 import { Assessment } from '@/src/api/assessment/types';
 import { postSend } from '@/src/api/assessment/requests/postSend/Request';
 
