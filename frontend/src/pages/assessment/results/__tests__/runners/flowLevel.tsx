@@ -14,16 +14,14 @@ export const runFlowLevelStep = async () => {
   );
   
   // 2. Select flow level
-  const flowOption = screen.getByRole('radio', { name: /heavy/i });
+  const flowOption = screen.getByTestId('option-heavy');
   fireEvent.click(flowOption);
   
   // 3. Verify flow level is stored in session storage
   expect(sessionStorage.getItem('flowHeaviness')).toBe('heavy');
   
   // 4. Click continue
-  const buttons = screen.getAllByRole('button');
-  const continueButton = buttons.find(button => button.textContent?.includes('Continue'));
-  if (!continueButton) throw new Error('Continue button not found');
+  const continueButton = screen.getByTestId('continue-button');
   fireEvent.click(continueButton);
   
   return {

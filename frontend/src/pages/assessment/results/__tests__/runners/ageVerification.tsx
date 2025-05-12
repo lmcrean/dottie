@@ -14,16 +14,14 @@ export const runAgeVerificationStep = async () => {
   );
   
   // 2. Select an age range
-  const ageOption = screen.getByRole('radio', { name: /13-17 years/i });
+  const ageOption = screen.getByTestId('option-13-17');
   fireEvent.click(ageOption);
   
   // 3. Verify age is stored in session storage
   expect(sessionStorage.getItem('age')).toBe('13-17');
   
   // 4. Click continue
-  const buttons = screen.getAllByRole('button');
-  const continueButton = buttons.find(button => button.textContent?.includes('Continue'));
-  if (!continueButton) throw new Error('Continue button not found');
+  const continueButton = screen.getByTestId('continue-button');
   fireEvent.click(continueButton);
   
   return {

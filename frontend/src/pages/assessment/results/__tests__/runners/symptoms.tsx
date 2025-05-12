@@ -16,7 +16,7 @@ export const runSymptomsStep = async () => {
   // 2. Select symptoms
   const symptoms = ['cramps', 'headache', 'fatigue'];
   symptoms.forEach(symptom => {
-    const symptomOption = screen.getByRole('checkbox', { name: new RegExp(symptom, 'i') });
+    const symptomOption = screen.getByTestId(`option-${symptom}`);
     fireEvent.click(symptomOption);
   });
   
@@ -24,9 +24,7 @@ export const runSymptomsStep = async () => {
   expect(JSON.parse(sessionStorage.getItem('symptoms') || '[]')).toEqual(symptoms);
   
   // 4. Click continue
-  const buttons = screen.getAllByRole('button');
-  const continueButton = buttons.find(button => button.textContent?.includes('Continue'));
-  if (!continueButton) throw new Error('Continue button not found');
+  const continueButton = screen.getByTestId('continue-button');
   fireEvent.click(continueButton);
   
   return {

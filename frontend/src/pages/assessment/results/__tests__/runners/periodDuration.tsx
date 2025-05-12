@@ -14,16 +14,14 @@ export const runPeriodDurationStep = async () => {
   );
   
   // 2. Select period duration
-  const durationOption = screen.getByRole('radio', { name: /5-7 days/i });
+  const durationOption = screen.getByTestId('option-5-7');
   fireEvent.click(durationOption);
   
   // 3. Verify period duration is stored in session storage
   expect(sessionStorage.getItem('periodDuration')).toBe('5-7');
   
   // 4. Click continue
-  const buttons = screen.getAllByRole('button');
-  const continueButton = buttons.find(button => button.textContent?.includes('Continue'));
-  if (!continueButton) throw new Error('Continue button not found');
+  const continueButton = screen.getByTestId('continue-button');
   fireEvent.click(continueButton);
   
   return {

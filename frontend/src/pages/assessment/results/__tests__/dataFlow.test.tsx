@@ -22,9 +22,9 @@ vi.mock('@/src/context/auth/useAuthContext', () => ({
   })
 }));
 
-// Mock the API call
+// Mock the API call for assessments
 vi.mock('@/src/api/assessment/requests/postSend/Request', () => ({
-  postSend: vi.fn().mockResolvedValue({ id: 'test-assessment-id' })
+  postSend: vi.fn(() => Promise.resolve({ id: 'test-assessment-id' }))
 }));
 
 // Mock the toast
@@ -124,7 +124,9 @@ describe('Assessment Data Flow', () => {
   it('should handle error cases', async () => {
     // 1. Mock API error
     const { postSend } = await import('@/src/api/assessment/requests/postSend/Request');
-    vi.mocked(postSend).mockRejectedValueOnce(new Error('API Error'));
+    if (typeof postSend === 'function' && typeof vi.mocked === 'function') {
+      vi.mocked(postSend).mockRejectedValueOnce(new Error('API Error'));
+    }
     
     // 2. Run through all steps
     await runAgeVerificationStep();
@@ -142,6 +144,7 @@ describe('Assessment Data Flow', () => {
     fireEvent.click(saveButton);
     
     // 5. Verify error handling
-    expect(require('sonner').toast.error).toHaveBeenCalled();
+    const toast = await import('sonner').then(module => module.toast);
+    expect(toast.error).toHaveBeenCalled();
   });
 });
