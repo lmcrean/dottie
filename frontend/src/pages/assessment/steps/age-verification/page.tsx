@@ -22,13 +22,26 @@ export default function AgeVerificationPage() {
   useEffect(() => {
     if (age) {
       setSelectedAge(age);
+    } else {
+      // If context is empty, try to load from sessionStorage as a fallback
+      const storedAge = sessionStorage.getItem('age');
+      if (storedAge) {
+        const typedAge = storedAge as AgeRange;
+        setSelectedAge(typedAge);
+        // Also update context from sessionStorage
+        setAge(typedAge);
+      }
     }
-  }, [age]);
+  }, [age, setAge]);
 
   const handleOptionClick = (value: AgeRange) => {
-    // Update both local state and context
+    // Update local state first for immediate UI feedback
     setSelectedAge(value);
+
+    // Update context - this is the primary data store
     setAge(value);
+
+    // Also save to sessionStorage as backup/persistence
     sessionStorage.setItem('age', value);
   };
 
