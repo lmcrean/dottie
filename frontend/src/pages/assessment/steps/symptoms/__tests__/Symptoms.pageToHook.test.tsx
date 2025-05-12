@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import SymptomsPage from '../page'
-import * as SymptomsHook from '../../../../../hooks/assessment/steps/use-symptoms'
+import * as SymptomsHook from '../hooks/use-symptoms'
 
 // Mock the hook
 vi.mock('../../../../../hooks/assessment/steps/use-symptoms', () => ({

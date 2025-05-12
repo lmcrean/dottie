@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import { usePeriodDuration } from '@/src/hooks/assessment/steps/use-period-duration';
+import { usePeriodDuration } from '@/src/pages/assessment/steps/period-duration/hooks/use-period-duration';
 import { PeriodDuration } from '@/src/context/assessment/types';
 import PageTransition from '../../page-transitions';
 

@@ -8,7 +8,7 @@ import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
-import { useFlowHeaviness } from '@/src/hooks/assessment/steps/use-flow-heaviness';
+import { useFlowHeaviness } from '@/src/pages/assessment/steps/flow/hooks/use-flow-heaviness';
 import { FlowHeaviness } from '@/src/context/assessment/types';
 
 export default function FlowPage() {

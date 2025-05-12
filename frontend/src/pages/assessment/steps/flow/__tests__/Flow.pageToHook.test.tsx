@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import FlowPage from '../page'
-import * as FlowHeavinessHook from '../../../../../hooks/assessment/steps/use-flow-heaviness'
+import * as FlowHeavinessHook from '../hooks/use-flow-heaviness'
 
 // Mock the hook
 vi.mock('../../../../../hooks/assessment/steps/use-flow-heaviness', () => ({

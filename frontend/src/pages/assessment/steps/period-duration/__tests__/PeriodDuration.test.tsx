@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PeriodDurationPage from '../page'
 import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
-import * as PeriodDurationHook from '../../../../../hooks/assessment/steps/use-period-duration'
+import * as PeriodDurationHook from '../hooks/use-period-duration'
 
 // Mock the hook
 vi.mock('../../../../../hooks/assessment/steps/use-period-duration', () => ({

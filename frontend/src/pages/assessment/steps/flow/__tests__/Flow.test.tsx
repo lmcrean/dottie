@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import FlowPage from '../page'
 import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
-import * as FlowHook from '../../../../../hooks/assessment/steps/use-flow-heaviness'
+import * as FlowHook from '../hooks/use-flow-heaviness'
 
 // Mock the hook
 vi.mock('../../../../../hooks/assessment/steps/use-flow-heaviness', () => ({

@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PeriodDurationPage from '../page'
-import * as PeriodDurationHook from '../../../../../hooks/assessment/steps/use-period-duration'
+import * as PeriodDurationHook from '../hooks/use-period-duration'
 
 // Mock the hook
 vi.mock('../../../../../hooks/assessment/steps/use-period-duration', () => ({

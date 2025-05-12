@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useSymptoms } from '../use-symptoms';
+import { useSymptoms } from '../../../../pages/assessment/steps/symptoms/hooks/use-symptoms';
 import { useAssessmentContext } from '../../../../pages/assessment/hooks/use-assessment-context';
 
 // Mock the assessment context

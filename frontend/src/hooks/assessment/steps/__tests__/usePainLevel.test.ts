@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { usePainLevel } from '../use-pain-level';
+import { usePainLevel } from '../../../../pages/assessment/steps/pain/hooks/use-pain-level';
 import { useAssessmentContext } from '../../../../pages/assessment/hooks/use-assessment-context';
 
 // Mock the assessment context

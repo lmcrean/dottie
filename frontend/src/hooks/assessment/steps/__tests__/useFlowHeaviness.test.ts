@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useFlowHeaviness } from '../use-flow-heaviness';
+import { useFlowHeaviness } from '../../../../pages/assessment/steps/flow/hooks/use-flow-heaviness';
 import { useAssessmentContext } from '../../../../pages/assessment/hooks/use-assessment-context';
 
 // Mock the assessment context

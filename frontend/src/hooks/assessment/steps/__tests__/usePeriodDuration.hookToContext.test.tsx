@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { usePeriodDuration } from '../use-period-duration';
+import { usePeriodDuration } from '../../../../pages/assessment/steps/period-duration/hooks/use-period-duration';
 import * as AssessmentContextModule from '../../../../pages/assessment/hooks/use-assessment-context';
 import { PeriodDuration } from '../../../../context/assessment/types';
 

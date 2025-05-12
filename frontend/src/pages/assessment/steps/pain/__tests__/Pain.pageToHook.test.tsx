@@ -2,7 +2,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PainPage from '../page'
-import * as PainLevelHook from '../../../../../hooks/assessment/steps/use-pain-level'
+import * as PainLevelHook from '../hooks/use-pain-level'
 
 // Mock the hook
 vi.mock('../../../../../hooks/assessment/steps/use-pain-level', () => ({

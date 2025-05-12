@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAssessmentContext } from '../../../pages/assessment/hooks/use-assessment-context';
+import { useAssessmentContext } from '../../../hooks/use-assessment-context';
 import { FlowHeaviness } from '../../../context/assessment/types';
 
 export function useFlowHeaviness() {
