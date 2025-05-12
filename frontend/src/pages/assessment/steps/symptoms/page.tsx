@@ -9,7 +9,7 @@ import { Input } from '@/src/components/user-inputs/input';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
-import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/context/assessment/types';
+import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/context/types';
 
 // Type assertion helpers
 const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;

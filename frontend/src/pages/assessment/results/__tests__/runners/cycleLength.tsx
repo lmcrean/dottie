@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 import CycleLengthPage from '@/src/pages/assessment/steps/cycle-length/page';
 
 export const runCycleLengthStep = async () => {

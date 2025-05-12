@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
-import { PeriodDuration } from '../../../context/assessment/types';
+import { PeriodDuration } from '../../../context/types';
 
 export function usePeriodDuration() {
   const { state, updateResult } = useAssessmentContext();

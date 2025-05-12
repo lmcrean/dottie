@@ -4,8 +4,7 @@ import { Button } from '@/src/components/buttons/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/context/auth/useAuthContext';
-import { useAssessmentResult } from '@/src/pages/assessment/hooks/use-assessment-result';
-import { Assessment } from '@/src/api/assessment/types';
+import { useAssessmentResult } from '@/src/pages/assessment/context/hooks/use-assessment-result';
 import { postSend } from '@/src/api/assessment/requests/postSend/Request';
 
 export const SaveResults = () => {
@@ -27,14 +26,28 @@ export const SaveResults = () => {
 
     try {
       // Create assessment data object using the flattened format from the hook
-      const assessmentPayload = transformToFlattenedFormat(result); // Now result is guaranteed non-null
+      const assessmentPayload = transformToFlattenedFormat();
 
-      // Ensure user_id is included (assuming user context provides it)
-      const finalPayload: Omit<Assessment, 'id' | 'created_at' | 'updated_at'> & {
-        user_id: string;
-      } = {
+      if (!assessmentPayload) {
+        toast.error('Failed to process assessment data.');
+        setIsSaving(false);
+        return;
+      }
+
+      // Ensure all required fields have values
+      const finalPayload = {
         ...assessmentPayload,
-        user_id: user?.id || '' // Corrected key: userId -> user_id. Get user ID from auth context
+        user_id: user?.id || '',
+        // Ensure all required fields have default values
+        age: assessmentPayload.age || 'unknown',
+        pattern: assessmentPayload.pattern || 'unknown',
+        cycle_length: assessmentPayload.cycle_length || 'unknown',
+        period_duration: assessmentPayload.period_duration || 'unknown',
+        flow_heaviness: assessmentPayload.flow_heaviness || 'unknown',
+        pain_level: assessmentPayload.pain_level || 'unknown',
+        physical_symptoms: assessmentPayload.physical_symptoms || [],
+        emotional_symptoms: assessmentPayload.emotional_symptoms || [],
+        recommendations: assessmentPayload.recommendations || []
       };
 
       if (!finalPayload.user_id) {
@@ -43,9 +56,15 @@ export const SaveResults = () => {
         return;
       }
 
-      // Type assertion might be needed if postSend expects slightly different structure
-      // For now, assume postSend accepts this payload
-      const savedAssessment = await postSend(finalPayload as Omit<Assessment, 'id'>);
+      // Add required fields for the API
+      const apiPayload = {
+        ...finalPayload,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // Send to API
+      const savedAssessment = await postSend(apiPayload);
 
       toast.success('Assessment saved successfully!');
       navigate(`/assessment/history/${savedAssessment.id}`);

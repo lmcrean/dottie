@@ -1,5 +1,5 @@
-import { AssessmentResult } from '../../context/assessment/types';
-import { RECOMMENDATIONS } from '../../context/assessment/types/recommendations';
+import { AssessmentResult } from '../context/types';
+import { RECOMMENDATIONS } from '../context/types/recommendations';
 
 /**
  * Generates recommendations based on assessment results and pattern

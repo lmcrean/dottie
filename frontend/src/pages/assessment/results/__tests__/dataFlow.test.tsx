@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 import ResultsPage from '@/src/pages/assessment/results/page';
-import { useAssessmentResult } from '@/src/pages/assessment/hooks/use-assessment-result';
-import { useAgeVerification } from '@/src/hooks/assessment/steps/use-age-verification';
-import { AgeRange } from '@/src/context/assessment/types';
+import { useAssessmentResult } from '@/src/pages/assessment/context/hooks/use-assessment-result';
+import { useAgeVerification } from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
+import { AgeRange } from '@/src/pages/assessment/context/types';
 
 // Import step runners
 import { runAgeVerificationStep } from './runners/ageVerification';

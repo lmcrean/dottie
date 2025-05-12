@@ -9,7 +9,7 @@ import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
 import { usePainLevel } from '@/src/pages/assessment/steps/pain/hooks/use-pain-level';
-import { PainLevel } from '@/src/context/assessment/types';
+import { PainLevel } from '@/src/pages/assessment/context/types';
 
 export default function PainPage() {
   const { painLevel, setPainLevel } = usePainLevel();

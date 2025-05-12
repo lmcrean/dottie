@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useAgeVerification } from '../use-age-verification';
 import * as AssessmentContextModule from '../../../context/hooks/use-assessment-context';
-import { AgeRange } from '../../../../context/assessment/types';
+import { AgeRange } from '../../../../context/types';
 
 // Mock the context hook
 vi.mock('../../use-assessment-context', () => ({

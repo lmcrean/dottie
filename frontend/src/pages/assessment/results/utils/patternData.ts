@@ -1,4 +1,4 @@
-import { MenstrualPattern } from '@/src/context/assessment/types';
+import { MenstrualPattern } from '@/src/pages/assessment/context/types';
 
 export interface PatternInfo {
   title: string;

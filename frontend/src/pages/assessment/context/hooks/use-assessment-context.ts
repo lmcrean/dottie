@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AssessmentResultContext } from '../../context/assessment/AssessmentResultContext';
+import { AssessmentResultContext } from '../AssessmentResultContext';
 
 export function useAssessmentContext() {
   const context = useContext(AssessmentResultContext);

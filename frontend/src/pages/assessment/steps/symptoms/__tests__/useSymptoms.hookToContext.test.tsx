@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useSymptoms } from '../hooks/use-symptoms';
 import * as AssessmentContextModule from '../../../context/hooks/use-assessment-context';
-import { PhysicalSymptomId, EmotionalSymptomId } from '../../../../context/assessment/types';
+import { PhysicalSymptomId, EmotionalSymptomId } from '../../../../context/types';
 
 // Mock the context hook
 vi.mock('../../use-assessment-context', () => ({

@@ -9,7 +9,7 @@ import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
 import { useFlowHeaviness } from '@/src/pages/assessment/steps/flow/hooks/use-flow-heaviness';
-import { FlowHeaviness } from '@/src/context/assessment/types';
+import { FlowHeaviness } from '@/src/pages/assessment/context/types';
 
 export default function FlowPage() {
   const { flowHeaviness, setFlowHeaviness } = useFlowHeaviness();

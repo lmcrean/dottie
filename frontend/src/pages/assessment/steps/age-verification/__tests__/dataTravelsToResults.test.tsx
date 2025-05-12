@@ -4,14 +4,14 @@ import '@testing-library/jest-dom';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import AgeVerificationPage from '../page';
 import ResultsPage from '../../../results/page';
-import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 
 // Track context updates
 const mockSetAge = vi.fn();
 let mockAge = undefined;
 
 // Mock the hook to track context updates
-vi.mock('@/src/hooks/assessment/steps/use-age-verification', () => ({
+vi.mock('@/src/pages/assessment/steps/age-verification/hooks/use-age-verification', () => ({
   useAgeVerification: () => ({
     age: mockAge,
     setAge: (value) => {

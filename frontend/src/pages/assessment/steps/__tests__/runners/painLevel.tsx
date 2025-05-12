@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 import PainLevelPage from '@/src/pages/assessment/steps/pain/page';
 
 export const runPainLevelStep = async () => {

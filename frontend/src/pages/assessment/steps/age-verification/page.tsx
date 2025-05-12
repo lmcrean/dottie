@@ -7,8 +7,8 @@ import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import PageTransition from '../../page-transitions';
-import { useAgeVerification } from '@/src/hooks/assessment/steps/use-age-verification';
-import { AgeRange } from '@/src/context/assessment/types';
+import { useAgeVerification } from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
+import { AgeRange } from '@/src/pages/assessment/context/types';
 
 export default function AgeVerificationPage() {
   const { age, setAge } = useAgeVerification();

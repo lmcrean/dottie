@@ -2,11 +2,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { ReactElement } from 'react';
-import { AgeRange } from '@/src/context/assessment/types';
-import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AgeRange } from '@/src/pages/assessment/context/types';
+import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 
 // Mock modules before importing components
-vi.mock('@/src/hooks/assessment/steps/use-age-verification', () => ({
+vi.mock('@/src/pages/assessment/steps/age-verification/hooks/use-age-verification', () => ({
   useAgeVerification: vi.fn().mockReturnValue({
     age: undefined,
     setAge: vi.fn()
@@ -22,7 +22,7 @@ vi.mock('@/src/hooks/useQuickNavigate', () => {
 
 // Now we can import the component after all mocks are set up
 import AgeVerificationPage from '../page';
-import * as AgeVerificationHook from '@/src/hooks/assessment/steps/use-age-verification';
+import * as AgeVerificationHook from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
 
 // Helper function to simplify rendering with all necessary providers
 function renderWithProviders(ui: ReactElement) {

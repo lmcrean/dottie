@@ -34,7 +34,7 @@ import { ProtectedRoute } from './routes/ProtectedRoute';
 import { ThemeProvider } from './context/theme/ThemeContextProvider';
 import { ReactElement } from 'react';
 import { useAuth } from '@/src/context/auth/useAuthContext';
-import { AssessmentResultProvider } from '@/src/context/assessment/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 
 function AppContent(): ReactElement {
   const { isAuthenticated } = useAuth();

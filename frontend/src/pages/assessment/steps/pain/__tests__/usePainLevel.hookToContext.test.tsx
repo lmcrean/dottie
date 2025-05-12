@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { usePainLevel } from '../hooks/use-pain-level';
 import * as AssessmentContextModule from '../../../context/hooks/use-assessment-context';
-import { PainLevel } from '../../../../context/assessment/types';
+import { PainLevel } from '../../../../context/types';
 
 // Mock the context hook
 vi.mock('../../use-assessment-context', () => ({

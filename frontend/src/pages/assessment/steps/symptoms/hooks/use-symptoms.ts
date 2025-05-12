@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
-import { PhysicalSymptomId, EmotionalSymptomId } from '../../../context/assessment/types';
+import { PhysicalSymptomId, EmotionalSymptomId } from '../../../context/types';
 
 export function useSymptoms() {
   const { state, updateResult } = useAssessmentContext();

@@ -8,7 +8,7 @@ import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import { usePeriodDuration } from '@/src/pages/assessment/steps/period-duration/hooks/use-period-duration';
-import { PeriodDuration } from '@/src/context/assessment/types';
+import { PeriodDuration } from '@/src/pages/assessment/context/types';
 import PageTransition from '../../page-transitions';
 
 export default function PeriodDurationPage() {

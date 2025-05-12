@@ -7,8 +7,8 @@ import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import { useCycleLength } from '@/src/hooks/assessment/steps/use-cycle-length';
-import { CycleLength } from '@/src/context/assessment/types';
+import { useCycleLength } from '@/src/pages/assessment/steps/cycle-length/hooks/use-cycle-length';
+import { CycleLength } from '@/src/pages/assessment/context/types';
 import PageTransition from '../../page-transitions';
 
 export default function CycleLengthPage() {
