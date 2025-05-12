@@ -6,10 +6,11 @@ import { Button } from '@/src/components/buttons/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Checkbox } from '@/src/components/user-inputs/checkbox';
 import { Input } from '@/src/components/user-inputs/input';
-import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
+import { ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
 import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/context/types';
+import ContinueButton from '../components/ContinueButton';
 
 // Type assertion helpers
 const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;
@@ -340,15 +341,13 @@ export default function SymptomsPage() {
               Back
             </Button>
 
-            <Button
-              className="flex items-center bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
+            <ContinueButton
               ref={continueButtonRef}
-              data-testid="continue-button"
-              onClick={handleContinue}
-            >
-              Finish Assessment
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+              isEnabled={true}
+              onContinue={handleContinue}
+              text="Finish Assessment"
+              dataTestId="continue-button"
+            />
           </div>
         </main>
       </div>

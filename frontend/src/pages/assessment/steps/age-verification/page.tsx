@@ -1,19 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import PageTransition from '../../page-transitions';
 import { useAgeVerification } from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
 import { AgeRange } from '@/src/pages/assessment/context/types';
+import ContinueButton from '../components/ContinueButton';
 
 export default function AgeVerificationPage() {
   const { age, setAge } = useAgeVerification();
   const location = useLocation();
   const navigate = useNavigate();
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
 
   // Local state to ensure UI updates immediately
   const [selectedAge, setSelectedAge] = useState<AgeRange | undefined>(age);
@@ -186,19 +188,12 @@ export default function AgeVerificationPage() {
               </Button>
             </Link>
 
-            <Button
-              className={`flex items-center px-6 py-6 text-lg ${
-                selectedAge
-                  ? 'bg-pink-600 text-white hover:bg-pink-700'
-                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
-              }`}
-              disabled={!selectedAge}
-              data-testid="continue-button"
-              onClick={handleContinue}
-            >
-              Continue
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+            <ContinueButton
+              ref={continueButtonRef}
+              isEnabled={!!selectedAge}
+              onContinue={handleContinue}
+              dataTestId="continue-button"
+            />
           </div>
         </main>
       </div>

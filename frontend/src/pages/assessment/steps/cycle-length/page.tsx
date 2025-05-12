@@ -5,11 +5,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
-import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
+import { ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import { useCycleLength } from '@/src/pages/assessment/steps/cycle-length/hooks/use-cycle-length';
 import { CycleLength } from '@/src/pages/assessment/context/types';
 import PageTransition from '../../page-transitions';
+import ContinueButton from '../components/ContinueButton';
 
 export default function CycleLengthPage() {
   const { cycleLength, setCycleLength } = useCycleLength();
@@ -280,20 +281,12 @@ export default function CycleLengthPage() {
               Back
             </Button>
 
-            <Button
-              className={`flex items-center px-6 py-6 text-lg ${
-                selectedLength
-                  ? 'bg-pink-600 text-white hover:bg-pink-700'
-                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
-              }`}
-              disabled={!selectedLength}
+            <ContinueButton
               ref={continueButtonRef}
-              data-testid="continue-button"
-              onClick={handleContinue}
-            >
-              Continue
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+              isEnabled={!!selectedLength}
+              onContinue={handleContinue}
+              dataTestId="continue-button"
+            />
           </div>
         </main>
       </div>

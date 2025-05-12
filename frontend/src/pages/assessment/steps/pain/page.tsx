@@ -5,11 +5,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
-import { ChevronRight, ChevronLeft, InfoIcon } from 'lucide-react';
+import { ChevronLeft, InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
 import { usePainLevel } from '@/src/pages/assessment/steps/pain/hooks/use-pain-level';
 import { PainLevel } from '@/src/pages/assessment/context/types';
+import ContinueButton from '../components/ContinueButton';
 
 export default function PainPage() {
   const { painLevel, setPainLevel } = usePainLevel();
@@ -276,20 +277,12 @@ export default function PainPage() {
               Back
             </Button>
 
-            <Button
-              className={`flex items-center px-6 py-6 text-lg ${
-                selectedPain
-                  ? 'bg-pink-600 text-white hover:bg-pink-700'
-                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
-              }`}
-              disabled={!selectedPain}
+            <ContinueButton
               ref={continueButtonRef}
-              data-testid="continue-button"
-              onClick={handleContinue}
-            >
-              Continue
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+              isEnabled={!!selectedPain}
+              onContinue={handleContinue}
+              dataTestId="continue-button"
+            />
           </div>
         </main>
       </div>
