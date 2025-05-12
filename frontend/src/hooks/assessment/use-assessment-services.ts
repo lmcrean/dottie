@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAssessmentContext } from './use-assessment-context';
-import { determinePattern } from '../../services/assessment/determinePattern';
-import { generateRecommendations } from '../../services/assessment/generateRecommendations';
+import { determinePattern } from '../../pages/assessment/services/determinePattern';
+import { generateRecommendations } from '../../pages/assessment/services/generateRecommendations';
 /**
  * Hook that bridges assessment context with assessment services
  * Handles processing assessment data through various services and updating context

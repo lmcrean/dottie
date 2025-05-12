@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAssessmentContext } from './use-assessment-context';
-import { determinePattern } from '../../services/assessment/determinePattern';
-import { generateRecommendations } from '../../services/assessment/generateRecommendations';
+import { determinePattern } from '../../pages/assessment/services/determinePattern';
+import { generateRecommendations } from '../../pages/assessment/services/generateRecommendations';
 
 export function useAssessmentSubmission() {
   const { state, setResult, resetResult } = useAssessmentContext();
