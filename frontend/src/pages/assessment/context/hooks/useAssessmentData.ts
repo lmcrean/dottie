@@ -29,6 +29,8 @@ export const useAssessmentData = () => {
   });
 
   useEffect(() => {
+    console.log('useAssessmentData - Context result:', result);
+
     // Only access sessionStorage if context data isn't available
     if (!result) {
       // Helper function to safely parse JSON or return default
@@ -43,21 +45,27 @@ export const useAssessmentData = () => {
 
       // Load data from session storage as fallback when context is empty
       const storedAge = sessionStorage.getItem('age');
+      console.log('useAssessmentData - SessionStorage age raw:', storedAge);
       const storedCycleLength = sessionStorage.getItem('cycleLength');
       const storedPeriodDuration = sessionStorage.getItem('periodDuration');
       const storedFlowLevel = sessionStorage.getItem('flowHeaviness');
       const storedPainLevel = sessionStorage.getItem('painLevel');
       const storedSymptoms = sessionStorage.getItem('symptoms');
 
+      const parsedAge = parseJSON(storedAge, '');
+      console.log('useAssessmentData - SessionStorage age parsed:', parsedAge);
+
       // Only update state from sessionStorage if context is missing
       const updatedData: Partial<AssessmentData> = {
-        age: parseJSON(storedAge, ''),
+        age: parsedAge,
         cycleLength: parseJSON(storedCycleLength, ''),
         periodDuration: parseJSON(storedPeriodDuration, ''),
         flowLevel: parseJSON(storedFlowLevel, ''),
         painLevel: parseJSON(storedPainLevel, ''),
         symptoms: parseJSON(storedSymptoms, [])
       };
+
+      console.log('useAssessmentData - Using sessionStorage data:', updatedData);
 
       // Only use sessionStorage for pattern determination if needed
       let determinedPattern: MenstrualPattern = 'regular';
@@ -88,6 +96,8 @@ export const useAssessmentData = () => {
     } else {
       // When context data is available, use it exclusively
       // Extract data from context
+      console.log('useAssessmentData - Using context data, age:', result.age);
+
       const updatedData: Partial<AssessmentData> = {
         age: result.age || '',
         cycleLength: result.cycle_length || '',
@@ -96,6 +106,8 @@ export const useAssessmentData = () => {
         painLevel: result.pain_level || '',
         symptoms: [...(result.physical_symptoms || []), ...(result.emotional_symptoms || [])]
       };
+
+      console.log('useAssessmentData - Mapped context data:', updatedData);
 
       // Determine pattern based on context values
       let determinedPattern: MenstrualPattern = 'regular';
@@ -133,6 +145,9 @@ export const useAssessmentData = () => {
   const setIsClamped = (value: boolean) => {
     setData((current) => ({ ...current, isClamped: value }));
   };
+
+  // Debug the final data state
+  console.log('useAssessmentData - Final data state:', data);
 
   return {
     ...data,
