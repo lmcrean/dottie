@@ -1,5 +1,6 @@
 import { apiClient } from '../../../core/apiClient';
 import { Assessment } from '../../types';
+import axios from 'axios';
 
 /**
  * Get list of all assessments for the current user
@@ -11,7 +12,15 @@ export const getList = async (): Promise<Assessment[]> => {
     const response = await apiClient.get('/api/assessment/list');
     return response.data;
   } catch (error) {
-    console.error('Failed to get assessments:', error);
+    // Only log non-404 errors, as 404 is expected when no assessments exist
+    if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
+      console.error('Failed to get assessments:', error);
+    }
+
+    // If the error is a 404 (Not Found), return an empty array instead of throwing
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return [];
+    }
     throw error;
   }
 };
