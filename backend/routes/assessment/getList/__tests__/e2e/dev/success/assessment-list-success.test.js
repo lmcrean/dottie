@@ -147,29 +147,15 @@ describe("Assessment List Endpoint - Success Cases", () => {
     console.log("Response status:", response.status);
     console.log("Response body:", response.body);
 
-    // During transition, the API might return either:
-    // 1. 200 with an array of assessments (ideal)
-    // 2. 404 "No assessments found" - also acceptable
+    // API now always returns 200 with an array (possibly empty)
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
     
-    if (response.status === 200) {
-      expect(Array.isArray(response.body)).toBe(true);
-      
-      // These minimal checks verify the structure but not actual data
-      if (response.body.length > 0) {
-        const assessment = response.body[0];
-        expect(assessment).toHaveProperty("id");
-        expect(assessment).toHaveProperty("userId");
-      }
-    } else if (response.status === 404) {
-      // During the refactoring, a 404 with "No assessments found" is also acceptable
-      // The database may have different schemas across environments
-      console.log("Received 404 - accepting as valid response during refactoring");
-      
-      // Verify the error message format
-      expect(response.body).toHaveProperty("message");
-    } else {
-      // Any other status is unexpected
-      expect(response.status).toBe(200);
+    // These minimal checks verify the structure but not actual data
+    if (response.body.length > 0) {
+      const assessment = response.body[0];
+      expect(assessment).toHaveProperty("id");
+      expect(assessment).toHaveProperty("userId");
     }
   });
 });
