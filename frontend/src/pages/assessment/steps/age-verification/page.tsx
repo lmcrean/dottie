@@ -29,11 +29,12 @@ export default function AgeVerificationPage() {
       if (storedAge) {
         const typedAge = storedAge as AgeRange;
         setSelectedAge(typedAge);
-        // Also update context from sessionStorage
+        // Also update context from sessionStorage but don't include in dependency array
         setAge(typedAge);
       }
     }
-  }, [age, setAge]);
+    // Only depend on age, not setAge to prevent infinite loops
+  }, [age]);
 
   const handleOptionClick = (value: AgeRange) => {
     // Update local state first for immediate UI feedback
@@ -44,6 +45,13 @@ export default function AgeVerificationPage() {
 
     // Also save to sessionStorage as backup/persistence
     sessionStorage.setItem('age', value);
+
+    // Focus the continue button for better accessibility
+    setTimeout(() => {
+      if (continueButtonRef.current) {
+        continueButtonRef.current.focus();
+      }
+    }, 100);
   };
 
   const handleContinue = () => {
@@ -51,9 +59,26 @@ export default function AgeVerificationPage() {
       const queryParams = location.search.includes('mode=quickresponse')
         ? '?mode=quickresponse'
         : '';
-      navigate(`/assessment/cycle-length${queryParams}`);
+      // Make sure we're using the most recent selectedAge value
+      // Force navigation to the next page
+      console.log('Navigating to next page with age:', selectedAge);
+      navigate(`/assessment/cycle-length${queryParams}`, { replace: false });
     }
   };
+
+  // Add keyboard navigation support
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && selectedAge) {
+        handleContinue();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedAge]);
 
   return (
     <PageTransition>
