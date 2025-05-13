@@ -6,7 +6,7 @@ import { MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { ChatModal } from '@/src/pages/chat/page';
 import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
-import { useAssessmentData } from './hooks/useAssessmentData';
+import { useAssessmentData } from '../context/hooks/useAssessmentData';
 import { ResultsTable } from './components/ResultsTable';
 import { SaveResults } from './components/SaveResults';
 import { patternData } from './utils/patternData';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardContent } from '@/src/components/ui/card';
-import { AssessmentData } from '../hooks/useAssessmentData';
+import { AssessmentData } from '../../context/hooks/useAssessmentData';
 import {
   AgeRange,
   CycleLength,
