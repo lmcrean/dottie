@@ -110,11 +110,8 @@ export const listAssessments = async (req, res) => {
 
     // Use Assessment model to get list (handles both formats automatically)
     const userAssessments = await Assessment.listByUser(userId)
-    if (userAssessments && userAssessments.length > 0) {
-      return res.status(200).json(userAssessments);
-    } else {
-      return res.status(404).json({ message: 'No assessments found for this user' });
-    }
+    // Return empty array with 200 status instead of 404 when no assessments found
+    return res.status(200).json(userAssessments || []);
   } catch (error) {
     console.error('Error fetching assessments:', error);
     res.status(500).json({ error: 'Failed to fetch assessments' });
