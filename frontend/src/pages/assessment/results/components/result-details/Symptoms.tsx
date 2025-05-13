@@ -22,7 +22,8 @@ export const Symptoms = ({
       const maxHeight = parseFloat(getComputedStyle(ref.current).lineHeight) * 2;
       setIsClamped(ref.current.scrollHeight > maxHeight);
     }
-  }, [symptoms, setIsClamped]);
+    // Remove setIsClamped from dependencies to prevent infinite loop
+  }, [symptoms]);
 
   return (
     <div className="flex w-full max-w-full items-start gap-3 rounded-xl bg-gray-50 p-4">
@@ -37,6 +38,7 @@ export const Symptoms = ({
         <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
         <p
           id="symptoms-content"
+          data-testid="symptoms-content"
           title={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
           aria-label={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
           ref={ref}
@@ -52,6 +54,7 @@ export const Symptoms = ({
             className="text-sm text-pink-600 hover:text-pink-700"
             aria-expanded={expandableSymptoms}
             aria-controls="symptoms-content"
+            data-testid="symptoms-toggle-button"
           >
             {expandableSymptoms ? 'View Less' : 'View More'}
           </button>
