@@ -9,7 +9,7 @@ import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
 import { useAssessmentData } from '../context/hooks/useAssessmentData';
 import { ResultsTable } from './components/ResultsTable';
 import { SaveResults } from './components/SaveResults';
-import { patternData } from './utils/patternData';
+import { PATTERN_DATA } from '../context/types/recommendations';
 import { DeterminedPattern } from './components/result-details';
 
 export default function ResultsPage() {
@@ -88,14 +88,14 @@ export default function ResultsPage() {
           <FullscreenChat
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[assessmentData.pattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentData.pattern].title}. Can you tell me more about what this means?`}
           />
         ) : (
           <ChatModal
             isOpen={isChatOpen}
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${patternData[assessmentData.pattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentData.pattern].title}. Can you tell me more about what this means?`}
           />
         ))}
     </div>
