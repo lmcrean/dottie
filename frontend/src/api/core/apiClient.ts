@@ -8,8 +8,8 @@ import { getAuthToken, setAuthToken, setRefreshToken } from './tokenManager';
 // Determine API base URL with fallbacks
 const getBaseUrl = () => {
   // First priority: Vercel deployment URL if we're connecting to the deployed backend
-  const vercelUrl = "https://dottie-backend.vercel.app";
-  
+  const vercelUrl = 'https://dottie-backend.vercel.app';
+
   // Second priority: Use environment variable if available
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
@@ -85,8 +85,14 @@ apiClient.interceptors.response.use(
   (error) => {
     // Handle common errors here
     if (error.response) {
-      // Server responded with an error status
-      console.error(`API Error: ${error.response.status}`, error.response.data);
+      // Don't log 404 errors from assessment list endpoint as they're expected when no assessments exist
+      const isAssessmentListNotFound =
+        error.response.status === 404 && error.config.url?.includes('/api/assessment/list');
+
+      // Only log errors that aren't expected "not found" cases
+      if (!isAssessmentListNotFound) {
+        console.error(`API Error: ${error.response.status}`, error.response.data);
+      }
 
       // Handle 401 Unauthorized - redirect to login
       if (error.response.status === 401) {
