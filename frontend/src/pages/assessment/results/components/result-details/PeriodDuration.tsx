@@ -12,7 +12,9 @@ export const PeriodDuration = ({ periodDuration }: PeriodDurationProps) => {
       </div>
       <div>
         <h3 className="mb-2 text-lg font-medium">Period Duration</h3>
-        <p className="text-gray-600">{periodDuration || 'Not specified'}</p>
+        <p className="text-gray-600" data-testid="period-duration-value">
+          {periodDuration || 'Not specified'}
+        </p>
       </div>
     </div>
   );

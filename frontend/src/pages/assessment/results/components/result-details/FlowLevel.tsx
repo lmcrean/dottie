@@ -12,7 +12,9 @@ export const FlowLevel = ({ flowLevel }: FlowLevelProps) => {
       </div>
       <div>
         <h3 className="mb-2 text-lg font-medium">Flow Level</h3>
-        <p className="text-gray-600">{flowLevel || 'Not specified'}</p>
+        <p className="text-gray-600" data-testid="flow-level-value">
+          {flowLevel || 'Not specified'}
+        </p>
       </div>
     </div>
   );
