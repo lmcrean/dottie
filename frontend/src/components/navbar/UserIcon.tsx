@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { User, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { assessmentApi } from '@/src/api/assessment';
+import { assessmentApi } from '@/src/pages/assessment/api';
 import { useAuth } from '@/src/context/auth/useAuthContext';
 
 const UserIcon: React.FC = () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import * as tokenManager from '../../../core/tokenManager';
+import * as tokenManager from '../../../../../api/core/tokenManager';
 
 // Mock tokenManager and apiClient
 vi.mock('../../../core/tokenManager', () => ({
@@ -16,7 +16,7 @@ vi.mock('../../../core/apiClient', () => ({
 }));
 
 // Import after mocking
-import { apiClient } from '../../../core/apiClient';
+import { apiClient } from '../../../../../api/core/apiClient';
 import { deleteById } from '../../requests/deleteById/Request';
 
 describe('Assessment API Endpoints', () => {

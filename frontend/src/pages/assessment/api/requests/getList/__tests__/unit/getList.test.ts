@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getList } from '../../Request';
-import { apiClient } from '../../../../../core/apiClient';
+import { apiClient } from '../../../../../../../api/core/apiClient';
 
 // Mock the apiClient
 vi.mock('../../../../../core/apiClient', () => ({

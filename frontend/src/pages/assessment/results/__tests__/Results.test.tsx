@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import ResultsPage from '../page'
 import { AuthContext } from '@/src/context/auth/AuthContext'
-import { postSend } from '@/src/api/assessment/requests/postSend/Request'
+import { postSend } from '@/src/pages/assessment/api/requests/postSend/Request'
 import * as useAssessmentResultModule from '@/src/pages/assessment/context/hooks/use-assessment-result'
 
 // Mock the assessment result hook

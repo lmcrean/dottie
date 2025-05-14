@@ -5,7 +5,7 @@ import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/context/auth/useAuthContext';
 import { useAssessmentResult } from '@/src/pages/assessment/context/hooks/use-assessment-result';
-import { postSend } from '@/src/api/assessment/requests/postSend/Request';
+import { postSend } from '@/src/pages/assessment/api/requests/postSend/Request';
 
 export const SaveResults = () => {
   const navigate = useNavigate();

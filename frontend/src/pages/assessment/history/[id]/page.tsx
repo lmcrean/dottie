@@ -2,8 +2,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { format, isValid, parseISO } from 'date-fns';
 import { ArrowLeft, Calendar, Activity, Droplet, Heart, Brain, X } from 'lucide-react';
-import { Assessment } from '@/src/api/assessment/types';
-import { assessmentApi } from '@/src/api/assessment';
+import { Assessment } from '@/src/pages/assessment/api/types';
+import { assessmentApi } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
 
 // Utility function to ensure data is an array

@@ -3,7 +3,7 @@ export interface Assessment {
   user_id: string;
   created_at: string;
   updated_at: string;
-  
+
   // Flattened fields
   age: string;
   pattern: string;
@@ -17,7 +17,7 @@ export interface Assessment {
     title: string;
     description: string;
   }>;
-  
+
   // For backward compatibility during transition to flattened structure
   assessment_data?: {
     date: string;

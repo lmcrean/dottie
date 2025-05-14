@@ -178,7 +178,7 @@ describe('Assessment Data Flow', () => {
 
   it('should handle error cases', async () => {
     // 1. Mock API error
-    const { postSend } = await import('@/src/api/assessment/requests/postSend/Request');
+    const { postSend } = await import('@/src/pages/assessment/api/requests/postSend/Request');
     if (typeof postSend === 'function' && typeof vi.mocked === 'function') {
       vi.mocked(postSend).mockRejectedValueOnce(new Error('API Error'));
     }

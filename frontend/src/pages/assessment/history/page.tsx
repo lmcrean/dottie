@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { Calendar, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { assessmentApi, type Assessment } from '@/src/api/assessment';
+import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
 import PageTransition from '../page-transitions';
 
@@ -12,8 +12,6 @@ export default function HistoryPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [assessmentToDelete, setAssessmentToDelete] = useState<string | null>(null);
 
   const formatValue = (value: string | undefined): string => {
     if (!value) return 'Not provided';
@@ -38,7 +36,7 @@ export default function HistoryPage() {
         const timestamp = parseFloat(dateString);
         const date = new Date(timestamp);
         if (isValid(date)) {
-          return format(date, "MMM d, yyyy");
+          return format(date, 'MMM d, yyyy');
         }
       }
 
