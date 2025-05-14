@@ -3,8 +3,8 @@ import EndpointButton from './EndpointButton';
 import JsonDisplay from './JsonDisplay';
 import ApiResponse from './ApiResponse';
 import InputForm from './InputForm';
-import { apiClient } from '../../api';
-import { authApi } from '../../api/auth';
+import { apiClient } from '../../../api';
+import { authApi } from '../../../api/auth';
 import { AxiosError } from 'axios';
 
 interface InputField {

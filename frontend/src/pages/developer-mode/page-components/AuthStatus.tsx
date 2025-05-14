@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InputForm } from './index';
-import { LoginInput } from '../../api/auth/types';
+import { LoginInput } from '../../../api/auth/types';
 import { testCredentialsManager } from './index';
 
 interface AuthStatusProps {

@@ -2,57 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { EndpointRow as BaseEndpointRow, testCredentialsManager } from '../../../page-components';
 
 // Track the last API response globally for debugging
-let lastLoginResponse: any = null;
-
-// Import authApi in a way that won't break if it's not available
-let authApi: any = {
-  verifyToken: () => {
-    // Implement a direct token verification function using localStorage
-    const authToken = localStorage.getItem('authToken');
-    const refreshToken = localStorage.getItem('refresh_token');
-
-    return {
-      data: {
-        success: true,
-        authTokenExists: !!authToken,
-        refreshTokenExists: !!refreshToken,
-        authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-        refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null
-      }
-    };
-  }
-};
+let lastLoginResponse: Record<string, unknown> = null as unknown as Record<string, unknown>;
 
 // Try to import the real API, but don't fail if not available
 try {
   // Use a mock implementation instead of dynamic import
   // This prevents path resolution issues when moving files
-  authApi = {
-    verifyToken: () => {
-      let authToken = null;
-      let refreshToken = null;
-
-      try {
-        // Use only snake_case naming convention
-        authToken = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
-
-        refreshToken =
-          typeof localStorage !== 'undefined' ? localStorage.getItem('refresh_token') : null;
-      } catch (e) {
-        console.warn('LocalStorage not available, using mock values');
-      }
-
-      return {
-        data: {
-          success: true,
-          authTokenExists: !!authToken,
-          refreshTokenExists: !!refreshToken,
-          authTokenValue: authToken ? `${authToken.substring(0, 10)}...` : null,
-          refreshTokenValue: refreshToken ? `${refreshToken.substring(0, 10)}...` : null
-        }
-      };
-    }
-  };
 } catch (err) {
   console.warn('Auth API not available, using mock', err);
 }
@@ -62,13 +17,13 @@ export default function EndpointRow() {
     email: string;
     password: string;
   } | null>(null);
-  const [verificationResponse, setVerificationResponse] = useState<any>(null);
+  const [verificationResponse, setVerificationResponse] = useState<Record<string, unknown> | null>(null);
   const [verifyStatus, setVerifyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isVerifying, setIsVerifying] = useState(false);
   const [manualTokenCreated, setManualTokenCreated] = useState(false);
-  const [lastApiResponse, setLastApiResponse] = useState<any>(null);
+  const [lastApiResponse, setLastApiResponse] = useState<Record<string, unknown> | null>(null);
 
-  const responseMonitorInterval = useRef<any>(null);
+  const responseMonitorInterval = useRef<number | null>(null);
 
   // Monitor for API responses
   useEffect(() => {
@@ -107,7 +62,6 @@ export default function EndpointRow() {
       };
 
       // Also try to monitor XMLHttpRequest for axios
-      const originalXhrOpen = XMLHttpRequest.prototype.open;
       const originalXhrSend = XMLHttpRequest.prototype.send;
 
       // Add custom property to XMLHttpRequest prototype
@@ -133,15 +87,15 @@ export default function EndpointRow() {
           method,
           url,
           async,
-          username || undefined,
-          password || undefined
+          username as string | null | undefined,
+          password as string | null | undefined
         );
       };
 
       XMLHttpRequest.prototype.send = function (this: CustomXMLHttpRequest, ...args) {
         if (this._isLoginRequest) {
           const originalOnload = this.onload;
-          this.onload = function (e) {
+          this.onload = function (this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) {
             try {
               if (this.responseText) {
                 const data = JSON.parse(this.responseText);
@@ -159,12 +113,12 @@ export default function EndpointRow() {
                 // Dispatch auth token changed event
                 window.dispatchEvent(new Event('authToken_changed'));
               }
-            } catch (e) {
-              console.error('[Response Monitor] Error parsing XHR response:', e);
+            } catch (error) {
+              console.error('[Response Monitor] Error parsing XHR response:', error);
             }
 
             if (originalOnload) {
-              originalOnload.call(this, e);
+              originalOnload.call(this, ev);
             }
           };
         }
@@ -176,14 +130,16 @@ export default function EndpointRow() {
     setupResponseMonitoring();
 
     // Also check periodically if a global response variable was set
-    responseMonitorInterval.current = setInterval(() => {
+    responseMonitorInterval.current = window.setInterval(() => {
       if (lastLoginResponse && !lastApiResponse) {
         setLastApiResponse(lastLoginResponse);
       }
     }, 1000);
 
     return () => {
-      clearInterval(responseMonitorInterval.current);
+      if (responseMonitorInterval.current !== null) {
+        clearInterval(responseMonitorInterval.current);
+      }
     };
   }, [lastApiResponse]);
 
@@ -248,24 +204,20 @@ export default function EndpointRow() {
 
       // Try to find a token
       let token = null;
-      let tokenField = null;
 
       for (const field of possibleTokenFields) {
         if (lastApiResponse[field]) {
           token = lastApiResponse[field];
-          tokenField = field;
           break;
         }
       }
 
       // Try to find a refresh token
       let refreshToken = null;
-      let refreshField = null;
 
       for (const field of possibleRefreshTokenFields) {
         if (lastApiResponse[field]) {
           refreshToken = lastApiResponse[field];
-          refreshField = field;
           break;
         }
       }
@@ -400,6 +352,7 @@ export default function EndpointRow() {
           <div className="mb-4 ml-4 mt-2 flex flex-col space-y-3">
             <div className="flex items-center">
               <button
+                type="button"
                 onClick={handleUseSignupCredentials}
                 className="rounded-md bg-purple-600 px-3 py-1 text-sm text-white hover:bg-purple-700 focus:outline-none focus:ring-2"
               >
@@ -419,6 +372,7 @@ export default function EndpointRow() {
             {/* Manual Token Creation Button */}
             <div className="flex items-center">
               <button
+                type="button"
                 onClick={handleCreateTestToken}
                 className="rounded-md bg-yellow-600 px-3 py-1 text-sm text-white hover:bg-yellow-700 focus:outline-none focus:ring-2"
               >
@@ -437,6 +391,7 @@ export default function EndpointRow() {
             {/* Verify Auth Token Button */}
             <div className="flex items-center">
               <button
+                type="button"
                 onClick={handleVerifyToken}
                 disabled={isVerifying}
                 className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2"
@@ -493,6 +448,7 @@ export default function EndpointRow() {
             {/* Extract Tokens from Last Response Button */}
             <div className="mt-2 flex items-center">
               <button
+                type="button"
                 onClick={handleExtractFromResponse}
                 className="rounded-md bg-green-600 px-3 py-1 text-sm text-white hover:bg-green-700 focus:outline-none focus:ring-2"
               >

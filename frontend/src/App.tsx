@@ -22,8 +22,8 @@ import HistoryPage from './pages/assessment/history/page';
 import DetailsPage from './pages/assessment/history/[id]/page';
 
 // Import TestPage component
-import TestPage from './test_page/page';
-import ScrollToTop from './test_page/page-components/scroll-to-top';
+import TestPage from './pages/developer-mode/page';
+import ScrollToTop from './pages/developer-mode/page-components/scroll-to-top';
 import LandingPage from './pages/landing-page/page';
 import UITestPageSwitch from './components/developer-utils/UITestPageSwitch';
 

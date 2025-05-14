@@ -9,8 +9,8 @@ import {
   ChatEndpoints
 } from './test-endpoint-table';
 import { AuthStatus } from './page-components';
-import { authApi } from '../api/auth';
-import { LoginInput } from '../api/auth/types';
+import { authApi } from '../../api/auth';
+import { LoginInput } from '../../api/auth/types';
 
 export default function TestPage() {
   const environment = process.env.NODE_ENV || 'development';

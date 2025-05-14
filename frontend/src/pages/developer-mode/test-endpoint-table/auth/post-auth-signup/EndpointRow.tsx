@@ -74,6 +74,7 @@ export default function EndpointRow() {
         <td colSpan={3}>
           <div className="mb-4 ml-4 mt-2 flex items-center">
             <button
+              type="button"
               onClick={() => generateRandomCredentials()}
               className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2"
             >
