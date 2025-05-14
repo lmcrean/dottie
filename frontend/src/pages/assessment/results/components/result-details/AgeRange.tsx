@@ -16,6 +16,12 @@ export const AgeRange = ({ age }: AgeRangeProps) => {
   // Convert raw age value to display text
   const displayAge = age && ageDisplayMap[age] ? ageDisplayMap[age] : age;
 
+  // Debug information
+  console.log('AgeRange component - age prop:', age);
+  console.log('AgeRange component - age type:', typeof age);
+  console.log('AgeRange component - displayAge:', displayAge);
+  console.log('AgeRange component - ageDisplayMap lookup:', ageDisplayMap[age || '']);
+
   return (
     <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-4">
       <div>
@@ -25,6 +31,9 @@ export const AgeRange = ({ age }: AgeRangeProps) => {
         <h3 className="mb-2 text-lg font-medium">Age Range</h3>
         <p className="text-gray-600" data-testid="age-value">
           {displayAge || 'Not specified'}
+        </p>
+        <p className="text-xs text-gray-400" data-testid="debug-age-raw">
+          Raw value: &ldquo;{age}&rdquo;
         </p>
       </div>
     </div>
