@@ -12,7 +12,9 @@ export const CycleLength = ({ cycleLength }: CycleLengthProps) => {
       </div>
       <div>
         <h3 className="mb-2 text-lg font-medium">Cycle Length</h3>
-        <p className="text-gray-600">{cycleLength || 'Not specified'}</p>
+        <p className="text-gray-600" data-testid="cycle-length-value">
+          {cycleLength || 'Not specified'}
+        </p>
       </div>
     </div>
   );
