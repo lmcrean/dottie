@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CardContent } from '@/src/components/ui/card';
 import { AssessmentData } from '../../context/hooks/useAssessmentData';
 import {
@@ -29,6 +29,22 @@ export const ResultsTable = ({ data, setIsClamped, setExpandableSymptoms }: Resu
     expandableSymptoms,
     isClamped
   } = data;
+
+  // Debug information
+  useEffect(() => {
+    console.log('DEBUG [ResultsTable Component]');
+    console.log('  - Received data:', data);
+    console.log('  - Age from data:', age);
+    console.log('  - Age type:', typeof age);
+    console.log('  - All props:', {
+      pattern,
+      age,
+      cycleLength,
+      periodDuration,
+      flowLevel,
+      painLevel
+    });
+  }, [data, pattern, age, cycleLength, periodDuration, flowLevel, painLevel]);
 
   return (
     <CardContent className="pb-8 pt-8">
