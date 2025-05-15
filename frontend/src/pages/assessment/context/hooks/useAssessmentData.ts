@@ -31,82 +31,8 @@ export const useAssessmentData = () => {
   useEffect(() => {
     console.log('useAssessmentData - Context result:', result);
 
-    // Only access sessionStorage if context data isn't available
-    if (!result) {
-      // Helper function to safely parse JSON or return default
-      const parseJSON = <T>(jsonString: string | null, defaultValue: T): T => {
-        if (!jsonString) return defaultValue;
-
-        // For simple string values, don't attempt JSON parsing
-        if (
-          typeof defaultValue === 'string' &&
-          !jsonString.startsWith('{') &&
-          !jsonString.startsWith('[')
-        ) {
-          return jsonString as unknown as T;
-        }
-
-        try {
-          return JSON.parse(jsonString) as T;
-        } catch {
-          return defaultValue;
-        }
-      };
-
-      console.log(
-        'useAssessmentData - Loading data from session storage as fallback when context is empty'
-      );
-      const storedAge = sessionStorage.getItem('age');
-      console.log('useAssessmentData - SessionStorage age raw:', storedAge);
-      const storedCycleLength = sessionStorage.getItem('cycleLength');
-      const storedPeriodDuration = sessionStorage.getItem('periodDuration');
-      const storedFlowLevel = sessionStorage.getItem('flowHeaviness');
-      const storedPainLevel = sessionStorage.getItem('painLevel');
-      const storedSymptoms = sessionStorage.getItem('symptoms');
-
-      const parsedAge = parseJSON(storedAge, '');
-      console.log('useAssessmentData - SessionStorage age parsed:', parsedAge);
-
-      // Only update state from sessionStorage if context is missing
-      const updatedData: Partial<AssessmentData> = {
-        age: parsedAge,
-        cycleLength: parseJSON(storedCycleLength, ''),
-        periodDuration: parseJSON(storedPeriodDuration, ''),
-        flowLevel: parseJSON(storedFlowLevel, ''),
-        painLevel: parseJSON(storedPainLevel, ''),
-        symptoms: parseJSON(storedSymptoms, [])
-      };
-
-      console.log('useAssessmentData - Using sessionStorage data:', updatedData);
-
-      // Only use sessionStorage for pattern determination if needed
-      let determinedPattern: MenstrualPattern = 'regular';
-
-      if (
-        updatedData.cycleLength?.includes('irregular') ||
-        updatedData.cycleLength?.includes('less-than-21')
-      ) {
-        determinedPattern = 'irregular';
-      } else if (
-        updatedData.flowLevel?.includes('heavy') ||
-        updatedData.flowLevel?.includes('very-heavy')
-      ) {
-        determinedPattern = 'heavy';
-      } else if (
-        updatedData.painLevel?.includes('severe') ||
-        updatedData.painLevel?.includes('debilitating')
-      ) {
-        determinedPattern = 'pain';
-      } else if (updatedData.age?.includes('under-13') || updatedData.age?.includes('13-17')) {
-        determinedPattern = 'developing';
-      }
-
-      updatedData.pattern = determinedPattern;
-
-      // Update state with sessionStorage data as fallback
-      setData((current) => ({ ...current, ...updatedData }));
-    } else {
-      // When context data is available, use it exclusively
+    // When context data is available, use it exclusively
+    if (result) {
       // Extract data from context
       console.log('useAssessmentData - Using context data, age:', result.age);
 
@@ -146,6 +72,82 @@ export const useAssessmentData = () => {
       updatedData.pattern = determinedPattern;
 
       // Update the data state with context data
+      setData((current) => ({ ...current, ...updatedData }));
+    } else {
+      // Only access sessionStorage as fallback if context data isn't available
+
+      // Helper function to safely parse JSON or return default
+      const parseJSON = <T>(jsonString: string | null, defaultValue: T): T => {
+        if (!jsonString) return defaultValue;
+
+        // For simple string values, don't attempt JSON parsing
+        if (
+          typeof defaultValue === 'string' &&
+          !jsonString.startsWith('{') &&
+          !jsonString.startsWith('[')
+        ) {
+          return jsonString as unknown as T;
+        }
+
+        try {
+          return JSON.parse(jsonString) as T;
+        } catch {
+          return defaultValue;
+        }
+      };
+
+      // Load data from session storage as fallback when context is empty
+      const storedAge = sessionStorage.getItem('age');
+      console.log('useAssessmentData - SessionStorage age raw:', storedAge);
+      const storedCycleLength = sessionStorage.getItem('cycleLength');
+      const storedPeriodDuration = sessionStorage.getItem('periodDuration');
+      // Check for both possible sessionStorage keys for flow level
+      const storedFlowLevel =
+        sessionStorage.getItem('flowHeaviness') || sessionStorage.getItem('flowLevel');
+      // Check for pain level
+      const storedPainLevel = sessionStorage.getItem('painLevel');
+      const storedSymptoms = sessionStorage.getItem('symptoms');
+
+      const parsedAge = parseJSON(storedAge, '');
+      console.log('useAssessmentData - SessionStorage age parsed:', parsedAge);
+
+      // Update state from sessionStorage if context is missing
+      const updatedData: Partial<AssessmentData> = {
+        age: parsedAge,
+        cycleLength: parseJSON(storedCycleLength, ''),
+        periodDuration: parseJSON(storedPeriodDuration, ''),
+        flowLevel: parseJSON(storedFlowLevel, ''),
+        painLevel: parseJSON(storedPainLevel, ''),
+        symptoms: parseJSON(storedSymptoms, [])
+      };
+
+      console.log('useAssessmentData - Using sessionStorage data:', updatedData);
+
+      // Only use sessionStorage for pattern determination if needed
+      let determinedPattern: MenstrualPattern = 'regular';
+
+      if (
+        updatedData.cycleLength?.includes('irregular') ||
+        updatedData.cycleLength?.includes('less-than-21')
+      ) {
+        determinedPattern = 'irregular';
+      } else if (
+        updatedData.flowLevel?.includes('heavy') ||
+        updatedData.flowLevel?.includes('very-heavy')
+      ) {
+        determinedPattern = 'heavy';
+      } else if (
+        updatedData.painLevel?.includes('severe') ||
+        updatedData.painLevel?.includes('debilitating')
+      ) {
+        determinedPattern = 'pain';
+      } else if (updatedData.age?.includes('under-13') || updatedData.age?.includes('13-17')) {
+        determinedPattern = 'developing';
+      }
+
+      updatedData.pattern = determinedPattern;
+
+      // Update state with sessionStorage data as fallback
       setData((current) => ({ ...current, ...updatedData }));
     }
   }, [result]);
