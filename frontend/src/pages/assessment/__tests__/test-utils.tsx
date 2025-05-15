@@ -11,7 +11,7 @@ import FlowPage from '../steps/flow/page';
 import PainPage from '../steps/pain/page';
 import SymptomsPage from '../steps/symptoms/page';
 import ResultsPage from '../results/page';
-import { AuthProvider } from '@/src/context/auth/AuthContextProvider';
+import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider';
 
 // Mock router
 vi.mock('react-router-dom', async () => {

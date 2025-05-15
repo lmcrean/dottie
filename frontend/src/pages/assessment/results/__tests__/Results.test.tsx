@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import ResultsPage from '../page'
-import { AuthContext } from '@/src/context/auth/AuthContext'
+import { AuthContext } from '@/src/pages/auth/context/AuthContext'
 import { postSend } from '@/src/pages/assessment/api/requests/postSend/Request'
 import * as useAssessmentResultModule from '@/src/pages/assessment/context/hooks/use-assessment-result'
 

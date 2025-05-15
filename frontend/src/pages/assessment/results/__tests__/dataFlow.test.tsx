@@ -16,7 +16,7 @@ import { runPainLevelStep } from './runners/painLevel';
 import { runSymptomsStep } from './runners/symptoms';
 
 // Mock the auth context
-vi.mock('@/src/context/auth/useAuthContext', () => ({
+vi.mock('@/src/pages/auth/context/useAuthContext', () => ({
   useAuth: () => ({
     user: { id: 'test-user-id' }
   })

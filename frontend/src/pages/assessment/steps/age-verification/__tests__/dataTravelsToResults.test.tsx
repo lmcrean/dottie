@@ -37,7 +37,7 @@ vi.mock('@/src/hooks/assessment/use-assessment-result', () => ({
 }));
 
 // Mock the auth context since it's used in ResultsPage
-vi.mock('@/src/context/auth/useAuthContext', () => ({
+vi.mock('@/src/pages/auth/context/useAuthContext', () => ({
   useAuth: () => ({
     user: { id: 'test-user-id' }
   })

@@ -2,7 +2,7 @@ import { authApi } from '@/src/api/auth/index';
 import { LoginInput, SignupInput, User } from '@/src/api/auth/types';
 import { userApi } from '@/src/api/user/index';
 import { ReactNode, useEffect, useState } from 'react';
-import { AuthContext } from '@/src/context/auth/AuthContext';
+import { AuthContext } from '@/src/pages/auth/context/AuthContext';
 import {
   clearAllTokens,
   getAuthToken,
