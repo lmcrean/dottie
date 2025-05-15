@@ -17,7 +17,9 @@ export default function EndpointRow() {
     email: string;
     password: string;
   } | null>(null);
-  const [verificationResponse, setVerificationResponse] = useState<Record<string, unknown> | null>(null);
+  const [verificationResponse, setVerificationResponse] = useState<Record<string, unknown> | null>(
+    null
+  );
   const [verifyStatus, setVerifyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isVerifying, setIsVerifying] = useState(false);
   const [manualTokenCreated, setManualTokenCreated] = useState(false);
@@ -224,11 +226,17 @@ export default function EndpointRow() {
 
       // Store the tokens if found - using snake_case naming convention
       if (token) {
-        localStorage.setItem('authToken', token);
+        localStorage.setItem(
+          'authToken',
+          typeof token === 'string' ? token : JSON.stringify(token)
+        );
       }
 
       if (refreshToken) {
-        localStorage.setItem('refresh_token', refreshToken);
+        localStorage.setItem(
+          'refresh_token',
+          typeof refreshToken === 'string' ? refreshToken : JSON.stringify(refreshToken)
+        );
       }
 
       // Set state to indicate tokens were created
