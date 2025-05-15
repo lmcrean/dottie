@@ -22,7 +22,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as z from 'zod';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 const passwordUpdateSchema = z
   .object({

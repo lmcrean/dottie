@@ -1,6 +1,6 @@
 import AccountLayout from './account-layout';
 import AccountForm from './account-form';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export default function ProfilePage() {
   const { user, isLoading, error } = useAuth();

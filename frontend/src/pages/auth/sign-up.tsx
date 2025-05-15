@@ -9,7 +9,7 @@ import AuthLayout from '@/src/pages/auth/AuthLayout';
 import { useState } from 'react';
 import { PasswordInput } from '@/src/components/user-inputs/PasswordInput';
 import AnimatedLogo from '@/src/pages/landing-page/AnimatedLogo';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export default function SignUpPage() {
   const navigate = useNavigate();

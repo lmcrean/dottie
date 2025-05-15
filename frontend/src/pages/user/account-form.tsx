@@ -1,6 +1,6 @@
 // import { User } from '@/src/api/auth/types';
 import { userApi } from '@/src/api/user';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
