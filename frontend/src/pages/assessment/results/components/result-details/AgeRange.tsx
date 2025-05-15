@@ -32,9 +32,6 @@ export const AgeRange = ({ age }: AgeRangeProps) => {
         <p className="text-gray-600" data-testid="age-value">
           {displayAge || 'Not specified'}
         </p>
-        <p className="text-xs text-gray-400" data-testid="debug-age-raw">
-          Raw value: &ldquo;{age}&rdquo;
-        </p>
       </div>
     </div>
   );
