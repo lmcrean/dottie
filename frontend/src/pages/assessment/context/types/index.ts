@@ -59,11 +59,11 @@ export type EmotionalSymptomId =
 
 // Main assessment result interface
 export interface AssessmentResult {
-  age: AgeRange;
-  cycle_length: CycleLength;
-  period_duration: PeriodDuration;
-  flow_heaviness: FlowHeaviness;
-  pain_level: PainLevel;
+  age?: AgeRange;
+  cycle_length?: CycleLength;
+  period_duration?: PeriodDuration;
+  flow_heaviness?: FlowHeaviness;
+  pain_level?: PainLevel;
   physical_symptoms: PhysicalSymptomId[];
   emotional_symptoms: EmotionalSymptomId[];
   pattern?: MenstrualPattern;
