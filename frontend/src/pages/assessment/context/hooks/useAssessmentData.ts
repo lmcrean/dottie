@@ -53,7 +53,9 @@ export const useAssessmentData = () => {
         }
       };
 
-      // Load data from session storage as fallback when context is empty
+      console.log(
+        'useAssessmentData - Loading data from session storage as fallback when context is empty'
+      );
       const storedAge = sessionStorage.getItem('age');
       console.log('useAssessmentData - SessionStorage age raw:', storedAge);
       const storedCycleLength = sessionStorage.getItem('cycleLength');
