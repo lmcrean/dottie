@@ -36,6 +36,16 @@ export const useAssessmentData = () => {
       // Helper function to safely parse JSON or return default
       const parseJSON = <T>(jsonString: string | null, defaultValue: T): T => {
         if (!jsonString) return defaultValue;
+
+        // For simple string values, don't attempt JSON parsing
+        if (
+          typeof defaultValue === 'string' &&
+          !jsonString.startsWith('{') &&
+          !jsonString.startsWith('[')
+        ) {
+          return jsonString as unknown as T;
+        }
+
         try {
           return JSON.parse(jsonString) as T;
         } catch {
