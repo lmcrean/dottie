@@ -15,28 +15,62 @@ export function assessmentResultReducer(
 ): AssessmentResultState {
   switch (action.type) {
     case 'SET_RESULT':
+      console.log('Reducer - SET_RESULT action with payload:', action.payload);
       return {
         ...state,
         result: action.payload,
         isComplete: true
       };
-    case 'UPDATE_RESULT':
-      return {
+    case 'UPDATE_RESULT': {
+      console.log('Reducer - UPDATE_RESULT action with payload:', action.payload);
+      console.log('Reducer - Current state:', state);
+
+      // Special handling for pain_level for debugging
+      if ('pain_level' in action.payload) {
+        console.log('Reducer - Updating pain_level to:', action.payload.pain_level);
+      }
+
+      // Handle case where result is null and this is the first update
+      if (!state.result) {
+        const updatedState = {
+          ...state,
+          result: {
+            physical_symptoms: [],
+            emotional_symptoms: [],
+            ...action.payload
+          }
+        };
+
+        console.log('Reducer - New state after update:', updatedState);
+        return updatedState;
+      }
+
+      // Handle normal update when result already exists
+      const updatedState = {
         ...state,
-        result: state.result ? { ...state.result, ...action.payload } : null
+        result: { ...state.result, ...action.payload }
       };
+
+      console.log('Reducer - New state after update:', updatedState);
+      return updatedState;
+    }
     case 'RESET_RESULT':
+      console.log('Reducer - RESET_RESULT action');
       return initialState;
-    case 'SET_PATTERN':
+    case 'SET_PATTERN': {
+      console.log('Reducer - SET_PATTERN action with payload:', action.payload);
       return {
         ...state,
         result: state.result ? { ...state.result, pattern: action.payload } : null
       };
-    case 'SET_RECOMMENDATIONS':
+    }
+    case 'SET_RECOMMENDATIONS': {
+      console.log('Reducer - SET_RECOMMENDATIONS action');
       return {
         ...state,
         result: state.result ? { ...state.result, recommendations: action.payload } : null
       };
+    }
     default:
       return state;
   }
