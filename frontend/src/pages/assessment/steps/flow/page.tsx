@@ -50,7 +50,6 @@ export default function FlowPage() {
   const handleOptionClick = (value: FlowHeaviness) => {
     setSelectedFlow(value);
     setFlowHeaviness(value);
-    sessionStorage.setItem('flowLevel', value);
   };
 
   const handleContinue = () => {
