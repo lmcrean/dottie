@@ -1,31 +1,20 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Vite not nextjs
-import { Wrench, Zap } from 'lucide-react'; // Or use emoji directly
-import { Button } from '@/src/components/buttons/button';
+import { Link, useLocation } from 'react-router-dom'; // Vite not nextjs. useNavigate and Button removed.
+import { Wrench } from 'lucide-react'; // Zap removed
+// Button import removed
+import QuickCompleteButton from '@/src/pages/assessment/steps/components/QuickCompleteButton';
 
 export default function UITestPageSwitch() {
   const location = useLocation();
-  const navigate = useNavigate();
+  // navigate removed
   const isTestPage = location.pathname === '/test-page';
-  const isAgeVerificationPage = location.pathname === '/assessment/age-verification';
+  // isAgeVerificationPage removed
 
-  const handleQuickResponse = () => {
-    const params = new URLSearchParams(location.search);
-    params.set('mode', 'quickresponse');
-
-    navigate(`${location.pathname}?${params.toString()}`);
-  };
+  // handleQuickResponse function removed
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {isAgeVerificationPage ? (
-        <Button
-          className="mb-2 flex items-center gap-2 rounded-full bg-gray-800/90 px-4 py-2 text-white shadow-lg transition-all hover:bg-gray-900"
-          onClick={handleQuickResponse}
-        >
-          <Zap className="h-5 w-5" fill="yellow" strokeWidth={0} />
-          <span className="hidden text-base font-bold sm:inline">Quick Complete</span>
-        </Button>
-      ) : null}
+      <QuickCompleteButton />
+      {/* Quick Complete Button and its conditional rendering removed */}
 
       <Link
         to={isTestPage ? '/' : '/test-page'}
