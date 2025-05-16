@@ -2,29 +2,31 @@
 
 This document explains how symptom data flows through the Dottie application.
 
-## Flow Overview 🔗
+## Two Primary Data Journeys
 
-1. **Data Collection in UI**: User selects symptoms in `symptoms/page.tsx`
-2. **Hook Layer**: `useSymptoms` hook processes the selections
-3. **Context Storage**: Data is stored in `AssessmentResultContext` via `useAssessmentContext`
-4. **Data Retrieval**: `results/page.tsx` retrieves data from context using hooks
-5. **API Request**: Data sent via `assessment/requests/postSend/Request.ts`
-6. **Backend Processing**: Processing in `backend/models/assessment/FlattenedAssessment.js`
-7. **Database Storage**: Data persisted in database
-8. **API Response**: Data retrieved via API for history view
-9. **History Display**: Results displayed in `history/[id]/page.tsx`
+The symptoms data flows through two distinct journeys:
 
-## Data Flow Details
+1. **UI Data Journey**: Page → Hook → Context → Hook → Page
+2. **Submission Journey**: Button → Context → Axios → Backend
 
-### Component to Context Flow
+## UI Data Journey: Page → Hook → Context → Hook → Page 🔄
 
-- UI components use specialized hooks (e.g., `useSymptoms`)
-- Hooks call `updateResult` function from `useAssessmentContext`
-- Context provider maintains state using React's reducer pattern
-- All assessment steps share the same context, eliminating need for session storage
+1. **Page**: `page.tsx` - User interface where symptoms are selected
+2. **Hook**: `useSymptoms.ts` - Processes the user's symptom selections
+3. **Context**: `AssessmentResultContext.tsx` - Stores symptom data for the application
+4. **Hook**: `useAssessmentContext.ts` - Retrieves stored symptom data
+5. **Page**: `page.tsx` (results) - Displays processed symptoms to the user
 
-### Context to Results Flow
+## Submission Journey: Button → Context → Axios → Backend 📤
 
-- Results page accesses the same context through hooks
-- Complete assessment data is available within context state
-- No data transformation needed between assessment steps and results page
+1. **Button**: `SubmitButton.tsx` - Triggers the assessment submission process
+2. **Context**: `useAssessmentContext.ts` - Retrieves complete assessment data
+3. **Axios**: `Request.ts` - Formats and sends data to backend API
+4. **Backend**: `FlattenedAssessment.js` - Processes incoming symptom data
+5. **Database**: Database storage - Persists the assessment data
+
+## Data Structure Requirements
+
+- Symptoms must be stored as an array of symptom objects
+- Empty arrays or null values result in "None Reported" display
+- Format consistency must be maintained throughout the data flow
