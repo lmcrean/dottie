@@ -21,6 +21,12 @@ export interface Assessment {
 
   // Legacy format support
   assessment_data?: {
+    pattern?: string;
+    age?: string;
+    cycleLength?: string;
+    periodDuration?: string;
+    flowHeaviness?: string;
+    painLevel?: string;
     symptoms?: {
       physical?: string | string[];
       emotional?: string | string[];
