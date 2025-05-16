@@ -18,7 +18,7 @@ class FlattenedAssessment extends AssessmentBase {
         // Extract data for flattened format and create with snake_case keys
         const {
           age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
-          physical_symptoms, emotional_symptoms, recommendations
+          physical_symptoms, emotional_symptoms, other_symptoms, recommendations
         } = assessmentData;
         
         const assessment = {
@@ -33,6 +33,7 @@ class FlattenedAssessment extends AssessmentBase {
           pain_level,
           physical_symptoms: physical_symptoms || [],
           emotional_symptoms: emotional_symptoms || [],
+          other_symptoms: other_symptoms || '',
           recommendations: recommendations || []
         };
         
@@ -43,7 +44,7 @@ class FlattenedAssessment extends AssessmentBase {
       // Extract data for flattened format
       const {
         age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
-        physical_symptoms, emotional_symptoms, recommendations
+        physical_symptoms, emotional_symptoms, other_symptoms, recommendations
       } = assessmentData;
       
       // Use new flattened format
@@ -59,6 +60,7 @@ class FlattenedAssessment extends AssessmentBase {
         period_duration,
         flow_heaviness,
         pain_level,
+        other_symptoms,
         
         // Array fields as JSON strings
         physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
@@ -93,7 +95,7 @@ class FlattenedAssessment extends AssessmentBase {
         // Extract data for flattened format
         const {
           age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
-          physical_symptoms, emotional_symptoms, recommendations
+          physical_symptoms, emotional_symptoms, other_symptoms, recommendations
         } = assessmentData;
         
         // Update with snake_case keys
@@ -107,6 +109,7 @@ class FlattenedAssessment extends AssessmentBase {
           pain_level,
           physical_symptoms: physical_symptoms || [],
           emotional_symptoms: emotional_symptoms || [],
+          other_symptoms: other_symptoms || '',
           recommendations: recommendations || []
         };
 
@@ -116,7 +119,7 @@ class FlattenedAssessment extends AssessmentBase {
       // Extract data for flattened format
       const {
         age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
-        physical_symptoms, emotional_symptoms, recommendations
+        physical_symptoms, emotional_symptoms, other_symptoms, recommendations
       } = assessmentData;
       
       // Use flattened format
@@ -128,6 +131,7 @@ class FlattenedAssessment extends AssessmentBase {
         period_duration,
         flow_heaviness,
         pain_level,
+        other_symptoms,
         
         // Array fields as JSON strings
         physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
@@ -233,6 +237,7 @@ class FlattenedAssessment extends AssessmentBase {
       pain_level: record.pain_level,
       physical_symptoms,
       emotional_symptoms,
+      other_symptoms: record.other_symptoms || '',
       recommendations
     };
   }
