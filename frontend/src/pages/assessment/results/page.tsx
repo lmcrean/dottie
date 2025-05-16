@@ -8,7 +8,7 @@ import { ChatModal } from '@/src/pages/chat/page';
 import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
 import { useAssessmentData } from '../context/hooks/useAssessmentData';
 import { ResultsTable } from './components/ResultsTable';
-import { SaveResults } from './components/save-results-btn/SaveResultsButton';
+import { SaveResults } from './components/save-results-button/SaveResultsButton';
 import { PATTERN_DATA } from '../context/types/recommendations';
 import { DeterminedPattern } from './components/result-details';
 
