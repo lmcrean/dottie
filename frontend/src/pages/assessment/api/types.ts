@@ -13,27 +13,9 @@ export interface Assessment {
   pain_level: string;
   physical_symptoms: string[];
   emotional_symptoms: string[];
+  other_symptoms: string;
   recommendations: Array<{
     title: string;
     description: string;
   }>;
-
-  // For backward compatibility during transition to flattened structure
-  assessment_data?: {
-    date: string;
-    pattern: string;
-    age: string;
-    cycleLength: string;
-    periodDuration: string;
-    flowHeaviness: string;
-    painLevel: string;
-    symptoms: {
-      physical: string[];
-      emotional: string[];
-    };
-    recommendations: Array<{
-      title: string;
-      description: string;
-    }>;
-  };
 }
