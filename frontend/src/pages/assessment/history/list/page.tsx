@@ -129,7 +129,26 @@ export default function HistoryPage() {
           ) : (
             <div className="space-y-4">
               {assessments.map((assessment) => {
-                const data = assessment?.assessment_data;
+                // Determine if the record is flattened or legacy
+                const isFlattened = !assessment.assessment_data;
+                const displayData = isFlattened ? assessment : assessment.assessment_data;
+
+                // Fallback if displayData is somehow null (e.g., legacy record with no assessment_data)
+                if (!displayData) {
+                  return (
+                    <div
+                      key={assessment.id}
+                      className="block rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800"
+                    >
+                      <p className="text-red-500">
+                        Error: Could not display assessment (ID: {assessment.id}). Invalid data
+                        format.
+                      </p>
+                    </div>
+                  );
+                }
+
+                const itemDate = isFlattened ? assessment.created_at : displayData.date;
 
                 return (
                   <Link
@@ -141,20 +160,25 @@ export default function HistoryPage() {
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center rounded-full bg-pink-100 px-2.5 py-2 text-xs font-medium text-pink-800">
-                            {formatValue(data?.pattern)}
+                            {formatValue(displayData.pattern)}
                           </span>
-                          <span className="text-sm text-gray-500">{formatDate(data?.date)}</span>
+                          <span className="text-sm text-gray-500">{formatDate(itemDate)}</span>
                         </div>
                         <div className="mt-2 text-sm text-gray-600">
                           <p>
-                            <span className="text-gray-900">Age:</span> {formatValue(data?.age)}
-                            {data?.age && data.age !== 'under-13' ? ' years' : ''}
+                            <span className="text-gray-900">Age:</span>{' '}
+                            {formatValue(displayData.age)}
+                            {displayData.age && displayData.age !== 'under-13' ? ' years' : ''}
                           </p>
                           <p>
                             <span className="text-gray-900">Cycle Length:</span>{' '}
-                            {formatValue(data?.cycleLength)}
-                            {data?.cycleLength &&
-                            !['other', 'varies', 'not-sure'].includes(data.cycleLength)
+                            {formatValue(
+                              isFlattened ? displayData.cycle_length : displayData.cycleLength
+                            )}
+                            {(isFlattened ? displayData.cycle_length : displayData.cycleLength) &&
+                            !['other', 'varies', 'not-sure'].includes(
+                              isFlattened ? displayData.cycle_length : displayData.cycleLength
+                            )
                               ? ' days'
                               : ''}
                           </p>
