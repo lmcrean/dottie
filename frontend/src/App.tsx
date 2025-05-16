@@ -18,8 +18,8 @@ import PainLevel from './pages/assessment/steps/pain/page';
 import Symptoms from './pages/assessment/steps/symptoms/page';
 import Results from './pages/assessment/results/page';
 import ResourcesPage from './pages/assessment/resources/page';
-import HistoryPage from './pages/assessment/history/page';
-import DetailsPage from './pages/assessment/history/[id]/page';
+import HistoryPage from './pages/assessment/history/list/page';
+import DetailsPage from './pages/assessment/history/detail/page';
 
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';
