@@ -19,10 +19,19 @@ export function useSymptoms() {
     [updateResult]
   );
 
+  const setOtherSymptoms = useCallback(
+    (otherSymptoms: string) => {
+      updateResult({ other_symptoms: otherSymptoms });
+    },
+    [updateResult]
+  );
+
   return {
     physicalSymptoms: state.result?.physical_symptoms || [],
     emotionalSymptoms: state.result?.emotional_symptoms || [],
+    otherSymptoms: state.result?.other_symptoms || '',
     setPhysicalSymptoms,
-    setEmotionalSymptoms
+    setEmotionalSymptoms,
+    setOtherSymptoms
   };
 }
