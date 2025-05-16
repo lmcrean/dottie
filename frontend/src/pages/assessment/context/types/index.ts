@@ -66,6 +66,7 @@ export interface AssessmentResult {
   pain_level?: PainLevel;
   physical_symptoms: PhysicalSymptomId[];
   emotional_symptoms: EmotionalSymptomId[];
+  other_symptoms?: string;
   pattern?: MenstrualPattern;
   recommendations?: Recommendation[];
 }
