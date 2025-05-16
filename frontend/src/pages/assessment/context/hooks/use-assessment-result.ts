@@ -1,16 +1,39 @@
 import { useAssessmentContext } from './use-assessment-context';
+import { Assessment } from '../../api/types';
 
 export function useAssessmentResult() {
   const { state } = useAssessmentContext();
 
-  // Add the missing transformation function
-  const transformToFlattenedFormat = () => {
+  // Transform the result from context state to the flattened format expected by API
+  const transformToFlattenedFormat = (): Omit<Assessment, 'id'> | null => {
     if (!state || !state.result) return null;
 
-    // Basic flattened format implementation
+    const { result } = state;
+
+    // Convert to the flattened format expected by the backend
     return {
-      ...state.result
-      // Add any specific transformation logic needed
+      user_id: '', // This will be filled in by SaveResultsButton
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+
+      // Ensure all required fields are present, using defaults if needed
+      age: result.age || 'unknown',
+      pattern: result.pattern || 'unknown',
+      cycle_length: result.cycle_length || 'unknown',
+      period_duration: result.period_duration || 'unknown',
+      flow_heaviness: result.flow_heaviness || 'unknown',
+      pain_level: result.pain_level || 'unknown',
+
+      // Ensure array fields are present
+      physical_symptoms: result.physical_symptoms || [],
+      emotional_symptoms: result.emotional_symptoms || [],
+
+      // Transform recommendations to match expected format
+      recommendations:
+        result.recommendations?.map((rec) => ({
+          title: rec.title,
+          description: rec.description
+        })) || []
     };
   };
 

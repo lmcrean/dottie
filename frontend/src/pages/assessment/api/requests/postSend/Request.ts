@@ -10,7 +10,7 @@ export const postSend = async (assessmentData: Omit<Assessment, 'id'>): Promise<
     // Send assessment data wrapped in an assessmentData property
     // This matches the backend controller's expected structure
     const response = await apiClient.post('/api/assessment/send', {
-      assessmentData: assessmentData
+      assessmentData
     });
     return response.data;
   } catch (error) {
