@@ -47,6 +47,7 @@ export const SaveResults = () => {
         pain_level: assessmentPayload.pain_level || 'unknown',
         physical_symptoms: assessmentPayload.physical_symptoms || [],
         emotional_symptoms: assessmentPayload.emotional_symptoms || [],
+        other_symptoms: assessmentPayload.other_symptoms || '',
         recommendations: assessmentPayload.recommendations || []
       };
 
