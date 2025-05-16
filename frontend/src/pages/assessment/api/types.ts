@@ -18,4 +18,17 @@ export interface Assessment {
     title: string;
     description: string;
   }>;
+
+  // Legacy format support
+  assessment_data?: {
+    symptoms?: {
+      physical?: string | string[];
+      emotional?: string | string[];
+    };
+    recommendations?: Array<{
+      title: string;
+      description: string;
+    }>;
+    date?: string;
+  };
 }
