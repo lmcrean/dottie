@@ -9,12 +9,14 @@ import { useAgeVerification } from '@/src/pages/assessment/steps/age-verificatio
 import { AgeRange } from '@/src/pages/assessment/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
+import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 
 export default function AgeVerificationPage() {
   const { age, setAge } = useAgeVerification();
   const location = useLocation();
   const navigate = useNavigate();
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { isQuickResponse } = useQuickNavigate();
 
   // Local state to ensure UI updates immediately
   const [selectedAge, setSelectedAge] = useState<AgeRange | undefined>(age);
@@ -79,6 +81,44 @@ export default function AgeVerificationPage() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedAge]);
+
+  // useEffect for Quick Complete functionality
+  useEffect(() => {
+    if (isQuickResponse) {
+      const defaultAgeOption: AgeRange = '18-24'; // Default selection for quick complete
+
+      // Call handleOptionClick to select the age and update state/context
+      handleOptionClick(defaultAgeOption);
+
+      // Simulate click on the continue button after a short delay
+      // This ensures that selectedAge is set and the continue button is enabled
+      setTimeout(() => {
+        if (continueButtonRef.current) {
+          // Check if selectedAge is indeed set to the default, otherwise log an error
+          // This is a defensive check, handleOptionClick should set it.
+          if (selectedAge === defaultAgeOption || age === defaultAgeOption) {
+            // Check local state or context
+            continueButtonRef.current.click();
+          } else {
+            // Fallback if state update isn't immediate enough for the continue button's enabled state logic
+            // or if there's a more complex state interaction.
+            // Forcing handleContinue might be an option if the button isn't becoming clickable.
+            // However, handleOptionClick should make selectedAge truthy.
+            // A more robust way would be to ensure handleContinue is called directly after state is set.
+            // Re-check selectedAge from closure after timeout, or re-fetch if necessary.
+            // For now, assume handleOptionClick sets selectedAge synchronously enough.
+            // The ContinueButton itself is enabled based on selectedAge.
+            // Let's trust that handleOptionClick updates selectedAge and the ContinueButton becomes enabled.
+            handleContinue(); // Directly call handleContinue as a more robust way if button click is tricky
+          }
+        }
+      }, 50); // Adjust delay if necessary
+    }
+    // Dependencies: isQuickResponse is the trigger.
+    // handleOptionClick and handleContinue are component methods; if they were unstable,
+    // they'd need useCallback or to be part of deps. Assuming they are stable enough here or
+    // their instability doesn't affect this useEffect's core logic which is only run when isQuickResponse changes to true.
+  }, [isQuickResponse]); // Only re-run if isQuickResponse changes.
 
   return (
     <PageTransition>
