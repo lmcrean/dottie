@@ -78,8 +78,8 @@ export default function AssessmentDetailsPage() {
     );
   }
 
-  const assessmentData = assessment?.assessment_data;
-  if (!assessmentData) {
+  // If there's no assessment object at all after loading, show an error.
+  if (!assessment) {
     return (
       <div className="min-h-screen">
         <div className="mx-auto max-w-4xl px-4 py-8">
@@ -90,9 +90,32 @@ export default function AssessmentDetailsPage() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to History
           </Link>
-
           <div className="rounded-lg bg-white p-6 text-center shadow-sm">
-            <p className="mb-6 text-gray-600">Invalid assessment data format.</p>
+            <p className="mb-6 text-gray-600">Assessment details not found.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine which data source to use: top-level for flattened, or assessment_data for legacy
+  const data = hasFlattenedFormat ? assessment : assessment.assessment_data;
+
+  // If 'data' is still null/undefined (e.g. legacy record with no assessment_data), show error.
+  // This check replaces the previous !assessmentData check.
+  if (!data) {
+    return (
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <Link
+            to="/assessment/history"
+            className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to History
+          </Link>
+          <div className="rounded-lg bg-white p-6 text-center shadow-sm">
+            <p className="mb-6 text-gray-600">Invalid assessment data content.</p>
           </div>
         </div>
       </div>
@@ -169,7 +192,7 @@ export default function AssessmentDetailsPage() {
               <p className="text-sm text-gray-500 dark:text-slate-200">{formattedDate}</p>
             </div>
             <span className="inline-flex items-center rounded-full bg-pink-100 px-3 py-1 text-sm font-medium text-pink-800">
-              {formatValue(assessmentData.pattern)}
+              {formatValue(data.pattern)}
             </span>
           </div>
 
@@ -181,15 +204,16 @@ export default function AssessmentDetailsPage() {
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-gray-600 dark:text-slate-200">
-                  <span className="font-medium">Age:</span> {formatValue(assessmentData.age)} years
+                  <span className="font-medium">Age:</span> {formatValue(data.age)} years
                 </p>
                 <p className="text-sm text-gray-600 dark:text-slate-200">
                   <span className="font-medium">Cycle Length:</span>{' '}
-                  {formatValue(assessmentData.cycleLength)} days
+                  {formatValue(hasFlattenedFormat ? data.cycle_length : data.cycleLength)} days
                 </p>
                 <p className="text-sm text-gray-600 dark:text-slate-200">
                   <span className="font-medium">Period Duration:</span>{' '}
-                  {formatValue(assessmentData.periodDuration)} days
+                  {formatValue(hasFlattenedFormat ? data.period_duration : data.periodDuration)}{' '}
+                  days
                 </p>
               </div>
             </div>
@@ -202,11 +226,11 @@ export default function AssessmentDetailsPage() {
               <div className="space-y-2">
                 <p className="text-sm text-gray-600 dark:text-slate-200">
                   <span className="font-medium">Flow Level:</span>{' '}
-                  {formatValue(assessmentData.flowHeaviness)}
+                  {formatValue(hasFlattenedFormat ? data.flow_heaviness : data.flowHeaviness)}
                 </p>
                 <p className="text-sm text-gray-600 dark:text-slate-200">
                   <span className="font-medium">Pain Level:</span>{' '}
-                  {formatValue(assessmentData.painLevel)}
+                  {formatValue(hasFlattenedFormat ? data.pain_level : data.painLevel)}
                 </p>
               </div>
             </div>
