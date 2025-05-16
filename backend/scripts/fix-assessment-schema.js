@@ -34,6 +34,7 @@ async function fixAssessmentSchema() {
         pain_level TEXT,
         physical_symptoms TEXT,
         emotional_symptoms TEXT,
+        other_symptoms TEXT,
         recommendations TEXT,
         assessment_data TEXT
       );
