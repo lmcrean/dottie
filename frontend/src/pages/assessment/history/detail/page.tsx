@@ -1,20 +1,18 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format, isValid, parseISO } from 'date-fns';
-import { ArrowLeft, Calendar, Activity, Droplet, Heart, Brain } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Assessment } from '@/src/pages/assessment/api/types';
 import { assessmentApi } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
 import DeleteButton from '../delete-button';
+import { ResultsTable } from './components';
 
 // Utility function to ensure data is an array
-// Returns unknown[] to accommodate different array types like recommendations
-const ensureArrayFormat = <T = string,>(data: unknown): T[] => {
+const ensureArrayFormat = <T,>(data: unknown): T[] => {
   if (Array.isArray(data)) {
     return data as T[];
   }
-  // Add specific parsing logic here if needed, e.g., for JSON strings
-  // For now, just return empty array if not already an array
   return [] as T[];
 };
 
@@ -23,10 +21,8 @@ export default function AssessmentDetailsPage() {
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Determine data format
-  const hasLegacyFormat = !!assessment?.assessment_data;
-  // Assume flattened if not legacy and assessment exists
   const hasFlattenedFormat = !!assessment && !assessment.assessment_data;
+  const hasLegacyFormat = !!assessment?.assessment_data;
 
   useEffect(() => {
     const fetchAssessment = async () => {
@@ -38,18 +34,43 @@ export default function AssessmentDetailsPage() {
       try {
         const data = await assessmentApi.getById(id);
         if (data) {
-          setAssessment(data);
-          // Ensure symptoms arrays are in the correct format after fetching
-          // This logic might be adjusted based on actual API response structure
-          if (data && !data.assessment_data) {
-            // If flattened format
-            data.physical_symptoms = ensureArrayFormat<string>(data.physical_symptoms);
-            data.emotional_symptoms = ensureArrayFormat<string>(data.emotional_symptoms);
+          // Data processing before setting state to ensure correct types for arrays
+          const processedData = { ...data };
+          if (processedData && !processedData.assessment_data) {
+            // Flattened format
+            processedData.physical_symptoms = ensureArrayFormat<string>(
+              processedData.physical_symptoms
+            );
+            processedData.emotional_symptoms = ensureArrayFormat<string>(
+              processedData.emotional_symptoms
+            );
+            processedData.recommendations = ensureArrayFormat<{
+              title: string;
+              description: string;
+            }>(processedData.recommendations);
+          } else if (processedData && processedData.assessment_data) {
+            // Legacy format
+            if (processedData.assessment_data.symptoms) {
+              processedData.assessment_data.symptoms.physical = ensureArrayFormat<string>(
+                processedData.assessment_data.symptoms.physical
+              );
+              processedData.assessment_data.symptoms.emotional = ensureArrayFormat<string>(
+                processedData.assessment_data.symptoms.emotional
+              );
+            }
+            processedData.assessment_data.recommendations = ensureArrayFormat<{
+              title: string;
+              description: string;
+            }>(processedData.assessment_data.recommendations);
           }
+          setAssessment(processedData);
+        } else {
+          setAssessment(null); // Explicitly set to null if no data
         }
       } catch (error) {
         console.error('Failed to fetch assessment:', error);
         toast.error('Failed to load assessment details');
+        setAssessment(null); // Set to null on error
       } finally {
         setIsLoading(false);
       }
@@ -61,89 +82,51 @@ export default function AssessmentDetailsPage() {
   const formatValue = (value: string | undefined) => {
     if (!value) return 'Not provided';
 
+    // Specific value mappings from list page, could be useful here too if desired
+    if (value === 'not-sure') return 'Not sure';
+    if (value === 'varies') return 'Varies';
+    if (value === 'under-13') return 'Under 13';
+    if (value === '8-plus') return '8+ days';
+
     return value
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join('-');
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-pink-500"></div>
-          <p className="mt-4 text-gray-600">Loading assessment details...</p>
-        </div>
-      </div>
-    );
-  }
+  // Extracted data for ResultsTable props
+  const physicalSymptoms = useMemo(() => {
+    if (hasLegacyFormat && assessment?.assessment_data?.symptoms) {
+      return ensureArrayFormat<string>(assessment.assessment_data.symptoms.physical);
+    }
+    if (hasFlattenedFormat && assessment) {
+      return ensureArrayFormat<string>(assessment.physical_symptoms);
+    }
+    return [];
+  }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
 
-  // If there's no assessment object at all after loading, show an error.
-  if (!assessment) {
-    return (
-      <div className="min-h-screen">
-        <div className="mx-auto max-w-4xl px-4 py-8">
-          <Link
-            to="/assessment/history"
-            className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to History
-          </Link>
-          <div className="rounded-lg bg-white p-6 text-center shadow-sm">
-            <p className="mb-6 text-gray-600">Assessment details not found.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const emotionalSymptoms = useMemo(() => {
+    if (hasLegacyFormat && assessment?.assessment_data?.symptoms) {
+      return ensureArrayFormat<string>(assessment.assessment_data.symptoms.emotional);
+    }
+    if (hasFlattenedFormat && assessment) {
+      return ensureArrayFormat<string>(assessment.emotional_symptoms);
+    }
+    return [];
+  }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
 
-  // Check if assessment_data is missing for a legacy record, which would be an invalid state.
-  if (hasLegacyFormat && !assessment.assessment_data) {
-    return (
-      <div className="min-h-screen">
-        <div className="mx-auto max-w-4xl px-4 py-8">
-          <Link
-            to="/assessment/history"
-            className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to History
-          </Link>
-          <div className="rounded-lg bg-white p-6 text-center shadow-sm">
-            <p className="mb-6 text-gray-600">Invalid legacy assessment data content.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const recommendations = useMemo(() => {
+    if (hasLegacyFormat && assessment?.assessment_data) {
+      return ensureArrayFormat<{ title: string; description: string }>(
+        assessment.assessment_data.recommendations
+      );
+    }
+    if (hasFlattenedFormat && assessment) {
+      return ensureArrayFormat<{ title: string; description: string }>(assessment.recommendations);
+    }
+    return [];
+  }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
 
-  // Extract data using the correct path based on format
-  let physicalSymptoms: string[] = [];
-  let emotionalSymptoms: string[] = [];
-  let recommendations: Array<{ title: string; description: string }> = [];
-
-  if (hasLegacyFormat && assessment?.assessment_data) {
-    physicalSymptoms = ensureArrayFormat(assessment.assessment_data.symptoms?.physical) as string[];
-    emotionalSymptoms = ensureArrayFormat(
-      assessment.assessment_data.symptoms?.emotional
-    ) as string[];
-    // Cast the result of ensureArrayFormat to the expected recommendations type
-    recommendations = ensureArrayFormat(assessment.assessment_data.recommendations) as Array<{
-      title: string;
-      description: string;
-    }>;
-  } else if (hasFlattenedFormat && assessment) {
-    physicalSymptoms = ensureArrayFormat(assessment.physical_symptoms) as string[];
-    emotionalSymptoms = ensureArrayFormat(assessment.emotional_symptoms) as string[];
-    // Cast the result of ensureArrayFormat to the expected recommendations type
-    recommendations = ensureArrayFormat(assessment.recommendations) as Array<{
-      title: string;
-      description: string;
-    }>;
-  }
-
-  // Handle potential loading state for date formatting
   const formattedDate = useMemo(() => {
     let dateToFormat: string | undefined;
     if (hasLegacyFormat && assessment?.assessment_data?.date) {
@@ -156,7 +139,7 @@ export default function AssessmentDetailsPage() {
       try {
         const parsedDate = parseISO(dateToFormat);
         if (isValid(parsedDate)) {
-          return format(parsedDate, 'PPP'); // Format like 'Jun 15, 2024'
+          return format(parsedDate, 'PPP');
         }
       } catch (e) {
         console.error('Error parsing date:', dateToFormat, e);
@@ -164,6 +147,57 @@ export default function AssessmentDetailsPage() {
     }
     return 'Date not available';
   }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-pink-500"></div>
+          <p className="mt-4 text-gray-600">Loading assessment details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!assessment) {
+    return (
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <Link
+            to="/assessment/history"
+            className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to History
+          </Link>
+          <div className="rounded-lg bg-white p-6 text-center shadow-sm">
+            <p className="mb-6 text-gray-600">Assessment details not found or failed to load.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // This specific check for legacy data integrity might be less critical if !assessment handles it,
+  // but keeping for now if it represents a distinct invalid state post-successful fetch.
+  if (hasLegacyFormat && !assessment.assessment_data) {
+    return (
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <Link
+            to="/assessment/history"
+            className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-pink-700"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to History
+          </Link>
+          <div className="rounded-lg bg-white p-6 text-center shadow-sm">
+            <p className="mb-6 text-gray-600">Invalid legacy assessment data structure.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -194,140 +228,14 @@ export default function AssessmentDetailsPage() {
             </span>
           </div>
 
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-gray-400 dark:text-slate-200" />
-                <span className="text-lg font-medium text-pink-700">Cycle Information</span>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600 dark:text-slate-200">
-                  <span className="font-medium">Age:</span>{' '}
-                  {formatValue(
-                    hasFlattenedFormat ? assessment.age : assessment.assessment_data?.age
-                  )}{' '}
-                  years
-                </p>
-                <p className="text-sm text-gray-600 dark:text-slate-200">
-                  <span className="font-medium">Cycle Length:</span>{' '}
-                  {formatValue(
-                    hasFlattenedFormat
-                      ? assessment.cycle_length
-                      : assessment.assessment_data?.cycleLength
-                  )}{' '}
-                  days
-                </p>
-                <p className="text-sm text-gray-600 dark:text-slate-200">
-                  <span className="font-medium">Period Duration:</span>{' '}
-                  {formatValue(
-                    hasFlattenedFormat
-                      ? assessment.period_duration
-                      : assessment.assessment_data?.periodDuration
-                  )}{' '}
-                  days
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-gray-400" />
-                <span className="text-lg font-medium text-pink-700">Flow & Pain</span>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600 dark:text-slate-200">
-                  <span className="font-medium">Flow Level:</span>{' '}
-                  {formatValue(
-                    hasFlattenedFormat
-                      ? assessment.flow_heaviness
-                      : assessment.assessment_data?.flowHeaviness
-                  )}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-slate-200">
-                  <span className="font-medium">Pain Level:</span>{' '}
-                  {formatValue(
-                    hasFlattenedFormat
-                      ? assessment.pain_level
-                      : assessment.assessment_data?.painLevel
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <div className="mb-4 flex items-center gap-2">
-                <Droplet className="h-5 w-5 text-gray-400" />
-                <h2 className="text-lg font-medium text-pink-700">Physical Symptoms</h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {physicalSymptoms.length > 0 ? (
-                  physicalSymptoms.map((symptom: string, index: number) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800"
-                    >
-                      {symptom}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-sm text-gray-500 dark:text-slate-200">
-                    No physical symptoms reported
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-4 flex items-center gap-2">
-                <Brain className="h-5 w-5 text-gray-400" />
-                <h2 className="text-lg font-medium text-pink-700">Emotional Symptoms</h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {emotionalSymptoms.length > 0 ? (
-                  emotionalSymptoms.map((symptom: string, index: number) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:text-slate-200"
-                    >
-                      {symptom}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-sm text-gray-500 dark:text-slate-200">
-                    No emotional symptoms reported
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-4 flex items-center gap-2">
-                <Heart className="h-5 w-5 text-gray-400" />
-                <h2 className="text-lg font-medium text-gray-900 dark:text-slate-100">
-                  Recommendations
-                </h2>
-              </div>
-              <div className="space-y-4">
-                {recommendations.length > 0 ? (
-                  recommendations.map(
-                    (rec: { title: string; description: string }, index: number) => (
-                      <div
-                        key={index}
-                        className="rounded-lg border bg-gray-50 p-4 dark:border-slate-800"
-                      >
-                        <h3 className="text-xl font-medium text-pink-600">{rec.title}</h3>
-                        <p className="mt-1 text-sm text-gray-600">{rec.description}</p>
-                      </div>
-                    )
-                  )
-                ) : (
-                  <p className="text-sm text-gray-500">No recommendations available</p>
-                )}
-              </div>
-            </div>
-          </div>
+          <ResultsTable
+            assessment={assessment}
+            hasFlattenedFormat={hasFlattenedFormat}
+            formatValue={formatValue}
+            physicalSymptoms={physicalSymptoms}
+            emotionalSymptoms={emotionalSymptoms}
+            recommendations={recommendations}
+          />
         </div>
       </div>
     </div>
