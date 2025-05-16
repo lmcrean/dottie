@@ -30,10 +30,10 @@ export default function ResultsPage() {
     }
   }, [
     assessmentData.age,
-    assessmentData.cycleLength,
-    assessmentData.periodDuration,
-    assessmentData.flowLevel,
-    assessmentData.painLevel
+    assessmentData.cycle_length,
+    assessmentData.period_duration,
+    assessmentData.flow_heaviness,
+    assessmentData.pain_level
   ]);
 
   return (
