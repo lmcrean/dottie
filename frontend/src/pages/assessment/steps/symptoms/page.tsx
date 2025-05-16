@@ -11,16 +11,24 @@ import PageTransition from '../../page-transitions';
 import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
+import { useSymptoms } from './hooks/use-symptoms';
 
 // Type assertion helpers
 const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;
 const asEmotionalSymptomId = (id: string): EmotionalSymptomId => id as EmotionalSymptomId;
 
 export default function SymptomsPage() {
-  // Use local state instead of the context hook
-  const [physicalSymptoms, setPhysicalSymptoms] = useState<PhysicalSymptomId[]>([]);
-  const [emotionalSymptoms, setEmotionalSymptoms] = useState<EmotionalSymptomId[]>([]);
-  const [otherSymptoms, setOtherSymptoms] = useState('');
+  // Use the useSymptoms hook for all symptoms
+  const {
+    physicalSymptoms,
+    emotionalSymptoms,
+    otherSymptoms,
+    setPhysicalSymptoms,
+    setEmotionalSymptoms,
+    setOtherSymptoms
+  } = useSymptoms();
+
+  // Local state only for UI controls
   const [refTarget, setRefTarget] = useState('');
   const navigate = useNavigate();
   const symptomRef = useRef<HTMLDivElement | null>(null);
@@ -91,59 +99,29 @@ export default function SymptomsPage() {
   }, [refTarget]);
 
   const togglePhysicalSymptom = (symptom: PhysicalSymptomId) => {
-    setPhysicalSymptoms((prevSymptoms) =>
-      prevSymptoms.includes(symptom)
-        ? prevSymptoms.filter((s) => s !== symptom)
-        : [...prevSymptoms, symptom]
-    );
+    const updatedSymptoms = physicalSymptoms.includes(symptom)
+      ? physicalSymptoms.filter((s) => s !== symptom)
+      : [...physicalSymptoms, symptom];
+
+    console.log('Toggling physical symptom:', symptom, 'Updated symptoms:', updatedSymptoms);
+    setPhysicalSymptoms(updatedSymptoms);
   };
 
   const toggleEmotionalSymptom = (symptom: EmotionalSymptomId) => {
-    setEmotionalSymptoms((prevSymptoms) =>
-      prevSymptoms.includes(symptom)
-        ? prevSymptoms.filter((s) => s !== symptom)
-        : [...prevSymptoms, symptom]
-    );
+    const updatedSymptoms = emotionalSymptoms.includes(symptom)
+      ? emotionalSymptoms.filter((s) => s !== symptom)
+      : [...emotionalSymptoms, symptom];
+
+    console.log('Toggling emotional symptom:', symptom, 'Updated symptoms:', updatedSymptoms);
+    setEmotionalSymptoms(updatedSymptoms);
   };
 
   const handleContinue = () => {
-    // Combine all symptoms
-    const allSymptoms = [
-      ...physicalSymptoms.map((id) => {
-        const symptom = [
-          { id: 'bloating', label: 'Bloating' },
-          { id: 'breast-tenderness', label: 'Breast tenderness' },
-          { id: 'headaches', label: 'Headaches' },
-          { id: 'back-pain', label: 'Back pain' },
-          { id: 'nausea', label: 'Nausea' },
-          { id: 'fatigue', label: 'Fatigue' },
-          { id: 'dizziness', label: 'Dizziness' },
-          { id: 'acne', label: 'Acne' },
-          { id: 'digestive-issues', label: 'Digestive issues' },
-          { id: 'sleep-disturbances', label: 'Sleep disturbances' },
-          { id: 'hot-flashes', label: 'Hot flashes' },
-          { id: 'joint-pain', label: 'Joint pain' }
-        ].find((s) => s.id === id);
-        return symptom?.label || id;
-      }),
-      ...emotionalSymptoms.map((id) => {
-        const symptom = [
-          { id: 'irritability', label: 'Irritability' },
-          { id: 'mood-swings', label: 'Mood swings' },
-          { id: 'anxiety', label: 'Anxiety' },
-          { id: 'depression', label: 'Depression' },
-          { id: 'difficulty-concentrating', label: 'Difficulty concentrating' },
-          { id: 'food-cravings', label: 'Food cravings' },
-          { id: 'emotional-sensitivity', label: 'Emotional sensitivity' },
-          { id: 'low-energy', label: 'Low energy/motivation' }
-        ].find((s) => s.id === id);
-        return symptom?.label || id;
-      }),
-      ...(otherSymptoms ? [otherSymptoms] : [])
-    ];
-
-    // Save to sessionStorage
-    sessionStorage.setItem('symptoms', JSON.stringify(allSymptoms));
+    console.log('Continuing with symptoms data from context:', {
+      physicalSymptoms,
+      emotionalSymptoms,
+      otherSymptoms
+    });
 
     // Navigate to results page
     navigate('/assessment/results');
