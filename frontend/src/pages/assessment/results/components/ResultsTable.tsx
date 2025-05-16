@@ -21,10 +21,10 @@ export const ResultsTable = ({ data, setIsClamped, setExpandableSymptoms }: Resu
   const {
     pattern,
     age,
-    cycleLength,
-    periodDuration,
-    flowLevel,
-    painLevel,
+    cycle_length,
+    period_duration,
+    flow_heaviness,
+    pain_level,
     symptoms,
     expandableSymptoms,
     isClamped
@@ -37,21 +37,21 @@ export const ResultsTable = ({ data, setIsClamped, setExpandableSymptoms }: Resu
     console.log('  - All props:', {
       pattern,
       age,
-      cycleLength,
-      periodDuration,
-      flowLevel,
-      painLevel
+      cycle_length,
+      period_duration,
+      flow_heaviness,
+      pain_level
     });
-  }, [data, pattern, age, cycleLength, periodDuration, flowLevel, painLevel]);
+  }, [data, pattern, age, cycle_length, period_duration, flow_heaviness, pain_level]);
 
   return (
     <CardContent className="pb-8 pt-8">
       <div className="mb-8 grid grid-cols-1 items-start gap-6 dark:text-gray-900 md:grid-cols-2">
         <AgeRange age={age} />
-        <CycleLength cycleLength={cycleLength} />
-        <PeriodDuration periodDuration={periodDuration} />
-        <FlowLevel flowLevel={flowLevel} />
-        <PainLevel painLevel={painLevel} pattern={pattern} />
+        <CycleLength cycleLength={cycle_length} />
+        <PeriodDuration periodDuration={period_duration} />
+        <FlowLevel flowLevel={flow_heaviness} />
+        <PainLevel painLevel={pain_level} pattern={pattern} />
         <Symptoms
           symptoms={symptoms}
           expandableSymptoms={expandableSymptoms}
