@@ -131,10 +131,11 @@ export default function HistoryPage() {
               {assessments.map((assessment) => {
                 // Determine if the record is flattened or legacy
                 const isFlattened = !assessment.assessment_data;
-                const displayData = isFlattened ? assessment : assessment.assessment_data;
+                // Use a common object for properties that exist on both types or are manually selected
+                const commonData = isFlattened ? assessment : assessment.assessment_data;
 
-                // Fallback if displayData is somehow null (e.g., legacy record with no assessment_data)
-                if (!displayData) {
+                // Fallback if commonData is somehow null (e.g., legacy record with no assessment_data, though type update should help)
+                if (!commonData) {
                   return (
                     <div
                       key={assessment.id}
@@ -148,7 +149,16 @@ export default function HistoryPage() {
                   );
                 }
 
-                const itemDate = isFlattened ? assessment.created_at : displayData.date;
+                const itemDate = isFlattened
+                  ? assessment.created_at
+                  : assessment.assessment_data?.date;
+                const itemPattern = isFlattened
+                  ? assessment.pattern
+                  : assessment.assessment_data?.pattern;
+                const itemAge = isFlattened ? assessment.age : assessment.assessment_data?.age;
+                const itemCycleLength = isFlattened
+                  ? assessment.cycle_length
+                  : assessment.assessment_data?.cycleLength;
 
                 return (
                   <Link
@@ -160,25 +170,20 @@ export default function HistoryPage() {
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center rounded-full bg-pink-100 px-2.5 py-2 text-xs font-medium text-pink-800">
-                            {formatValue(displayData.pattern)}
+                            {formatValue(itemPattern)}
                           </span>
                           <span className="text-sm text-gray-500">{formatDate(itemDate)}</span>
                         </div>
                         <div className="mt-2 text-sm text-gray-600">
                           <p>
-                            <span className="text-gray-900">Age:</span>{' '}
-                            {formatValue(displayData.age)}
-                            {displayData.age && displayData.age !== 'under-13' ? ' years' : ''}
+                            <span className="text-gray-900">Age:</span> {formatValue(itemAge)}
+                            {itemAge && itemAge !== 'under-13' ? ' years' : ''}
                           </p>
                           <p>
                             <span className="text-gray-900">Cycle Length:</span>{' '}
-                            {formatValue(
-                              isFlattened ? displayData.cycle_length : displayData.cycleLength
-                            )}
-                            {(isFlattened ? displayData.cycle_length : displayData.cycleLength) &&
-                            !['other', 'varies', 'not-sure'].includes(
-                              isFlattened ? displayData.cycle_length : displayData.cycleLength
-                            )
+                            {formatValue(itemCycleLength)}
+                            {itemCycleLength &&
+                            !['other', 'varies', 'not-sure'].includes(itemCycleLength)
                               ? ' days'
                               : ''}
                           </p>
