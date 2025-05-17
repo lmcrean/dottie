@@ -1,5 +1,5 @@
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import { Alert, AlertDescription } from '@/src/components/ui/alert';
+import { Button } from '@/src/components/buttons/button';
+import { Alert, AlertDescription } from '@/src/components/alerts/alert';
 import {
   Card,
   CardContent,
@@ -15,14 +15,14 @@ import {
   FormItem,
   FormMessage
 } from '@/src/components/ui/form';
-import { PasswordInput } from '@/src/components/ui/PasswordInput';
+import { PasswordInput } from '@/src/components/user-inputs/PasswordInput';
 import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as z from 'zod';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 const passwordUpdateSchema = z
   .object({

@@ -2,14 +2,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { signUpSchema, type SignUpFormData } from '@/src/lib/validations/auth';
-import { FormInput } from '@/src/components/ui/!to-migrate/form-input';
-import { Button } from '@/src/components/ui/!to-migrate/button';
+import { FormInput } from '@/src/components/user-inputs/form-input';
+import { Button } from '@/src/components/buttons/button';
 import { toast } from 'sonner';
-import AuthLayout from '@/src/components/AuthLayout';
+import AuthLayout from '@/src/pages/auth/AuthLayout';
 import { useState } from 'react';
-import { PasswordInput } from '@/src/components/ui/PasswordInput';
-import AnimatedLogo from '@/src/components/AnimatedLogo';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { PasswordInput } from '@/src/components/user-inputs/PasswordInput';
+import AnimatedLogo from '@/src/pages/landing-page/AnimatedLogo';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export default function SignUpPage() {
   const navigate = useNavigate();

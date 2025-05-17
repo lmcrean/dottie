@@ -6,19 +6,16 @@
 export function validateAssessmentData(assessment) {
   const errors = [];
   
-
-  // Check for required fields
-  // if (!assessment.userId) {
-  //   errors.push('userId is required');
-  // }
+  // Handle both flattened and nested formats
+  let assessmentData;
   
-  if (!assessment.assessment_data) {
-    errors.push('assessment_data is required');
-    return { isValid: errors.length === 0, errors };
+  if (assessment.assessment_data) {
+    // Legacy nested format
+    assessmentData = assessment.assessment_data;
+  } else {
+    // New flattened format - use the assessment object directly
+    assessmentData = assessment;
   }
-  
-  const assessmentData = assessment.assessment_data;
- 
   
   // Validate required assessment fields
   if (!assessmentData.age) {
@@ -27,23 +24,28 @@ export function validateAssessmentData(assessment) {
     errors.push('Invalid age value');
   }
   
-  if (!assessmentData.cycleLength) {
-    errors.push('cycleLength is required');
-  } else if (!isValidCycleLength(assessmentData.cycleLength)) {
-    errors.push('Invalid cycleLength value');
+  // Check for camelCase or snake_case for cycle length
+  const cycleLength = assessmentData.cycleLength || assessmentData.cycle_length;
+  if (!cycleLength) {
+    errors.push('cycle length is required');
+  } else if (!isValidCycleLength(cycleLength)) {
+    errors.push('Invalid cycle length value');
   }
   
-  // Validate optional fields if they exist
-  if (assessmentData.periodDuration && !isValidPeriodDuration(assessmentData.periodDuration)) {
-    errors.push('Invalid periodDuration value');
+  // Validate optional fields if they exist (handling both naming conventions)
+  const periodDuration = assessmentData.periodDuration || assessmentData.period_duration;
+  if (periodDuration && !isValidPeriodDuration(periodDuration)) {
+    errors.push('Invalid period duration value');
   }
   
-  if (assessmentData.flowHeaviness && !isValidFlowHeaviness(assessmentData.flowHeaviness)) {
-    errors.push('Invalid flowHeaviness value');
+  const flowHeaviness = assessmentData.flowHeaviness || assessmentData.flow_heaviness;
+  if (flowHeaviness && !isValidFlowHeaviness(flowHeaviness)) {
+    errors.push('Invalid flow heaviness value');
   }
   
-  if (assessmentData.painLevel && !isValidPainLevel(assessmentData.painLevel)) {
-    errors.push('Invalid painLevel value');
+  const painLevel = assessmentData.painLevel || assessmentData.pain_level;
+  if (painLevel && !isValidPainLevel(painLevel)) {
+    errors.push('Invalid pain level value');
   }
   
   return {

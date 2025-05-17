@@ -4,7 +4,7 @@ import { checkDbConnection, fetchUserData } from './core/db';
 import { authApi, login, signup, logout, refreshToken } from './auth';
 import { type User, type LoginInput, type SignupInput, type AuthResponse } from './auth/types';
 
-import { assessmentApi, type Assessment } from './assessment';
+import { assessmentApi, type Assessment } from '../pages/assessment/api';
 import { chatApi, type ApiMessage, type Conversation, type ChatResponse } from './message';
 import {
   userApi,

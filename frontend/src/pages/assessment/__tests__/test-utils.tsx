@@ -4,14 +4,14 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 
 // Import all assessment pages
-import AgeVerificationPage from '../age-verification/page';
-import CycleLengthPage from '../cycle-length/page';
-import PeriodDurationPage from '../period-duration/page';
-import FlowPage from '../flow/page';
-import PainPage from '../pain/page';
-import SymptomsPage from '../symptoms/page';
+import AgeVerificationPage from '../steps/age-verification/page';
+import CycleLengthPage from '../steps/cycle-length/page';
+import PeriodDurationPage from '../steps/period-duration/page';
+import FlowPage from '../steps/flow/page';
+import PainPage from '../steps/pain/page';
+import SymptomsPage from '../steps/symptoms/page';
 import ResultsPage from '../results/page';
-import { AuthProvider } from '@/src/context/auth/AuthContextProvider';
+import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider';
 
 // Mock router
 vi.mock('react-router-dom', async () => {

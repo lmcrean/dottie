@@ -149,7 +149,7 @@ class DbService {
 
           return {
             id: conv.id,
-            lastMessageDate: conv.updated_at,
+            last_message_date: conv.updated_at,
             preview: latestMessage
               ? latestMessage.content.substring(0, 50)
               : ''

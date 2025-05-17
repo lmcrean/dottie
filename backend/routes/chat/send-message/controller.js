@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import logger from '../../../services/logger.js';
-import { insertChatMessage, createConversation, getConversation } from '../../../models/chat.js';
+import { insertChatMessage, createConversation, getConversation } from '../../../models/chat/chat.js';
 
 // Initialize Gemini API
 const API_KEY = process.env.VITE_GEMINI_API_KEY;
@@ -53,7 +53,16 @@ const getMockResponse = (message) => {
 export const sendMessage = async (req, res) => {
   try {    
     const { message, conversationId } = req.body;
-    const userId = req.user.userId;
+    // Get userId from req.user, supporting both id and userId fields
+    const userId = req.user.userId || req.user.id;
+    
+    // Log the user ID for debugging
+    logger.info(`Processing message for user: ${userId}`);
+
+    if (!userId) {
+      logger.error('User ID is missing in the request');
+      return res.status(400).json({ error: 'User identification is required' });
+    }
 
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
