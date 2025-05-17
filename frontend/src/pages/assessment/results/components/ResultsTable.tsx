@@ -9,7 +9,7 @@ import {
   PainLevel,
   Symptoms,
   PatternRecommendations
-} from '../../result-details';
+} from '../../component-results-table';
 
 interface ResultsTableProps {
   data: AssessmentData;

@@ -10,7 +10,7 @@ import { useAssessmentData } from '../context/hooks/useAssessmentData';
 import { ResultsTable } from './components/ResultsTable';
 import { SaveResults } from './components/save-results-button/SaveResultsButton';
 import { PATTERN_DATA } from '../context/types/recommendations';
-import { DeterminedPattern } from '../result-details';
+import { DeterminedPattern } from '../component-results-table';
 
 export default function ResultsPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
