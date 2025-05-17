@@ -19,7 +19,7 @@ import Symptoms from './pages/assessment/steps/symptoms/page';
 import Results from './pages/assessment/results/page';
 import ResourcesPage from './pages/assessment/resources/page';
 import HistoryPage from './pages/assessment/history/list/page';
-import DetailsPage from './pages/assessment/history/detail/page';
+import DetailsPage from './pages/assessment/detail/page';
 
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';

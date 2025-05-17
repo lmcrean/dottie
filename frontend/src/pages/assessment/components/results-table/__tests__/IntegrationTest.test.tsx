@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import ResultsPage from '../../results/page';
+import ResultsPage from '../../../results/page';
 import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
 
 // Mock sessionStorage

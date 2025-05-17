@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Assessment } from '@/src/pages/assessment/api/types';
 import { assessmentApi } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
-import DeleteButton from '../delete-button';
+import DeleteButton from '../components/delete-button';
 import { ResultsTable } from './components';
 
 // Utility function to ensure data is an array
