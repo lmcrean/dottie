@@ -1,19 +1,16 @@
-import { useCallback } from 'react';
-import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
+import { useState } from 'react';
 import { FlowHeaviness } from '../../context/types';
 
-export function useFlowHeaviness() {
-  const { state, updateResult } = useAssessmentContext();
-
-  const setFlowHeaviness = useCallback(
-    (flowHeaviness: FlowHeaviness) => {
-      updateResult({ flow_heaviness: flowHeaviness });
-    },
-    [updateResult]
-  );
+/**
+ * Custom hook to manage flow heaviness state
+ */
+export const useFlowHeaviness = () => {
+  const [flowHeaviness, setFlowHeaviness] = useState<FlowHeaviness | undefined>(undefined);
 
   return {
-    flowHeaviness: state.result?.flow_heaviness,
+    flowHeaviness,
     setFlowHeaviness
   };
-}
+};
+
+export default useFlowHeaviness;

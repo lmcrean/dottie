@@ -1,5 +1,5 @@
-import { apiClient } from '../../../../../api/core/apiClient';
-import { getUserData } from '../../../../../api/core/tokenManager';
+import { apiClient } from '@/src/api/core/apiClient';
+import { getUserData } from '@/src/api/core/tokenManager';
 
 /**
  * Delete assessment by ID

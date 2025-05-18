@@ -7,7 +7,7 @@ import { Label } from '@/src/components/ui/label';
 import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../animations/page-transitions';
-import { useFlowHeaviness } from '@/src/pages/assessment/steps/flow/hooks/use-flow-heaviness';
+import { useFlowHeaviness } from './hooks/use-flow-heaviness';
 import { FlowHeaviness } from '@/src/pages/assessment/steps/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
