@@ -1,5 +1,5 @@
-import { apiClient } from '../../../../../api/core/apiClient';
-import { Assessment } from '../../types';
+import { apiClient } from '../../../../../../../api/core/apiClient';
+import { Assessment } from '../../../../../api/types';
 
 /**
  * Send assessment results from frontend context, generates a new assessmentId
