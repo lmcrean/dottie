@@ -1,13 +1,17 @@
-# Assessment History Detail View Flow
+the dependency chain is:
 
-This document describes the data flow for viewing an individual assessment.
+request to hook to transform to hook to context to hook to page
 
-## Detail View Flow (GET /api/assessment/:id)
+# data flow
 
-1. `frontend/src/pages/assessment/history/detail/page.tsx` - Individual assessment detail page
-2. `frontend/src/pages/assessment/api/index.ts` - API client that exports the `assessmentApi.getById()` method
-3. `frontend/src/pages/assessment/api/requests/getById/Request.ts` - Handles the API request for getting a specific assessment
-4. `backend/routes/assessment/index.js` - Main router that directs to the detail endpoint
-5. `backend/routes/assessment/getDetail/routes.js` - Backend route that handles the GET request
-6. `backend/routes/assessment/getDetail/controller.js` - Controller that processes the request
-7. `backend/models/assessment/Assessment.js` - Database model that fetches the specific assessment
+this is the data flow for when the user opens an assessment detail page, triggering the Request.ts hook to fetch the data and update the context.
+
+1. page.tsx
+2. ResultsTable.tsx
+3.
+4. Request.ts ()
+5. useAssessmentById.ts
+6. transformApiAssessmentToContextResult.ts
+7. AssessmentResultContext.ts
+8. useAssessmentData.ts
+9. ResultsTable.tsx
