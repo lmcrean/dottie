@@ -28,9 +28,9 @@ Button Rendered from: `../../list/page.tsx`. Assessment `id` has been recorded n
 - True: We have clicked the `view assessment detail` button. Extract the assessment `id` recorded next to the button.
 - False: We have just made a post request from the [save assessment](#save-assessment) button. extract the assessment `id` from the post request result that has just been made.
 
-1. the assessment `id` is passed to the `detail/page.tsx` component.
-2. **the `detail/page.tsx` fetches the results from the database and displays them in the `../../components/ResultsTable.tsx` component.**
-3. Additionally, the `id` is saved to context, so that it can be used when deleting the assessment.
+3. the assessment `id` is passed to the `detail/page.tsx` component.
+4. **the `detail/page.tsx` fetches the results from the database and displays them in the `../../components/ResultsTable.tsx` component.**
+5. Additionally, the `id` is saved to context, so that it can be used when deleting the assessment.
 
 # view assessment list:
 
@@ -49,6 +49,6 @@ the user clicks on the delete assessment button, which is rendered in the detail
 
 1. **USER ACTION: the user clicks on the delete assessment button.**
 2. a loading skeleton is displayed.
-3. the `id` of the assessment is extracted from the context..
+3. the `id` of the assessment is extracted from the context.
 4. the api is called in `../../detail/api/deleteById/Request.ts`, using the `id` of the assessment to be deleted.
-5. **the user is redirected to the list page (`../../list/page.tsx`).**
+5. **the view assessment list button is called, directing the user to view assessment list/ step 2.**
