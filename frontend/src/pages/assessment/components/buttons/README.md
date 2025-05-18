@@ -30,7 +30,7 @@ Button Rendered from: `../../list/page.tsx`. Assessment `id` has been recorded n
 
 3. the assessment `id` is passed to the `detail/page.tsx` component.
 4. the request to fetch the results from the database is made with `../../detail/api/Request.ts`.
-5. **RENDER: the `detail/page.tsx` fetches the results from the database and displays them in the `../../components/ResultsTable.tsx` component.**
+5. **RENDER: the detail page displays the results in the ResultsTable component.** (`../../detail/page.tsx` --> `../../components/ResultsTable.tsx`)
 6. Additionally, the `id` is saved to context, so that it can be used when deleting the assessment.
 
 # view assessment list:
@@ -41,7 +41,7 @@ the user views the list of assessments they have completed. This button is rende
 2. the user is directed to the list page (`list/page.tsx`)
 3. the list page renders the `../../components/AssessmentList.tsx` component with a loading skeleton of the Assessment List.
 4. the `AssessmentList.tsx` component calls the backend to fetch the assessment list through `../../list/api/Request.ts`.
-5. **RENDER: the `AssessmentList.tsx` component displays the assessment list in the `../../list/components/AssessmentList.tsx` component.**
+5. **RENDER: the Assessment List Page displays the assessment list through the component.** (`../../list/page.tsx` --> `../../list/components/AssessmentList.tsx`)
 6. Additionally,the assessment `id` is saved to context, so that it can be used when navigating to the assessment detail page.
 
 # delete assessment
