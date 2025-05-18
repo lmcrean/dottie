@@ -41,7 +41,7 @@ the user views the list of assessments they have completed. This button is rende
 2. the user is directed to the list page (`list/page.tsx`)
 3. the list page renders the `../../components/AssessmentList.tsx` component with a loading skeleton of the Assessment List.
 4. the `AssessmentList.tsx` component calls the backend to fetch the assessment list through `../../list/api/Request.ts`.
-5. **RENDER: \*the `AssessmentList.tsx` component displays the assessment list in the `../../list/components/AssessmentList.tsx` component.**
+5. **RENDER: the `AssessmentList.tsx` component displays the assessment list in the `../../list/components/AssessmentList.tsx` component.**
 6. Additionally,the assessment `id` is saved to context, so that it can be used when navigating to the assessment detail page.
 
 # delete assessment
