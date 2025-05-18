@@ -10,58 +10,219 @@ import {
   Symptoms,
   PatternRecommendations
 } from './results-details';
+import { Assessment } from '../../api/types';
 
 interface ResultsTableProps {
-  data: AssessmentData;
-  setIsClamped: (value: boolean) => void;
-  setExpandableSymptoms: (value: boolean) => void;
+  data?: AssessmentData;
+  setIsClamped?: (value: boolean) => void;
+  setExpandableSymptoms?: (value: boolean) => void;
+  // Legacy props
+  assessment?: Assessment;
+  hasFlattenedFormat?: boolean;
+  formatValue?: (value: string | undefined) => string;
+  physicalSymptoms?: string[];
+  emotionalSymptoms?: string[];
+  recommendations?: { title: string; description: string }[];
 }
 
-export const ResultsTable = ({ data, setIsClamped, setExpandableSymptoms }: ResultsTableProps) => {
-  const {
-    pattern,
-    age,
-    cycle_length,
-    period_duration,
-    flow_heaviness,
-    pain_level,
-    symptoms,
-    expandableSymptoms,
-    isClamped
-  } = data;
-
-  // Debug information
-  useEffect(() => {
-    console.log('DEBUG [ResultsTable Component]');
-    console.log('  - Received data:', data);
-    console.log('  - All props:', {
+export const ResultsTable = ({
+  data,
+  setIsClamped,
+  setExpandableSymptoms,
+  // Legacy props
+  assessment,
+  hasFlattenedFormat,
+  formatValue,
+  physicalSymptoms = [],
+  emotionalSymptoms = [],
+  recommendations = []
+}: ResultsTableProps) => {
+  // Handle new format
+  if (data) {
+    const {
       pattern,
       age,
       cycle_length,
       period_duration,
       flow_heaviness,
-      pain_level
-    });
-  }, [data, pattern, age, cycle_length, period_duration, flow_heaviness, pain_level]);
+      pain_level,
+      symptoms,
+      expandableSymptoms,
+      isClamped
+    } = data;
 
-  return (
-    <CardContent className="pb-8 pt-8">
-      <div className="mb-8 grid grid-cols-1 items-start gap-6 dark:text-gray-900 md:grid-cols-2">
-        <AgeRange age={age} />
-        <CycleLength cycleLength={cycle_length} />
-        <PeriodDuration periodDuration={period_duration} />
-        <FlowLevel flowLevel={flow_heaviness} />
-        <PainLevel painLevel={pain_level} pattern={pattern} />
-        <Symptoms
-          symptoms={symptoms}
-          expandableSymptoms={expandableSymptoms}
-          setExpandableSymptoms={setExpandableSymptoms}
-          isClamped={isClamped}
-          setIsClamped={setIsClamped}
-        />
+    // Debug information
+    useEffect(() => {
+      console.log('DEBUG [ResultsTable Component]');
+      console.log('  - Received data:', data);
+      console.log('  - All props:', {
+        pattern,
+        age,
+        cycle_length,
+        period_duration,
+        flow_heaviness,
+        pain_level
+      });
+    }, [data, pattern, age, cycle_length, period_duration, flow_heaviness, pain_level]);
+
+    return (
+      <CardContent className="pb-8 pt-8">
+        <div className="mb-8 grid grid-cols-1 items-start gap-6 dark:text-gray-900 md:grid-cols-2">
+          <AgeRange age={age} />
+          <CycleLength cycleLength={cycle_length} />
+          <PeriodDuration periodDuration={period_duration} />
+          <FlowLevel flowLevel={flow_heaviness} />
+          <PainLevel painLevel={pain_level} pattern={pattern} />
+          <Symptoms
+            symptoms={symptoms}
+            expandableSymptoms={expandableSymptoms}
+            setExpandableSymptoms={setExpandableSymptoms!}
+            isClamped={isClamped}
+            setIsClamped={setIsClamped!}
+          />
+        </div>
+
+        <PatternRecommendations pattern={pattern} />
+      </CardContent>
+    );
+  }
+
+  // Handle legacy format
+  if (assessment) {
+    const formatDisplayValue = (value: string | undefined | null): string => {
+      if (formatValue && value) return formatValue(value);
+      return value || 'N/A';
+    };
+
+    const pattern = hasFlattenedFormat ? assessment.pattern : assessment.assessment_data?.pattern;
+
+    const displayAge = hasFlattenedFormat ? assessment.age : assessment.assessment_data?.age;
+
+    const displayCycleLength = hasFlattenedFormat
+      ? assessment.cycle_length
+      : assessment.assessment_data?.cycleLength;
+
+    const displayPeriodDuration = hasFlattenedFormat
+      ? assessment.period_duration
+      : assessment.assessment_data?.periodDuration;
+
+    const displayFlowHeaviness = hasFlattenedFormat
+      ? assessment.flow_heaviness
+      : assessment.assessment_data?.flowHeaviness;
+
+    const displayPainLevel = hasFlattenedFormat
+      ? assessment.pain_level
+      : assessment.assessment_data?.painLevel;
+
+    return (
+      <div className="p-4">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="text-lg font-medium text-pink-700">Basic Information</h3>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600 dark:text-slate-200">
+                <span className="font-medium">Age:</span> {formatDisplayValue(displayAge)}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-slate-200">
+                <span className="font-medium">Pattern:</span> {formatDisplayValue(pattern)}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-slate-200">
+                <span className="font-medium">Cycle Length:</span>{' '}
+                {formatDisplayValue(displayCycleLength)}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-slate-200">
+                <span className="font-medium">Period Duration:</span>{' '}
+                {formatDisplayValue(displayPeriodDuration)}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="text-lg font-medium text-pink-700">Flow & Pain</h3>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600 dark:text-slate-200">
+                <span className="font-medium">Flow Level:</span>{' '}
+                {formatDisplayValue(displayFlowHeaviness)}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-slate-200">
+                <span className="font-medium">Pain Level:</span>{' '}
+                {formatDisplayValue(displayPainLevel)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="mb-4 text-lg font-medium text-pink-700">Physical Symptoms</h3>
+            <div className="flex flex-wrap gap-2">
+              {physicalSymptoms && physicalSymptoms.length > 0 ? (
+                physicalSymptoms.map((symptom, index) => (
+                  <span
+                    key={`physical-${index}-${symptom}`}
+                    className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-slate-700 dark:text-slate-200"
+                  >
+                    {symptom}
+                  </span>
+                ))
+              ) : (
+                <span className="text-sm text-gray-500 dark:text-slate-400">
+                  No physical symptoms reported.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="mb-4 text-lg font-medium text-pink-700">Emotional Symptoms</h3>
+            <div className="flex flex-wrap gap-2">
+              {emotionalSymptoms && emotionalSymptoms.length > 0 ? (
+                emotionalSymptoms.map((symptom, index) => (
+                  <span
+                    key={`emotional-${index}-${symptom}`}
+                    className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-slate-700 dark:text-slate-200"
+                  >
+                    {symptom}
+                  </span>
+                ))
+              ) : (
+                <span className="text-sm text-gray-500 dark:text-slate-400">
+                  No emotional symptoms reported.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-100">
+              Recommendations
+            </h3>
+            <div className="space-y-4">
+              {recommendations && recommendations.length > 0 ? (
+                recommendations.map((rec, index) => (
+                  <div
+                    key={index}
+                    className="rounded-lg border bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800"
+                  >
+                    <h4 className="text-xl font-medium text-pink-600 dark:text-pink-500">
+                      {rec.title}
+                    </h4>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">
+                      {rec.description}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-slate-400">
+                  No recommendations available.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
+    );
+  }
 
-      <PatternRecommendations pattern={pattern} />
-    </CardContent>
-  );
+  return null;
 };

@@ -7,7 +7,7 @@ import { Checkbox } from '@/src/components/user-inputs/checkbox';
 import { Input } from '@/src/components/user-inputs/input';
 import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import PageTransition from '../../page-transitions';
+import PageTransition from '../../animations/page-transitions';
 import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/steps/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
