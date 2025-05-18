@@ -1,0 +1,1 @@
+/* view detail button api request goes here. */

@@ -3,12 +3,12 @@ import { describe, it, expect, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 
 // Import all assessment pages
-import AgeVerificationPage from '../steps/age-verification/page';
-import CycleLengthPage from '../steps/cycle-length/page';
-import PeriodDurationPage from '../steps/period-duration/page';
+import AgeVerificationPage from '../steps/1-age-verification/page';
+import CycleLengthPage from '../steps/2-cycle-length/page';
+import PeriodDurationPage from '../steps/3-period-duration/page';
 import FlowPage from '../steps/flow/page';
 import PainPage from '../steps/pain/page';
-import SymptomsPage from '../steps/symptoms/page';
+import SymptomsPage from '../steps/6-symptoms/page';
 import ResultsPage from '../detail/page';
 import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider';
 

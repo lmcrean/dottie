@@ -3,12 +3,12 @@ import { render, screen, fireEvent, cleanup, act } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider';
-import AgeVerificationPage from '../age-verification/page';
-import CycleLengthPage from '../cycle-length/page';
-import PeriodDurationPage from '../period-duration/page';
+import AgeVerificationPage from '../1-age-verification/page';
+import CycleLengthPage from '../2-cycle-length/page';
+import PeriodDurationPage from '../3-period-duration/page';
 import FlowPage from '../flow/page';
 import PainPage from '../pain/page';
-import SymptomsPage from '../symptoms/page';
+import SymptomsPage from '../6-symptoms/page';
 import ResultsPage from '../../detail/page';
 
 describe('Assessment User Journey', () => {

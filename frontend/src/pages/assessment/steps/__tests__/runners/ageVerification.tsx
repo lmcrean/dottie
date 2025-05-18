@@ -2,7 +2,7 @@ import { expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
-import AgeVerificationPage from '@/src/pages/assessment/steps/age-verification/page';
+import AgeVerificationPage from '@/src/pages/assessment/steps/1-age-verification/page';
 
 export const runAgeVerificationStep = async () => {
   // 1. Start at age verification page

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import PageTransition from '../../animations/page-transitions';
-import { useAgeVerification } from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
+import { useAgeVerification } from '@/src/pages/assessment/steps/1-age-verification/hooks/use-age-verification';
 import { AgeRange } from '@/src/pages/assessment/steps/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';

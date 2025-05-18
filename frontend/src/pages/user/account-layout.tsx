@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import AccountSidebar from './account-sidebar';
+import AccountSidebar from './components/sidebar/account-sidebar';
 
 interface AccountLayoutProps {
   children: ReactNode;

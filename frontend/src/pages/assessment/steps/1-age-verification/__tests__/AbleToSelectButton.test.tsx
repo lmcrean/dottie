@@ -22,7 +22,7 @@ vi.mock('@/src/hooks/useQuickNavigate', () => {
 
 // Now we can import the component after all mocks are set up
 import AgeVerificationPage from '../page';
-import * as AgeVerificationHook from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
+import * as AgeVerificationHook from '@/src/pages/assessment/steps/1-age-verification/hooks/use-age-verification';
 
 // Helper function to simplify rendering with all necessary providers
 function renderWithProviders(ui: ReactElement) {

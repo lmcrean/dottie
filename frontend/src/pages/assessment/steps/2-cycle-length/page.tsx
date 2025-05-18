@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import { useCycleLength } from '@/src/pages/assessment/steps/cycle-length/hooks/use-cycle-length';
+import { useCycleLength } from '@/src/pages/assessment/steps/2-cycle-length/hooks/use-cycle-length';
 import { CycleLength } from '@/src/pages/assessment/steps/context/types';
 import PageTransition from '../../animations/page-transitions';
 import ContinueButton from '../components/ContinueButton';

@@ -2,7 +2,7 @@ import { expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
-import CycleLengthPage from '@/src/pages/assessment/steps/cycle-length/page';
+import CycleLengthPage from '@/src/pages/assessment/steps/2-cycle-length/page';
 
 export const runCycleLengthStep = async () => {
   // 1. Start at cycle length page

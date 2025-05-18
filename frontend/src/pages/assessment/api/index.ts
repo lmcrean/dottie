@@ -1,5 +1,5 @@
 import getById from '../components/table/results-details/getById/Request';
-import getList from '../list/api/getList/Request';
+import getList from '../components/buttons/view-list/api/getList/Request';
 import deleteById from '../components/buttons/delete-id/api/deleteById/Request';
 import postSend from '../components/buttons/save-results/api/postSend/Request';
 // Import from correct locations for these (paths need to be fixed based on project structure)

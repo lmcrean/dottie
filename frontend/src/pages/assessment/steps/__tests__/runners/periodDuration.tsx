@@ -2,7 +2,7 @@ import { expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
-import PeriodDurationPage from '@/src/pages/assessment/steps/period-duration/page';
+import PeriodDurationPage from '@/src/pages/assessment/steps/3-period-duration/page';
 
 export const runPeriodDurationStep = async () => {
   // 1. Start at period duration page

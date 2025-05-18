@@ -4,7 +4,7 @@ import { Calendar, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
-import PageTransition from '../../page-transitions';
+import PageTransition from '../animations/page-transitions';
 
 export default function HistoryPage() {
   // #actual

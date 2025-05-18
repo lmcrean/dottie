@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
-import { usePeriodDuration } from '@/src/pages/assessment/steps/period-duration/hooks/use-period-duration';
+import { usePeriodDuration } from '@/src/pages/assessment/steps/3-period-duration/hooks/use-period-duration';
 import { PeriodDuration } from '@/src/pages/assessment/steps/context/types';
 import PageTransition from '../../animations/page-transitions';
 import ContinueButton from '../components/ContinueButton';
