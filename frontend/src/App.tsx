@@ -6,7 +6,7 @@ import SignOut from './pages/auth/signout';
 
 // Import account management pages
 import ProfilePage from './pages/user/profile';
-import PasswordPage from './pages/user/password';
+import PasswordPage from './pages/user/password/password';
 import { Toaster } from 'sonner';
 
 // Import assessment components

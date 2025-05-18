@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import AuthLayout from './AuthLayout';
-import PasswordResetCompletionForm from '../../pages/user/PasswordResetCompletionForm';
+import PasswordResetCompletionForm from '../user/password/PasswordResetCompletionForm';
 
 export default function ResetPasswordPage() {
   const location = useLocation();

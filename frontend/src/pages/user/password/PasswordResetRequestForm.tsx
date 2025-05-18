@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '../../components/buttons/button';
+import { Button } from '../../../components/buttons/button';
 import {
   Card,
   CardContent,
@@ -10,11 +10,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '../../components/ui/card';
-import { Input } from '../../components/user-inputs/input';
-import { Label } from '../../components/ui/label';
+} from '../../../components/ui/card';
+import { Input } from '../../../components/user-inputs/input';
+import { Label } from '../../../components/ui/label';
 import { useNavigate } from 'react-router-dom';
-import { requestPasswordReset } from '../../api/user/requests/passwordReset/Request';
+import { requestPasswordReset } from '../../../api/user/requests/passwordReset/Request';
 
 // Define schema directly here for simplicity
 const PasswordResetRequestSchema = z.object({

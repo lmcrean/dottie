@@ -1,5 +1,5 @@
 import React from 'react';
-import { PasswordForm } from './PasswordUpdateForm';
+import { PasswordForm } from '../PasswordUpdateForm';
 import AccountLayout from './account-layout';
 
 export default function PasswordPage() {
