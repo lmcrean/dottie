@@ -5,7 +5,7 @@ import SignUp from './pages/auth/sign-up';
 import SignOut from './pages/auth/signout';
 
 // Import account management pages
-import ProfilePage from './pages/user/profile';
+import ProfilePage from './pages/user/profile/profile';
 import PasswordPage from './pages/user/password/password';
 import { Toaster } from 'sonner';
 
@@ -13,13 +13,13 @@ import { Toaster } from 'sonner';
 import AgeVerification from './pages/assessment/steps/1-age-verification/page';
 import CycleLength from './pages/assessment/steps/2-cycle-length/page';
 import PeriodDuration from './pages/assessment/steps/3-period-duration/page';
-import FlowLevel from './pages/assessment/steps/flow/page';
-import PainLevel from './pages/assessment/steps/pain/page';
+import FlowLevel from './pages/assessment/steps/4-flow/page';
+import PainLevel from './pages/assessment/steps/5-pain/page';
 import Symptoms from './pages/assessment/steps/6-symptoms/page';
 import Results from './pages/assessment/detail/page';
 import ResourcesPage from './pages/assessment/components/resources/page';
-import HistoryPage from './pages/assessment/history/list/page';
-import DetailsPage from './pages/assessment/detail/!to-refactor/page';
+import HistoryPage from './pages/assessment/list/page';
+import DetailsPage from './pages/assessment/detail/page';
 
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';

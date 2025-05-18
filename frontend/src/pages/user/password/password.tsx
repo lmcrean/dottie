@@ -1,6 +1,6 @@
 import React from 'react';
-import { PasswordForm } from '../PasswordUpdateForm';
-import AccountLayout from './account-layout';
+import { PasswordForm } from './PasswordUpdateForm';
+import AccountLayout from '../profile/account-layout';
 
 export default function PasswordPage() {
   return (

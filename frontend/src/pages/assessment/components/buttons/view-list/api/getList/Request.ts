@@ -1,5 +1,5 @@
 import { apiClient } from '../../../../../../../api/core/apiClient';
-import { Assessment } from '../../types';
+import { Assessment } from '../../../../../api/types';
 import axios from 'axios';
 
 /**

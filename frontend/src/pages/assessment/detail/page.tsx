@@ -5,8 +5,8 @@ import { Card } from '@/src/components/ui/card';
 import { MessageCircle, ArrowLeft } from 'lucide-react';
 import { format, isValid, parseISO } from 'date-fns';
 
-import { ChatModal } from '@/src/pages/chat/page';
-import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
+import { ChatModal } from '@/src/pages/chat/modal/page';
+import { FullscreenChat } from '@/src/pages/chat/fullscreen/FullScreenChat';
 import { useAssessmentData } from '../steps/context/hooks/useAssessmentData';
 import { ResultsTable } from '../components/table/ResultsTable';
 import { SaveResults } from '../components/buttons/save-results/SaveResultsButton';
