@@ -9,7 +9,7 @@ import PeriodDurationPage from '../period-duration/page';
 import FlowPage from '../flow/page';
 import PainPage from '../pain/page';
 import SymptomsPage from '../symptoms/page';
-import ResultsPage from '../../results/page';
+import ResultsPage from '../../detail/page';
 
 describe('Assessment User Journey', () => {
   beforeEach(() => {

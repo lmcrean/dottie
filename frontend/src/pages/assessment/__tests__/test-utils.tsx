@@ -10,7 +10,7 @@ import PeriodDurationPage from '../steps/period-duration/page';
 import FlowPage from '../steps/flow/page';
 import PainPage from '../steps/pain/page';
 import SymptomsPage from '../steps/symptoms/page';
-import ResultsPage from '../results/page';
+import ResultsPage from '../detail/page';
 import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider';
 
 // Mock router

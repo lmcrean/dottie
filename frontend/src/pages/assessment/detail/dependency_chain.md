@@ -7,7 +7,7 @@ request to hook to transform to hook to context to hook to page
 this is the data flow for when the user opens an assessment detail page, triggering the Request.ts hook to fetch the data and update the context.
 
 1. page.tsx
-2. ResultsTable.tsx
+2. ResultsTable.tsx -- calls the results-table component.
 3.
 4. Request.ts ()
 5. useAssessmentById.ts

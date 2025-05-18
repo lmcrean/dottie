@@ -1,7 +1,7 @@
-import getById from '../components/results-table/getById/Request';
+import getById from '../components/table/results-details/getById/Request';
 import getList from '../list/api/getList/Request';
-import deleteById from '../components/delete-button/api/deleteById/Request';
-import postSend from '../results/components/save-results-button/api/postSend/Request';
+import deleteById from '../components/buttons/delete-id/api/deleteById/Request';
+import postSend from '../components/buttons/save-results/api/postSend/Request';
 // Import from correct locations for these (paths need to be fixed based on project structure)
 // import getList from './requests/getList/Request';
 // import deleteById from './requests/deleteById/Request';

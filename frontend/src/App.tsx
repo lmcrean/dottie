@@ -16,10 +16,10 @@ import PeriodDuration from './pages/assessment/steps/period-duration/page';
 import FlowLevel from './pages/assessment/steps/flow/page';
 import PainLevel from './pages/assessment/steps/pain/page';
 import Symptoms from './pages/assessment/steps/symptoms/page';
-import Results from './pages/assessment/results/page';
-import ResourcesPage from './pages/assessment/resources/page';
+import Results from './pages/assessment/detail/page';
+import ResourcesPage from './pages/assessment/components/resources/page';
 import HistoryPage from './pages/assessment/history/list/page';
-import DetailsPage from './pages/assessment/detail/page';
+import DetailsPage from './pages/assessment/detail/!to-refactor/page';
 
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';

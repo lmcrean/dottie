@@ -1,6 +1,6 @@
-import { apiClient } from '../../../../../api/core/apiClient';
-import { Assessment } from '../../../api/types';
-import { getUserData } from '../../../../../api/core/tokenManager';
+import { apiClient } from '../../../../../../api/core/apiClient';
+import { Assessment } from '../../../../api/types';
+import { getUserData } from '../../../../../../api/core/tokenManager';
 
 /**
  * Get assessment by ID
