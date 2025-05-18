@@ -1,4 +1,4 @@
-import { AssessmentResult, MenstrualPattern } from '../steps/context/types';
+import { AssessmentResult, MenstrualPattern } from '../context/types';
 
 /**
  * Determines the menstrual pattern based on assessment results
