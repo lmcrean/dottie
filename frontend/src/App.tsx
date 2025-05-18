@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './globals.css';
-import SignIn from './pages/auth/sign-in';
-import SignUp from './pages/auth/sign-up';
-import SignOut from './pages/auth/signout';
+import SignIn from './pages/auth/sign-in/sign-in';
+import SignUp from './pages/auth/sign-up/sign-up';
+import SignOut from './pages/auth/components/modal-confirm/signout';
 
 // Import account management pages
 import ProfilePage from './pages/user/profile/profile';
