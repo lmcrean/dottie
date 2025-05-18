@@ -7,7 +7,7 @@ import { Label } from '@/src/components/ui/label';
 import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import { useCycleLength } from '@/src/pages/assessment/steps/cycle-length/hooks/use-cycle-length';
-import { CycleLength } from '@/src/pages/assessment/context/types';
+import { CycleLength } from '@/src/pages/assessment/steps/context/types';
 import PageTransition from '../../page-transitions';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';

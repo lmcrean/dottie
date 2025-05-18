@@ -8,7 +8,7 @@ import { Input } from '@/src/components/user-inputs/input';
 import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
-import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/context/types';
+import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/steps/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
 import { useSymptoms } from './hooks/use-symptoms';

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
-import { AgeRange } from '../../../context/types';
+import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
+import { AgeRange } from '../../context/types';
 
 export function useAgeVerification() {
   const { state, updateResult } = useAssessmentContext();

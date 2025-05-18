@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import AgeVerificationPage from '../page';
 import ResultsPage from '../../../detail/page';
-import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 
 // Track context updates
 const mockSetAge = vi.fn();

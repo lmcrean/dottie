@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
-import { CycleLength } from '../../../context/types';
+import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
+import { CycleLength } from '../../context/types';
 
 export function useCycleLength() {
   const { state, updateResult } = useAssessmentContext();

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgeRange } from '../AgeRange';
-import * as useAssessmentDataModule from '@/src/pages/assessment/context/hooks/useAssessmentData';
-import * as useAssessmentResultModule from '@/src/pages/assessment/context/hooks/use-assessment-result';
+import * as useAssessmentDataModule from '@/src/pages/assessment/steps/context/hooks/useAssessmentData';
+import * as useAssessmentResultModule from '@/src/pages/assessment/steps/context/hooks/use-assessment-result';
 
 // Mock the modules we depend on
 vi.mock('@/src/pages/assessment/context/hooks/useAssessmentData', () => ({

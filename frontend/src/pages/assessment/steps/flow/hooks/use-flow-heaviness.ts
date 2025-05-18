@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
-import { FlowHeaviness } from '../../../context/types';
+import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
+import { FlowHeaviness } from '../../context/types';
 
 export function useFlowHeaviness() {
   const { state, updateResult } = useAssessmentContext();

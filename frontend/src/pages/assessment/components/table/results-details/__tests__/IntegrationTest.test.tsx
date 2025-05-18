@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import ResultsPage from '../../../../detail/page';
-import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 
 // Mock sessionStorage
 const mockSessionStorage = {

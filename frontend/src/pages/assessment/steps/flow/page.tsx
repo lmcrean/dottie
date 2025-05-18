@@ -8,7 +8,7 @@ import { InfoIcon } from 'lucide-react';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 import PageTransition from '../../page-transitions';
 import { useFlowHeaviness } from '@/src/pages/assessment/steps/flow/hooks/use-flow-heaviness';
-import { FlowHeaviness } from '@/src/pages/assessment/context/types';
+import { FlowHeaviness } from '@/src/pages/assessment/steps/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
 

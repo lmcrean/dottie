@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
+import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 import AgeVerificationPage from '@/src/pages/assessment/steps/age-verification/page';
 
 export const runAgeVerificationStep = async () => {

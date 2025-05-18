@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { ReactElement } from 'react';
-import { AgeRange } from '@/src/pages/assessment/context/types';
-import { AssessmentResultProvider } from '@/src/pages/assessment/context/AssessmentResultProvider';
+import { AgeRange } from '@/src/pages/assessment/steps/context/types';
+import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 
 // Mock modules before importing components
 vi.mock('@/src/pages/assessment/steps/age-verification/hooks/use-age-verification', () => ({

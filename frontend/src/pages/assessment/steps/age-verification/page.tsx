@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import PageTransition from '../../page-transitions';
 import { useAgeVerification } from '@/src/pages/assessment/steps/age-verification/hooks/use-age-verification';
-import { AgeRange } from '@/src/pages/assessment/context/types';
+import { AgeRange } from '@/src/pages/assessment/steps/context/types';
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
 import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';

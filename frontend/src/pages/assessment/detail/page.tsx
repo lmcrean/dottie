@@ -6,10 +6,10 @@ import { MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { ChatModal } from '@/src/pages/chat/page';
 import { FullscreenChat } from '@/src/pages/chat/FullScreenChat';
-import { useAssessmentData } from '../context/hooks/useAssessmentData';
+import { useAssessmentData } from '../steps/context/hooks/useAssessmentData';
 import { ResultsTable } from '../components/table/ResultsTable';
 import { SaveResults } from '../components/buttons/save-results/SaveResultsButton';
-import { PATTERN_DATA } from '../context/types/recommendations';
+import { PATTERN_DATA } from '../steps/context/types/recommendations';
 import { DeterminedPattern } from '../components/table/results-details';
 
 export default function ResultsPage() {

@@ -4,7 +4,7 @@ import { Button } from '@/src/components/buttons/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
-import { useAssessmentResult } from '@/src/pages/assessment/context/hooks/use-assessment-result';
+import { useAssessmentResult } from '@/src/pages/assessment/steps/context/hooks/use-assessment-result';
 import { postSend } from '@/src/pages/assessment/components/buttons/save-results/api/postSend/Request';
 
 export const SaveResults = () => {

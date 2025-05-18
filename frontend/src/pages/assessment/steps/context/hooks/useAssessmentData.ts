@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useAssessmentResult } from '@/src/pages/assessment/context/hooks/use-assessment-result';
-import { MenstrualPattern } from '@/src/pages/assessment/context/types';
+import { useAssessmentResult } from '@/src/pages/assessment/steps/context/hooks/use-assessment-result';
+import { MenstrualPattern } from '@/src/pages/assessment/steps/context/types';
 
 export interface AssessmentData {
   pattern: MenstrualPattern;

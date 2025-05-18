@@ -1,6 +1,6 @@
 import React from 'react';
-import { PATTERN_DATA } from '../../../context/types/recommendations';
-import { MenstrualPattern } from '@/src/pages/assessment/context/types';
+import { PATTERN_DATA } from '../../../steps/context/types/recommendations';
+import { MenstrualPattern } from '@/src/pages/assessment/steps/context/types';
 
 interface PatternRecommendationsProps {
   pattern: MenstrualPattern;

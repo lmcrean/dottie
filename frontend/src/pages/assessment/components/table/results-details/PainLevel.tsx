@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenstrualPattern } from '@/src/pages/assessment/context/types';
+import { MenstrualPattern } from '@/src/pages/assessment/steps/context/types';
 
 interface PainLevelProps {
   painLevel: string | null;

@@ -1,5 +1,5 @@
 import { useAssessmentContext } from './use-assessment-context';
-import { Assessment } from '../../api/types';
+import { Assessment } from '../../../api/types';
 
 export function useAssessmentResult() {
   const { state } = useAssessmentContext();

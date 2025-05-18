@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import { useAssessmentContext } from '../../../context/hooks/use-assessment-context';
-import { PainLevel } from '../../../context/types';
+import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
+import { PainLevel } from '../../context/types';
 
 export function usePainLevel() {
   const { state, updateResult } = useAssessmentContext();

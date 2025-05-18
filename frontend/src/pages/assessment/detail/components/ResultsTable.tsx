@@ -1,7 +1,7 @@
 import React from 'react';
 import { Droplet, Brain, Calendar, Activity, Heart, AlertCircle } from 'lucide-react';
-import { useAssessmentContext } from '@/src/pages/assessment/context/hooks/use-assessment-context';
-import { Recommendation as ContextRecommendation } from '@/src/pages/assessment/context/types'; // Renamed to avoid conflict
+import { useAssessmentContext } from '@/src/pages/assessment/steps/context/hooks/use-assessment-context';
+import { Recommendation as ContextRecommendation } from '@/src/pages/assessment/steps/context/types'; // Renamed to avoid conflict
 
 // Helper function to format optional values, similar to the original formatValue
 const formatDisplayValue = (value: string | undefined | null): string => {
