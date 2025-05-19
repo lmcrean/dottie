@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card } from '@/src/components/ui/card';
 import { MessageCircle, ArrowLeft, Save } from 'lucide-react';
@@ -27,19 +27,56 @@ const ensureArrayFormat = <T,>(data: unknown): T[] => {
 export default function DetailPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
-  const assessmentData = useAssessmentData();
+  const [searchParams] = useSearchParams();
+  const isNewAssessment = searchParams.get('new') === 'true';
+
+  // Get context data as fallback
+  const assessmentDataFromContext = useAssessmentData();
+
+  // State for assessment data from API
+  const [assessment, setAssessment] = useState<Assessment | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams<{ id: string }>();
 
-  // State for existing assessment from database
-  const [assessment, setAssessment] = useState<Assessment | null>(null);
-  const [isLoading, setIsLoading] = useState(!!id);
-
-  // Detect if we're viewing an assessment from history or a new assessment
-  const isHistoryView = !!id;
+  // Determine if we're viewing an assessment from history or a new assessment
+  const isHistoryView = !!id && !isNewAssessment;
 
   // Format related variables for legacy assessment
   const hasFlattenedFormat = !!assessment && !assessment.assessment_data;
   const hasLegacyFormat = !!assessment?.assessment_data;
+
+  // Fetch the latest assessment if this is a new assessment (no ID)
+  useEffect(() => {
+    const fetchLatestAssessment = async () => {
+      if (isHistoryView || !isNewAssessment) {
+        // Skip if it's a history view or not a new assessment
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const assessments = await assessmentApi.getList();
+
+        if (assessments && assessments.length > 0) {
+          // Sort by created_at to get the most recent one
+          const sortedAssessments = [...assessments].sort((a, b) => {
+            const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+            const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+            return dateB - dateA;
+          });
+
+          setAssessment(sortedAssessments[0]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch latest assessment:', error);
+        toast.error('Failed to load latest assessment');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLatestAssessment();
+  }, [isHistoryView, isNewAssessment]);
 
   // Force progress bars to update when values change (for new assessment)
   useEffect(() => {
@@ -56,22 +93,23 @@ export default function DetailPage() {
     }
   }, [
     isHistoryView,
-    assessmentData.age,
-    assessmentData.cycle_length,
-    assessmentData.period_duration,
-    assessmentData.flow_heaviness,
-    assessmentData.pain_level
+    assessmentDataFromContext.age,
+    assessmentDataFromContext.cycle_length,
+    assessmentDataFromContext.period_duration,
+    assessmentDataFromContext.flow_heaviness,
+    assessmentDataFromContext.pain_level
   ]);
 
   // Fetch existing assessment data if viewing from history
   useEffect(() => {
     const fetchAssessment = async () => {
-      if (!id) {
+      if (!id || !isHistoryView) {
         setIsLoading(false);
         return;
       }
 
       try {
+        setIsLoading(true);
         const data = await assessmentApi.getById(id);
         if (data) {
           // Data processing before setting state to ensure correct types for arrays
@@ -116,10 +154,10 @@ export default function DetailPage() {
       }
     };
 
-    if (id) {
+    if (isHistoryView) {
       fetchAssessment();
     }
-  }, [id]);
+  }, [id, isHistoryView]);
 
   const formatValue = (value: string | undefined) => {
     if (!value) return 'Not provided';
@@ -287,7 +325,89 @@ export default function DetailPage() {
     );
   }
 
-  // Render layout for new assessment results (not from history)
+  // Render layout for new assessment results from API data
+  if (assessment) {
+    // We have fetched the assessment from the API
+    const patternFromAPI = hasFlattenedFormat
+      ? assessment.pattern
+      : assessment.assessment_data?.pattern || 'regular';
+
+    return (
+      <div className="flex min-h-screen flex-col">
+        <main className="mx-auto w-full max-w-4xl flex-1 p-6">
+          <div className="mb-8 h-2 w-full rounded-full bg-gray-200">
+            <div className="h-2 w-full rounded-full bg-pink-500 transition-all duration-500"></div>
+          </div>
+
+          <div className="mb-8 text-center">
+            <h1 className="mb-3 text-3xl font-bold dark:text-slate-100">Your Assessment Results</h1>
+            <p className="text-gray-600 dark:text-slate-200">
+              {" Based on your responses, here's what we've found about your menstrual health."}
+            </p>
+          </div>
+
+          <DeterminedPattern pattern={patternFromAPI} />
+
+          <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
+            <ResultsTable
+              assessment={assessment}
+              hasFlattenedFormat={hasFlattenedFormat}
+              formatValue={formatValue}
+              physicalSymptoms={physicalSymptoms}
+              emotionalSymptoms={emotionalSymptoms}
+              recommendations={recommendations}
+            />
+          </Card>
+
+          <div className="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <Button
+              className="flex items-center justify-center gap-2 bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
+              onClick={() => setIsChatOpen(true)}
+            >
+              <MessageCircle className="h-5 w-5" />
+              Chat with Dottie
+            </Button>
+            <Link to="/assessment/history">
+              <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
+                <Save className="h-5 w-5 hover:text-pink-700" />
+                View All Results
+              </Button>
+            </Link>
+            {id && <DeleteButton assessmentId={id} className="px-6 py-6 text-lg" />}
+          </div>
+
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <Link to="/assessment/history">
+              <Button
+                variant="outline"
+                className="flex items-center px-6 py-6 text-lg dark:bg-gray-900 dark:text-pink-600 dark:hover:text-pink-700"
+              >
+                View History
+              </Button>
+            </Link>
+          </div>
+        </main>
+
+        {isChatOpen &&
+          (isFullscreenChatOpen ? (
+            <FullscreenChat
+              onClose={() => setIsChatOpen(false)}
+              setIsFullscreen={setIsFullscreenChatOpen}
+              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI].title}. Can you tell me more about what this means?`}
+            />
+          ) : (
+            <ChatModal
+              isOpen={isChatOpen}
+              onClose={() => setIsChatOpen(false)}
+              setIsFullscreen={setIsFullscreenChatOpen}
+              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI].title}. Can you tell me more about what this means?`}
+            />
+          ))}
+      </div>
+    );
+  }
+
+  // Fallback to context-based rendering if no API data is available
   return (
     <div className="flex min-h-screen flex-col">
       <main className="mx-auto w-full max-w-4xl flex-1 p-6">
@@ -302,13 +422,13 @@ export default function DetailPage() {
           </p>
         </div>
 
-        <DeterminedPattern pattern={assessmentData.pattern} />
+        <DeterminedPattern pattern={assessmentDataFromContext.pattern} />
 
         <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
           <ResultsTable
-            data={assessmentData}
-            setIsClamped={assessmentData.setIsClamped}
-            setExpandableSymptoms={assessmentData.setExpandableSymptoms}
+            data={assessmentDataFromContext}
+            setIsClamped={assessmentDataFromContext.setIsClamped}
+            setExpandableSymptoms={assessmentDataFromContext.setExpandableSymptoms}
           />
         </Card>
 
@@ -346,14 +466,14 @@ export default function DetailPage() {
           <FullscreenChat
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentData.pattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern].title}. Can you tell me more about what this means?`}
           />
         ) : (
           <ChatModal
             isOpen={isChatOpen}
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentData.pattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern].title}. Can you tell me more about what this means?`}
           />
         ))}
     </div>

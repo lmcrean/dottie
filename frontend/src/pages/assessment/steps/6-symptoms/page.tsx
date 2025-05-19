@@ -12,6 +12,8 @@ import { PhysicalSymptomId, EmotionalSymptomId } from '@/src/pages/assessment/st
 import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
 import { useSymptoms } from './hooks/use-symptoms';
+import { useAssessmentResult } from '../context/hooks/use-assessment-result';
+import postSend from '../context/api/post-id/Request';
 
 // Type assertion helpers
 const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;
@@ -28,8 +30,12 @@ export default function SymptomsPage() {
     setOtherSymptoms
   } = useSymptoms();
 
+  // Get the full assessment result
+  const { result } = useAssessmentResult();
+
   // Local state only for UI controls
   const [refTarget, setRefTarget] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const symptomRef = useRef<HTMLDivElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -116,15 +122,33 @@ export default function SymptomsPage() {
     setEmotionalSymptoms(updatedSymptoms);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     console.log('Continuing with symptoms data from context:', {
       physicalSymptoms,
       emotionalSymptoms,
       otherSymptoms
     });
 
-    // Navigate to results page
-    navigate('/assessment/results');
+    if (!result) {
+      console.error('Assessment result is null, cannot continue');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      // Send assessment data to the backend directly from context
+      await postSend(result);
+
+      // Navigate to results page with a new=true parameter to indicate it's a new assessment
+      navigate('/assessment/results?new=true');
+    } catch (error) {
+      console.error('Failed to save assessment:', error);
+      // Navigate anyway, as we still have the data in context
+      navigate('/assessment/results?new=true');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -314,9 +338,9 @@ export default function SymptomsPage() {
 
             <ContinueButton
               ref={continueButtonRef}
-              isEnabled={true}
+              isEnabled={!isSubmitting}
               onContinue={handleContinue}
-              text="Finish Assessment"
+              text={isSubmitting ? 'Saving...' : 'Finish Assessment'}
               dataTestId="continue-button"
             />
           </div>
