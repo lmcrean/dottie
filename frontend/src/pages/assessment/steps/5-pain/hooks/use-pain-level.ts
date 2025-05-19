@@ -1,5 +1,5 @@
-import { PainLevel } from '../../context/types';
-import { useAssessmentContext } from '@/src/pages/assessment/steps/context/hooks/use-assessment-context';
+import { PainLevel } from '@/src/pages/assessment/steps/context';
+import { useAssessmentContext } from '@/src/pages/assessment/steps/context';
 
 /**
  * Custom hook to manage pain level state

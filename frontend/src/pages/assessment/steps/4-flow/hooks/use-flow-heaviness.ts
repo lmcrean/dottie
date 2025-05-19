@@ -1,5 +1,4 @@
-import { FlowHeaviness } from '../../context/types';
-import { useAssessmentContext } from '@/src/pages/assessment/steps/context/hooks/use-assessment-context';
+import { FlowHeaviness, useAssessmentContext } from '@/src/pages/assessment/steps/context';
 
 /**
  * Custom hook to manage flow heaviness state
@@ -12,6 +11,7 @@ export const useFlowHeaviness = () => {
 
   // Function to update flow heaviness in the assessment context
   const setFlowHeaviness = (value: FlowHeaviness) => {
+    console.log('useFlowHeaviness - Updating flow heaviness in context:', value);
     updateResult({ flow_heaviness: value });
   };
 
