@@ -1,11 +1,11 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useFlowHeaviness } from '../../../../pages/assessment/steps/flow/hooks/use-flow-heaviness';
-import * as AssessmentContextModule from '../../../../pages/assessment/context/hooks/use-assessment-context';
-import { FlowHeaviness } from '../../../../context/types';
+import { useFlowHeaviness } from '../hooks/use-flow-heaviness';
+import * as AssessmentContextModule from '@/src/pages/assessment/steps/context/hooks/use-assessment-context';
+import { FlowHeaviness } from '@/src/pages/assessment/steps/context/types';
 
 // Mock the context hook
-vi.mock('../../use-assessment-context', () => ({
+vi.mock('@/src/pages/assessment/steps/context/hooks/use-assessment-context', () => ({
   useAssessmentContext: vi.fn()
 }));
 
