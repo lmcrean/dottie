@@ -1,4 +1,4 @@
-import getById from '../components/table/results-details/getById/Request';
+import getById from '../detail/components/results/api/getById/Request';
 import getList from '../components/buttons/view-list/api/getList/Request';
 import deleteById from '../components/buttons/delete-id/api/deleteById/Request';
 import postSend from '../components/buttons/save-results/api/postSend/Request';

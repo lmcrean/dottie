@@ -1,5 +1,5 @@
 import React from 'react';
-import { PATTERN_DATA } from '../../../steps/context/types/recommendations';
+import { PATTERN_DATA } from '../../../../steps/context/types/recommendations';
 import { MenstrualPattern } from '@/src/pages/assessment/steps/context/types';
 
 interface DeterminedPatternProps {

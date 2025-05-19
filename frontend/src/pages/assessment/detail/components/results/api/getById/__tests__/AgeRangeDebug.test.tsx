@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { AgeRange } from '../AgeRange';
+import { AgeRange } from '../../../../detail/components/results/results-details/AgeRange';
 
 describe('AgeRange debugging', () => {
   it('should correctly display age under-13', () => {

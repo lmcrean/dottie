@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AgeRange } from '../AgeRange';
+import { AgeRange } from '../../../../detail/components/results/results-details/AgeRange';
 import * as useAssessmentDataModule from '@/src/pages/assessment/steps/context/hooks/useAssessmentData';
 import * as useAssessmentResultModule from '@/src/pages/assessment/steps/context/hooks/use-assessment-result';
 

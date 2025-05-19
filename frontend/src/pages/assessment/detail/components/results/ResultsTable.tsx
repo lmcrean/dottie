@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { CardContent } from '@/src/components/ui/card';
-import { AssessmentData } from '../../steps/context/hooks/useAssessmentData';
+import { AssessmentData } from '../../../steps/context/hooks/useAssessmentData';
 import {
   AgeRange,
   CycleLength,
@@ -10,7 +10,7 @@ import {
   Symptoms,
   PatternRecommendations
 } from './results-details';
-import { Assessment } from '../../api/types';
+import { Assessment } from '../../../api/types';
 
 interface ResultsTableProps {
   data?: AssessmentData;

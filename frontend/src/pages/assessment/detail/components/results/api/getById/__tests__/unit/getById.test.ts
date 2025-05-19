@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getById } from '../../Request';
-import { apiClient } from '../../../../../../../../api/core/apiClient';
-import { getUserData } from '../../../../../../../../api/core/tokenManager';
+import { apiClient } from '../../../../../../../../../api/core/apiClient';
+import { getUserData } from '../../../../../../../../../api/core/tokenManager';
 
 // Mock the apiClient and tokenManager
 vi.mock('../../../../../core/apiClient', () => ({
