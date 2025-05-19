@@ -57,7 +57,17 @@ CREATE TABLE IF NOT EXISTS public.assessments (
   user_id UUID NOT NULL REFERENCES public.users(id),
   assessment_data JSONB NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  age TEXT,
+  pattern TEXT,
+  cycle_length TEXT,
+  period_duration TEXT,
+  flow_heaviness TEXT,
+  pain_level TEXT,
+  physical_symptoms TEXT, 
+  emotional_symptoms TEXT,
+  other_symptoms TEXT,
+  recommendations TEXT
 );
 
 -- Create index for common queries

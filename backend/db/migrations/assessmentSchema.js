@@ -26,6 +26,7 @@ export async function updateAssessmentSchema(db) {
     table.string("pain_level");
     table.text("physical_symptoms");
     table.text("emotional_symptoms");
+    table.text("other_symptoms");
     table.text("recommendations");
 
     // Foreign key handling based on database type
