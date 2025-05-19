@@ -46,7 +46,7 @@ const UserIcon: React.FC = () => {
           <List className="h-5 w-5" />
         </Link>
       )}
-      <Link to="/account/profile" title="Profile" className="hover:text-pink-600">
+      <Link to="/user/profile" title="Profile" className="hover:text-pink-600">
         <User className="h-5 w-5" />
       </Link>
     </div>
