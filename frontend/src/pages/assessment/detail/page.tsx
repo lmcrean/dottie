@@ -2,20 +2,19 @@ import { useEffect, useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card } from '@/src/components/ui/card';
-import { MessageCircle, ArrowLeft } from 'lucide-react';
+import { MessageCircle, ArrowLeft, Save } from 'lucide-react';
 import { format, isValid, parseISO } from 'date-fns';
 
 import { ChatModal } from '@/src/pages/chat/modal/page';
 import { FullscreenChat } from '@/src/pages/chat/fullscreen/FullScreenChat';
 import { useAssessmentData } from '../steps/context/hooks/useAssessmentData';
 import { ResultsTable } from '../components/table/ResultsTable';
-import { SaveResults } from '../components/buttons/save-results/SaveResultsButton';
 import { PATTERN_DATA } from '../steps/context/types/recommendations';
 import { DeterminedPattern } from '../components/table/results-details';
 import { Assessment } from '../api/types';
 import { assessmentApi } from '../api';
 import { toast } from 'sonner';
-import DeleteButton from '../components/buttons/delete-id';
+import DeleteButton from '../components/buttons/delete-id/DeleteButton';
 
 // Utility function to ensure data is an array
 const ensureArrayFormat = <T,>(data: unknown): T[] => {
@@ -321,7 +320,13 @@ export default function DetailPage() {
             <MessageCircle className="h-5 w-5" />
             Chat with Dottie
           </Button>
-          <SaveResults />
+          <Link to="/assessment/history">
+            <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
+              <Save className="h-5 w-5 hover:text-pink-700" />
+              View All Results
+            </Button>
+          </Link>
+          {id && <DeleteButton assessmentId={id} className="px-6 py-6 text-lg" />}
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
