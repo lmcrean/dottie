@@ -333,6 +333,17 @@ export default function DetailPage() {
       ? assessment.pattern
       : assessment.assessment_data?.pattern || 'regular';
 
+    // Ensure we have a valid pattern value
+    const safePattern: MenstrualPattern = [
+      'regular',
+      'irregular',
+      'heavy',
+      'pain',
+      'developing'
+    ].includes(patternFromAPI as string)
+      ? (patternFromAPI as MenstrualPattern)
+      : 'regular';
+
     return (
       <div className="flex min-h-screen flex-col">
         <main className="mx-auto w-full max-w-4xl flex-1 p-6">
@@ -347,7 +358,7 @@ export default function DetailPage() {
             </p>
           </div>
 
-          <DeterminedPattern pattern={patternFromAPI as MenstrualPattern} />
+          <DeterminedPattern pattern={safePattern} />
 
           <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
             <ResultsTable
@@ -394,14 +405,14 @@ export default function DetailPage() {
             <FullscreenChat
               onClose={() => setIsChatOpen(false)}
               setIsFullscreen={setIsFullscreenChatOpen}
-              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI as MenstrualPattern].title}. Can you tell me more about what this means?`}
+              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePattern].title}. Can you tell me more about what this means?`}
             />
           ) : (
             <ChatModal
               isOpen={isChatOpen}
               onClose={() => setIsChatOpen(false)}
               setIsFullscreen={setIsFullscreenChatOpen}
-              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI as MenstrualPattern].title}. Can you tell me more about what this means?`}
+              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePattern].title}. Can you tell me more about what this means?`}
             />
           ))}
       </div>
@@ -409,6 +420,17 @@ export default function DetailPage() {
   }
 
   // Fallback to context-based rendering if no API data is available
+  // Ensure we have a valid pattern value from context
+  const safePatternFromContext: MenstrualPattern = [
+    'regular',
+    'irregular',
+    'heavy',
+    'pain',
+    'developing'
+  ].includes(assessmentDataFromContext.pattern as string)
+    ? (assessmentDataFromContext.pattern as MenstrualPattern)
+    : 'regular';
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="mx-auto w-full max-w-4xl flex-1 p-6">
@@ -423,7 +445,7 @@ export default function DetailPage() {
           </p>
         </div>
 
-        <DeterminedPattern pattern={assessmentDataFromContext.pattern} />
+        <DeterminedPattern pattern={safePatternFromContext} />
 
         <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
           <ResultsTable
@@ -467,14 +489,14 @@ export default function DetailPage() {
           <FullscreenChat
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern as MenstrualPattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePatternFromContext].title}. Can you tell me more about what this means?`}
           />
         ) : (
           <ChatModal
             isOpen={isChatOpen}
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern as MenstrualPattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePatternFromContext].title}. Can you tell me more about what this means?`}
           />
         ))}
     </div>

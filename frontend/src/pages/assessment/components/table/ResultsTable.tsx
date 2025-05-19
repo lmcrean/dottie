@@ -72,7 +72,7 @@ export const ResultsTable = ({
           <CycleLength cycleLength={cycle_length} />
           <PeriodDuration periodDuration={period_duration} />
           <FlowLevel flowLevel={flow_heaviness} />
-          <PainLevel painLevel={pain_level} pattern={pattern} />
+          <PainLevel painLevel={pain_level} pattern={pattern || 'regular'} />
           <Symptoms
             symptoms={symptoms}
             expandableSymptoms={expandableSymptoms}
@@ -82,7 +82,7 @@ export const ResultsTable = ({
           />
         </div>
 
-        <PatternRecommendations pattern={pattern} />
+        <PatternRecommendations pattern={pattern || 'regular'} />
       </CardContent>
     );
   }

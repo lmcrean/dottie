@@ -13,7 +13,6 @@ import ContinueButton from '../components/ContinueButton';
 import BackButton from '../components/BackButton';
 import { useSymptoms } from './hooks/use-symptoms';
 import { useAssessmentResult } from '../context/hooks/use-assessment-result';
-import postSend from '../context/api/post-id/Request';
 
 // Type assertion helpers
 const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;
@@ -137,15 +136,10 @@ export default function SymptomsPage() {
     try {
       setIsSubmitting(true);
 
-      // Send assessment data to the backend directly from context
-      await postSend(result);
-
-      // Navigate to results page with a new=true parameter to indicate it's a new assessment
-      navigate('/assessment/results?new=true');
+      // Navigate to the pattern calculation step
+      navigate('/assessment/calculate-pattern');
     } catch (error) {
-      console.error('Failed to save assessment:', error);
-      // Navigate anyway, as we still have the data in context
-      navigate('/assessment/results?new=true');
+      console.error('Error navigating:', error);
     } finally {
       setIsSubmitting(false);
     }
