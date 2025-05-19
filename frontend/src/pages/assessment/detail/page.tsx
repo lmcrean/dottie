@@ -15,6 +15,7 @@ import { Assessment } from '../api/types';
 import { assessmentApi } from '../api';
 import { toast } from 'sonner';
 import DeleteButton from '../components/buttons/delete-id/DeleteButton';
+import { MenstrualPattern } from '../steps/context/types';
 
 // Utility function to ensure data is an array
 const ensureArrayFormat = <T,>(data: unknown): T[] => {
@@ -346,7 +347,7 @@ export default function DetailPage() {
             </p>
           </div>
 
-          <DeterminedPattern pattern={patternFromAPI} />
+          <DeterminedPattern pattern={patternFromAPI as MenstrualPattern} />
 
           <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
             <ResultsTable
@@ -393,14 +394,14 @@ export default function DetailPage() {
             <FullscreenChat
               onClose={() => setIsChatOpen(false)}
               setIsFullscreen={setIsFullscreenChatOpen}
-              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI].title}. Can you tell me more about what this means?`}
+              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI as MenstrualPattern].title}. Can you tell me more about what this means?`}
             />
           ) : (
             <ChatModal
               isOpen={isChatOpen}
               onClose={() => setIsChatOpen(false)}
               setIsFullscreen={setIsFullscreenChatOpen}
-              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI].title}. Can you tell me more about what this means?`}
+              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[patternFromAPI as MenstrualPattern].title}. Can you tell me more about what this means?`}
             />
           ))}
       </div>
@@ -466,14 +467,14 @@ export default function DetailPage() {
           <FullscreenChat
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern as MenstrualPattern].title}. Can you tell me more about what this means?`}
           />
         ) : (
           <ChatModal
             isOpen={isChatOpen}
             onClose={() => setIsChatOpen(false)}
             setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern].title}. Can you tell me more about what this means?`}
+            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[assessmentDataFromContext.pattern as MenstrualPattern].title}. Can you tell me more about what this means?`}
           />
         ))}
     </div>

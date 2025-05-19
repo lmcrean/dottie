@@ -18,7 +18,8 @@ export const assessmentApi = {
   list: getList,
   getById,
   sendAssessment: postSend,
-  delete: deleteById
+  delete: deleteById,
+  getList
 };
 
 export default assessmentApi;
