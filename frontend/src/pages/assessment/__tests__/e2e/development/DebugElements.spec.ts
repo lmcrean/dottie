@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { assessmentPaths, debugPage } from "./test-utils";
+import { assessmentPaths, debugPage } from "./utils/test-utils";
 
 test.describe("Debug Elements", () => {
   test("debug age verification page elements", async ({ page }) => {

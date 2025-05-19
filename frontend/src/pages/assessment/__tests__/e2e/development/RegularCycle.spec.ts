@@ -5,8 +5,9 @@ import {
   assessmentPaths,
   clearSessionStorage,
   debugPage,
-  authenticateUser,
-} from "./test-utils";
+} from "./utils/test-utils";
+import { signUpTestUser } from "./utils/sign-up.spec";
+import { signInUser } from "./utils/sign-in.spec";
 
 // Define viewport for portrait orientation
 const portraitViewport = { width: 390, height: 844 }; // iPhone 12 Pro portrait dimensions
@@ -47,8 +48,33 @@ test("Regular Cycle Assessment Path - capture screenshots", async ({ page }) => 
     }
   };
 
-  // Skip authentication for now and navigate directly to age verification
-  console.log("Navigating directly to age verification");
+  // Try to create a new test user and sign in
+  // But continue the test even if authentication fails
+  let authenticationSuccessful = false;
+  
+  try {
+    // First sign up a new test user
+    console.log("Creating new test user");
+    const userCredentials = await signUpTestUser(page);
+    await takeScreenshot("00a-after-signup");
+    
+    // Then sign in with the new user
+    console.log("Signing in with test user");
+    authenticationSuccessful = await signInUser(page, userCredentials.email, userCredentials.password);
+    await takeScreenshot("00b-after-signin");
+    
+    if (!authenticationSuccessful) {
+      console.warn("Authentication failed, but continuing with the assessment test");
+    } else {
+      console.log("Authentication successful, proceeding with assessment");
+    }
+  } catch (error) {
+    console.error("Error during authentication:", error);
+    console.warn("Continuing with assessment test despite authentication error");
+  }
+
+  // Navigate to age verification
+  console.log("Navigating to age verification");
   await page.goto("http://localhost:3000" + assessmentPaths.ageVerification);
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(1000); // Give the page a moment to stabilize

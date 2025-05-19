@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
+import { useAssessmentContext } from '@/src/pages/assessment/steps/context/hooks/use-assessment-context';
 
 // Import all assessment pages
 import AgeVerificationPage from '../steps/1-age-verification/page';
@@ -241,12 +243,36 @@ export const navigateToSymptoms = async (
 
 export const renderResults = (sessionData: Record<string, any>) => {
   setupSessionStorage(sessionData);
+  const TestComponent = () => {
+    const { setResult } = useAssessmentContext();
+    
+    // Set the result directly in the context  
+    useEffect(() => {
+      // Map session data to context result format
+      const result = {
+        age: sessionData.age,
+        cycle_length: sessionData.cycle_length,
+        period_duration: sessionData.period_duration,
+        flow_heaviness: sessionData.flow_heaviness,
+        pain_level: sessionData.pain_level,
+        physical_symptoms: sessionData.physical_symptoms || [],
+        emotional_symptoms: sessionData.emotional_symptoms || [],
+        other_symptoms: sessionData.other_symptoms || '',
+        pattern: sessionData.pattern || 'regular'
+      };
+      console.log('Setting assessment result in context:', result);
+      setResult(result);
+    }, [setResult]);
+    
+    return <ResultsPage />;
+  };
+  
   render(
     <AuthProvider>
       <AssessmentResultProvider>
         <MemoryRouter initialEntries={['/assessment/results']}>
           <Routes>
-            <Route path="/assessment/results" element={<ResultsPage />} />
+            <Route path="/assessment/results" element={<TestComponent />} />
           </Routes>
         </MemoryRouter>
       </AssessmentResultProvider>

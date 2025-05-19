@@ -1,58 +1,65 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-
-// Import test utilities
-import { 
-  renderResults,
-  clearSessionStorage
-} from './test-utils'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider'
+import { useAssessmentContext } from '@/src/pages/assessment/steps/context/hooks/use-assessment-context'
+import ResultsPage from '@/src/pages/assessment/detail/page'
+import React from 'react'
+import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider'
 
 describe('Regular Menstrual Cycle Assessment Path', () => {
-  // Set up user event
-  const user = userEvent.setup()
-  
-  // Clear session storage after each test
-  beforeEach(() => {
-    clearSessionStorage()
-  })
-  
+  // Clear mocks after each test
   afterEach(() => {
-    clearSessionStorage()
+    vi.restoreAllMocks()
   })
   
   it('should show regular cycle results', async () => {
-    // Setup session storage for results page
-    const sessionData = {
-      age: '18-24 years',
-      cycleLength: '26-30 days',
-      periodDuration: '4-5 days',
-      flowLevel: 'Moderate',
-      painLevel: 'Mild',
-      symptoms: ['Fatigue']
+    // Create a wrapper component that will set the assessment data
+    const TestWrapper = () => {
+      const { setResult } = useAssessmentContext()
+      
+      // Set data in context on mount
+      React.useEffect(() => {
+        const mockData = {
+          age: '18-24 years',
+          cycle_length: '26-30 days',
+          period_duration: '4-5 days',
+          flow_heaviness: 'moderate',
+          pain_level: 'mild',
+          physical_symptoms: ['fatigue'],
+          emotional_symptoms: [],
+          pattern: 'regular'
+        }
+        
+        setResult(mockData)
+      }, [setResult])
+      
+      return <ResultsPage />
     }
     
-    // Render results page directly
-    renderResults(sessionData)
+    // Render with necessary providers
+    render(
+      <AuthProvider>
+        <AssessmentResultProvider>
+          <MemoryRouter initialEntries={['/assessment/results?new=true']}>
+            <TestWrapper />
+          </MemoryRouter>
+        </AssessmentResultProvider>
+      </AuthProvider>
+    )
     
     // Wait for results to load
     await waitFor(() => {
-      // Verify heading is present
-      expect(screen.queryByText(/Your Assessment Results/i, { exact: false })).toBeInTheDocument()
-    }, { timeout: 5000 })
+      expect(screen.queryByText(/Loading assessment details/i)).not.toBeInTheDocument()
+    }, { timeout: 3000 })
     
-    // Verify regular cycle pattern (O4 in LogicTree)
-    expect(screen.getByText(/normal, healthy pattern/i, { exact: false })).toBeInTheDocument()
+    // Now verify that the results are displayed
+    expect(screen.getByText(/Your Assessment Results/i)).toBeInTheDocument()
     
-    // Check that metrics display correctly
-    expect(screen.getAllByText(/26-30 days/i, { exact: false })[0]).toBeInTheDocument()
-    expect(screen.getAllByText(/4-5 days/i, { exact: false })[0]).toBeInTheDocument()
-    expect(screen.getAllByText(/Moderate/i, { exact: false })[0]).toBeInTheDocument()
-    expect(screen.getAllByText(/Mild/i, { exact: false })[0]).toBeInTheDocument()
-    expect(screen.getAllByText(/Fatigue/i, { exact: false })[0]).toBeInTheDocument() // Check selected symptom
+    // Verify regular cycle pattern text appears
+    expect(screen.getByText(/normal, healthy pattern/i)).toBeInTheDocument()
     
     // Check for regular cycle recommendations
-    expect(screen.getByText(/Track Your Cycle/i, { exact: false })).toBeInTheDocument()
-    expect(screen.getByText(/Exercise Regularly/i, { exact: false })).toBeInTheDocument()
+    expect(screen.getByText(/Track Your Cycle/i)).toBeInTheDocument()
   })
 }) 

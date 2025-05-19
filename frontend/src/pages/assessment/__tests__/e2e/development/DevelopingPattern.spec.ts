@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
-import { SCREENSHOT_DIR, assessmentPaths, clearSessionStorage, setupSessionStorage } from './test-utils';
+import { SCREENSHOT_DIR, assessmentPaths, clearSessionStorage, setupSessionStorage } from './utils/test-utils';
 
 test.describe('Developing Pattern Assessment Path', () => {
   // Setup for all tests

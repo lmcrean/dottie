@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
-import { SCREENSHOT_DIR, assessmentPaths, clearSessionStorage } from './test-utils';
+import { SCREENSHOT_DIR, assessmentPaths, clearSessionStorage } from './utils/test-utils';
 
 // Extend test timeout to 90 seconds
 test.setTimeout(90000);
