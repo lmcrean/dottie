@@ -23,7 +23,7 @@ const assessmentBasePath = "/assessment";
 
 // Different assessment paths to test
 export const assessmentPaths = {
-  login: "/login",
+  login: "/auth/sign-in",
   ageVerification: `${assessmentBasePath}/age-verification`,
   cycleLength: `${assessmentBasePath}/cycle-length`,
   periodDuration: `${assessmentBasePath}/period-duration`,
@@ -37,6 +37,40 @@ export const assessmentPaths = {
 export const authenticateUser = async (page: Page) => {
   console.log("Starting authentication process...");
   
+  const email = `test_${Date.now()}@example.com`;
+  const password = "TestPassword123!";
+  const username = `testuser_${Date.now()}`;
+  
+  // First register a new user
+  console.log("Creating a new test user account");
+  
+  // Navigate to sign-up page
+  await page.goto("/auth/sign-up");
+  await page.waitForLoadState("networkidle");
+  
+  // Fill in registration form
+  await page.getByLabel(/full name/i).fill("Test User");
+  await page.getByLabel(/username/i).fill(username);
+  await page.getByLabel(/email/i).fill(email);
+  
+  // Find password fields
+  const passwordFields = await page.locator('input[type="password"]').all();
+  if (passwordFields.length >= 2) {
+    await passwordFields[0].fill(password);
+    await passwordFields[1].fill(password);
+  } else {
+    // Try with label
+    await page.getByLabel(/password/i).fill(password);
+    await page.getByLabel(/confirm password/i).fill(password);
+  }
+  
+  // Click create account button
+  await page.getByRole("button", { name: /create account/i }).click();
+  await page.waitForLoadState("networkidle");
+  
+  // Now sign in with the new account
+  console.log("Signing in with new account");
+  
   // Navigate to login page
   await page.goto(assessmentPaths.login);
   await page.waitForLoadState("networkidle");
@@ -46,11 +80,11 @@ export const authenticateUser = async (page: Page) => {
   console.log("Page title:", await page.title());
   
   // Fill in login form
-  await page.getByLabel(/email/i).fill("test@example.com");
-  await page.getByLabel(/password/i).fill("password123");
+  await page.getByLabel(/email/i).fill(email);
+  await page.getByLabel(/password/i).fill(password);
   
   // Click login button
-  await page.getByRole("button", { name: /login/i }).click();
+  await page.getByRole("button", { name: /sign in/i }).click();
   
   // Wait for navigation to complete
   await page.waitForLoadState("networkidle");
@@ -60,8 +94,8 @@ export const authenticateUser = async (page: Page) => {
   console.log("Post-login URL:", currentUrl);
   
   // If we're still on the login page, something went wrong
-  if (currentUrl.includes("/login")) {
-    throw new Error("Failed to authenticate - still on login page");
+  if (currentUrl.includes("/sign-in")) {
+    throw new Error("Failed to authenticate - still on sign-in page");
   }
   
   console.log("Authentication successful");
