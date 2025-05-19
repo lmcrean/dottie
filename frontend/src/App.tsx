@@ -16,6 +16,9 @@ import PeriodDuration from './pages/assessment/steps/3-period-duration/page';
 import FlowLevel from './pages/assessment/steps/4-flow/page';
 import PainLevel from './pages/assessment/steps/5-pain/page';
 import Symptoms from './pages/assessment/steps/6-symptoms/page';
+import CalculatePattern from './pages/assessment/steps/7-calculate-pattern/page';
+import GenerateRecommendations from './pages/assessment/steps/8-generate-recommendation/page';
+import SaveAssessment from './pages/assessment/steps/9-save/page';
 import Results from './pages/assessment/detail/page';
 import ResourcesPage from './pages/assessment/components/resources/page';
 import HistoryPage from './pages/assessment/list/page';
@@ -109,6 +112,30 @@ function AppContent(): ReactElement {
                   element={
                     <AssessmentResultProvider>
                       <Symptoms />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="calculate-pattern"
+                  element={
+                    <AssessmentResultProvider>
+                      <CalculatePattern />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="generate-recommendations"
+                  element={
+                    <AssessmentResultProvider>
+                      <GenerateRecommendations />
+                    </AssessmentResultProvider>
+                  }
+                />
+                <Route
+                  path="save"
+                  element={
+                    <AssessmentResultProvider>
+                      <SaveAssessment />
                     </AssessmentResultProvider>
                   }
                 />
