@@ -30,18 +30,52 @@ export function prepareAssessmentData(data: AssessmentResult): AssessmentResult 
     throw new Error('Assessment data is required');
   }
 
+  console.log('AssessmentObjectReady - Original data received:', {
+    ...data,
+    physical_symptoms: data.physical_symptoms || [],
+    emotional_symptoms: data.emotional_symptoms || []
+  });
+
   // Calculate pattern if not already set
   const pattern = calculatePattern(data);
 
-  // Return a new object with all fields properly set
-  return {
-    ...data, // Keep original data
-    physical_symptoms: data.physical_symptoms || [],
-    emotional_symptoms: data.emotional_symptoms || [],
+  // Ensure arrays are properly initialized and not null/undefined
+  const physical_symptoms = Array.isArray(data.physical_symptoms)
+    ? [...data.physical_symptoms]
+    : data.physical_symptoms
+      ? [data.physical_symptoms]
+      : [];
+
+  const emotional_symptoms = Array.isArray(data.emotional_symptoms)
+    ? [...data.emotional_symptoms]
+    : data.emotional_symptoms
+      ? [data.emotional_symptoms]
+      : [];
+
+  const recommendations = Array.isArray(data.recommendations)
+    ? [...data.recommendations]
+    : data.recommendations
+      ? [data.recommendations]
+      : [];
+
+  console.log('AssessmentObjectReady - Processed arrays:', {
+    physical_symptoms,
+    emotional_symptoms,
+    recommendations
+  });
+
+  // Return a clean object with all fields properly set
+  const result = {
+    ...data,
+    physical_symptoms,
+    emotional_symptoms,
     other_symptoms: data.other_symptoms || '',
-    pattern, // Always set the pattern
-    recommendations: data.recommendations || []
+    pattern,
+    recommendations
   };
+
+  console.log('AssessmentObjectReady - Final data prepared for API:', result);
+  return result;
 }
 
 export default prepareAssessmentData;
