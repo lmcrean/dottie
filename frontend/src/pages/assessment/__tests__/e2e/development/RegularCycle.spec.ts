@@ -106,46 +106,135 @@ test("Regular Cycle Assessment Path - capture screenshots", async ({ page }) => 
   await page.waitForTimeout(500); // Short wait after selection
   
   // Click Continue button
-  console.log("Clicking Continue button");
+  console.log("Clicking Continue button on age verification page");
   try {
     const continueButton = await page.getByRole("button", { name: /continue/i });
     await continueButton.waitFor({ state: "visible" });
+    
+    // Create a promise to wait for navigation
+    const navigationPromise = page.waitForURL("**/cycle-length", { timeout: 10000 });
+    
+    // Click the button
     await continueButton.click();
-    await page.waitForNavigation({ waitUntil: "networkidle" });
-    console.log("Successfully clicked Continue and navigated");
+    console.log("Continue button clicked, waiting for navigation to cycle length page...");
+    
+    // Wait for navigation to complete
+    await navigationPromise;
+    console.log("Successfully navigated to cycle length page");
+    
+    // Wait for the page to stabilize
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1000);
   } catch (error) {
-    console.error("Error clicking continue button:", error);
+    console.error("Error navigating to cycle length page:", error);
     await logPageState();
+    await takeScreenshot("error-after-age-verification");
+    throw error; // Rethrow to fail the test
   }
   
   // 2. Cycle Length
   console.log("On cycle length page");
   await takeScreenshot("02-cycle-length");
   
-  // Select first radio option
+  // Debug the cycle length page
+  await debugPage(page);
+  
+  // Select a cycle length option
+  console.log("Selecting cycle length option");
   try {
-    const cycleRadios = await page.locator('input[type="radio"]').all();
-    if (cycleRadios.length > 0) {
-      await cycleRadios[0].click();
-      console.log("Selected first cycle length option");
-    }
+    // Look for option buttons - these appear to be regular buttons, not radio inputs
+    const optionButtonsText = [
+      "21-25 days",
+      "26-30 days",
+      "31-35 days",
+      "36-40 days",
+      "Irregular",
+      "I'm not sure",
+      "Other"
+    ];
+    
+    // Try to click the "Average length" option (26-30 days)
+    console.log("Attempting to click the '26-30 days' option");
+    const averageLengthButton = await page.locator('button').filter({ hasText: /26-30 days/i }).first();
+    await averageLengthButton.waitFor({ state: "visible" });
+    await averageLengthButton.click();
+    console.log("Selected '26-30 days' option");
+    
+    // Wait after selection
+    await page.waitForTimeout(500);
     
     // Click Continue button
+    console.log("Clicking Continue button on cycle length page");
     const continueButton = await page.getByRole("button", { name: /continue/i });
     await continueButton.waitFor({ state: "visible" });
+    
+    // Create a promise to wait for navigation
+    const navigationPromise = page.waitForURL("**/period-duration", { timeout: 10000 });
+    
+    // Click the button
     await continueButton.click();
-    await page.waitForNavigation({ waitUntil: "networkidle" });
+    console.log("Continue button clicked, waiting for navigation to period duration page...");
+    
+    // Wait for navigation to complete
+    await navigationPromise;
+    console.log("Successfully navigated to period duration page");
+    
+    // Wait for the page to stabilize
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1000);
   } catch (error) {
     console.error("Error on cycle length page:", error);
     await logPageState();
+    await takeScreenshot("error-after-cycle-length");
+    throw error; // Rethrow to fail the test
   }
 
   // 3. Period Duration
   console.log("On period duration page");
   await takeScreenshot("03-period-duration");
   
-  // Continue the test in a similar pattern for remaining steps...
-  // For brevity, I'll stop here and see if we can get past the first steps
+  // Debug the period duration page
+  await debugPage(page);
   
-  console.log("Test completed as far as period duration");
+  // Select a period duration option
+  console.log("Selecting period duration option");
+  try {
+    // Try to click the "3-5 days" option
+    console.log("Attempting to click the '3-5 days' option");
+    const regularDurationButton = await page.locator('button').filter({ hasText: /3-5 days/i }).first();
+    await regularDurationButton.waitFor({ state: "visible" });
+    await regularDurationButton.click();
+    console.log("Selected '3-5 days' option");
+    
+    // Wait after selection
+    await page.waitForTimeout(500);
+    
+    // Click Continue button
+    console.log("Clicking Continue button on period duration page");
+    const continueButton = await page.getByRole("button", { name: /continue/i });
+    await continueButton.waitFor({ state: "visible" });
+    
+    // Create a promise to wait for navigation
+    const navigationPromise = page.waitForURL("**/flow", { timeout: 10000 });
+    
+    // Click the button
+    await continueButton.click();
+    console.log("Continue button clicked, waiting for navigation to flow page...");
+    
+    // Wait for navigation to complete
+    await navigationPromise;
+    console.log("Successfully navigated to flow page");
+    
+    // Wait for the page to stabilize
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1000);
+  } catch (error) {
+    console.error("Error on period duration page:", error);
+    await logPageState();
+    await takeScreenshot("error-after-period-duration");
+    throw error; // Rethrow to fail the test
+  }
+  
+  // Test completed successfully
+  console.log("Test completed successfully through flow page");
 });
