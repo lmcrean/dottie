@@ -199,12 +199,12 @@ test("Regular Cycle Assessment Path - capture screenshots", async ({ page }) => 
   // Select a period duration option
   console.log("Selecting period duration option");
   try {
-    // Try to click the "3-5 days" option
-    console.log("Attempting to click the '3-5 days' option");
-    const regularDurationButton = await page.locator('button').filter({ hasText: /3-5 days/i }).first();
-    await regularDurationButton.waitFor({ state: "visible" });
-    await regularDurationButton.click();
-    console.log("Selected '3-5 days' option");
+    // Try to click the "4-5 days" option (Average duration)
+    console.log("Attempting to click the '4-5 days' option");
+    const averageDurationButton = await page.locator('button').filter({ hasText: /4-5 days/i }).first();
+    await averageDurationButton.waitFor({ state: "visible" });
+    await averageDurationButton.click();
+    console.log("Selected '4-5 days' option");
     
     // Wait after selection
     await page.waitForTimeout(500);
@@ -234,6 +234,13 @@ test("Regular Cycle Assessment Path - capture screenshots", async ({ page }) => 
     await takeScreenshot("error-after-period-duration");
     throw error; // Rethrow to fail the test
   }
+  
+  // 4. Flow
+  console.log("On flow page");
+  await takeScreenshot("04-flow");
+  
+  // Debug the flow page
+  await debugPage(page);
   
   // Test completed successfully
   console.log("Test completed successfully through flow page");
