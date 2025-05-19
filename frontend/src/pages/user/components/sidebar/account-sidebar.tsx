@@ -15,12 +15,12 @@ export default function AccountSidebar() {
   const links: SidebarLink[] = [
     {
       label: 'Profile',
-      href: '/account/profile',
+      href: '/user/profile',
       icon: <UserCircle className="h-5 w-5 text-pink-700" />
     },
     {
       label: 'Password',
-      href: '/account/password',
+      href: '/user/password',
       icon: <Key className="h-5 w-5 text-pink-700" />
     },
     {
