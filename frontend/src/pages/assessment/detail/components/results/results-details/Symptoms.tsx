@@ -6,6 +6,8 @@ interface SymptomsProps {
   setExpandableSymptoms: (value: boolean) => void;
   isClamped: boolean;
   setIsClamped: (value: boolean) => void;
+  physicalSymptoms?: string[];
+  emotionalSymptoms?: string[];
 }
 
 export const Symptoms = ({
@@ -13,9 +15,15 @@ export const Symptoms = ({
   expandableSymptoms,
   setExpandableSymptoms,
   isClamped,
-  setIsClamped
+  setIsClamped,
+  physicalSymptoms = [],
+  emotionalSymptoms = []
 }: SymptomsProps) => {
   const ref = useRef<HTMLParagraphElement>(null);
+
+  // Use either the combined symptoms or split between physical and emotional
+  const displaySymptoms =
+    symptoms.length > 0 ? symptoms : [...physicalSymptoms, ...emotionalSymptoms];
 
   useEffect(() => {
     if (ref.current) {
@@ -23,43 +31,38 @@ export const Symptoms = ({
       setIsClamped(ref.current.scrollHeight > maxHeight);
     }
     // Remove setIsClamped from dependencies to prevent infinite loop
-  }, [symptoms]);
+  }, [displaySymptoms]);
 
   return (
-    <div className="flex w-full max-w-full items-start gap-3 rounded-xl bg-gray-50 p-4">
-      <div>
-        <img
-          src="/resultAssets/track-time.svg"
-          className="h-[55px] w-[55px]"
-          alt="track-time-icon"
-        />
-      </div>
-      <div className="flex-1 overflow-x-auto">
-        <h3 className="mb-2 text-lg font-medium">Symptoms</h3>
-        <p
-          id="symptoms-content"
-          data-testid="symptoms-content"
-          title={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
-          aria-label={symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
-          ref={ref}
-          className={`whitespace-normal break-words text-gray-600 ${expandableSymptoms ? '' : 'line-clamp-2'} whitespace-pre-line`}
-        >
-          {symptoms.length > 0 ? symptoms.join(', ') : 'None reported'}
-        </p>
-
-        {isClamped && (
-          <button
-            type="button"
-            onClick={() => setExpandableSymptoms(!expandableSymptoms)}
-            className="text-sm text-pink-600 hover:text-pink-700"
-            aria-expanded={expandableSymptoms}
-            aria-controls="symptoms-content"
-            data-testid="symptoms-toggle-button"
-          >
-            {expandableSymptoms ? 'View Less' : 'View More'}
-          </button>
+    <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <h3 className="mb-4 text-lg font-medium text-pink-700">Symptoms</h3>
+      <div className="flex flex-wrap gap-2">
+        {displaySymptoms.length > 0 ? (
+          displaySymptoms.map((symptom, index) => (
+            <span
+              key={`symptom-${index}-${symptom}`}
+              className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-slate-700 dark:text-slate-200"
+            >
+              {symptom}
+            </span>
+          ))
+        ) : (
+          <span className="text-sm text-gray-500 dark:text-slate-400">No symptoms reported.</span>
         )}
       </div>
+
+      {isClamped && (
+        <button
+          type="button"
+          onClick={() => setExpandableSymptoms(!expandableSymptoms)}
+          className="mt-2 text-sm text-pink-600 hover:text-pink-700"
+          aria-expanded={expandableSymptoms}
+          aria-controls="symptoms-content"
+          data-testid="symptoms-toggle-button"
+        >
+          {expandableSymptoms ? 'View Less' : 'View More'}
+        </button>
+      )}
     </div>
   );
 };
