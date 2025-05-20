@@ -1,14 +1,14 @@
 import { test, expect } from "@playwright/test";
-import { clearSessionStorage } from "./utils/test-utils";
-import { signUpTestUser } from "./utils/sign-up.spec";
-import { signInUser } from "./utils/sign-in.spec";
-import { runAgeVerificationStep } from "./runners/1-ageVerification";
-import { runCycleLengthStep } from "./runners/2-cycleLength";
-import { runPeriodDurationStep } from "./runners/3-periodDuration";
-import { runFlowStep } from "./runners/4-flow";
-import { runPainStep } from "./runners/5-pain";
-import { runSymptomsStep } from "./runners/6-symptoms";
-import { checkResultsPage } from "./runners/7-results";
+import { clearSessionStorage } from "../../assessment/__tests__/e2e/development/utils/test-utils";
+import { signUpTestUser } from "./runners/auth/sign-up.spec";
+import { signInUser } from "./runners/auth/sign-in.spec";
+import { runAgeVerificationStep } from "./runners/assessment/1-ageVerification";
+import { runCycleLengthStep } from "./runners/assessment/2-cycleLength";
+import { runPeriodDurationStep } from "./runners/assessment/3-periodDuration";
+import { runFlowStep } from "./runners/assessment/4-flow";
+import { runPainStep } from "./runners/assessment/5-pain";
+import { runSymptomsStep } from "./runners/assessment/6-symptoms";
+import { checkResultsPage } from "./runners/assessment/7-results";
 
 // Define viewport for portrait orientation
 const portraitViewport = { width: 390, height: 844 }; // iPhone 12 Pro portrait dimensions
