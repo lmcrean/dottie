@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, Page } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
+import process from 'process';
 
 // Import all test modules
 import { runLandingTests } from './runners/landing/index.js';
@@ -11,10 +12,10 @@ import { runChatTests, cleanupChatResources } from './runners/chat/index.js';
 
 /**
  * Master Integration Test for Frontend Pages
- * 
+ *
  * This test suite runs all page integration tests in sequence to validate
  * the complete user journey through the application.
- * 
+ *
  * Test flow:
  * 1. Landing Page - Basic page rendering and API health checks
  * 2. Authentication - Register, login, token verification
@@ -42,84 +43,83 @@ const testState = {
   authToken: null,
   assessmentIds: [],
   conversationId: null,
-  screenshotCount: 0,
+  screenshotCount: 0
 };
 
 test.describe('Frontend Pages Integration', () => {
-  
   // Save screenshot with sequential numbering
-  const saveScreenshot = async (page: any, name: string) => {
+  const saveScreenshot = async (page: Page, name: string) => {
     testState.screenshotCount++;
     const filename = `${screenshotDir}/${String(testState.screenshotCount).padStart(2, '0')}-${name}.png`;
     await page.screenshot({ path: filename, fullPage: true });
     console.log(`Screenshot saved: ${filename}`);
   };
-  
+
   test('1. Setup and landing page tests', async ({ page }) => {
     // Setup console listeners for debugging
-    page.on('console', msg => console.log(`PAGE LOG: ${msg.type()} - ${msg.text()}`));
-    page.on('pageerror', error => console.error(`PAGE ERROR: ${error}`));
-    
+    page.on('console', (msg) => console.log(`PAGE LOG: ${msg.type()} - ${msg.text()}`));
+    page.on('pageerror', (error) => console.error(`PAGE ERROR: ${error}`));
+
     // Run landing page tests
     await runLandingTests(page);
     await saveScreenshot(page, 'landing-page-complete');
   });
-  
+
   test('2. Authentication tests', async ({ page }) => {
     // Run auth tests and update shared state
     const authState = await runAuthTests(page, testState);
-    
+
     // Update global state
     testState.userId = authState.userId;
     testState.authToken = authState.authToken;
-    
+
     await saveScreenshot(page, 'auth-complete');
     console.log('Auth tests completed, user ID:', testState.userId);
   });
-  
+
   test('3. User profile tests', async ({ page }) => {
     // Run user tests with auth state
     const userState = await runUserTests(page, testState);
-    
+
     // Update with any changed profile info
     testState.username = userState.username;
-    
+
     await saveScreenshot(page, 'user-complete');
     console.log('User tests completed');
   });
-  
+
   test('4. Assessment tests', async ({ page }) => {
     // Run assessment tests with shared state
     const assessmentState = await runAssessmentTests(page, testState);
-    
+
     // Update assessment IDs
     testState.assessmentIds = assessmentState.assessmentIds;
-    
+
     await saveScreenshot(page, 'assessment-complete');
     console.log('Assessment tests completed, IDs:', testState.assessmentIds);
   });
-  
+
   test('5. Chat functionality tests', async ({ page }) => {
     // Run chat tests
     const chatState = await runChatTests(page, testState);
-    
+
     // Update conversation ID
     testState.conversationId = chatState.conversationId;
-    
+
     await saveScreenshot(page, 'chat-complete');
     console.log('Chat tests completed, conversation ID:', testState.conversationId);
   });
-  
+
   test('6. Cleanup test resources', async ({ page }) => {
     // Delete all created resources
     await cleanupChatResources(page, testState);
-    
+
     // Delete assessments
     if (testState.assessmentIds.length > 0) {
       await cleanupAssessments(page, testState);
     }
-    
+
     await saveScreenshot(page, 'cleanup-complete');
     console.log('All test resources cleaned up');
   });
-}); 
+});

@@ -63,7 +63,6 @@ export default function AgeVerificationPage() {
         : '';
       // Make sure we're using the most recent selectedAge value
       // Force navigation to the next page
-      console.log('Navigating to next page with age:', selectedAge);
       navigate(`/assessment/cycle-length${queryParams}`, { replace: false });
     }
   };

@@ -9,8 +9,34 @@ import { prepareAssessmentData } from './validation/AssessmentObjectReady';
  */
 export const postSend = async (contextData: AssessmentResult): Promise<Assessment> => {
   try {
+    console.log('POST request received assessment data:', JSON.stringify(contextData, null, 2));
+
+    // Check if symptoms arrays exist and have values
+    console.log(
+      'Physical symptoms before validation:',
+      Array.isArray(contextData.physical_symptoms)
+        ? contextData.physical_symptoms.length
+        : 'not an array'
+    );
+    console.log(
+      'Emotional symptoms before validation:',
+      Array.isArray(contextData.emotional_symptoms)
+        ? contextData.emotional_symptoms.length
+        : 'not an array'
+    );
+
     // Use the validation utility to prepare assessment data
     const validatedData = prepareAssessmentData(contextData);
+
+    console.log('Pattern after validation:', validatedData.pattern);
+    console.log(
+      'Physical symptoms after validation:',
+      validatedData.physical_symptoms?.length || 0
+    );
+    console.log(
+      'Emotional symptoms after validation:',
+      validatedData.emotional_symptoms?.length || 0
+    );
 
     // Transform validated data to match backend expected structure
     const assessmentData = {
@@ -22,6 +48,7 @@ export const postSend = async (contextData: AssessmentResult): Promise<Assessmen
     };
 
     console.log('Sending assessment with pattern:', validatedData.pattern);
+    console.log('Final assessment data structure:', JSON.stringify(assessmentData, null, 2));
 
     // Send assessment data wrapped in an assessmentData property
     // This matches the backend controller's expected structure

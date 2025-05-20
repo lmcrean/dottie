@@ -11,7 +11,6 @@ export const useFlowHeaviness = () => {
 
   // Function to update flow heaviness in the assessment context
   const setFlowHeaviness = (value: FlowHeaviness) => {
-    console.log('useFlowHeaviness - Updating flow heaviness in context:', value);
     updateResult({ flow_heaviness: value });
   };
 
