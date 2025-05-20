@@ -1,9 +1,10 @@
 import React from 'react';
 import { Assessment } from '../../../api/types';
+import { AssessmentData } from '../../../steps/context/hooks/useAssessmentData';
 
 interface DebugBoxProps {
   assessmentId?: string;
-  assessmentData?: Assessment | Record<string, unknown>;
+  assessmentData?: Assessment | Record<string, unknown> | AssessmentData;
   isVisible?: boolean;
 }
 

@@ -10,7 +10,7 @@ import { FullscreenChat } from '@/src/pages/chat/fullscreen/FullScreenChat';
 import { useAssessmentData } from '../steps/context/hooks/useAssessmentData';
 import { ResultsTable } from './components/results/ResultsTable';
 import { PATTERN_DATA } from '../steps/context/types/recommendations';
-import { DeterminedPattern } from './components/results/results-details';
+import { DeterminedPattern } from './components/results/results-details/DeterminedPattern';
 import { Assessment } from '../api/types';
 import { assessmentApi } from '../api';
 import { toast } from 'sonner';

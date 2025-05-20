@@ -140,17 +140,19 @@ export const ResultsTable = ({
             <h3 className="text-lg font-medium text-pink-700">Basic Information</h3>
             <div className="space-y-2">
               <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium">Age:</span> {formatDisplayValue(displayAge)}
+                <span className="font-medium dark:text-slate-100">Age:</span>{' '}
+                {formatDisplayValue(displayAge)}
               </p>
               <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium">Pattern:</span> {formatDisplayValue(pattern)}
+                <span className="font-medium dark:text-slate-100">Pattern:</span>{' '}
+                {formatDisplayValue(pattern)}
               </p>
               <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium">Cycle Length:</span>{' '}
+                <span className="font-medium dark:text-slate-100">Cycle Length:</span>{' '}
                 {formatDisplayValue(displayCycleLength)}
               </p>
               <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium">Period Duration:</span>{' '}
+                <span className="font-medium dark:text-slate-100">Period Duration:</span>{' '}
                 {formatDisplayValue(displayPeriodDuration)}
               </p>
             </div>
@@ -160,11 +162,11 @@ export const ResultsTable = ({
             <h3 className="text-lg font-medium text-pink-700">Flow & Pain</h3>
             <div className="space-y-2">
               <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium">Flow Level:</span>{' '}
+                <span className="font-medium dark:text-slate-100">Flow Level:</span>{' '}
                 {formatDisplayValue(displayFlowHeaviness)}
               </p>
               <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium">Pain Level:</span>{' '}
+                <span className="font-medium dark:text-slate-100">Pain Level:</span>{' '}
                 {formatDisplayValue(displayPainLevel)}
               </p>
             </div>
