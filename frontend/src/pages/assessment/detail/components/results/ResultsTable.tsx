@@ -153,45 +153,15 @@ export const ResultsTable = ({
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="mb-4 text-lg font-medium text-pink-700">Physical Symptoms</h3>
-            <div className="flex flex-wrap gap-2">
-              {physicalSymptoms && physicalSymptoms.length > 0 ? (
-                physicalSymptoms.map((symptom, index) => (
-                  <span
-                    key={`physical-${index}-${symptom}`}
-                    className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-slate-700 dark:text-slate-200"
-                  >
-                    {symptom}
-                  </span>
-                ))
-              ) : (
-                <span className="text-sm text-gray-500 dark:text-slate-400">
-                  No physical symptoms reported.
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="mb-4 text-lg font-medium text-pink-700">Emotional Symptoms</h3>
-            <div className="flex flex-wrap gap-2">
-              {emotionalSymptoms && emotionalSymptoms.length > 0 ? (
-                emotionalSymptoms.map((symptom, index) => (
-                  <span
-                    key={`emotional-${index}-${symptom}`}
-                    className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-slate-700 dark:text-slate-200"
-                  >
-                    {symptom}
-                  </span>
-                ))
-              ) : (
-                <span className="text-sm text-gray-500 dark:text-slate-400">
-                  No emotional symptoms reported.
-                </span>
-              )}
-            </div>
-          </div>
+          <Symptoms
+            symptoms={[]}
+            physicalSymptoms={physicalSymptoms}
+            emotionalSymptoms={emotionalSymptoms}
+            expandableSymptoms={false}
+            setExpandableSymptoms={(_val) => {}}
+            isClamped={false}
+            setIsClamped={(_val) => {}}
+          />
 
           <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-100">
