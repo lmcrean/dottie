@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardContent } from '@/src/components/ui/card';
 import { AssessmentData } from '../../../steps/context/hooks/useAssessmentData';
 import {
@@ -11,6 +11,7 @@ import {
   PatternRecommendations
 } from './results-details';
 import { Assessment } from '../../../api/types';
+import DebugBox from './DebugBox';
 
 interface ResultsTableProps {
   data?: AssessmentData;
@@ -37,6 +38,22 @@ export const ResultsTable = ({
   emotionalSymptoms = [],
   recommendations = []
 }: ResultsTableProps) => {
+  // Add state for debug mode
+  const [showDebug, setShowDebug] = useState(false);
+
+  // Toggle debug mode with Ctrl+Shift+D
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        setShowDebug((prev) => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Handle new format
   if (data) {
     const {
@@ -83,6 +100,8 @@ export const ResultsTable = ({
         </div>
 
         <PatternRecommendations pattern={pattern || 'regular'} />
+
+        <DebugBox assessmentData={data} isVisible={showDebug} />
       </CardContent>
     );
   }
@@ -189,6 +208,12 @@ export const ResultsTable = ({
               )}
             </div>
           </div>
+
+          <DebugBox
+            assessmentId={assessment.id}
+            assessmentData={assessment}
+            isVisible={showDebug}
+          />
         </div>
       </div>
     );
