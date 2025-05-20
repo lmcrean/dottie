@@ -69,6 +69,14 @@ export const getById = async (id: string): Promise<Assessment> => {
       data.recommendations = data.recommendations ? [data.recommendations] : [];
     }
 
+    // Create a combined symptoms array for the UI components
+    data.symptoms = [...data.physical_symptoms, ...data.emotional_symptoms];
+    if (data.other_symptoms) {
+      data.symptoms.push(data.other_symptoms);
+    }
+
+    console.log('Combined symptoms array created:', data.symptoms);
+
     // Calculate pattern if it's missing or "unknown"
     if (!data.pattern || data.pattern === 'unknown') {
       console.warn('Pattern not found or unknown in assessment data, recalculating');

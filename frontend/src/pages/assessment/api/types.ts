@@ -14,6 +14,7 @@ export interface Assessment {
   physical_symptoms: string[];
   emotional_symptoms: string[];
   other_symptoms: string;
+  symptoms?: string[]; // Combined array for UI components
   recommendations: Array<{
     title: string;
     description: string;

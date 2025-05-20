@@ -133,6 +133,16 @@ export const ResultsTable = ({
       ? assessment.pain_level
       : assessment.assessment_data?.painLevel;
 
+    // Ensure we have access to symptom arrays
+    const physical = physicalSymptoms || assessment.physical_symptoms || [];
+    const emotional = emotionalSymptoms || assessment.emotional_symptoms || [];
+
+    // Create combined symptoms array for legacy format
+    const combinedSymptoms = [...physical, ...emotional];
+    if (assessment.other_symptoms) {
+      combinedSymptoms.push(assessment.other_symptoms);
+    }
+
     return (
       <div className="p-4">
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -175,9 +185,9 @@ export const ResultsTable = ({
 
         <div className="space-y-6">
           <Symptoms
-            symptoms={[]}
-            physicalSymptoms={physicalSymptoms}
-            emotionalSymptoms={emotionalSymptoms}
+            symptoms={combinedSymptoms}
+            physicalSymptoms={physical}
+            emotionalSymptoms={emotional}
             expandableSymptoms={false}
             setExpandableSymptoms={(_val) => {}}
             isClamped={false}
