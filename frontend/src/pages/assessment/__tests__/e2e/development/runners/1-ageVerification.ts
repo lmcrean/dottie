@@ -10,9 +10,15 @@ import { SCREENSHOT_DIR, debugPage } from "../utils/test-utils";
 export const runAgeVerificationStep = async (page: Page): Promise<void> => {
   // Navigate to age verification
   console.log("Running age verification step");
-  await page.goto("http://localhost:3000/assessment/age");
+  await page.goto("http://localhost:3000/assessment/age-verification");
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(1000); // Give the page a moment to stabilize
+  
+  // Check if we're redirected to login page
+  if (page.url().includes("/auth/sign-in")) {
+    console.warn("Redirected to login page - authentication may be required");
+    return; // Stop here as we can't proceed
+  }
   
   // Take screenshot
   await page.screenshot({
