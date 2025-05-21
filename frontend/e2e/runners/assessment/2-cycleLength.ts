@@ -1,9 +1,6 @@
 import { Page } from '@playwright/test';
 import path from 'path';
-import {
-  SCREENSHOT_DIR,
-  debugPage
-} from '../../../../assessment/__tests__/e2e/development/utils/test-utils';
+import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
 
 /**
  * Runs the cycle length step of the assessment

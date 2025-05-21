@@ -1,9 +1,6 @@
 import { Page } from '@playwright/test';
 import path from 'path';
-import {
-  SCREENSHOT_DIR,
-  debugPage
-} from '../../../../assessment/__tests__/e2e/development/utils/test-utils';
+import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
 
 /**
  * Runs the age verification step of the assessment
@@ -13,7 +10,7 @@ import {
 export const runAgeVerificationStep = async (page: Page): Promise<void> => {
   // Navigate to age verification
   console.log('Running age verification step');
-  await page.goto('http://localhost:3001/assessment/age-verification');
+  await page.goto('http://localhost:3005/assessment/age-verification');
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(1000); // Give the page a moment to stabilize
 

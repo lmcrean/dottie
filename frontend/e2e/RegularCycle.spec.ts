@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { clearSessionStorage } from '../../assessment/__tests__/e2e/development/utils/test-utils';
+import { clearSessionStorage } from './utils/test-utils';
 import { signUpTestUser } from './runners/auth/sign-up.spec';
 import { signInUser } from './runners/auth/sign-in.spec';
 import { runAgeVerificationStep } from './runners/assessment/1-ageVerification';
