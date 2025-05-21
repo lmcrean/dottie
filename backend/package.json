@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "npm i && node scripts/setup-env.js && nodemon server.js",
+    "dev:e2e": "npm i && node scripts/setup-env.js && cross-env PORT=5005 nodemon server.js --mode e2e",
     "db:init": "node db/init.js",
     "db:init:sqlite": "node db/init-sqlite.js",
     "db:reset": "node scripts/reset-db.js",
