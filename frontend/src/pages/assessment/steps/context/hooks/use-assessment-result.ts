@@ -27,7 +27,7 @@ export function useAssessmentResult() {
       // Ensure array fields are present
       physical_symptoms: result.physical_symptoms || [],
       emotional_symptoms: result.emotional_symptoms || [],
-      other_symptoms: result.other_symptoms || '',
+      other_symptoms: result.other_symptoms ? [result.other_symptoms] : [],
 
       // Transform recommendations to match expected format
       recommendations:
