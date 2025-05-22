@@ -46,8 +46,8 @@ createDirIfNotExists(assessmentDir);
 // Reference: https://playwright.dev/docs/test-configuration
 export default defineConfig({
   // Directory where tests are located - include both paths
-  testDir: './src',
-  testMatch: '**/__tests__/**/*.spec.ts',
+  testDir: './',
+  testMatch: ['**/__tests__/**/*.spec.ts', 'e2e/**/*.spec.ts'],
 
   // Run tests in files in parallel
   fullyParallel: true,
@@ -67,7 +67,7 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL to use in all tests
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3005',
 
     // Collect trace when retrying a test
     trace: 'on-first-retry',
@@ -86,8 +86,8 @@ export default defineConfig({
 
   // Setup and teardown for the tests
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: 'npm run dev:e2e',
+    url: 'http://localhost:3005',
     reuseExistingServer: true,
     stdout: 'pipe',
     stderr: 'pipe',
