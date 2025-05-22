@@ -161,6 +161,12 @@ export default function DetailPage() {
             }>(processedData.assessment_data.recommendations);
           }
           setAssessment(processedData);
+          if (processedData && processedData.physical_symptoms) {
+            console.log(
+              '[DetailPage] physical_symptoms set in assessment state:',
+              processedData.physical_symptoms
+            );
+          }
         } else {
           setAssessment(null); // Explicitly set to null if no data
         }
@@ -195,13 +201,15 @@ export default function DetailPage() {
 
   // Extracted data for ResultsTable props (legacy assessment)
   const physicalSymptoms = useMemo(() => {
+    let symptomsToLog: string[] = [];
     if (hasLegacyFormat && assessment?.assessment_data?.symptoms) {
-      return ensureArrayFormat<string>(assessment.assessment_data.symptoms.physical);
+      symptomsToLog = ensureArrayFormat<string>(assessment.assessment_data.symptoms.physical);
     }
     if (hasFlattenedFormat && assessment) {
-      return ensureArrayFormat<string>(assessment.physical_symptoms);
+      symptomsToLog = ensureArrayFormat<string>(assessment.physical_symptoms);
     }
-    return [];
+    console.log('[DetailPage] physicalSymptoms useMemo result:', symptomsToLog);
+    return symptomsToLog;
   }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
 
   const emotionalSymptoms = useMemo(() => {

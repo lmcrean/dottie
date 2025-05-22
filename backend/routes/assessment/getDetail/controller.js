@@ -138,6 +138,9 @@ export const getAssessmentDetail = async (req, res) => {
       return res.status(404).json({ error: 'Assessment not found' });
     }
     
+    // Log physical_symptoms from Assessment.findById
+    console.log('[getDetailController] physical_symptoms from Assessment.findById:', assessment.physical_symptoms);
+    
     // Add debugging to inspect assessment data before returning
     console.log(`Assessment found (ID: ${assessmentId}), inspecting data before response:`);
     console.log('Physical symptoms:', Array.isArray(assessment.physical_symptoms) 

@@ -2,12 +2,13 @@ import { apiClient } from '../../../../../../../api/core/apiClient';
 import { Assessment } from '../../../../../api/types';
 import { getUserData } from '../../../../../../../api/core/tokenManager';
 import { determinePattern } from '../../../../../../assessment/steps/7-calculate-pattern/determinePattern';
+import { AssessmentResult } from '../../../../../../assessment/steps/context/types';
 
 /**
  * Get assessment by ID
  * @endpoint /api/assessment/:id (GET)
  */
-export const getById = async (id: string): Promise<Assessment> => {
+export const getById = async (id: string): Promise<Assessment | null> => {
   console.log(`[getById] Starting to fetch assessment for ID: ${id}`);
   try {
     // Get the user data from token manager
@@ -20,11 +21,26 @@ export const getById = async (id: string): Promise<Assessment> => {
     console.log(
       `[getById] User ID ${userData.id} found. Fetching assessment details for ID: ${id}`
     );
-    const response = await apiClient.get(`/api/assessment/${id}`);
+    const response = await apiClient.get<Assessment>(`/api/assessment/${id}`);
+    console.log('[Request.ts/getById] Raw API response data:', response.data);
+    if (response.data && response.data.physical_symptoms) {
+      console.log(
+        '[Request.ts/getById] physical_symptoms from raw API response:',
+        response.data.physical_symptoms
+      );
+    }
 
-    // Process the data to ensure all fields are correctly formatted
     const data = response.data;
-    console.log('Assessment raw data from API:', JSON.stringify(data, null, 2));
+
+    if (!data) {
+      console.error('[Request.ts/getById] No data in API response.');
+      throw new Error('No assessment data returned from API');
+    }
+
+    console.log(
+      '[Request.ts/getById] physical_symptoms before DetailPage processing (which uses ensureArrayFormat):',
+      data.physical_symptoms
+    );
 
     // Debug the specific fields needed for pattern calculation
     console.log('Critical fields for pattern calculation:', {
@@ -47,11 +63,6 @@ export const getById = async (id: string): Promise<Assessment> => {
       other_symptoms: data.other_symptoms || 'none'
     });
 
-    // Ensure the data has the expected fields
-    if (!data) {
-      throw new Error('No assessment data returned from API');
-    }
-
     // Initialize arrays if they're missing or not arrays
     if (!data.physical_symptoms) {
       data.physical_symptoms = [];
@@ -71,16 +82,28 @@ export const getById = async (id: string): Promise<Assessment> => {
       data.recommendations = [];
     } else if (!Array.isArray(data.recommendations)) {
       console.log('Converting recommendations to array:', data.recommendations);
-      data.recommendations = data.recommendations ? [data.recommendations] : [];
+      const recArray = Array.isArray(data.recommendations)
+        ? data.recommendations
+        : [data.recommendations];
+      data.recommendations = recArray.map((rec) =>
+        typeof rec === 'object' && rec !== null && 'title' in rec && 'description' in rec
+          ? rec
+          : { title: String(rec), description: '' }
+      ) as Array<{ title: string; description: string }>;
     }
 
     // Create a combined symptoms array for the UI components
     data.symptoms = [...data.physical_symptoms, ...data.emotional_symptoms];
 
     // Add other_symptoms to the combined symptoms array if it exists and is not empty
-    if (data.other_symptoms && data.other_symptoms.trim() !== '') {
-      console.log(`Adding other_symptoms to combined array: "${data.other_symptoms}"`);
-      data.symptoms.push(data.other_symptoms);
+    // Assuming other_symptoms from API is string[] as per Assessment type
+    if (
+      data.other_symptoms &&
+      Array.isArray(data.other_symptoms) &&
+      data.other_symptoms.length > 0
+    ) {
+      console.log(`Adding other_symptoms to combined array:`, data.other_symptoms);
+      data.symptoms.push(...data.other_symptoms);
     }
 
     console.log('Combined symptoms array created:', data.symptoms);
@@ -89,8 +112,7 @@ export const getById = async (id: string): Promise<Assessment> => {
     if (!data.pattern || data.pattern === 'unknown') {
       console.warn('Pattern not found or unknown in assessment data, recalculating');
       try {
-        // Try to determine pattern based on available data
-        data.pattern = determinePattern(data);
+        data.pattern = determinePattern(data as AssessmentResult);
         console.log('Recalculated pattern:', data.pattern);
       } catch (error) {
         console.error('Failed to recalculate pattern:', error);
@@ -98,7 +120,10 @@ export const getById = async (id: string): Promise<Assessment> => {
       }
     }
 
-    console.log('Processed assessment data:', JSON.stringify(data, null, 2));
+    console.log(
+      'Processed assessment data (after ensureArrayFormat and other processing):',
+      JSON.stringify(data, null, 2)
+    );
     return data;
   } catch (error) {
     console.error('Failed to get assessment:', error);

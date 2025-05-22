@@ -47,6 +47,19 @@ class FlattenedAssessment extends AssessmentBase {
         physical_symptoms, emotional_symptoms, other_symptoms, recommendations
       } = assessmentData;
       
+      // Ensure user_id is set
+      // const dataToSave = { ...assessmentData, user_id: userId }; // This line was part of a previous attempt, let's use direct variables
+
+      // Log physical_symptoms before stringify
+      console.log('[FlattenedAssessment.create] physical_symptoms before stringify:', physical_symptoms);
+
+      // Handle symptoms arrays: store as JSON strings
+      const physicalSymptomsString = JSON.stringify(physical_symptoms || []);
+      const emotionalSymptomsString = JSON.stringify(emotional_symptoms || []);
+
+      // Handle other_symptoms: wrap string in an array and store as JSON string, or store null
+      const otherSymptomsString = other_symptoms && typeof other_symptoms === 'string' && other_symptoms.trim() !== '' ? JSON.stringify([other_symptoms.trim()]) : null;
+
       // Use new flattened format
       const payload = {
         id,
@@ -60,19 +73,18 @@ class FlattenedAssessment extends AssessmentBase {
         period_duration,
         flow_heaviness,
         pain_level,
-        // Store other_symptoms as a JSON array string if it's a non-empty string
-        other_symptoms: other_symptoms && typeof other_symptoms === 'string' && other_symptoms.trim() !== '' ? JSON.stringify([other_symptoms.trim()]) : null,
+        other_symptoms: otherSymptomsString,
         
         // Array fields as JSON strings
-        physical_symptoms: physical_symptoms ? JSON.stringify(physical_symptoms) : null,
-        emotional_symptoms: emotional_symptoms ? JSON.stringify(emotional_symptoms) : null,
+        physical_symptoms: physicalSymptomsString,
+        emotional_symptoms: emotionalSymptomsString,
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
 
       console.log(`Creating assessment with ID ${id}, physical symptoms:`, 
-        physical_symptoms ? JSON.stringify(physical_symptoms) : 'null');
+        payload.physical_symptoms ? JSON.stringify(payload.physical_symptoms) : 'null');
       console.log(`Creating assessment with ID ${id}, emotional symptoms:`, 
-        emotional_symptoms ? JSON.stringify(emotional_symptoms) : 'null');
+        payload.emotional_symptoms ? JSON.stringify(payload.emotional_symptoms) : 'null');
 
       // Insert into database
       const inserted = await DbService.create('assessments', payload);
@@ -202,6 +214,8 @@ class FlattenedAssessment extends AssessmentBase {
         } else {
           physical_symptoms = JSON.parse(record.physical_symptoms);
           console.log(`Successfully parsed physical_symptoms for assessment ${record.id}:`, physical_symptoms);
+          // Log physical_symptoms after parse
+          console.log('[FlattenedAssessment._transformDbRecordToApiResponse] physical_symptoms after parse:', physical_symptoms);
         }
       }
     } catch (error) {

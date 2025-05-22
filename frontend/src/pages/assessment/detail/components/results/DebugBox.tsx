@@ -15,6 +15,11 @@ interface DebugBoxProps {
 const DebugBox: React.FC<DebugBoxProps> = ({ assessmentId, assessmentData, isVisible = false }) => {
   if (!isVisible) return null;
 
+  // Log physical_symptoms when props are received
+  if (assessmentData && 'physical_symptoms' in assessmentData) {
+    console.log('[DebugBox] physical_symptoms from props:', assessmentData.physical_symptoms);
+  }
+
   // Format JSON data for display
   const formatJson = (data: unknown): string => {
     try {
