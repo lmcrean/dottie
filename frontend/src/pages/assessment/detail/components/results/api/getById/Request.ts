@@ -8,14 +8,18 @@ import { determinePattern } from '../../../../../../assessment/steps/7-calculate
  * @endpoint /api/assessment/:id (GET)
  */
 export const getById = async (id: string): Promise<Assessment> => {
+  console.log(`[getById] Starting to fetch assessment for ID: ${id}`);
   try {
     // Get the user data from token manager
     const userData = getUserData();
     if (!userData || !userData.id) {
+      console.error('[getById] User ID not found or invalid.');
       throw new Error('User ID not found. Please login again.');
     }
 
-    console.log(`Fetching assessment details for ID: ${id}`);
+    console.log(
+      `[getById] User ID ${userData.id} found. Fetching assessment details for ID: ${id}`
+    );
     const response = await apiClient.get(`/api/assessment/${id}`);
 
     // Process the data to ensure all fields are correctly formatted
@@ -39,7 +43,8 @@ export const getById = async (id: string): Promise<Assessment> => {
         ? Array.isArray(data.emotional_symptoms)
           ? data.emotional_symptoms.length
           : 'not array'
-        : 'missing'
+        : 'missing',
+      other_symptoms: data.other_symptoms || 'none'
     });
 
     // Ensure the data has the expected fields
@@ -71,7 +76,10 @@ export const getById = async (id: string): Promise<Assessment> => {
 
     // Create a combined symptoms array for the UI components
     data.symptoms = [...data.physical_symptoms, ...data.emotional_symptoms];
-    if (data.other_symptoms) {
+
+    // Add other_symptoms to the combined symptoms array if it exists and is not empty
+    if (data.other_symptoms && data.other_symptoms.trim() !== '') {
+      console.log(`Adding other_symptoms to combined array: "${data.other_symptoms}"`);
       data.symptoms.push(data.other_symptoms);
     }
 
