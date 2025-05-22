@@ -26,7 +26,7 @@ export default defineConfig([
     ]
   },
   {
-    files: ['frontend/e2e/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    files: ['e2e/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     languageOptions: {
       globals: {
         ...globals.browser,
