@@ -16,32 +16,28 @@ import DebugBox from './DebugBox';
 interface ResultsTableProps {
   data?: AssessmentData;
   setIsClamped?: (value: boolean) => void;
-  setExpandableSymptoms?: (value: boolean) => void;
-  // Legacy props
   assessment?: Assessment;
   hasFlattenedFormat?: boolean;
   formatValue?: (value: string | undefined) => string;
   physicalSymptoms?: string[];
   emotionalSymptoms?: string[];
+  otherSymptoms?: string[];
   recommendations?: { title: string; description: string }[];
 }
 
 export const ResultsTable = ({
   data,
   setIsClamped,
-  setExpandableSymptoms,
-  // Legacy props
   assessment,
   hasFlattenedFormat,
   formatValue,
   physicalSymptoms = [],
   emotionalSymptoms = [],
+  otherSymptoms = [],
   recommendations = []
 }: ResultsTableProps) => {
-  // Add state for debug mode
   const [showDebug, setShowDebug] = useState(false);
 
-  // Toggle debug mode with Ctrl+Shift+D
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'D') {
@@ -54,21 +50,9 @@ export const ResultsTable = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Handle new format
   if (data) {
-    const {
-      pattern,
-      age,
-      cycle_length,
-      period_duration,
-      flow_heaviness,
-      pain_level,
-      symptoms,
-      expandableSymptoms,
-      isClamped
-    } = data;
+    const { pattern, age, cycle_length, period_duration, flow_heaviness, pain_level } = data;
 
-    // Debug information
     useEffect(() => {
       console.log('DEBUG [ResultsTable Component]');
       console.log('  - Received data:', data);
@@ -91,10 +75,13 @@ export const ResultsTable = ({
           <FlowLevel flowLevel={flow_heaviness} />
           <PainLevel painLevel={pain_level} pattern={pattern || 'regular'} />
           <Symptoms
-            symptoms={symptoms}
-            expandableSymptoms={expandableSymptoms}
-            setExpandableSymptoms={setExpandableSymptoms!}
-            isClamped={isClamped}
+            physicalSymptoms={data.physical_symptoms || []}
+            emotionalSymptoms={data.emotional_symptoms || []}
+            otherSymptoms={
+              data.other_symptoms && data.other_symptoms.trim() !== ''
+                ? [data.other_symptoms.trim()]
+                : []
+            }
             setIsClamped={setIsClamped!}
           />
         </div>
@@ -106,7 +93,6 @@ export const ResultsTable = ({
     );
   }
 
-  // Handle legacy format
   if (assessment) {
     const formatDisplayValue = (value: string | undefined | null): string => {
       if (formatValue && value) return formatValue(value);
@@ -114,34 +100,28 @@ export const ResultsTable = ({
     };
 
     const pattern = hasFlattenedFormat ? assessment.pattern : assessment.assessment_data?.pattern;
-
     const displayAge = hasFlattenedFormat ? assessment.age : assessment.assessment_data?.age;
-
     const displayCycleLength = hasFlattenedFormat
       ? assessment.cycle_length
       : assessment.assessment_data?.cycleLength;
-
     const displayPeriodDuration = hasFlattenedFormat
       ? assessment.period_duration
       : assessment.assessment_data?.periodDuration;
-
     const displayFlowHeaviness = hasFlattenedFormat
       ? assessment.flow_heaviness
       : assessment.assessment_data?.flowHeaviness;
-
     const displayPainLevel = hasFlattenedFormat
       ? assessment.pain_level
       : assessment.assessment_data?.painLevel;
 
-    // Ensure we have access to symptom arrays
     const physical = physicalSymptoms || assessment.physical_symptoms || [];
     const emotional = emotionalSymptoms || assessment.emotional_symptoms || [];
-
-    // Create combined symptoms array for legacy format
-    const combinedSymptoms = [...physical, ...emotional];
-    if (assessment.other_symptoms) {
-      combinedSymptoms.push(assessment.other_symptoms);
-    }
+    const other =
+      Array.isArray(otherSymptoms) && otherSymptoms.length > 0
+        ? otherSymptoms
+        : Array.isArray(assessment.other_symptoms)
+          ? assessment.other_symptoms
+          : [];
 
     return (
       <div className="p-4">
@@ -185,13 +165,10 @@ export const ResultsTable = ({
 
         <div className="space-y-6">
           <Symptoms
-            symptoms={combinedSymptoms}
             physicalSymptoms={physical}
             emotionalSymptoms={emotional}
-            expandableSymptoms={false}
-            setExpandableSymptoms={(_val) => {}}
-            isClamped={false}
-            setIsClamped={(_val) => {}}
+            otherSymptoms={other}
+            setIsClamped={setIsClamped!}
           />
 
           <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
