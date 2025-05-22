@@ -119,8 +119,23 @@ export const createAssessment = async (req, res) => {
     // Create assessment using the model layer
     // This will automatically handle both flattened and nested formats
     console.log("Creating assessment with model layer, data:", JSON.stringify(assessmentData));
+    
+    // Ensure arrays are properly initialized
+    const processedData = {
+      ...assessmentData,
+      physical_symptoms: Array.isArray(assessmentData.physical_symptoms) 
+        ? assessmentData.physical_symptoms 
+        : (assessmentData.physical_symptoms ? [assessmentData.physical_symptoms] : []),
+      emotional_symptoms: Array.isArray(assessmentData.emotional_symptoms) 
+        ? assessmentData.emotional_symptoms 
+        : (assessmentData.emotional_symptoms ? [assessmentData.emotional_symptoms] : []),
+    };
+    
+    console.log("Processed physical_symptoms:", processedData.physical_symptoms);
+    console.log("Processed emotional_symptoms:", processedData.emotional_symptoms);
+    
     try {
-      const newAssessment = await Assessment.create(assessmentData, userId);
+      const newAssessment = await Assessment.create(processedData, userId);
       console.log("Successfully created assessment:", newAssessment.id);
       res.status(201).json(newAssessment);
     } catch (modelError) {
