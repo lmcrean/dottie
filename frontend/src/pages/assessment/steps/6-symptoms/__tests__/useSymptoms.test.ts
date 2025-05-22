@@ -4,7 +4,7 @@ import { useSymptoms } from '../hooks/use-symptoms';
 import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
 
 // Mock the assessment context
-vi.mock('../../use-assessment-context', () => ({
+vi.mock('../../context/hooks/use-assessment-context', () => ({
   useAssessmentContext: vi.fn()
 }));
 

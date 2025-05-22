@@ -5,7 +5,7 @@ import * as AssessmentContextModule from '../../context/hooks/use-assessment-con
 import { PhysicalSymptomId, EmotionalSymptomId } from '../../../../context/types';
 
 // Mock the context hook
-vi.mock('../../use-assessment-context', () => ({
+vi.mock('../../context/hooks/use-assessment-context', () => ({
   useAssessmentContext: vi.fn()
 }));
 

@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import SymptomsPage from '../page'
-import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
 import * as SymptomsHook from '../hooks/use-symptoms'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-symptoms', () => ({
+vi.mock('../hooks/use-symptoms', () => ({
   useSymptoms: vi.fn()
 }));
 

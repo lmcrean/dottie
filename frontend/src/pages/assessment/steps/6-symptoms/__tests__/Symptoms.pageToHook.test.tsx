@@ -5,7 +5,7 @@ import SymptomsPage from '../page'
 import * as SymptomsHook from '../hooks/use-symptoms'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-symptoms', () => ({
+vi.mock('../hooks/use-symptoms', () => ({
   useSymptoms: vi.fn()
 }));
 
