@@ -12,8 +12,10 @@ export const listAssessments = async (req, res) => {
   try {
     // Get userId from authenticated user    
     const userId = req.user?.userId
-    
+    console.log('[getListController] Attempting to list assessments for userId:', userId);
+
     if (!userId) {
+      console.log('[getListController] userId is missing. Returning 400.');
       return res.status(400).json({ error: 'User ID is required' });
     }
     
@@ -21,8 +23,10 @@ export const listAssessments = async (req, res) => {
     // This will be removed once migration is complete
     if (userId.startsWith('test-') && process.env.USE_LEGACY_DB_DIRECT === 'true') {
       try {
+        console.log('[getListController] Using legacy direct DB fetch for test user:', userId);
         // Get assessments from database
         const dbAssessments = await db('assessments').where('user_id', userId);
+        console.log('[getListController] Legacy DB fetch - raw dbAssessments:', dbAssessments);
         
         if (dbAssessments && dbAssessments.length > 0) {
           // Map database results to expected format, supporting both legacy and flattened
@@ -99,7 +103,7 @@ export const listAssessments = async (req, res) => {
               };
             }
           }));
-          
+          console.log('[getListController] Legacy DB fetch - final formattedAssessments to be sent:', formattedAssessments);
           return res.status(200).json(formattedAssessments);
         }
       } catch (dbError) {
@@ -109,9 +113,14 @@ export const listAssessments = async (req, res) => {
     }
 
     // Use Assessment model to get list (handles both formats automatically)
+    console.log('[getListController] Using Assessment.listByUser for userId:', userId);
     const userAssessments = await Assessment.listByUser(userId)
+    console.log('[getListController] Data from Assessment.listByUser:', userAssessments);
+    
+    const responseData = userAssessments || [];
+    console.log('[getListController] Final responseData to be sent:', responseData);
     // Return empty array with 200 status instead of 404 when no assessments found
-    return res.status(200).json(userAssessments || []);
+    return res.status(200).json(responseData);
   } catch (error) {
     console.error('Error fetching assessments:', error);
     res.status(500).json({ error: 'Failed to fetch assessments' });

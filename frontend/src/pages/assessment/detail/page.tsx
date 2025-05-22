@@ -72,7 +72,41 @@ export default function DetailPage() {
             return dateB - dateA;
           });
 
-          setAssessment(sortedAssessments[0]);
+          const latestAssessmentData = { ...sortedAssessments[0] }; // Create a mutable copy
+
+          // Apply the same processing logic as in getById for consistency
+          if (latestAssessmentData && !latestAssessmentData.assessment_data) {
+            // Flattened format
+            latestAssessmentData.physical_symptoms = ensureArrayFormat<string>(
+              latestAssessmentData.physical_symptoms
+            );
+            latestAssessmentData.emotional_symptoms = ensureArrayFormat<string>(
+              latestAssessmentData.emotional_symptoms
+            );
+            latestAssessmentData.other_symptoms = ensureArrayFormat<string>(
+              latestAssessmentData.other_symptoms
+            );
+            latestAssessmentData.recommendations = ensureArrayFormat<{
+              title: string;
+              description: string;
+            }>(latestAssessmentData.recommendations);
+          } else if (latestAssessmentData && latestAssessmentData.assessment_data) {
+            // Legacy format
+            if (latestAssessmentData.assessment_data.symptoms) {
+              latestAssessmentData.assessment_data.symptoms.physical = ensureArrayFormat<string>(
+                latestAssessmentData.assessment_data.symptoms.physical
+              );
+              latestAssessmentData.assessment_data.symptoms.emotional = ensureArrayFormat<string>(
+                latestAssessmentData.assessment_data.symptoms.emotional
+              );
+            }
+            latestAssessmentData.assessment_data.recommendations = ensureArrayFormat<{
+              title: string;
+              description: string;
+            }>(latestAssessmentData.assessment_data.recommendations);
+          }
+
+          setAssessment(latestAssessmentData);
         }
       } catch (error) {
         console.error('Failed to fetch latest assessment:', error);
