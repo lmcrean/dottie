@@ -289,9 +289,19 @@ export default function DetailPage() {
 
     if (dateToFormat) {
       try {
+        // Handle numeric timestamp format (e.g., "1745679949668.0")
+        if (/^\d+(\.\d+)?$/.test(dateToFormat)) {
+          const timestamp = parseFloat(dateToFormat);
+          const date = new Date(timestamp);
+          if (isValid(date)) {
+            return format(date, 'PPP'); // e.g., May 22nd, 2025
+          }
+        }
+
+        // Standard date string handling
         const parsedDate = parseISO(dateToFormat);
         if (isValid(parsedDate)) {
-          return format(parsedDate, 'PPP');
+          return format(parsedDate, 'PPP'); // e.g., May 22nd, 2025
         }
       } catch (e) {
         console.error('Error parsing date:', dateToFormat, e);
