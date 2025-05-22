@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Checkbox } from '@/src/components/user-inputs/checkbox';
@@ -71,26 +71,67 @@ export default function SymptomsPage() {
   const navigate = useNavigate();
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
+  const quickResponseExecutedRef = useRef(false);
+
+  const handleContinue = useCallback(async () => {
+    if (!result) {
+      console.error('Assessment result is null, cannot continue');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      navigate('/assessment/calculate-pattern');
+    } catch (error) {
+      console.error('Error navigating:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [result, navigate]);
 
   useEffect(() => {
-    if (!isQuickResponse) return;
+    if (!isQuickResponse) {
+      quickResponseExecutedRef.current = false;
+      return;
+    }
 
-    // Select "Back pain"
-    togglePhysicalSymptom(asPhysicalSymptomId('back-pain'));
+    if (quickResponseExecutedRef.current) {
+      return;
+    }
 
-    // Select "Anxiety"
-    toggleEmotionalSymptom(asEmotionalSymptomId('anxiety'));
+    const getRandomSymptomIds = (
+      definitions: ReadonlyArray<{ id: string; label: string; emoji: string }>,
+      count: number
+    ): string[] => {
+      const shuffled = [...definitions].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, Math.min(count, definitions.length)).map((s) => s.id);
+    };
+
+    const numPhysicalToSelect = 3;
+    const numEmotionalToSelect = 3;
+
+    const selectedPhysicalIds = getRandomSymptomIds(
+      physicalSymptomDefinitions,
+      numPhysicalToSelect
+    );
+    const selectedEmotionalIds = getRandomSymptomIds(
+      emotionalSymptomDefinitions,
+      numEmotionalToSelect
+    );
+
+    setPhysicalSymptoms(selectedPhysicalIds.map(asPhysicalSymptomId));
+    setEmotionalSymptoms(selectedEmotionalIds.map(asEmotionalSymptomId));
+
+    quickResponseExecutedRef.current = true;
 
     const continueTimeout = setTimeout(() => {
-      if (continueButtonRef.current) {
-        continueButtonRef.current.click();
-      }
-    }, 200); // Delay to allow user to see selection
+      handleContinue();
+    }, 300);
 
     return () => {
       clearTimeout(continueTimeout);
     };
-  }, [isQuickResponse]); // Only depend on isQuickResponse
+  }, [isQuickResponse, setPhysicalSymptoms, setEmotionalSymptoms, handleContinue]);
 
   const togglePhysicalSymptom = (symptom: PhysicalSymptomId) => {
     const updatedSymptoms = physicalSymptoms.includes(symptom)
@@ -106,24 +147,6 @@ export default function SymptomsPage() {
       : [...emotionalSymptoms, symptom];
 
     setEmotionalSymptoms(updatedSymptoms);
-  };
-
-  const handleContinue = async () => {
-    if (!result) {
-      console.error('Assessment result is null, cannot continue');
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-
-      // Navigate to the pattern calculation step
-      navigate('/assessment/calculate-pattern');
-    } catch (error) {
-      console.error('Error navigating:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
