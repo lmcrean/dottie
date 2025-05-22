@@ -15,7 +15,7 @@ export const signUpTestUser = async (page: Page) => {
   console.log(`Creating user with email: ${email} and username: ${username}`);
 
   // Navigate to sign-up page
-  await page.goto('http://localhost:3001/auth/sign-up');
+  await page.goto('http://localhost:3005/auth/sign-up');
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(1000); // Give the page time to fully load
 

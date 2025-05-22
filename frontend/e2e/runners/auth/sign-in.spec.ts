@@ -12,7 +12,7 @@ export const signInUser = async (page: Page, email: string, password: string) =>
   console.log(`Using credentials: ${email} (password not logged)`);
 
   // Navigate to login page
-  await page.goto('http://localhost:3001/auth/sign-in');
+  await page.goto('http://localhost:3005/auth/sign-in');
   await page.waitForLoadState('networkidle');
 
   // Log the current state
