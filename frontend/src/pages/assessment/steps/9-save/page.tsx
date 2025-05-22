@@ -24,10 +24,13 @@ export default function SaveAssessmentPage() {
         console.log('Assessment saved successfully with ID:', savedAssessment.id);
 
         // Navigate to the details page with the new assessment ID
-        navigate(`/assessment/results?id=${savedAssessment.id}&new=true`);
+        navigate(`/assessment/results/${savedAssessment.id}`);
       } catch (error) {
         console.error('Failed to save assessment:', error);
         // Even on error, redirect to results page using context data
+        // Consider if navigating to results without a saved ID is desired on error,
+        // or if an error page/toast is more appropriate.
+        // For now, keeping previous behavior of attempting to show results with context data.
         navigate('/assessment/results?new=true');
       }
     };
