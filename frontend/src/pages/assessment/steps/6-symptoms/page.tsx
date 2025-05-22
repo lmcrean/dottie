@@ -18,6 +18,40 @@ import { useAssessmentResult } from '../context/hooks/use-assessment-result';
 const asPhysicalSymptomId = (id: string): PhysicalSymptomId => id as PhysicalSymptomId;
 const asEmotionalSymptomId = (id: string): EmotionalSymptomId => id as EmotionalSymptomId;
 
+const physicalSymptomDefinitions = [
+  { id: 'bloating', label: 'Bloating', emoji: '🫃' },
+  { id: 'breast-tenderness', label: 'Breast tenderness', emoji: '🤱' },
+  { id: 'headaches', label: 'Headaches', emoji: '🤕' },
+  { id: 'back-pain', label: 'Back pain', emoji: '⬇️' },
+  { id: 'nausea', label: 'Nausea', emoji: '🤢' },
+  { id: 'fatigue', label: 'Fatigue', emoji: '😴' },
+  { id: 'dizziness', label: 'Dizziness', emoji: '💫' },
+  { id: 'acne', label: 'Acne', emoji: '😖' },
+  { id: 'digestive-issues', label: 'Digestive issues', emoji: '🚽' },
+  { id: 'sleep-disturbances', label: 'Sleep disturbances', emoji: '🛌' },
+  { id: 'hot-flashes', label: 'Hot flashes', emoji: '🔥' },
+  { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' }
+];
+
+const emotionalSymptomDefinitions = [
+  { id: 'irritability', label: 'Irritability', emoji: '😠' },
+  { id: 'mood-swings', label: 'Mood swings', emoji: '🙂😢' },
+  { id: 'anxiety', label: 'Anxiety', emoji: '😰' },
+  { id: 'depression', label: 'Depression', emoji: '😔' },
+  {
+    id: 'difficulty-concentrating',
+    label: 'Difficulty concentrating',
+    emoji: '🧠'
+  },
+  { id: 'food-cravings', label: 'Food cravings', emoji: '🍫' },
+  {
+    id: 'emotional-sensitivity',
+    label: 'Emotional sensitivity',
+    emoji: '💔'
+  },
+  { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
+];
+
 export default function SymptomsPage() {
   // Use the useSymptoms hook for all symptoms
   const {
@@ -33,82 +67,36 @@ export default function SymptomsPage() {
   const { result } = useAssessmentResult();
 
   // Local state only for UI controls
-  const [refTarget, setRefTarget] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const symptomRef = useRef<HTMLDivElement | null>(null);
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isQuickResponse } = useQuickNavigate();
 
   useEffect(() => {
     if (!isQuickResponse) return;
-    const symptomsList = [
-      { id: 'bloating', label: 'Bloating', emoji: '🫃' },
-      { id: 'breast-tenderness', label: 'Breast tenderness', emoji: '🤱' },
-      { id: 'headaches', label: 'Headaches', emoji: '🤕' },
-      { id: 'back-pain', label: 'Back pain', emoji: '⬇️' },
-      { id: 'nausea', label: 'Nausea', emoji: '🤢' },
-      { id: 'fatigue', label: 'Fatigue', emoji: '😴' },
-      { id: 'dizziness', label: 'Dizziness', emoji: '💫' },
-      { id: 'acne', label: 'Acne', emoji: '😖' },
-      { id: 'digestive-issues', label: 'Digestive issues', emoji: '🚽' },
-      { id: 'sleep-disturbances', label: 'Sleep disturbances', emoji: '🛌' },
-      { id: 'hot-flashes', label: 'Hot flashes', emoji: '🔥' },
-      { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' },
-      { id: 'irritability', label: 'Irritability', emoji: '😠' },
-      { id: 'mood-swings', label: 'Mood swings', emoji: '🙂😢' },
-      { id: 'anxiety', label: 'Anxiety', emoji: '😰' },
-      { id: 'depression', label: 'Depression', emoji: '😔' },
-      {
-        id: 'difficulty-concentrating',
-        label: 'Difficulty concentrating',
-        emoji: '🧠'
-      },
-      { id: 'food-cravings', label: 'Food cravings', emoji: '🍫' },
-      {
-        id: 'emotional-sensitivity',
-        label: 'Emotional sensitivity',
-        emoji: '💔'
-      },
-      { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
-    ];
 
-    const random = symptomsList[Math.floor(Math.random() * symptomsList.length)].id;
-    setRefTarget(random);
-  }, [isQuickResponse]);
+    // Select "Back pain"
+    togglePhysicalSymptom(asPhysicalSymptomId('back-pain'));
 
-  useEffect(() => {
-    if (!refTarget) return;
-
-    const timeout = setTimeout(() => {
-      if (symptomRef.current) {
-        symptomRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-      }
-
-      togglePhysicalSymptom(refTarget as PhysicalSymptomId);
-    }, 100); // or 1000
+    // Select "Anxiety"
+    toggleEmotionalSymptom(asEmotionalSymptomId('anxiety'));
 
     const continueTimeout = setTimeout(() => {
       if (continueButtonRef.current) {
         continueButtonRef.current.click();
       }
-    }, 200);
+    }, 200); // Delay to allow user to see selection
 
     return () => {
-      clearTimeout(timeout);
       clearTimeout(continueTimeout);
     };
-  }, [refTarget]);
+  }, [isQuickResponse]); // Only depend on isQuickResponse
 
   const togglePhysicalSymptom = (symptom: PhysicalSymptomId) => {
     const updatedSymptoms = physicalSymptoms.includes(symptom)
       ? physicalSymptoms.filter((s) => s !== symptom)
       : [...physicalSymptoms, symptom];
 
-    console.log('Toggling physical symptom:', symptom, 'Updated symptoms:', updatedSymptoms);
     setPhysicalSymptoms(updatedSymptoms);
   };
 
@@ -117,17 +105,10 @@ export default function SymptomsPage() {
       ? emotionalSymptoms.filter((s) => s !== symptom)
       : [...emotionalSymptoms, symptom];
 
-    console.log('Toggling emotional symptom:', symptom, 'Updated symptoms:', updatedSymptoms);
     setEmotionalSymptoms(updatedSymptoms);
   };
 
   const handleContinue = async () => {
-    console.log('Continuing with symptoms data from context:', {
-      physicalSymptoms,
-      emotionalSymptoms,
-      otherSymptoms
-    });
-
     if (!result) {
       console.error('Assessment result is null, cannot continue');
       return;
@@ -181,32 +162,7 @@ export default function SymptomsPage() {
               Physical symptoms
             </h3>
             <div className="grid grid-cols-2 gap-3 dark:text-slate-200">
-              {[
-                { id: 'bloating', label: 'Bloating', emoji: '🫃' },
-                {
-                  id: 'breast-tenderness',
-                  label: 'Breast tenderness',
-                  emoji: '🤱'
-                },
-                { id: 'headaches', label: 'Headaches', emoji: '🤕' },
-                { id: 'back-pain', label: 'Back pain', emoji: '⬇️' },
-                { id: 'nausea', label: 'Nausea', emoji: '🤢' },
-                { id: 'fatigue', label: 'Fatigue', emoji: '😴' },
-                { id: 'dizziness', label: 'Dizziness', emoji: '💫' },
-                { id: 'acne', label: 'Acne', emoji: '😖' },
-                {
-                  id: 'digestive-issues',
-                  label: 'Digestive issues',
-                  emoji: '🚽'
-                },
-                {
-                  id: 'sleep-disturbances',
-                  label: 'Sleep disturbances',
-                  emoji: '🛌'
-                },
-                { id: 'hot-flashes', label: 'Hot flashes', emoji: '🔥' },
-                { id: 'joint-pain', label: 'Joint pain', emoji: '🦴' }
-              ].map((symptom) => (
+              {physicalSymptomDefinitions.map((symptom) => (
                 <div
                   role="button"
                   tabIndex={0}
@@ -216,7 +172,6 @@ export default function SymptomsPage() {
                       ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
                       : 'hover:bg-gray-50'
                   }`}
-                  ref={refTarget === symptom.id ? symptomRef : null}
                   onClick={() => togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -242,24 +197,7 @@ export default function SymptomsPage() {
               Emotional/Mood symptoms
             </h3>
             <div className="grid grid-cols-2 gap-3 dark:text-slate-200">
-              {[
-                { id: 'irritability', label: 'Irritability', emoji: '😠' },
-                { id: 'mood-swings', label: 'Mood swings', emoji: '🙂😢' },
-                { id: 'anxiety', label: 'Anxiety', emoji: '😰' },
-                { id: 'depression', label: 'Depression', emoji: '😔' },
-                {
-                  id: 'difficulty-concentrating',
-                  label: 'Difficulty concentrating',
-                  emoji: '🧠'
-                },
-                { id: 'food-cravings', label: 'Food cravings', emoji: '🍫' },
-                {
-                  id: 'emotional-sensitivity',
-                  label: 'Emotional sensitivity',
-                  emoji: '💔'
-                },
-                { id: 'low-energy', label: 'Low energy/motivation', emoji: '⚡' }
-              ].map((symptom) => (
+              {emotionalSymptomDefinitions.map((symptom) => (
                 <div
                   role="button"
                   tabIndex={0}
@@ -269,7 +207,6 @@ export default function SymptomsPage() {
                       ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
                       : 'hover:bg-gray-50'
                   }`}
-                  ref={refTarget === symptom.id ? symptomRef : null}
                   onClick={() => toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
