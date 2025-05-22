@@ -480,9 +480,14 @@ export default function DetailPage() {
 
         <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
           <ResultsTable
-            data={assessmentDataFromContext}
+            data={
+              isHistoryView || isNewAssessment
+                ? assessment
+                  ? assessment
+                  : undefined
+                : assessmentDataFromContext
+            }
             setIsClamped={assessmentDataFromContext.setIsClamped}
-            setExpandableSymptoms={assessmentDataFromContext.setExpandableSymptoms}
           />
         </Card>
 
