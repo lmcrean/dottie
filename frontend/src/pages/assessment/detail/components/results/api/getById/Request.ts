@@ -2,7 +2,36 @@ import { apiClient } from '../../../../../../../api/core/apiClient';
 import { Assessment } from '../../../../../api/types';
 import { getUserData } from '../../../../../../../api/core/tokenManager';
 import { determinePattern } from '../../../../../../assessment/steps/7-calculate-pattern/determinePattern';
-import { AssessmentResult } from '../../../../../../assessment/steps/context/types';
+import {
+  AssessmentResult,
+  AgeRange,
+  CycleLength,
+  PeriodDuration,
+  FlowHeaviness,
+  PainLevel,
+  PhysicalSymptomId,
+  EmotionalSymptomId,
+  MenstrualPattern
+} from '../../../../../../assessment/steps/context/types';
+
+// Helper function to convert Assessment to AssessmentResult
+const convertToAssessmentResult = (assessment: Assessment): AssessmentResult => {
+  return {
+    age: assessment.age as AgeRange, // Assuming string from API matches AgeRange
+    cycle_length: assessment.cycle_length as CycleLength, // Assuming string from API matches CycleLength
+    period_duration: assessment.period_duration as PeriodDuration, // Assuming string from API matches PeriodDuration
+    flow_heaviness: assessment.flow_heaviness as FlowHeaviness, // Assuming string from API matches FlowHeaviness
+    pain_level: assessment.pain_level as PainLevel, // Assuming string from API matches PainLevel
+    physical_symptoms: assessment.physical_symptoms as PhysicalSymptomId[], // Assuming strings from API match PhysicalSymptomId
+    emotional_symptoms: assessment.emotional_symptoms as EmotionalSymptomId[], // Assuming strings from API match EmotionalSymptomId
+    other_symptoms: Array.isArray(assessment.other_symptoms)
+      ? assessment.other_symptoms.join(', ')
+      : assessment.other_symptoms,
+    pattern: assessment.pattern as MenstrualPattern // Assuming string from API matches MenstrualPattern
+    // Recommendations are not directly part of AssessmentResult for determinePattern but are part of the broader type
+    // We can omit it here or map it if needed elsewhere for AssessmentResult consistency
+  };
+};
 
 /**
  * Get assessment by ID
@@ -112,7 +141,8 @@ export const getById = async (id: string): Promise<Assessment | null> => {
     if (!data.pattern || data.pattern === 'unknown') {
       console.warn('Pattern not found or unknown in assessment data, recalculating');
       try {
-        data.pattern = determinePattern(data as AssessmentResult);
+        const assessmentResultInput = convertToAssessmentResult(data);
+        data.pattern = determinePattern(assessmentResultInput);
         console.log('Recalculated pattern:', data.pattern);
       } catch (error) {
         console.error('Failed to recalculate pattern:', error);
