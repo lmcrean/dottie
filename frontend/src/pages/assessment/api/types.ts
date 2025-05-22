@@ -13,7 +13,7 @@ export interface Assessment {
   pain_level: string;
   physical_symptoms: string[];
   emotional_symptoms: string[];
-  other_symptoms: string;
+  other_symptoms: string[];
   symptoms?: string[]; // Combined array for UI components
   recommendations: Array<{
     title: string;
