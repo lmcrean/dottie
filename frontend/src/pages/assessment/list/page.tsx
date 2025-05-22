@@ -139,7 +139,7 @@ export default function HistoryPage() {
                   return (
                     <div
                       key={assessment.id}
-                      className="block rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800"
+                      className="block rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800"
                     >
                       <p className="text-red-500">
                         Error: Could not display assessment (ID: {assessment.id}). Invalid data
@@ -164,23 +164,26 @@ export default function HistoryPage() {
                   <Link
                     key={assessment.id}
                     to={`/assessment/history/${assessment.id}`}
-                    className="block rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-slate-800"
+                    className="block rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                   >
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center rounded-full bg-pink-100 px-2.5 py-2 text-xs font-medium text-pink-800">
+                          <span className="inline-flex items-center rounded-full bg-pink-100 px-2.5 py-2 text-xs font-medium text-pink-800 dark:bg-pink-700 dark:text-pink-100">
                             {formatValue(itemPattern)}
                           </span>
-                          <span className="text-sm text-gray-500">{formatDate(itemDate)}</span>
+                          <span className="text-sm text-gray-500 dark:text-slate-400">
+                            {formatDate(itemDate)}
+                          </span>
                         </div>
-                        <div className="mt-2 text-sm text-gray-600">
+                        <div className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                           <p>
-                            <span className="text-gray-900">Age:</span> {formatValue(itemAge)}
+                            <span className="text-gray-900 dark:text-slate-100">Age:</span>{' '}
+                            {formatValue(itemAge)}
                             {itemAge && itemAge !== 'under-13' ? ' years' : ''}
                           </p>
                           <p>
-                            <span className="text-gray-900">Cycle Length:</span>{' '}
+                            <span className="text-gray-900 dark:text-slate-100">Cycle Length:</span>{' '}
                             {formatValue(itemCycleLength)}
                             {itemCycleLength &&
                             !['other', 'varies', 'not-sure'].includes(itemCycleLength)
@@ -189,7 +192,7 @@ export default function HistoryPage() {
                           </p>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-gray-400" />
+                      <ChevronRight className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                     </div>
                   </Link>
                 );
