@@ -26,6 +26,10 @@ const ensureArrayFormat = <T,>(data: unknown): T[] => {
 };
 
 export default function DetailPage() {
+  console.log(
+    '[DetailPage] Component rendering. Initial check of id, isNewAssessment, isHistoryView.'
+  );
+
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
   const [searchParams] = useSearchParams();
@@ -41,6 +45,8 @@ export default function DetailPage() {
 
   // Determine if we're viewing an assessment from history or a new assessment
   const isHistoryView = !!id && !isNewAssessment;
+
+  console.log('[DetailPage] Values after hooks: ', { id, isNewAssessment, isHistoryView });
 
   // Format related variables for legacy assessment
   const hasFlattenedFormat = !!assessment && !assessment.assessment_data;
@@ -103,8 +109,20 @@ export default function DetailPage() {
 
   // Fetch existing assessment data if viewing from history
   useEffect(() => {
+    console.log(
+      '[DetailPage] Running useEffect for history view. Current isHistoryView:',
+      isHistoryView,
+      'ID:',
+      id
+    );
     const fetchAssessment = async () => {
+      console.log('[DetailPage] useEffect for fetchAssessment triggered.', {
+        id,
+        isHistoryView,
+        isNewAssessment
+      });
       if (!id || !isHistoryView) {
+        console.log('[DetailPage] Skipping fetchAssessment: No ID or not a history view.');
         setIsLoading(false);
         return;
       }
@@ -195,6 +213,17 @@ export default function DetailPage() {
     }
     return [];
   }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
+
+  const otherSymptoms = useMemo(() => {
+    // For flattened format, assessment.other_symptoms should now be string[] from the API
+    // For legacy, it was not explicitly handled, so we'll return empty array
+    if (hasFlattenedFormat && assessment) {
+      return ensureArrayFormat<string>(assessment.other_symptoms);
+    }
+    // Legacy format doesn't have a dedicated other_symptoms field in the same way.
+    // It might be part of a free text field not specifically parsed out here.
+    return [];
+  }, [assessment, hasFlattenedFormat]);
 
   const recommendations = useMemo(() => {
     if (hasLegacyFormat && assessment?.assessment_data) {
@@ -318,6 +347,7 @@ export default function DetailPage() {
               formatValue={formatValue}
               physicalSymptoms={physicalSymptoms}
               emotionalSymptoms={emotionalSymptoms}
+              otherSymptoms={otherSymptoms}
               recommendations={recommendations}
             />
           </div>
@@ -367,6 +397,7 @@ export default function DetailPage() {
               formatValue={formatValue}
               physicalSymptoms={physicalSymptoms}
               emotionalSymptoms={emotionalSymptoms}
+              otherSymptoms={otherSymptoms}
               recommendations={recommendations}
             />
           </Card>
