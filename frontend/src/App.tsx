@@ -140,7 +140,7 @@ function AppContent(): ReactElement {
                   }
                 />
                 <Route
-                  path="results"
+                  path="results/:id"
                   element={
                     <AssessmentResultProvider>
                       <Results />
