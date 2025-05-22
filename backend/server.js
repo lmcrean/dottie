@@ -52,7 +52,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-const devPorts = [3000, 3001, 5001, 5173];
+const devPorts = [3000, 3001, 5001, 5005, 5173];
 
 const devOrigins = devPorts.flatMap(port => [
   `http://localhost:${port}`,
