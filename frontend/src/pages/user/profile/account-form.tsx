@@ -1,30 +1,30 @@
 // import { User } from '@/src/api/auth/types';
 import React from 'react';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
-import { useAccountForm } from './hooks/useAccountForm';
-import { AccountUpdateForm } from './components/AccountUpdateForm';
-import { DeleteAccountSection } from './components/buttons/delete-account';
-import { AccountFormData } from './types';
+import { UpdateUsernameButton } from './components/buttons/update-username';
+import { UpdateEmailButton } from './components/buttons/update-email';
+import { DeleteAccountSection } from './components/DeleteAccountSection';
 
 export default function AccountForm() {
   const { user } = useAuth();
 
-  const initialFormData: AccountFormData = {
-    name: user?.name || '',
-    email: user?.email || ''
-  };
-
-  const accountForm = useAccountForm(initialFormData);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-8">
-      <AccountUpdateForm
-        _user={user}
-        formData={accountForm.formData}
-        isLoading={accountForm.isLoading}
-        onChange={accountForm.handleChange}
-        onSubmit={accountForm.handleSubmit}
-      />
+      <div className="space-y-6">
+        <div>
+          <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-200">
+            Profile Information
+          </h3>
+          <div className="space-y-4">
+            <UpdateUsernameButton />
+            <UpdateEmailButton />
+          </div>
+        </div>
+      </div>
 
       <DeleteAccountSection />
     </div>
