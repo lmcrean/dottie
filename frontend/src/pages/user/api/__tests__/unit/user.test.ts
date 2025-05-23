@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { userApi } from '../../../user';
-import { apiClient } from '../../../core/apiClient';
+import { userApi } from '../..';
+import { apiClient } from '../../../../../api/core/apiClient';
 
 // Correctly mock the API client - both default and named export
 vi.mock('../../../core/apiClient', () => {

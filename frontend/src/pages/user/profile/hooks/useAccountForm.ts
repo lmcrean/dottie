@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { userApi } from '@/src/api/user';
+import { userApi } from '@/src/pages/user/api';
 import { AccountFormData } from '../types';
 
 export const useAccountForm = (initialData: AccountFormData) => {

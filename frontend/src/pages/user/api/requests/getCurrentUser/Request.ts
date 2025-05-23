@@ -1,5 +1,5 @@
 import { apiClient } from '../../../core/apiClient';
-import { UserProfile } from '../../types';
+import { UserProfile } from '../../../profile/types';
 
 /**
  * Get the currently authenticated user profile

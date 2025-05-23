@@ -11,7 +11,7 @@ import {
   type UserProfile,
   type PasswordResetRequest,
   type PasswordUpdateRequest
-} from './user';
+} from '../pages/user/api';
 import setupApi from './setup';
 import {
   type HealthResponse,

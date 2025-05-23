@@ -1,5 +1,5 @@
-import { apiClient } from '../../../core/apiClient';
-import { PasswordResetRequest, PasswordResetCompletion } from '../../types';
+import { apiClient } from '../../../../../api/core/apiClient';
+import { PasswordResetRequest, PasswordResetCompletion } from '../../../api/types';
 
 /**
  * Request password reset by email

@@ -14,7 +14,7 @@ import {
 import { Input } from '../../../components/user-inputs/input';
 import { Label } from '../../../components/ui/label';
 import { useNavigate } from 'react-router-dom';
-import { requestPasswordReset } from '../../../api/user/requests/passwordReset/Request';
+import { requestPasswordReset } from './api/passwordReset/Request';
 
 // Define schema directly here for simplicity
 const PasswordResetRequestSchema = z.object({

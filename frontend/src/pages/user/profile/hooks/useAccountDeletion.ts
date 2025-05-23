@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { userApi } from '@/src/api/user';
+import { userApi } from '@/src/pages/user/api';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export const useAccountDeletion = () => {

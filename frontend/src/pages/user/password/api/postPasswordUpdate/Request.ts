@@ -1,5 +1,5 @@
-import { apiClient } from '../../../core/apiClient';
-import { PasswordUpdateRequest } from '../../types';
+import { apiClient } from '../../../../../api/core/apiClient';
+import { PasswordUpdateRequest } from '../../../api/types';
 
 /**
  * Update user password

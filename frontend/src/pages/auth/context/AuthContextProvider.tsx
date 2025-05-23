@@ -1,6 +1,6 @@
 import { authApi } from '@/src/api/auth/index';
 import { LoginInput, SignupInput, User } from '@/src/api/auth/types';
-import { userApi } from '@/src/api/user/index';
+import { userApi } from '@/src/pages/user/api/index';
 import { ReactNode, useEffect, useState } from 'react';
 import { AuthContext } from '@/src/pages/auth/context/AuthContext';
 import {

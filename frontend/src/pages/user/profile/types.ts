@@ -1,4 +1,4 @@
-import { UserProfile } from '@/src/api/user/types';
+import { UserProfile } from '@/src/pages/user/api/types';
 
 export interface AccountFormData {
   name: string;

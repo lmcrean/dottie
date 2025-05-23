@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserProfile } from '@/src/api/user/types';
+import { UserProfile } from '@/src/pages/user/api/types';
 
 interface AccountUpdateFormProps {
   _user: UserProfile | null;
