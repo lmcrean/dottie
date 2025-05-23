@@ -11,12 +11,6 @@ export interface AccountFormProps {
   isLoading: boolean;
 }
 
-export interface AccountDeletionProps {
-  _user: UserProfile | null; // Replaced any with proper User type
-  onDelete: () => Promise<void>;
-  isLoading: boolean;
-}
-
 export interface DeleteConfirmationDialogProps {
   isOpen: boolean;
   onConfirm: () => Promise<void>;

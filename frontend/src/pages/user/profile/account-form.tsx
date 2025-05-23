@@ -2,9 +2,8 @@
 import React from 'react';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 import { useAccountForm } from './hooks/useAccountForm';
-import { useAccountDeletion } from './hooks/useAccountDeletion';
 import { AccountUpdateForm } from './components/AccountUpdateForm';
-import { AccountDeletionSection } from './components/AccountDeletionSection';
+import { DeleteAccountSection } from './components/buttons/delete-account';
 import { AccountFormData } from './types';
 
 export default function AccountForm() {
@@ -16,7 +15,6 @@ export default function AccountForm() {
   };
 
   const accountForm = useAccountForm(initialFormData);
-  const accountDeletion = useAccountDeletion();
 
   return (
     <div className="space-y-8">
@@ -28,11 +26,7 @@ export default function AccountForm() {
         onSubmit={accountForm.handleSubmit}
       />
 
-      <AccountDeletionSection
-        _user={user}
-        onDelete={accountDeletion.handleDeleteAccount}
-        isLoading={accountDeletion.isLoading}
-      />
+      <DeleteAccountSection />
     </div>
   );
 }
