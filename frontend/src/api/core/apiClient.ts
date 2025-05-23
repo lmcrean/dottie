@@ -21,8 +21,17 @@ const getBaseUrl = () => {
     return savedApiUrl;
   }
 
+  // Detect E2E mode - if frontend is running on port 3005, use backend port 5005
+  const isE2EMode = window.location.port === '3005';
   const isMac = window.navigator.userAgent.includes('Mac');
-  const API_PORT = isMac ? 5001 : 5000;
+
+  let API_PORT;
+  if (isE2EMode) {
+    API_PORT = 5005; // E2E mode uses port 5005 for backend
+  } else {
+    API_PORT = isMac ? 5001 : 5000; // Normal development mode
+  }
+
   const hostNameUrl = `http://${window.location.hostname}:${API_PORT}`;
 
   // Default fallback for local development

@@ -1,5 +1,6 @@
 import AccountLayout from './account-layout';
 import AccountForm from './account-form';
+import { LoadingState, ErrorState } from '@/src/components/ui';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export default function ProfilePage() {
@@ -8,9 +9,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <AccountLayout title="Account">
-        <div className="flex h-40 items-center justify-center">
-          <p className="text-gray-500">Loading profile...</p>
-        </div>
+        <LoadingState message="Loading profile..." />
       </AccountLayout>
     );
   }
@@ -18,9 +17,7 @@ export default function ProfilePage() {
   if (error) {
     return (
       <AccountLayout title="Account">
-        <div className="rounded-md border border-red-200 bg-red-50 p-4">
-          <p className="text-red-600">{error}</p>
-        </div>
+        <ErrorState error={error} />
       </AccountLayout>
     );
   }
