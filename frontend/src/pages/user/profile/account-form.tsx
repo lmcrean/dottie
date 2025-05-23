@@ -1,8 +1,8 @@
 // import { User } from '@/src/api/auth/types';
 import React from 'react';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
-import { UpdateUsernameButton } from './components/buttons/update-username';
-import { UpdateEmailButton } from './components/buttons/update-email';
+import { UpdateUsernameButton } from './update-username';
+import { UpdateEmailButton } from './update-email';
 import { DeleteAccountSection } from './delete-account/DeleteAccountSection';
 
 export default function AccountForm() {
