@@ -3,7 +3,7 @@ import React from 'react';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 import { UpdateUsernameButton } from './components/buttons/update-username';
 import { UpdateEmailButton } from './components/buttons/update-email';
-import { DeleteAccountSection } from './components/DeleteAccountSection';
+import { DeleteAccountSection } from './delete-account/DeleteAccountSection';
 
 export default function AccountForm() {
   const { user } = useAuth();

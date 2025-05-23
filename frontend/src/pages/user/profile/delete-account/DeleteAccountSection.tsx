@@ -1,5 +1,5 @@
 import React from 'react';
-import { DeleteAccountButton } from './buttons/delete-account/DeleteAccountButton';
+import { DeleteAccountButton } from './DeleteAccountButton';
 
 interface DeleteAccountSectionProps {
   className?: string;
