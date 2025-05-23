@@ -66,36 +66,31 @@ export const UpdateEmailButton: React.FC<UpdateEmailButtonProps> = ({
   const canUpdate = isEmailValid && hasChanges && !isLoading;
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-md block font-medium dark:text-slate-200">
-          Email Address
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={`flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 ${
-              email && !isEmailValid ? 'border-red-500 focus:ring-red-500' : ''
-            }`}
-            placeholder="Enter your email address"
-          />
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canUpdate}
-            className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-          >
-            {isLoading ? 'Updating...' : 'Update Email'}
-          </button>
-        </div>
-        {email && !isEmailValid && (
-          <p className="text-sm text-red-500">Please enter a valid email address</p>
-        )}
+    <div>
+      <div className="flex gap-2">
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className={`flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 ${
+            email && !isEmailValid ? 'border-red-500 focus:ring-red-500' : ''
+          }`}
+          placeholder="Enter your email address"
+        />
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!canUpdate}
+          className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+        >
+          {isLoading ? 'Updating...' : 'Update Email'}
+        </button>
       </div>
+      {email && !isEmailValid && (
+        <p className="mt-1 text-sm text-red-500">Please enter a valid email address</p>
+      )}
     </div>
   );
 };

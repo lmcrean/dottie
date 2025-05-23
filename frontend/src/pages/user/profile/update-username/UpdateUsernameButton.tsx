@@ -52,31 +52,24 @@ export const UpdateUsernameButton: React.FC<UpdateUsernameButtonProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <label htmlFor="username" className="text-md block font-medium dark:text-slate-200">
-          Full Name
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200"
-            placeholder="Enter your full name"
-          />
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isLoading || name === user?.name}
-            className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-          >
-            {isLoading ? 'Updating...' : 'Update Name'}
-          </button>
-        </div>
-      </div>
+    <div className="flex gap-2">
+      <input
+        type="text"
+        id="username"
+        name="username"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200"
+        placeholder="Enter your full name"
+      />
+      <button
+        type="button"
+        onClick={handleSubmit}
+        disabled={isLoading || name === user?.name}
+        className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+      >
+        {isLoading ? 'Updating...' : 'Update Name'}
+      </button>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 // import { User } from '@/src/api/auth/types';
 import React from 'react';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
-import { UpdateUsernameButton } from './update-username';
-import { UpdateEmailButton } from './update-email';
+import { UpdateUsernameSection } from './update-username';
+import { UpdateEmailSection } from './update-email';
 import { DeleteAccountSection } from './delete-account/DeleteAccountSection';
 
 export default function AccountForm() {
@@ -19,9 +19,9 @@ export default function AccountForm() {
           <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-200">
             Profile Information
           </h3>
-          <div className="space-y-4">
-            <UpdateUsernameButton />
-            <UpdateEmailButton />
+          <div className="space-y-6">
+            <UpdateUsernameSection />
+            <UpdateEmailSection />
           </div>
         </div>
       </div>
