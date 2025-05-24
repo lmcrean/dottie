@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   SetupEndpoints,
   AuthEndpoints,
@@ -13,7 +12,7 @@ import { authApi } from '../../api/auth';
 import { LoginInput } from '../../api/auth/types';
 
 export default function TestPage() {
-  const environment = process.env.NODE_ENV || 'development';
+  const environment = typeof window !== 'undefined' ? 'development' : 'development';
 
   const handleLogin = async (credentials: LoginInput) => {
     try {

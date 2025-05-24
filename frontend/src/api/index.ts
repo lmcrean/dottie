@@ -5,12 +5,7 @@ import { authApi, login, signup, logout, refreshToken } from './auth';
 import { type User, type LoginInput, type SignupInput, type AuthResponse } from './auth/types';
 
 import { assessmentApi, type Assessment } from '../pages/assessment/api';
-import {
-  chatApi,
-  type ApiMessage,
-  type Conversation,
-  type ChatResponse
-} from '../pages/chat/components/api/message';
+// Chat API is now colocated with components - import from specific locations as needed
 import {
   userApi,
   type UserProfile,
@@ -48,11 +43,11 @@ export {
   assessmentApi,
   Assessment,
 
-  // Chat exports
-  chatApi,
-  ApiMessage,
-  Conversation,
-  ChatResponse,
+  // Chat APIs are now colocated with their respective components
+  // Import directly from:
+  // - ../pages/chat/chat-detail/components/buttons/send-message
+  // - ../pages/chat/sidebar/api/get-list
+  // - etc.
 
   // User exports
   userApi,
@@ -72,7 +67,7 @@ export default {
   apiClient,
   auth: authApi,
   assessment: assessmentApi,
-  chat: chatApi,
+  // chat: removed - now colocated with components
   user: userApi,
   setup: setupApi,
   db: { checkDbConnection, fetchUserData }

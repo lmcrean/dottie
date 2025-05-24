@@ -4,7 +4,6 @@ import JsonDisplay from './JsonDisplay';
 import ApiResponse from './ApiResponse';
 import InputForm from './InputForm';
 import { apiClient } from '../../../api';
-import { authApi } from '../../../api/auth';
 import { AxiosError } from 'axios';
 
 interface InputField {
@@ -19,7 +18,7 @@ interface InputField {
 interface EndpointRowProps {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   endpoint: string;
-  expectedOutput: any;
+  expectedOutput: unknown;
   requiresAuth?: boolean;
   requiresParams?: boolean;
   inputFields?: InputField[];
@@ -40,7 +39,7 @@ export default function EndpointRow({
   pathParams = [],
   onCustomButtonClick
 }: EndpointRowProps) {
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'partial'>('idle');
   const [showInputForm, setShowInputForm] = useState(false);
@@ -79,7 +78,7 @@ export default function EndpointRow({
   };
 
   const handleApiCall = async (
-    formData?: Record<string, any>,
+    formData?: Record<string, unknown>,
     overridePathParams?: Record<string, string>
   ) => {
     setIsLoading(true);
@@ -113,9 +112,6 @@ export default function EndpointRow({
 
               // Try the API call with the tokens we have
               try {
-                // Set up the headers directly for this call
-                const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
-
                 // Directly use axios to have more control over the request
                 const response = await fetch(processedEndpoint, {
                   method: 'POST',
@@ -129,9 +125,9 @@ export default function EndpointRow({
                 if (response.ok) {
                   console.log('[Logout Debug] Logout API call succeeded');
                 } else {
-                  const errorData = await response.json();
+                  await response.json();
                 }
-              } catch (error: any) {
+              } catch (error: unknown) {
                 console.log('[Logout Debug] API call error:', error);
               }
 
@@ -195,13 +191,13 @@ export default function EndpointRow({
     }
   };
 
-  const handleFormSubmit = (formData: Record<string, any>) => {
+  const handleFormSubmit = (formData: Record<string, unknown>) => {
     // Extract path parameters if needed
     if (pathParams.length > 0) {
       const newPathParamValues: Record<string, string> = {};
       pathParams.forEach((param) => {
         if (formData[param]) {
-          newPathParamValues[param] = formData[param];
+          newPathParamValues[param] = formData[param] as string;
           delete formData[param]; // Remove from form data
         } else {
           console.log(`Path param ${param} not found in form data`);
@@ -214,14 +210,14 @@ export default function EndpointRow({
     handleApiCall(formData);
   };
 
-  const handlePathParamSubmit = (formData: Record<string, any>) => {
+  const handlePathParamSubmit = (formData: Record<string, unknown>) => {
     // Update state for future reference
-    setPathParamValues(formData);
+    setPathParamValues(formData as Record<string, string>);
 
     // If no other parameters are needed, make the call
     if (!requiresParams || inputFields.length === 0) {
       // Pass the form data directly instead of relying on state update
-      handleApiCall(undefined, formData);
+      handleApiCall(undefined, formData as Record<string, string>);
     } else {
       // Otherwise keep the form open for body parameters
 

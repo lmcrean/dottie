@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InputForm } from './index';
 import { LoginInput } from '../../../api/auth/types';
-import { testCredentialsManager } from './index';
 
 interface AuthStatusProps {
   onLogin: (credentials: LoginInput) => Promise<void>;
@@ -33,7 +32,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
     }
   }, []);
 
-  const handleLogin = async (formData: Record<string, any>) => {
+  const handleLogin = async (formData: Record<string, unknown>) => {
     setIsLoading(true);
     try {
       const credentials = {
@@ -44,8 +43,8 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
       setIsAuthenticated(true);
       setUser({ email: credentials.email });
       setShowLoginForm(false);
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (_error) {
+      console.error('Login error:', _error);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +86,7 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
       };
 
       // Helper function to wait with a message
-      const wait = async (ms: number, message: string) => {
+      const wait = async (ms: number, _message: string) => {
         await new Promise((resolve) => setTimeout(resolve, ms));
       };
 
@@ -215,8 +214,8 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
 
                         // Scroll back to the top to show the authentication status
                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                      } catch (error) {
-                        console.error('Error parsing user data:', error);
+                      } catch (_error) {
+                        console.error('Error parsing user data:', _error);
                         // Still consider success if we found a token or green status indicator
                         setIsAuthenticated(true);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -290,34 +289,31 @@ export default function AuthStatus({ onLogin, onLogout }: AuthStatusProps) {
         <div className="flex space-x-3">
           {isAuthenticated ? (
             <button
+              type="button"
               onClick={handleLogout}
-              className="rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
+              className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
             >
               Logout
             </button>
           ) : (
             <button
+              type="button"
               onClick={() => setShowLoginForm(!showLoginForm)}
-              className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
             >
-              {showLoginForm ? 'Cancel' : ' Login'}
+              {showLoginForm ? 'Cancel' : 'Login'}
             </button>
           )}
 
           {/* Auth-Flow utility button */}
           <div className="relative px-14">
             <button
+              type="button"
               onClick={runAuthFlow}
               disabled={isFlowRunning}
-              className={`rounded-md px-4 py-2 text-white transition-colors ${
-                isFlowRunning
-                  ? 'cursor-not-allowed bg-gray-600'
-                  : 'bg-purple-600 hover:bg-purple-700'
-              }`}
-              title="Utility: generates random user and signs in"
+              className="ml-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:bg-gray-500"
             >
-              {isFlowRunning ? 'Running...' : 'Auth-Flow'}
-              {isFlowRunning && <span className="ml-2 inline-block animate-spin">⟳</span>}
+              {isFlowRunning ? 'Running...' : 'Auto Auth Flow'}
             </button>
             <div className="absolute mt-1 text-xs text-gray-300 md:relative md:mt-2">
               Click to quickly signup and login with a random user
