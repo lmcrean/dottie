@@ -19,10 +19,15 @@ export async function updateAssessmentSchema(db) {
     table.string("user_id").notNullable();
     table.string("created_at").notNullable();
     table.string("age");
+    table.string("pattern");
     table.string("cycle_length");
     table.string("period_duration");
     table.string("flow_heaviness");
     table.string("pain_level");
+    table.text("physical_symptoms");
+    table.text("emotional_symptoms");
+    table.text("other_symptoms");
+    table.text("recommendations");
 
     // Foreign key handling based on database type
     if (!isSQLite) {

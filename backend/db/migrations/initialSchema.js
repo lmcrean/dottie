@@ -135,19 +135,16 @@ export async function createTables(db) {
     });
   }
 
-  // Create the assessment table with JSON schema
-  await updateAssessmentToJsonSchema(db);
-
-  // Check if we're in test mode
+  // Determine which assessment schema to use
   if (process.env.TEST_MODE === "true") {
-    // In test mode, use the special assessment schema
+    // In test mode, use the special assessment schema (includes 'age')
+    console.log("TEST_MODE active: Applying test assessment schema.");
     await updateAssessmentSchema(db);
   } else {
-    // Normal assessment schema for non-test environments
-    // Assessment results table
-    if (!(await db.schema.hasTable("assessments"))) {
-      await updateAssessmentToJsonSchema(db);
-    }
+    // For development/production, ensure the flattened schema with 'age' is used.
+    // We can directly call updateAssessmentSchema as it handles dropping and recreating if needed.
+    console.log("Applying primary assessment schema (flattened, with 'age' column).");
+    await updateAssessmentSchema(db); 
   }
 
   // Enable foreign keys in SQLite

@@ -4,7 +4,8 @@ import express from "express";
 import createRouter from "./create/routes.js";
 import listRouter from "./getList/routes.js";
 import detailRouter from "./getDetail/routes.js";
-import updateRouter from "./update/routes.js";
+// TODO: Update route implementation missing - uncomment when implemented
+// import updateRouter from "./update/routes.js";
 import deleteRouter from "./delete/routes.js";
 
 const router = express.Router();
@@ -13,7 +14,7 @@ const router = express.Router();
 router.use(createRouter);
 router.use(listRouter);
 router.use(detailRouter);
-router.use(updateRouter);
+// router.use(updateRouter);
 router.use(deleteRouter);
 
 export default router;

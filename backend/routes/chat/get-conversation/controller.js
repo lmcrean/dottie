@@ -1,5 +1,5 @@
 import logger from '../../../services/logger.js';
-import { getConversation as getConversationModel } from '../../../models/chat.js';
+import { getConversation as getConversationModel } from '../../../models/chat/chat.js';
 
 /**
  * Get a specific conversation and its messages
@@ -8,8 +8,17 @@ import { getConversation as getConversationModel } from '../../../models/chat.js
  */
 export const getConversation = async (req, res) => {
   try {
-    const userId = req.user.userId
+    // Get userId from req.user, supporting both id and userId fields
+    const userId = req.user.userId || req.user.id;
     const { conversationId } = req.params;
+    
+    // Log the user ID for debugging
+    logger.info(`Getting conversation ${conversationId} for user: ${userId}`);
+
+    if (!userId) {
+      logger.error('User ID is missing in the request');
+      return res.status(400).json({ error: 'User identification is required' });
+    }
     
     if (!conversationId) {
       return res.status(400).json({ error: 'Conversation ID is required' });

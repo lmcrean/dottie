@@ -153,7 +153,7 @@ db.raw = async (sql) => {
   }
   
   // For other queries, console log them for now
-  console.log(`[SUPABASE SHIM] Raw SQL not directly supported: ${sql}`);
+
   return [{ message: 'Raw SQL queries are not directly supported with Supabase' }];
 };
 
@@ -173,12 +173,12 @@ db.schema = {
   },
   
   createTable: async (tableName, tableBuilder) => {
-    console.log(`[SUPABASE SHIM] Creating tables not supported: ${tableName}`);
+
     return true;
   },
   
   dropTable: async (tableName) => {
-    console.log(`[SUPABASE SHIM] Dropping tables not supported: ${tableName}`);
+
     return true;
   }
 };
@@ -192,7 +192,7 @@ db.client = {
 
 // Database cleanup
 db.destroy = async () => {
-  console.log('[SUPABASE SHIM] Connection closed');
+
   return true;
 };
 
@@ -200,7 +200,7 @@ db.destroy = async () => {
 db.on = (event, callback) => {
   if (event === 'error') {
     // We could add real error handling here
-    console.log('[SUPABASE SHIM] Registered error handler');
+
   }
   return db;
 };

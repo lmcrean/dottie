@@ -1,7 +1,7 @@
 // API URLs for different test environments
 export const URLS = {
   DEV: 'http://localhost:5000',
-  PROD: 'https://dottie-api-zeta.vercel.app',
+  PROD: 'https://dottie-backend.vercel.app',
   MOCK: 'http://localhost:5000' // Same as DEV but will trigger mock responses
 };
 

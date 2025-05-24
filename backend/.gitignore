@@ -26,3 +26,4 @@ playwright-report/
 .vercel
 
 dev.sqlite3
+.env*.local
