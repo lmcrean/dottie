@@ -30,7 +30,21 @@ const STATIC_FALLBACK_CONVERSATION: Conversation[] = [
 export const getHistory = async (): Promise<Conversation[]> => {
   try {
     const response = await apiClient.get('/api/chat/history');
-    return response.data.conversations || [];
+
+    // Ensure we have a valid response structure
+    if (!response || !response.data) {
+      console.warn('Invalid response structure from chat history API');
+      return STATIC_FALLBACK_CONVERSATION;
+    }
+
+    // Check if conversations exist and is an array
+    if (response.data.conversations && Array.isArray(response.data.conversations)) {
+      return response.data.conversations;
+    }
+
+    // If conversations is not an array or doesn't exist, return empty array
+    console.warn('Chat history conversations is not an array:', response.data);
+    return [];
   } catch (error) {
     console.error('Failed to get message history:', error);
 

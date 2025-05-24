@@ -4,8 +4,8 @@ import { Input } from '@/src/components/user-inputs/input';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Send, Loader2, X, Minimize2 } from 'lucide-react';
 import { getAIFeedback } from '@/src/services/ai';
-import { getHistory } from '@/src/pages/chat/components/api/message/requests';
-import { Conversation, ApiMessage } from '@/src/pages/chat/components/api/message/utils/types';
+// import { getHistory } from '@/src/pages/chat/components/api/message/requests';
+// import { Conversation, ApiMessage } from '@/src/pages/chat/components/api/message/utils/types';
 
 interface FullscreenChatProps {
   onClose: () => void;
@@ -42,29 +42,23 @@ export function FullscreenChat({ onClose, initialMessage, setIsFullscreen }: Ful
     sendInitialMessage();
   }, [initialMessage]);
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const response = await getHistory();
-
-        // Map the conversation data to the Message format
-        const allMessages: Message[] = [];
-        response.forEach((conversation: Conversation) => {
-          conversation.messages.forEach((msg: ApiMessage) => {
-            allMessages.push({
-              role: msg.role,
-              content: msg.content
-            });
-          });
-        });
-
-        setMessages(allMessages);
-      } catch (error) {
-        console.error('Error fetching chat history:', error);
-      }
-    };
-    fetchHistory();
-  }, []);
+  // Note: For now, FullScreenChat starts with empty state since it's used for new conversations
+  // To load historical conversations, we would need a conversationId prop and use getConversation API
+  // useEffect(() => {
+  //   // TODO: If conversationId prop is provided, load that specific conversation
+  //   // const loadConversation = async (conversationId: string) => {
+  //   //   try {
+  //   //     const response = await getConversation(conversationId);
+  //   //     const messages = response.messages.map(msg => ({
+  //   //       role: msg.role,
+  //   //       content: msg.content
+  //   //     }));
+  //   //     setMessages(messages);
+  //   //   } catch (error) {
+  //   //     console.error('Error loading conversation:', error);
+  //   //   }
+  //   // };
+  // }, []);
 
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
