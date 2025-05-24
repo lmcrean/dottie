@@ -24,10 +24,6 @@ const ensureArrayFormat = <T,>(data: unknown): T[] => {
 };
 
 export default function DetailPage() {
-  console.log(
-    '[DetailPage] Component rendering. Initial check of id, isNewAssessment, isHistoryView.'
-  );
-
   const [searchParams] = useSearchParams();
   const isNewAssessment = searchParams.get('new') === 'true';
 

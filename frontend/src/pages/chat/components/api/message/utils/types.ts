@@ -15,6 +15,7 @@ export interface ConversationListItem {
   id: string;
   last_message_date: string;
   preview: string;
+  message_count: number;
 }
 
 export interface ChatResponse {

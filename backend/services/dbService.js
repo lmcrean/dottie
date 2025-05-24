@@ -139,7 +139,7 @@ class DbService {
         .where('user_id', userId)
         .orderBy('updated_at', 'desc');
 
-      // For each conversation, get the latest message
+      // For each conversation, get the latest message and message count
       const conversationsWithPreviews = await Promise.all(
         (conversations || []).map(async (conv) => {
           const latestMessage = await db('chat_messages')
@@ -147,12 +147,18 @@ class DbService {
             .orderBy('created_at', 'desc')
             .first();
 
+          const messageCount = await db('chat_messages')
+            .where('conversation_id', conv.id)
+            .count('* as count')
+            .first();
+
           return {
             id: conv.id,
             last_message_date: conv.updated_at,
             preview: latestMessage
               ? latestMessage.content.substring(0, 50)
-              : ''
+              : '',
+            message_count: messageCount ? parseInt(messageCount.count) : 0
           };
         })
       );
@@ -163,7 +169,6 @@ class DbService {
       throw error;
     }
   }
-
 
   /**
    * Create a new record with JSON fields auto-stringified

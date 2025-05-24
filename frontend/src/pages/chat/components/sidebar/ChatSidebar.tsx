@@ -56,7 +56,18 @@ export function ChatSidebar({
   };
 
   const formatDate = (dateString: string) => {
+    if (!dateString) {
+      return 'Unknown date';
+    }
+
     const date = new Date(dateString);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date string provided to formatDate:', dateString);
+      return 'Invalid date';
+    }
+
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -136,20 +147,15 @@ export function ChatSidebar({
                         <MessageSquare className="h-3 w-3 flex-shrink-0 text-pink-600" />
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <Calendar className="h-3 w-3" />
-                          <span>
-                            {formatDate(
-                              conversation.lastMessageDate || conversation.last_message_date
-                            )}
-                          </span>
+                          <span>{formatDate(conversation.last_message_date)}</span>
                         </div>
                       </div>
                       <div className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
                         {truncatePreview(conversation.preview, 50)}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {' '}
-                        {conversation.messages?.length || 0} message
-                        {(conversation.messages?.length || 0) !== 1 ? 's' : ''}{' '}
+                        {conversation.message_count} message
+                        {conversation.message_count !== 1 ? 's' : ''}
                       </div>
                     </div>
 
