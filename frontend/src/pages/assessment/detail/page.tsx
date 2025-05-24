@@ -13,7 +13,7 @@ import { assessmentApi } from '../api';
 import { toast } from 'sonner';
 import DeleteButton from '../components/buttons/delete-id/DeleteButton';
 import { MenstrualPattern } from '../steps/context/types';
-import { SendInitialMessageButton } from '@/src/pages/chat/components/buttons/chat-detail/send-initial-message';
+import { SendInitialMessageButton } from '@/src/pages/chat/chat-detail/components/buttons/send-initial-message';
 
 // Utility function to ensure data is an array
 const ensureArrayFormat = <T,>(data: unknown): T[] => {
