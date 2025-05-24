@@ -3,12 +3,12 @@ import { Conversation } from '../utils/types';
 
 /**
  * Get chat conversation history
- * @endpoint /api/message/history (GET)
+ * @endpoint /api/chat/history (GET)
  */
 export const getHistory = async (): Promise<Conversation[]> => {
   try {
-    const response = await apiClient.get('/api/message/history');
-    return response.data;
+    const response = await apiClient.get('/api/chat/history');
+    return response.data.conversations;
   } catch (error) {
     console.error('Failed to get message history:', error);
     throw error;
