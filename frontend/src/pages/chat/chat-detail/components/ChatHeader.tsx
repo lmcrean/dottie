@@ -3,12 +3,18 @@ import { Button } from '@/src/components/buttons/button';
 import { X, Minimize2, Menu } from 'lucide-react';
 
 interface ChatHeaderProps {
+  isSidebarOpen: boolean;
   onToggleSidebar: () => void;
   onMinimize: () => void;
   onClose: () => void;
 }
 
-export function ChatHeader({ onToggleSidebar, onMinimize, onClose }: ChatHeaderProps) {
+export function ChatHeader({
+  isSidebarOpen: _isSidebarOpen,
+  onToggleSidebar,
+  onMinimize,
+  onClose
+}: ChatHeaderProps) {
   return (
     <header className="flex items-center justify-between border-b bg-gradient-to-r from-pink-50 to-white p-4 dark:from-gray-900 dark:to-black">
       <div className="flex items-center gap-3">

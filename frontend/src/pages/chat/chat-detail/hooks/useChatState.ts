@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { sendMessage } from '../components/buttons/send-message';
@@ -25,6 +25,7 @@ export interface UseChatStateReturn {
   handleSend: (messageText?: string) => Promise<void>;
   handleConversationSelect: (conversation: ConversationListItem) => Promise<void>;
   handleNewChat: () => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const MOCK_CONVERSATION_RESPONSE = {
@@ -154,6 +155,12 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  };
+
   return {
     messages,
     input,
@@ -162,6 +169,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
     currentConversationId,
     handleSend,
     handleConversationSelect,
-    handleNewChat
+    handleNewChat,
+    handleKeyDown
   };
 }
