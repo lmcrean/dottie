@@ -2,20 +2,18 @@ import { useEffect, useState, useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card } from '@/src/components/ui/card';
-import { MessageCircle, ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { format, isValid, parseISO } from 'date-fns';
 
-import { ChatModal } from '@/src/pages/chat/modal/page';
-import { FullscreenChat } from '@/src/pages/chat/fullscreen/FullScreenChat';
 import { useAssessmentData } from '../steps/context/hooks/useAssessmentData';
 import { ResultsTable } from './components/results/ResultsTable';
-import { PATTERN_DATA } from '../steps/context/types/recommendations';
 import { DeterminedPattern } from './components/results/results-details/DeterminedPattern';
 import { Assessment } from '../api/types';
 import { assessmentApi } from '../api';
 import { toast } from 'sonner';
 import DeleteButton from '../components/buttons/delete-id/DeleteButton';
 import { MenstrualPattern } from '../steps/context/types';
+import { SendInitialMessageButton } from '@/src/pages/chat/components/buttons/chat-detail/send-initial-message';
 
 // Utility function to ensure data is an array
 const ensureArrayFormat = <T,>(data: unknown): T[] => {
@@ -30,8 +28,6 @@ export default function DetailPage() {
     '[DetailPage] Component rendering. Initial check of id, isNewAssessment, isHistoryView.'
   );
 
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const isNewAssessment = searchParams.get('new') === 'true';
 
@@ -47,6 +43,11 @@ export default function DetailPage() {
   const isHistoryView = !!id && !isNewAssessment;
 
   console.log('[DetailPage] Values after hooks: ', { id, isNewAssessment, isHistoryView });
+  console.log('[DetailPage] Assessment data:', {
+    assessment,
+    hasAssessment: !!assessment,
+    assessmentDataFromContext
+  });
 
   // Format related variables for legacy assessment
   const hasFlattenedFormat = !!assessment && !assessment.assessment_data;
@@ -377,7 +378,6 @@ export default function DetailPage() {
             </Link>
             {id && <DeleteButton assessmentId={id} />}
           </div>
-
           <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gray-900">
             <div className="mb-6 flex items-center justify-between">
               <div>
@@ -392,7 +392,6 @@ export default function DetailPage() {
                 )}
               </span>
             </div>
-
             <ResultsTable
               assessment={assessment}
               hasFlattenedFormat={hasFlattenedFormat}
@@ -401,9 +400,27 @@ export default function DetailPage() {
               emotionalSymptoms={emotionalSymptoms}
               otherSymptoms={otherSymptoms}
               recommendations={recommendations}
-            />
-          </div>
-        </div>
+            />{' '}
+          </div>{' '}
+          <div className="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
+            {' '}
+            <SendInitialMessageButton
+              assessmentId={id}
+              pattern={
+                hasFlattenedFormat
+                  ? (assessment.pattern as MenstrualPattern)
+                  : (assessment.assessment_data?.pattern as MenstrualPattern) || 'regular'
+              }
+            />{' '}
+            <Link to="/assessment/history">
+              {' '}
+              <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
+                {' '}
+                <Save className="h-5 w-5 hover:text-pink-700" /> View All Results{' '}
+              </Button>{' '}
+            </Link>{' '}
+          </div>{' '}
+        </div>{' '}
       </div>
     );
   }
@@ -432,17 +449,15 @@ export default function DetailPage() {
           <div className="mb-8 h-2 w-full rounded-full bg-gray-200">
             <div className="h-2 w-full rounded-full bg-pink-500 transition-all duration-500"></div>
           </div>
-
           <div className="mb-8 text-center">
             <h1 className="mb-3 text-3xl font-bold dark:text-slate-100">Your Assessment Results</h1>
             <p className="text-gray-600 dark:text-slate-200">
               {" Based on your responses, here's what we've found about your menstrual health."}
             </p>
           </div>
-
           <DeterminedPattern pattern={safePattern} />
-
           <Card className="mb-8 w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800">
+            {' '}
             <ResultsTable
               assessment={assessment}
               hasFlattenedFormat={hasFlattenedFormat}
@@ -451,17 +466,11 @@ export default function DetailPage() {
               emotionalSymptoms={emotionalSymptoms}
               otherSymptoms={otherSymptoms}
               recommendations={recommendations}
-            />
-          </Card>
-
+            />{' '}
+          </Card>{' '}
           <div className="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Button
-              className="flex items-center justify-center gap-2 bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
-              onClick={() => setIsChatOpen(true)}
-            >
-              <MessageCircle className="h-5 w-5" />
-              Chat with Dottie
-            </Button>
+            {' '}
+            <SendInitialMessageButton assessmentId={id} pattern={safePattern} />
             <Link to="/assessment/history">
               <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
                 <Save className="h-5 w-5 hover:text-pink-700" />
@@ -470,7 +479,6 @@ export default function DetailPage() {
             </Link>
             {id && <DeleteButton assessmentId={id} className="px-6 py-6 text-lg" />}
           </div>
-
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <Link to="/assessment/history">
               <Button
@@ -482,22 +490,6 @@ export default function DetailPage() {
             </Link>
           </div>
         </main>
-
-        {isChatOpen &&
-          (isFullscreenChatOpen ? (
-            <FullscreenChat
-              onClose={() => setIsChatOpen(false)}
-              setIsFullscreen={setIsFullscreenChatOpen}
-              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePattern].title}. Can you tell me more about what this means?`}
-            />
-          ) : (
-            <ChatModal
-              isOpen={isChatOpen}
-              onClose={() => setIsChatOpen(false)}
-              setIsFullscreen={setIsFullscreenChatOpen}
-              initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePattern].title}. Can you tell me more about what this means?`}
-            />
-          ))}
       </div>
     );
   }
@@ -544,13 +536,8 @@ export default function DetailPage() {
         </Card>
 
         <div className="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <Button
-            className="flex items-center justify-center gap-2 bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700"
-            onClick={() => setIsChatOpen(true)}
-          >
-            <MessageCircle className="h-5 w-5" />
-            Chat with Dottie
-          </Button>
+          {' '}
+          <SendInitialMessageButton pattern={safePatternFromContext} />
           <Link to="/assessment/history">
             <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
               <Save className="h-5 w-5 hover:text-pink-700" />
@@ -571,22 +558,6 @@ export default function DetailPage() {
           </Link>
         </div>
       </main>
-
-      {isChatOpen &&
-        (isFullscreenChatOpen ? (
-          <FullscreenChat
-            onClose={() => setIsChatOpen(false)}
-            setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePatternFromContext].title}. Can you tell me more about what this means?`}
-          />
-        ) : (
-          <ChatModal
-            isOpen={isChatOpen}
-            onClose={() => setIsChatOpen(false)}
-            setIsFullscreen={setIsFullscreenChatOpen}
-            initialMessage={`Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[safePatternFromContext].title}. Can you tell me more about what this means?`}
-          />
-        ))}
     </div>
   );
 }
