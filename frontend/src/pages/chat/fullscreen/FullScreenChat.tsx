@@ -4,8 +4,8 @@ import { Input } from '@/src/components/user-inputs/input';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Send, Loader2, X, Minimize2 } from 'lucide-react';
 import { getAIFeedback } from '@/src/services/ai';
-import getHistory from '@/src/api/message/requests/getHistory';
-import { Conversation, ApiMessage } from '@/src/api/message/utils/types';
+import getHistory from '@/src/pages/chat/components/api/message/requests/getHistory';
+import { Conversation, ApiMessage } from '@/src/pages/chat/components/api/message/utils/types';
 
 interface FullscreenChatProps {
   onClose: () => void;

@@ -1,4 +1,4 @@
-import { apiClient } from '../../../core/apiClient';
+import { apiClient } from '../../../../../../api/core/apiClient';
 
 /**
  * Delete a specific conversation

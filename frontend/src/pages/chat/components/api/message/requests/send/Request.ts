@@ -1,4 +1,4 @@
-import { apiClient } from '../../../core/apiClient';
+import { apiClient } from '../../../../../../../api/core/apiClient';
 import { ChatResponse } from '../../types';
 
 // Static fallback message when environment variables aren't available
