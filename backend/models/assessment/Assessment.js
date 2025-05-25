@@ -1,5 +1,5 @@
 import LegacyAssessment from './archive/LegacyAssessment.js';
-import FlattenedAssessment from './assessment-main/FlattenedAssessment.js';
+import CurrentAssessment from './assessment-main/Assessment.js';
 import { testAssessments, isTestMode } from './assessment-base/AssessmentTestUtils.js';
 
 class Assessment {
@@ -26,7 +26,7 @@ class Assessment {
     if (rawRecord.assessment_data) {
       return await LegacyAssessment.findById(id);
     } else {
-      return await FlattenedAssessment.findById(id);
+      return await CurrentAssessment.findById(id);
     }
   }
 
@@ -41,8 +41,8 @@ class Assessment {
     if (assessmentData.assessment_data) {
       return await LegacyAssessment.create(assessmentData, userId);
     } else {
-      // Use flattened format
-      return await FlattenedAssessment.create(assessmentData, userId);
+      // Use current format
+      return await CurrentAssessment.create(assessmentData, userId);
     }
   }
 
@@ -57,8 +57,8 @@ class Assessment {
     if (assessmentData.assessment_data) {
       return await LegacyAssessment.update(id, assessmentData);
     } else {
-      // Use flattened format
-      return await FlattenedAssessment.update(id, assessmentData);
+      // Use current format
+      return await CurrentAssessment.update(id, assessmentData);
     }
   }
 
@@ -95,7 +95,7 @@ class Assessment {
 
   /**
    * Transform database record to API response format
-   * Decides between legacy and flattened formats automatically
+   * Decides between legacy and current formats automatically
    * @param {Object} record - Database record
    * @returns {Object} API response object
    * @private
@@ -107,7 +107,7 @@ class Assessment {
     if (record.assessment_data) {
       return LegacyAssessment._transformDbRecordToApiResponse(record);
     } else {
-      return FlattenedAssessment._transformDbRecordToApiResponse(record);
+      return CurrentAssessment._transformDbRecordToApiResponse(record);
     }
   }
 }
