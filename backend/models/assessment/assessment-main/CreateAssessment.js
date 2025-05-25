@@ -1,4 +1,3 @@
-import { testAssessments, isTestMode } from '../assessment-base/AssessmentTestUtils.js';
 import { v4 as uuidv4 } from 'uuid';
 import DbService from '../../../services/dbService.js';
 import TransformApiToDb from './TransformApiToDb.js';
@@ -14,33 +13,6 @@ class CreateAssessment {
     try {
       const id = uuidv4();
       const now = new Date();
-
-      if (isTestMode) {
-        // Extract data and create with snake_case keys
-        const {
-          age, pattern, cycle_length, period_duration, flow_heaviness, pain_level, 
-          physical_symptoms, emotional_symptoms, other_symptoms, recommendations
-        } = assessmentData;
-        
-        const assessment = {
-          id,
-          user_id: userId,
-          created_at: now,
-          age,
-          pattern,
-          cycle_length,
-          period_duration,
-          flow_heaviness,
-          pain_level,
-          physical_symptoms: physical_symptoms || [],
-          emotional_symptoms: emotional_symptoms || [],
-          other_symptoms: other_symptoms || '',
-          recommendations: recommendations || []
-        };
-        
-        testAssessments[id] = assessment;
-        return assessment;
-      }
 
       // Transform API data to database payload
       const transformedData = TransformApiToDb.transform(assessmentData);

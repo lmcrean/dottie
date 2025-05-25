@@ -2,12 +2,12 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import ReadAssessment from '../../../models/assessment/assessment-main/ReadAssessment.js';
 import DbService from '../../../services/dbService.js';
 import TransformDbToApi from '../../../models/assessment/assessment-main/TransformDbToApi.js';
-import ValidateAssessmentFormat from '../../../models/assessment/assessment-main/ValidateAssessmentFormat.js';
+import FormatDetector from '../../../models/assessment/assessment-base/FormatDetector.js';
 
 // Mock dependencies
 vi.mock('../../../services/dbService.js');
 vi.mock('../../../models/assessment/assessment-main/TransformDbToApi.js');
-vi.mock('../../../models/assessment/assessment-main/ValidateAssessmentFormat.js');
+vi.mock('../../../models/assessment/assessment-base/FormatDetector.js');
 
 describe('ReadAssessment', () => {
   beforeEach(() => {
@@ -48,13 +48,13 @@ describe('ReadAssessment', () => {
       };
 
       DbService.findById.mockResolvedValue(dbAssessment);
-      ValidateAssessmentFormat.canProcessRecord.mockReturnValue(true);
+      FormatDetector.isCurrentFormat.mockReturnValue(true);
       TransformDbToApi.transform.mockReturnValue(transformedAssessment);
 
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(ValidateAssessmentFormat.canProcessRecord).toHaveBeenCalledWith(dbAssessment);
+      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(dbAssessment);
       expect(TransformDbToApi.transform).toHaveBeenCalledWith(dbAssessment);
       expect(result).toEqual(transformedAssessment);
     });
@@ -67,7 +67,7 @@ describe('ReadAssessment', () => {
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(ValidateAssessmentFormat.canProcessRecord).not.toHaveBeenCalled();
+      expect(FormatDetector.isCurrentFormat).not.toHaveBeenCalled();
       expect(TransformDbToApi.transform).not.toHaveBeenCalled();
       expect(result).toBeNull();
     });
@@ -80,12 +80,12 @@ describe('ReadAssessment', () => {
       };
 
       DbService.findById.mockResolvedValue(legacyAssessment);
-      ValidateAssessmentFormat.canProcessRecord.mockReturnValue(false);
+      FormatDetector.isCurrentFormat.mockReturnValue(false);
 
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(ValidateAssessmentFormat.canProcessRecord).toHaveBeenCalledWith(legacyAssessment);
+      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(legacyAssessment);
       expect(TransformDbToApi.transform).not.toHaveBeenCalled();
       expect(result).toBeNull();
     });
@@ -111,7 +111,7 @@ describe('ReadAssessment', () => {
       const transformError = new Error('Transform failed');
 
       DbService.findById.mockResolvedValue(dbAssessment);
-      ValidateAssessmentFormat.canProcessRecord.mockReturnValue(true);
+      FormatDetector.isCurrentFormat.mockReturnValue(true);
       TransformDbToApi.transform.mockImplementation(() => {
         throw transformError;
       });
@@ -158,18 +158,18 @@ describe('ReadAssessment', () => {
   });
 
   describe('canProcessRecord', () => {
-    it('should call ValidateAssessmentFormat.canProcessRecord', () => {
+    it('should call FormatDetector.isCurrentFormat', () => {
       const record = {
         id: 'test-123',
         age: 25,
         pattern: 'regular'
       };
 
-      ValidateAssessmentFormat.canProcessRecord.mockReturnValue(true);
+      FormatDetector.isCurrentFormat.mockReturnValue(true);
 
       const result = ReadAssessment.canProcessRecord(record);
 
-      expect(ValidateAssessmentFormat.canProcessRecord).toHaveBeenCalledWith(record);
+      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(record);
       expect(result).toBe(true);
     });
 
@@ -179,11 +179,11 @@ describe('ReadAssessment', () => {
         assessment_data: '{"legacy": "data"}'
       };
 
-      ValidateAssessmentFormat.canProcessRecord.mockReturnValue(false);
+      FormatDetector.isCurrentFormat.mockReturnValue(false);
 
       const result = ReadAssessment.canProcessRecord(legacyRecord);
 
-      expect(ValidateAssessmentFormat.canProcessRecord).toHaveBeenCalledWith(legacyRecord);
+      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(legacyRecord);
       expect(result).toBe(false);
     });
   });

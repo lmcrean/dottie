@@ -1,5 +1,4 @@
 import DbService from '../../../services/dbService.js';
-import { testAssessments, isTestMode } from './AssessmentTestUtils.js';
 
 class DeleteAssessment {
   /**
@@ -9,16 +8,6 @@ class DeleteAssessment {
    */
   static async delete(id) {
     try {
-      // Use in-memory store for tests
-      if (isTestMode) {
-        if (!testAssessments[id]) {
-          throw new Error(`Assessment with ID ${id} not found`);
-        }
-
-        delete testAssessments[id];
-        return true;
-      }
-      
       return await DbService.delete('assessments', id);
     } catch (error) {
       throw error;

@@ -1,7 +1,6 @@
-import { testAssessments, isTestMode } from '../assessment-base/AssessmentTestUtils.js';
 import DbService from '../../../services/dbService.js';
 import TransformDbToApi from './TransformDbToApi.js';
-import ValidateAssessmentFormat from './ValidateAssessmentFormat.js';
+import FormatDetector from '../assessment-base/FormatDetector.js';
 
 class ReadAssessment {
   /**
@@ -11,10 +10,6 @@ class ReadAssessment {
    */
   static async findById(id) {
     try {
-      if (isTestMode && testAssessments[id]) {
-        return testAssessments[id];
-      }
-
       // Get the assessment from database
       const assessment = await DbService.findById('assessments', id);
       
@@ -23,7 +18,7 @@ class ReadAssessment {
       }
       
       // Check if this class can handle this format
-      if (!ValidateAssessmentFormat.canProcessRecord(assessment)) {
+      if (!FormatDetector.isCurrentFormat(assessment)) {
         return null;
       }
       
@@ -50,7 +45,7 @@ class ReadAssessment {
    * @returns {boolean} True if this class can process the record
    */
   static canProcessRecord(record) {
-    return ValidateAssessmentFormat.canProcessRecord(record);
+    return FormatDetector.isCurrentFormat(record);
   }
 }
 

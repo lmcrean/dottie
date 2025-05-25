@@ -1,5 +1,4 @@
 import db from '../../../db/index.js';
-import { testAssessments, isTestMode } from './AssessmentTestUtils.js';
 
 class ValidateAssessment {
   /**
@@ -22,11 +21,6 @@ class ValidateAssessment {
    */
   static async validateOwnership(assessmentId, userId) {
     try {
-      // Test mode check
-      if (isTestMode && testAssessments[assessmentId]) {
-        return testAssessments[assessmentId].user_id === userId;
-      }
-      
       // Database check using direct query for reliability
       const assessment = await db('assessments')
         .where('id', assessmentId)

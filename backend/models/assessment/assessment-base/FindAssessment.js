@@ -1,5 +1,4 @@
 import DbService from '../../../services/dbService.js';
-import { testAssessments, isTestMode } from './AssessmentTestUtils.js';
 
 class FindAssessment {
   /**
@@ -11,10 +10,6 @@ class FindAssessment {
    */
   static async findById(id, transformMethod, canProcessMethod) {
     try {
-      if (isTestMode && testAssessments[id]) {
-        return testAssessments[id];
-      }
-      
       // Get the assessment from database
       const assessment = await DbService.findById('assessments', id);
       
@@ -39,14 +34,6 @@ class FindAssessment {
    */
   static async listByUser(userId) {
     try {
-      // Use in-memory store for tests
-      if (isTestMode) {
-        const testUserAssessments = Object.values(testAssessments)
-          .filter(assessment => assessment.user_id === userId);
-
-        return testUserAssessments;
-      }
-      
       // Get all assessments for user
       const rawAssessments = await DbService.findBy('assessments', 'user_id', userId);
 

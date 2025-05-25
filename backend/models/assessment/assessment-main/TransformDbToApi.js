@@ -8,11 +8,6 @@ class TransformDbToApi {
    */
   static transform(record) {
     if (!record) return null;
-    
-    // If record has legacy format, defer to LegacyAssessment handler
-    if (record.assessment_data) {
-      return null;
-    }
 
     // Parse array fields using the JSON parser utility
     const physical_symptoms = ParseAssessmentJson.parseArrayField(
