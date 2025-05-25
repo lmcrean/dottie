@@ -81,11 +81,6 @@ class FlattenedAssessment extends AssessmentBase {
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
 
-
-        payload.physical_symptoms ? JSON.stringify(payload.physical_symptoms) : 'null';
-
-        payload.emotional_symptoms ? JSON.stringify(payload.emotional_symptoms) : 'null';
-
       // Insert into database
       const inserted = await DbService.create('assessments', payload);
       
