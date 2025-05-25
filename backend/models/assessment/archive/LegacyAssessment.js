@@ -1,5 +1,4 @@
 import { AssessmentBase } from '../assessment-base/AssessmentBase.js';
-import { testAssessments, isTestMode } from '../assessment-base/AssessmentTestUtils.js';
 import { v4 as uuidv4 } from 'uuid';
 import DbService from '../../../services/dbService.js';
 
@@ -14,29 +13,6 @@ class LegacyAssessment extends AssessmentBase {
     try {
       const id = uuidv4();
       const now = new Date();
-
-      if (isTestMode) {
-        const nestedData = assessmentData.assessment_data || assessmentData;
-        
-        // Create with snake_case keys and flattened structure
-        const assessment = {
-          id,
-          user_id: userId,
-          created_at: now,
-          updated_at: now,
-          age: nestedData.age,
-          pattern: nestedData.pattern,
-          cycle_length: nestedData.cycleLength,
-          period_duration: nestedData.periodDuration,
-          flow_heaviness: nestedData.flowHeaviness,
-          pain_level: nestedData.painLevel,
-          physical_symptoms: nestedData.symptoms?.physical || [],
-          emotional_symptoms: nestedData.symptoms?.emotional || [],
-          recommendations: nestedData.recommendations || []
-        };
-        testAssessments[id] = assessment;
-        return assessment;
-      }
 
       // Use legacy nested format
       const payload = {
@@ -66,32 +42,6 @@ class LegacyAssessment extends AssessmentBase {
   static async update(id, assessmentData) {
     try {
       const now = new Date();
-
-      // Use in-memory store for tests
-      if (isTestMode) {
-        if (!testAssessments[id]) {
-          throw new Error(`Assessment with ID ${id} not found`);
-        }
-
-        const nestedData = assessmentData.assessment_data || assessmentData;
-        
-        // Update with snake_case keys and flattened structure
-        testAssessments[id] = {
-          ...testAssessments[id],
-          updated_at: now,
-          age: nestedData.age,
-          pattern: nestedData.pattern,
-          cycle_length: nestedData.cycleLength,
-          period_duration: nestedData.periodDuration,
-          flow_heaviness: nestedData.flowHeaviness,
-          pain_level: nestedData.painLevel,
-          physical_symptoms: nestedData.symptoms?.physical || [],
-          emotional_symptoms: nestedData.symptoms?.emotional || [],
-          recommendations: nestedData.recommendations || []
-        };
-
-        return testAssessments[id];
-      }
       
       // Use legacy nested format
       const updates = {
