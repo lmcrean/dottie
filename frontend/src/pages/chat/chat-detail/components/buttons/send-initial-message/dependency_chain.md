@@ -1,18 +1,22 @@
-# Dependency Chain: Assessment to Chat Files
+# Dependency Chain: Chat Creation and Data Flow
 
-## POST Flow (Assessment → Chat Creation)
+## POST Flow (Chat Creation)
 
-1. `frontend/src/pages/assessment/steps/9-save/post-id/Request.ts` - Submit assessment data
-2. `backend/routes/assessment/create/controller.js` - Process assessment submission
-3. `frontend/src/pages/chat/sidebar/api/create-new/api/createNewChat.ts` - Create new chat
-4. `frontend/src/pages/chat/chat-detail/components/buttons/send-initial-message/api/sendInitialMessage.ts` - Send first message
-5. `frontend/src/pages/chat/chat-detail/components/buttons/send-initial-message/SendInitialMessageButton.tsx` - Orchestrate the flow
+**User Journey: Click "Chat with Dottie" → Create Chat & Send Initial Message**
 
-## GET Flow (Chat Loading)
+1. `frontend/src/pages/chat/chat-detail/components/buttons/send-initial-message/SendInitialMessageButton.tsx` - **User clicks "Chat with Dottie" button**
+2. `frontend/src/pages/chat/sidebar/api/create-new/api/createNewChat.ts` - Create new chat (POST request)
+3. `frontend/src/pages/chat/chat-detail/components/buttons/send-initial-message/api/sendInitialMessage.ts` - Send first message (POST request)
+4. `backend/routes/chat/create/controller.js` - Process chat creation
+5. `backend/routes/chat/message/controller.js` - Process initial message
 
-6. `frontend/src/pages/chat/chat-detail/hooks/useChatState.ts` - Fetch conversation history
-7. `frontend/src/pages/chat/chat-detail/components/AssessmentDataDisplay.tsx` - Load assessment details
-8. `frontend/src/pages/chat/chat-detail/FullScreenChat.tsx` - Display chat interface
+## GET Flow (Chat Loading & Data Display)
+
+**Final Interface: User receives responses in chat**
+
+6. `frontend/src/pages/chat/chat-detail/FullScreenChat.tsx` - **Display chat interface (final destination)**
+7. `frontend/src/pages/chat/chat-detail/hooks/useChatState.ts` - Fetch conversation history (GET request)
+8. `frontend/src/pages/chat/chat-detail/components/AssessmentDataDisplay.tsx` - Load assessment details (GET request)
 
 ## Core Infrastructure
 
