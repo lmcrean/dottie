@@ -52,12 +52,12 @@ const getMockResponse = (message) => {
  */
 export const sendMessage = async (req, res) => {
   try {    
-    const { message, conversationId } = req.body;
+    const { message, conversationId, assessment_id } = req.body;
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
     
     // Log the user ID for debugging
-    logger.info(`Processing message for user: ${userId}`);
+    logger.info(`Processing message for user: ${userId}`, { conversationId, assessment_id });
 
     if (!userId) {
       logger.error('User ID is missing in the request');
@@ -85,8 +85,8 @@ export const sendMessage = async (req, res) => {
         parts: [{ text: msg.content }],
       }));
     } else {
-      // Create a new conversation
-      currentConversationId = await createConversation(userId);
+      // Create a new conversation with optional assessment linking
+      currentConversationId = await createConversation(userId, assessment_id);
     }
 
     // Save user message to database

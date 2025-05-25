@@ -4,7 +4,9 @@ import { useChatState } from './hooks/useChatState';
 import { ChatHeader } from './components/ChatHeader';
 import { MessageList } from './components/MessageList';
 import { ChatInput } from './components/ChatInput';
+import { AssessmentDataDisplay } from './components/AssessmentDataDisplay';
 import { FullscreenChatProps } from './types/chat';
+import { toast } from 'sonner';
 
 export function FullscreenChat({
   onClose,
@@ -23,7 +25,8 @@ export function FullscreenChat({
     handleSend,
     handleConversationSelect,
     handleNewChat,
-    handleKeyDown
+    handleKeyDown,
+    assessmentId
   } = useChatState({ chatId, initialMessage });
 
   const handleToggleSidebar = () => {
@@ -32,6 +35,10 @@ export function FullscreenChat({
 
   const handleMinimize = () => {
     setIsFullscreen(false);
+  };
+
+  const handleAssessmentError = (error: string) => {
+    toast.error(error);
   };
 
   return (
@@ -61,13 +68,21 @@ export function FullscreenChat({
             <MessageList messages={messages} isLoading={isLoading} />
 
             {currentConversationId ? (
-              <ChatInput
-                input={input}
-                setInput={setInput}
-                isLoading={isLoading}
-                onSend={() => handleSend()}
-                onKeyDown={handleKeyDown}
-              />
+              <>
+                {/* Assessment Data Display - above chat input */}
+                <AssessmentDataDisplay
+                  assessmentId={assessmentId || undefined}
+                  onError={handleAssessmentError}
+                />
+
+                <ChatInput
+                  input={input}
+                  setInput={setInput}
+                  isLoading={isLoading}
+                  onSend={() => handleSend()}
+                  onKeyDown={handleKeyDown}
+                />
+              </>
             ) : (
               <div className="border-t bg-gray-50 p-4 text-center text-gray-500 dark:bg-gray-800 dark:text-gray-400">
                 <p>

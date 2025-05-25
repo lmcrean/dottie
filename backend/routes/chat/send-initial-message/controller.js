@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import logger from '../../../services/logger.js';
-import { insertChatMessage, getConversation } from '../../../models/chat/chat.js';
+import { insertChatMessage, getConversation, updateConversationAssessmentLinks } from '../../../models/chat/chat.js';
 
 // Initialize Gemini API
 const API_KEY = process.env.VITE_GEMINI_API_KEY;
@@ -78,6 +78,12 @@ export const sendInitialMessage = async (req, res) => {
     if (!conversation) {
       logger.error(`[sendInitialMessage] Conversation ${chatId} not found for user ${userId}`);
       return res.status(404).json({ error: 'Chat conversation not found' });
+    }
+
+    // If assessment_id is provided, link it to the conversation
+    if (assessment_id) {
+      await updateConversationAssessmentLinks(chatId, userId, assessment_id);
+      logger.info(`[sendInitialMessage] Linked assessment ${assessment_id} to conversation ${chatId}`);
     }
 
     // Save user message to database

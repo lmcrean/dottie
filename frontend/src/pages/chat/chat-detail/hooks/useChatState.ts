@@ -26,23 +26,36 @@ export interface UseChatStateReturn {
   handleConversationSelect: (conversation: ConversationListItem) => Promise<void>;
   handleNewChat: () => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  assessmentId: string | null;
 }
 
-const MOCK_CONVERSATION_RESPONSE = {
-  id: 'mock-conversation-123',
-  messages: [
-    {
-      role: 'user' as const,
-      content: 'Hello',
-      timestamp: new Date().toISOString()
-    },
-    {
-      role: 'assistant' as const,
-      content:
-        "Hi there! 👋 I'm Dottie. This is a mock conversation for development purposes. To see real conversations, please configure your backend environment variables.",
-      timestamp: new Date().toISOString()
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+// Helper function to fetch conversation from backend
+const fetchConversation = async (
+  conversationId: string
+): Promise<{ id: string; messages: ApiMessage[]; assessment_id?: string } | null> => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE_URL}/chat/get-conversation/${conversationId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error('Failed to fetch conversation');
     }
-  ]
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching conversation:', error);
+    throw error;
+  }
 };
 
 export function useChatState({ chatId, initialMessage }: UseChatStateProps): UseChatStateReturn {
@@ -52,6 +65,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(chatId || null);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const hasSentInitialMessage = useRef(false);
 
   // Load existing conversation if chatId is provided
@@ -59,18 +73,30 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
     if (chatId) {
       const loadExistingConversation = async () => {
         try {
-          // Mock: For now, use the mock conversation
-          // In real implementation, this would fetch from getConversation API
-          const fullConversation = MOCK_CONVERSATION_RESPONSE;
+          setIsLoading(true);
+          const fullConversation = await fetchConversation(chatId);
 
-          const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
-            role: msg.role,
-            content: msg.content
-          }));
-          setMessages(convertedMessages);
-          setCurrentConversationId(chatId);
+          if (fullConversation) {
+            const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
+              role: msg.role,
+              content: msg.content
+            }));
+            setMessages(convertedMessages);
+            setCurrentConversationId(chatId);
+            setAssessmentId(fullConversation.assessment_id || null);
+          } else {
+            // Conversation not found
+            console.warn(`Conversation ${chatId} not found`);
+            setCurrentConversationId(null);
+            setMessages([]);
+          }
         } catch (error) {
           console.error('Error loading conversation:', error);
+          toast.error('Failed to load conversation');
+          setCurrentConversationId(null);
+          setMessages([]);
+        } finally {
+          setIsLoading(false);
         }
       };
       loadExistingConversation();
@@ -130,23 +156,38 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const handleConversationSelect = async (conversation: ConversationListItem) => {
     console.log('[useChatState] Selected conversation:', conversation);
 
-    // Mock: Convert to our message format
-    const convertedMessages = MOCK_CONVERSATION_RESPONSE.messages.map((msg: ApiMessage) => ({
-      role: msg.role,
-      content: msg.content
-    }));
+    try {
+      setIsLoading(true);
+      const fullConversation = await fetchConversation(conversation.id);
 
-    setMessages(convertedMessages);
-    setCurrentConversationId(conversation.id);
+      if (fullConversation) {
+        const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
+          role: msg.role,
+          content: msg.content
+        }));
 
-    // Navigate to the chat detail page
-    navigate(`/chat/${conversation.id}`);
+        setMessages(convertedMessages);
+        setCurrentConversationId(conversation.id);
+        setAssessmentId(fullConversation.assessment_id || null);
+
+        // Navigate to the chat detail page
+        navigate(`/chat/${conversation.id}`);
+      } else {
+        toast.error('Failed to load conversation');
+      }
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+      toast.error('Failed to load conversation');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleNewChat = () => {
     setCurrentConversationId(null);
     setMessages([]);
     setInput('');
+    setAssessmentId(null);
     hasSentInitialMessage.current = false;
 
     // Navigate to new chat page if needed
@@ -170,6 +211,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
     handleSend,
     handleConversationSelect,
     handleNewChat,
-    handleKeyDown
+    handleKeyDown,
+    assessmentId
   };
 }

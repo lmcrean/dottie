@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS public.period_logs (
 CREATE TABLE IF NOT EXISTS public.conversations (
   id UUID PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES public.users(id),
+  assessment_id TEXT NULL REFERENCES public.assessments(id),
+  assessment_pattern TEXT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -75,5 +77,6 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
 CREATE INDEX IF NOT EXISTS idx_period_logs_user_id ON public.period_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_symptoms_user_id ON public.symptoms(user_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON public.conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_conversations_assessment_id ON public.conversations(assessment_id);
 CREATE INDEX IF NOT EXISTS idx_chat_messages_conversation_id ON public.chat_messages(conversation_id);
 CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON public.assessments(user_id); 

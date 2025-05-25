@@ -158,7 +158,10 @@ class DbService {
             preview: latestMessage
               ? latestMessage.content.substring(0, 50)
               : '',
-            message_count: messageCount ? parseInt(messageCount.count) : 0
+            message_count: messageCount ? parseInt(messageCount.count) : 0,
+            assessment_id: conv.assessment_id,
+            assessment_pattern: conv.assessment_pattern,
+            user_id: conv.user_id
           };
         })
       );

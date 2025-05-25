@@ -19,8 +19,8 @@ export const createChat = async (req, res) => {
       return res.status(400).json({ error: 'User identification is required' });
     }
 
-    // Create new conversation
-    const conversationId = await createConversation(userId);
+    // Create new conversation with assessment linking
+    const conversationId = await createConversation(userId, assessment_id);
     
     logger.info(`[createChat] Successfully created chat: ${conversationId}`, { assessment_id });
 
