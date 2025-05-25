@@ -1,5 +1,5 @@
 import logger from '../../../../services/logger.js';
-import { sendMessageWithResponse } from './sendMessageWithResponse.js';
+import { sendMessage } from './sendMessage.js';
 
 /**
  * Continue conversation with contextual awareness
@@ -11,12 +11,9 @@ import { sendMessageWithResponse } from './sendMessageWithResponse.js';
  */
 export const continueConversationWithContext = async (conversationId, userId, messageText, context = {}) => {
   try {
-    const result = await sendMessageWithResponse(conversationId, userId, messageText);
+    const result = await sendMessage(conversationId, userId, messageText, { context });
     
-    return {
-      ...result,
-      context
-    };
+    return result;
   } catch (error) {
     logger.error('Error continuing conversation with context:', error);
     throw error;

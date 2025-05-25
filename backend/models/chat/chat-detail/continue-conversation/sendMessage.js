@@ -3,29 +3,45 @@ import { insertChatMessage } from '../shared/database/chatCreateMessage.js';
 import { updateChatMessage } from '../shared/database/chatUpdateMessage.js';
 import { formatUserMessage } from '../shared/utils/messageFormatters.js';
 import { generateMessageId } from '../shared/utils/responseBuilders.js';
+import { generateResponseToMessage } from './generateResponse.js';
 import Chat from '../../chat-list/chat.js';
 
 /**
- * Send a follow-up message in an existing conversation
+ * Send a message in a conversation with flexible options
  * @param {string} conversationId - Conversation ID
  * @param {string} userId - User ID
- * @param {string} messageText - Message content
- * @param {string} [parentMessageId] - Parent message ID for threading
- * @returns {Promise<Object>} - Created message
+ * @param {string|Array<string>} messageText - Message content or array for batch
+ * @param {Object} [options] - Options for message sending
+ * @param {boolean} [options.autoResponse=true] - Auto-generate AI response
+ * @param {string} [options.parentMessageId] - Parent message ID for threading
+ * @param {Object} [options.context] - Additional context for the message
+ * @param {number} [options.batchDelay=0] - Delay between batch messages (ms)
+ * @returns {Promise<Object>} - Message result(s)
  */
-export const sendFollowUpMessage = async (conversationId, userId, messageText, parentMessageId = null) => {
+export const sendMessage = async (conversationId, userId, messageText, options = {}) => {
+  const { 
+    autoResponse = true, 
+    parentMessageId = null, 
+    context = {},
+    batchDelay = 0 
+  } = options;
+
   try {
+    // Handle batch processing if array is provided
+    if (Array.isArray(messageText)) {
+      return await sendMessageBatch(conversationId, userId, messageText, options);
+    }
+
+    logger.info(`Sending message in conversation ${conversationId}`);
+
     // Verify conversation ownership
     const isOwner = await Chat.isOwner(conversationId, userId);
     if (!isOwner) {
       throw new Error('User does not own this conversation');
     }
 
-    // Generate message ID and format message
+    // Generate message ID and create message data
     const messageId = generateMessageId();
-    const formattedMessage = formatUserMessage(messageText, userId);
-    
-    // Create message data
     const messageData = {
       id: messageId,
       role: 'user',
@@ -35,7 +51,7 @@ export const sendFollowUpMessage = async (conversationId, userId, messageText, p
       created_at: new Date().toISOString()
     };
 
-    // Insert message into database
+    // Insert user message into database
     await insertChatMessage(conversationId, messageData);
 
     // Update conversation timestamp
@@ -43,20 +59,70 @@ export const sendFollowUpMessage = async (conversationId, userId, messageText, p
       updated_at: new Date().toISOString()
     });
 
-    logger.info(`Follow-up message sent in conversation ${conversationId}`);
-    
-    return {
+    const userMessage = {
       id: messageId,
       conversationId,
       role: 'user',
       content: messageText,
       user_id: userId,
       parent_message_id: parentMessageId,
-      created_at: messageData.created_at
+      created_at: messageData.created_at,
+      ...context
+    };
+
+    // Generate AI response if enabled
+    let assistantMessage = null;
+    if (autoResponse) {
+      assistantMessage = await generateResponseToMessage(conversationId, messageId, messageText);
+    }
+
+    logger.info(`Message sent successfully in conversation ${conversationId}`);
+
+    return {
+      userMessage,
+      assistantMessage,
+      conversationId,
+      timestamp: new Date().toISOString()
     };
 
   } catch (error) {
-    logger.error('Error sending follow-up message:', error);
+    logger.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+/**
+ * Send multiple messages in batch
+ * @param {string} conversationId - Conversation ID
+ * @param {string} userId - User ID
+ * @param {Array<string>} messages - Array of message texts
+ * @param {Object} [options] - Batch options
+ * @returns {Promise<Array>} - Array of sent messages
+ */
+const sendMessageBatch = async (conversationId, userId, messages, options = {}) => {
+  const { autoResponse = true, batchDelay = 0 } = options;
+  const results = [];
+
+  try {
+    for (let i = 0; i < messages.length; i++) {
+      const messageText = messages[i];
+      const result = await sendMessage(conversationId, userId, messageText, {
+        ...options,
+        autoResponse
+      });
+      results.push(result);
+      
+      // Add delay between messages if specified
+      if (batchDelay > 0 && i < messages.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, batchDelay));
+      }
+    }
+
+    logger.info(`Batch sent ${messages.length} messages to conversation ${conversationId}`);
+    return results;
+
+  } catch (error) {
+    logger.error('Error in batch message sending:', error);
     throw error;
   }
 };
@@ -97,35 +163,15 @@ export const editMessage = async (conversationId, messageId, userId, newContent)
   }
 };
 
-/**
- * Send a quick reply message
- * @param {string} conversationId - Conversation ID
- * @param {string} userId - User ID
- * @param {string} quickReply - Quick reply text
- * @returns {Promise<Object>} - Created message
- */
-export const sendQuickReply = async (conversationId, userId, quickReply) => {
-  return await sendFollowUpMessage(conversationId, userId, quickReply);
+// Convenience functions for common use cases
+export const sendMessageOnly = (conversationId, userId, messageText, options = {}) => {
+  return sendMessage(conversationId, userId, messageText, { ...options, autoResponse: false });
 };
 
-/**
- * Continue conversation with context from previous messages
- * @param {string} conversationId - Conversation ID
- * @param {string} userId - User ID
- * @param {string} messageText - Message content
- * @param {Object} [context] - Additional context
- * @returns {Promise<Object>} - Created message with context
- */
-export const continueWithContext = async (conversationId, userId, messageText, context = {}) => {
-  try {
-    const message = await sendFollowUpMessage(conversationId, userId, messageText);
-    
-    return {
-      ...message,
-      context
-    };
-  } catch (error) {
-    logger.error('Error continuing conversation with context:', error);
-    throw error;
-  }
+export const sendQuickReply = (conversationId, userId, quickReply, options = {}) => {
+  return sendMessage(conversationId, userId, quickReply, options);
+};
+
+export const continueWithContext = (conversationId, userId, messageText, context = {}) => {
+  return sendMessage(conversationId, userId, messageText, { context });
 }; 

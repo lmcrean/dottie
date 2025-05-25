@@ -35,8 +35,9 @@ export {
 // CONTINUE CONVERSATION - Ongoing messages
 // ===================================
 export { 
-  sendFollowUpMessage,
+  sendMessage,
   editMessage,
+  sendMessageOnly,
   sendQuickReply,
   continueWithContext
 } from './chat-detail/continue-conversation/sendMessage.js';
@@ -46,12 +47,9 @@ export {
   autoGenerateResponse,
   generateResponseOptions
 } from './chat-detail/continue-conversation/generateResponse.js';
-export { sendMessageWithResponse } from './chat-detail/continue-conversation/sendMessageWithResponse.js';
 export { editMessageWithRegeneration } from './chat-detail/continue-conversation/editMessageWithRegeneration.js';
-export { sendMessageOnly } from './chat-detail/continue-conversation/sendMessageOnly.js';
 export { triggerResponse } from './chat-detail/continue-conversation/triggerResponse.js';
 export { continueConversationWithContext } from './chat-detail/continue-conversation/continueConversationWithContext.js';
-export { sendMessageBatch } from './chat-detail/continue-conversation/sendMessageBatch.js';
 
 // ===================================
 // READ CONVERSATION - Read conversation data
@@ -188,8 +186,8 @@ export const getDisplayReady = async (conversationId, userId) => {
  * @returns {Promise<Object>} - Message exchange result
  */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  const { sendMessageWithResponse } = await import('./chat-detail/continue-conversation/sendMessageWithResponse.js');
-  return await sendMessageWithResponse(conversationId, userId, message);
+  const { sendMessage } = await import('./chat-detail/continue-conversation/sendMessage.js');
+  return await sendMessage(conversationId, userId, message);
 };
 
 /**
@@ -209,7 +207,7 @@ export const healthCheck = async () => {
 export { getUserConversations as getConversations };
 export { createConversation as newConversation };
 export { getConversationHistory as readConversation };
-export { sendFollowUpMessage as sendMessage };
+export { sendMessage as sendMessageNew };
 
 // ===================================
 // TYPE DEFINITIONS (for JSDoc)
