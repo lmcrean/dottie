@@ -1,6 +1,6 @@
 import LegacyAssessment from './archive/LegacyAssessment.js';
-import FlattenedAssessment from './FlattenedAssessment.js';
-import { testAssessments, isTestMode } from './AssessmentBase.js';
+import FlattenedAssessment from './assessment-main/FlattenedAssessment.js';
+import { testAssessments, isTestMode } from './assessment-base/AssessmentTestUtils.js';
 
 class Assessment {
   /**
