@@ -1,11 +1,8 @@
-import UnifiedAssessment from './UnifiedAssessment.js';
+import CleanAssessmentOperations from './assessment-base/CleanAssessmentOperations.js';
 
 /**
  * Assessment - Unified entry point for all assessment operations
  * Automatically handles both legacy and current format assessments
- * 
- * This is a thin wrapper around UnifiedAssessment to maintain
- * backward compatibility with existing imports.
  */
 class Assessment {
   /**
@@ -14,7 +11,7 @@ class Assessment {
    * @returns {Promise<Object|null>} Assessment object or null if not found
    */
   static async findById(id) {
-    return await UnifiedAssessment.findById(id);
+    return await CleanAssessmentOperations.findById(id);
   }
 
   /**
@@ -24,7 +21,7 @@ class Assessment {
    * @returns {Promise<Object>} Created assessment object
    */
   static async create(assessmentData, userId) {
-    return await UnifiedAssessment.create(assessmentData, userId);
+    return await CleanAssessmentOperations.create(assessmentData, userId);
   }
 
   /**
@@ -34,7 +31,7 @@ class Assessment {
    * @returns {Promise<Object>} Updated assessment object
    */
   static async update(id, assessmentData) {
-    return await UnifiedAssessment.update(id, assessmentData);
+    return await CleanAssessmentOperations.update(id, assessmentData);
   }
 
   /**
@@ -43,7 +40,7 @@ class Assessment {
    * @returns {Promise<Array>} Array of assessment objects
    */
   static async listByUser(userId) {
-    return await UnifiedAssessment.listByUser(userId);
+    return await CleanAssessmentOperations.listByUser(userId);
   }
 
   /**
@@ -52,7 +49,7 @@ class Assessment {
    * @returns {Promise<boolean>} True if successful
    */
   static async delete(id) {
-    return await UnifiedAssessment.delete(id);
+    return await CleanAssessmentOperations.delete(id);
   }
 
   /**
@@ -62,7 +59,7 @@ class Assessment {
    * @returns {Promise<boolean>} True if user is owner, false otherwise
    */
   static async validateOwnership(assessmentId, userId) {
-    return await UnifiedAssessment.validateOwnership(assessmentId, userId);
+    return await CleanAssessmentOperations.validateOwnership(assessmentId, userId);
   }
 }
 

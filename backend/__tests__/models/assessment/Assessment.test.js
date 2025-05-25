@@ -1,13 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import Assessment from '../../../models/assessment/assessment-main/Assessment.js';
-import CreateAssessment from '../../../models/assessment/assessment-main/CreateAssessment.js';
-import UpdateAssessment from '../../../models/assessment/assessment-main/UpdateAssessment.js';
-import ReadAssessment from '../../../models/assessment/assessment-main/ReadAssessment.js';
+import Assessment from '../../../models/assessment/Assessment.js';
+import CleanAssessmentOperations from '../../../models/assessment/assessment-base/CleanAssessmentOperations.js';
 
-// Mock the dependencies
-vi.mock('../../../models/assessment/assessment-main/CreateAssessment.js');
-vi.mock('../../../models/assessment/assessment-main/UpdateAssessment.js');
-vi.mock('../../../models/assessment/assessment-main/ReadAssessment.js');
+// Mock the operations class
+vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.js');
 
 describe('Assessment', () => {
   beforeEach(() => {
@@ -18,202 +14,110 @@ describe('Assessment', () => {
     vi.resetAllMocks();
   });
 
-  describe('create', () => {
-    it('should create a new assessment successfully', async () => {
-      const assessmentData = {
-        age: 25,
-        pattern: 'regular',
-        cycle_length: 28,
-        period_duration: 5,
-        flow_heaviness: 'medium',
-        pain_level: 3,
-        physical_symptoms: ['cramps', 'bloating'],
-        emotional_symptoms: ['mood_swings'],
-        other_symptoms: 'headaches',
-        recommendations: ['exercise', 'hydration']
-      };
-      const userId = 'test-user-123';
-      const mockResponse = {
-        id: 'test-assessment-123',
-        user_id: userId,
-        created_at: new Date(),
-        ...assessmentData
-      };
-
-      CreateAssessment.execute.mockResolvedValue(mockResponse);
-
-      const result = await Assessment.create(assessmentData, userId);
-
-      expect(CreateAssessment.execute).toHaveBeenCalledWith(assessmentData, userId);
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('should transform database response and remove updated_at fields', async () => {
-      const assessmentData = {
-        age: 25,
-        pattern: 'regular',
-        cycle_length: 28
-      };
-      const userId = 'test-user-123';
-      const mockDbResponse = {
-        id: 'test-assessment-123',
-        created_at: new Date(),
-        updated_at: new Date(),
-        age: 25,
-        pattern: 'regular',
-        cycle_length: 28,
-        physical_symptoms: '["cramps"]',
-        emotional_symptoms: '["mood_swings"]'
-      };
-      const mockTransformed = {
-        id: 'test-assessment-123',
-        user_id: userId,
-        created_at: mockDbResponse.created_at,
-        age: 25,
-        pattern: 'regular',
-        cycle_length: 28,
-        physical_symptoms: ['cramps'],
-        emotional_symptoms: ['mood_swings'],
-        updated_at: new Date(),
-        updatedAt: new Date()
-      };
-
-      CreateAssessment.execute.mockResolvedValue(mockDbResponse);
-      ReadAssessment.transformDbRecordToApiResponse.mockReturnValue(mockTransformed);
-
-      const result = await Assessment.create(assessmentData, userId);
-
-      expect(ReadAssessment.transformDbRecordToApiResponse).toHaveBeenCalledWith(mockDbResponse);
-      expect(result.updated_at).toBeUndefined();
-      expect(result.updatedAt).toBeUndefined();
-    });
-
-    it('should handle errors during creation', async () => {
-      const assessmentData = { age: 25 };
-      const userId = 'test-user-123';
-      const error = new Error('Database connection failed');
-
-      CreateAssessment.execute.mockRejectedValue(error);
-
-      await expect(Assessment.create(assessmentData, userId))
-        .rejects.toThrow('Database connection failed');
-    });
-  });
-
-  describe('update', () => {
-    it('should update an assessment successfully', async () => {
-      const id = 'test-assessment-123';
-      const assessmentData = {
-        age: 26,
-        pattern: 'irregular',
-        pain_level: 4
-      };
-      const mockResponse = {
-        id,
-        age: 26,
-        pattern: 'irregular',
-        pain_level: 4,
-        physical_symptoms: ['cramps'],
-        emotional_symptoms: []
-      };
-
-      UpdateAssessment.execute.mockResolvedValue(mockResponse);
-
-      const result = await Assessment.update(id, assessmentData);
-
-      expect(UpdateAssessment.execute).toHaveBeenCalledWith(id, assessmentData);
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('should transform database response when updating', async () => {
-      const id = 'test-assessment-123';
-      const assessmentData = { age: 26 };
-      const mockDbResponse = {
-        id,
-        age: 26,
-        physical_symptoms: '["cramps"]',
-        emotional_symptoms: '[]'
-      };
-      const mockTransformed = {
-        id,
-        age: 26,
-        physical_symptoms: ['cramps'],
-        emotional_symptoms: []
-      };
-
-      UpdateAssessment.execute.mockResolvedValue(mockDbResponse);
-      ReadAssessment.transformDbRecordToApiResponse.mockReturnValue(mockTransformed);
-
-      const result = await Assessment.update(id, assessmentData);
-
-      expect(ReadAssessment.transformDbRecordToApiResponse).toHaveBeenCalledWith(mockDbResponse);
-      expect(result).toEqual(mockTransformed);
-    });
-
-    it('should handle errors during update', async () => {
-      const id = 'test-assessment-123';
-      const assessmentData = { age: 26 };
-      const error = new Error('Assessment not found');
-
-      UpdateAssessment.execute.mockRejectedValue(error);
-
-      await expect(Assessment.update(id, assessmentData))
-        .rejects.toThrow('Assessment not found');
-    });
-  });
-
   describe('findById', () => {
-    it('should find an assessment by ID', async () => {
-      const id = 'test-assessment-123';
-      const mockAssessment = {
-        id,
-        age: 25,
-        pattern: 'regular'
-      };
+    it('should delegate to CleanAssessmentOperations.findById', async () => {
+      const testId = 'test-assessment-123';
+      const mockAssessment = { id: testId, user_id: 'test-user' };
 
-      ReadAssessment.findById.mockResolvedValue(mockAssessment);
+      CleanAssessmentOperations.findById.mockResolvedValue(mockAssessment);
 
-      const result = await Assessment.findById(id);
+      const result = await Assessment.findById(testId);
 
-      expect(ReadAssessment.findById).toHaveBeenCalledWith(id);
+      expect(CleanAssessmentOperations.findById).toHaveBeenCalledWith(testId);
       expect(result).toEqual(mockAssessment);
     });
 
     it('should return null when assessment not found', async () => {
-      const id = 'non-existent-id';
+      CleanAssessmentOperations.findById.mockResolvedValue(null);
 
-      ReadAssessment.findById.mockResolvedValue(null);
-
-      const result = await Assessment.findById(id);
+      const result = await Assessment.findById('non-existent');
 
       expect(result).toBeNull();
     });
   });
 
-  describe('_transformDbRecordToApiResponse', () => {
-    it('should call ReadAssessment transform method', () => {
-      const record = { id: '123', age: 25 };
-      const mockTransformed = { id: '123', age: 25, physical_symptoms: [] };
+  describe('create', () => {
+    it('should delegate to CleanAssessmentOperations.create', async () => {
+      const assessmentData = { age: 30, pattern: 'regular' };
+      const userId = 'test-user-123';
+      const mockCreated = { id: 'new-assessment', ...assessmentData, user_id: userId };
 
-      ReadAssessment.transformDbRecordToApiResponse.mockReturnValue(mockTransformed);
+      CleanAssessmentOperations.create.mockResolvedValue(mockCreated);
 
-      const result = Assessment._transformDbRecordToApiResponse(record);
+      const result = await Assessment.create(assessmentData, userId);
 
-      expect(ReadAssessment.transformDbRecordToApiResponse).toHaveBeenCalledWith(record);
-      expect(result).toEqual(mockTransformed);
+      expect(CleanAssessmentOperations.create).toHaveBeenCalledWith(assessmentData, userId);
+      expect(result).toEqual(mockCreated);
     });
   });
 
-  describe('_canProcessRecord', () => {
-    it('should call ReadAssessment canProcessRecord method', () => {
-      const record = { id: '123', age: 25 };
+  describe('update', () => {
+    it('should delegate to CleanAssessmentOperations.update', async () => {
+      const assessmentId = 'test-assessment-123';
+      const updateData = { age: 31, pattern: 'irregular' };
+      const mockUpdated = { id: assessmentId, ...updateData };
 
-      ReadAssessment.canProcessRecord.mockReturnValue(true);
+      CleanAssessmentOperations.update.mockResolvedValue(mockUpdated);
 
-      const result = Assessment._canProcessRecord(record);
+      const result = await Assessment.update(assessmentId, updateData);
 
-      expect(ReadAssessment.canProcessRecord).toHaveBeenCalledWith(record);
+      expect(CleanAssessmentOperations.update).toHaveBeenCalledWith(assessmentId, updateData);
+      expect(result).toEqual(mockUpdated);
+    });
+  });
+
+  describe('listByUser', () => {
+    it('should delegate to CleanAssessmentOperations.listByUser', async () => {
+      const userId = 'test-user-123';
+      const mockAssessments = [
+        { id: 'assessment-1', user_id: userId },
+        { id: 'assessment-2', user_id: userId }
+      ];
+
+      CleanAssessmentOperations.listByUser.mockResolvedValue(mockAssessments);
+
+      const result = await Assessment.listByUser(userId);
+
+      expect(CleanAssessmentOperations.listByUser).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(mockAssessments);
+    });
+  });
+
+  describe('delete', () => {
+    it('should delegate to CleanAssessmentOperations.delete', async () => {
+      const assessmentId = 'test-assessment-123';
+
+      CleanAssessmentOperations.delete.mockResolvedValue(true);
+
+      const result = await Assessment.delete(assessmentId);
+
+      expect(CleanAssessmentOperations.delete).toHaveBeenCalledWith(assessmentId);
       expect(result).toBe(true);
+    });
+  });
+
+  describe('validateOwnership', () => {
+    it('should delegate to CleanAssessmentOperations.validateOwnership', async () => {
+      const assessmentId = 'test-assessment-123';
+      const userId = 'test-user-123';
+
+      CleanAssessmentOperations.validateOwnership.mockResolvedValue(true);
+
+      const result = await Assessment.validateOwnership(assessmentId, userId);
+
+      expect(CleanAssessmentOperations.validateOwnership).toHaveBeenCalledWith(assessmentId, userId);
+      expect(result).toBe(true);
+    });
+
+    it('should return false for non-owner', async () => {
+      const assessmentId = 'test-assessment-123';
+      const userId = 'different-user';
+
+      CleanAssessmentOperations.validateOwnership.mockResolvedValue(false);
+
+      const result = await Assessment.validateOwnership(assessmentId, userId);
+
+      expect(result).toBe(false);
     });
   });
 }); 
