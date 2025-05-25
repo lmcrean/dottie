@@ -80,6 +80,16 @@ export {
   validateMultipleAssessments
 } from './chat-detail/shared/assessment/assessmentValidator.js';
 
+// Error handling and validation utilities
+export { 
+  withErrorHandling,
+  withValidation,
+  withDatabaseOperation,
+  withServiceCall
+} from './chat-detail/shared/utils/errorHandler.js';
+export { ValidationHelper } from './chat-detail/shared/utils/validationHelper.js';
+export { ConfigHelper } from './chat-detail/shared/utils/configHelper.js';
+
 // Message formatting and validation
 export { 
   formatUserMessage,
@@ -118,6 +128,7 @@ export {
   updateMessageMetadata,
   markMessageAsEdited
 } from './chat-detail/shared/database/chatUpdateMessage.js';
+export { ChatDatabaseOperations } from './chat-detail/shared/database/chatOperations.js';
 
 // ===================================
 // SERVICES
@@ -133,6 +144,9 @@ export {
   getServiceStatus,
   validateServiceConfig
 } from './chat-detail/services/serviceDetector.js';
+
+// Base Generator
+export { BaseGenerator } from './chat-detail/services/generators/BaseGenerator.js';
 
 // AI Services
 export { generateInitialResponse as generateInitialAI } from './chat-detail/services/ai/generators/initialAI.js';
