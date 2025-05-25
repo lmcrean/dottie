@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.js';
-import { buildAIResponse, buildFallbackResponse } from '../../../shared/utils/responseBuilders.js';
+import logger from '../../../../../../../services/logger.js';
+import { buildAIResponse, buildFallbackResponse } from '../../../../shared/utils/responseBuilders.js';
 
 /**
  * Generate initial AI response for new conversations

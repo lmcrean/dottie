@@ -1,5 +1,5 @@
-import logger from '../../../../services/logger.js';
-import { autoGenerateResponse } from './generateResponse.js';
+import logger from '../../../../../services/logger.js';
+import { autoGenerateResponse } from '../../chatbot-message/generateResponse.js';
 
 /**
  * Trigger response generation for existing conversation

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import DbService from '../../../../services/dbService.js';
-import logger from '../../../../services/logger.js';
-import { getAssessmentPattern } from '../shared/assessment/assessmentHelper.js';
+import DbService from '../../../../../services/dbService.js';
+import logger from '../../../../../services/logger.js';
+import { getAssessmentPattern } from '../../shared/assessment/assessmentHelper.js';
 
 /**
  * Create a new conversation in the database

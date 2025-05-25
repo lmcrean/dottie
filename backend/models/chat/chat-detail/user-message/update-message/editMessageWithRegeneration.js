@@ -1,6 +1,6 @@
-import logger from '../../../../services/logger.js';
-import { editMessage } from './sendMessage.js';
-import { generateResponseToMessage } from './generateResponse.js';
+import logger from '../../../../../services/logger.js';
+import { editMessage } from '../add-message/sendMessage.js';
+import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
 
 /**
  * Edit message and regenerate subsequent responses

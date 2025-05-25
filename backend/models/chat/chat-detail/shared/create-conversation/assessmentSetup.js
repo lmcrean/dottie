@@ -1,6 +1,6 @@
-import logger from '../../../../services/logger.js';
-import { getAssessmentPattern } from '../shared/assessment/assessmentHelper.js';
-import { validateAssessmentOwnership } from '../shared/assessment/assessmentValidator.js';
+import logger from '../../../../../services/logger.js';
+import { getAssessmentPattern } from '../assessment/assessmentHelper.js';
+import { validateAssessmentOwnership } from '../assessment/assessmentValidator.js';
 
 /**
  * Setup assessment context for a new conversation

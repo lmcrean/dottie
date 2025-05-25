@@ -8,28 +8,28 @@
 // CHAT LIST - Browse existing conversations
 // ===================================
 export { getUserConversations } from './chat-list/chatGetList.js';
-export { deleteConversation } from './chat-list/chatDelete.js';
+export { deleteConversation } from './chat-detail/delete-conversation/chatDelete.js';
 export { Chat as default } from './chat-list/chat.js';
 
 // ===================================
 // CREATE CONVERSATION - New conversation flow
 // ===================================
-export { createConversation } from './chat-detail/create-conversation/chatCreate.js';
+export { createConversation } from './chat-detail/shared/create-conversation/chatCreate.js';
 export { 
   setupAssessmentContext, 
   validateAssessmentContext 
-} from './chat-detail/create-conversation/assessmentSetup.js';
+} from './chat-detail/shared/create-conversation/assessmentSetup.js';
 export { 
   createInitialMessage, 
   generateInitialResponse, 
   autoTriggerInitialConversation 
-} from './chat-detail/create-conversation/initialMessage.js';
+} from './chat-detail/shared/create-conversation/initialMessage.js';
 export { 
   createCompleteConversation,
   createConversationWithMessage,
   createEmptyConversation,
   createAssessmentConversation
-} from './chat-detail/create-conversation/createFlow.js';
+} from './chat-detail/shared/create-conversation/createFlow.js';
 
 // ===================================
 // CONTINUE CONVERSATION - Ongoing messages
@@ -40,16 +40,16 @@ export {
   sendMessageOnly,
   sendQuickReply,
   continueWithContext
-} from './chat-detail/continue-conversation/sendMessage.js';
+} from './chat-detail/user-message/add-message/sendMessage.js';
 export { 
   generateResponseToMessage,
   generateFollowUpResponse,
   autoGenerateResponse,
   generateResponseOptions
-} from './chat-detail/continue-conversation/generateResponse.js';
-export { editMessageWithRegeneration } from './chat-detail/continue-conversation/editMessageWithRegeneration.js';
-export { triggerResponse } from './chat-detail/continue-conversation/triggerResponse.js';
-export { continueConversationWithContext } from './chat-detail/continue-conversation/continueConversationWithContext.js';
+} from './chat-detail/chatbot-message/generateResponse.js';
+export { editMessageWithRegeneration } from './chat-detail/user-message/update-message/editMessageWithRegeneration.js';
+export { triggerResponse } from './chat-detail/shared/utils/triggerResponse.js';
+export { continueConversationWithContext } from './chat-detail/user-message/add-message/continueConversationWithContext.js';
 
 // ===================================
 // READ CONVERSATION - Read conversation data
@@ -143,27 +143,27 @@ export {
   resetServiceMode,
   getServiceStatus,
   validateServiceConfig
-} from './chat-detail/services/serviceDetector.js';
+} from './chat-detail/chatbot-message/services/serviceDetector.js';
 
 // Base Generator
-export { BaseGenerator } from './chat-detail/services/generators/BaseGenerator.js';
+export { BaseGenerator } from './chat-detail/chatbot-message/services/generators/BaseGenerator.js';
 
 // AI Services
-export { generateInitialResponse as generateInitialAI } from './chat-detail/services/ai/generators/initialAI.js';
+export { generateInitialResponse as generateInitialAI } from './chat-detail/chatbot-message/services/ai/generators/initialAI.js';
 export { 
   generateFollowUpResponse as generateFollowUpAI,
   generateContextualAIResponse
-} from './chat-detail/services/ai/generators/followUpAI.js';
+} from './chat-detail/chatbot-message/services/ai/generators/followUpAI.js';
 
 // Mock Services
 export { 
   generateInitialResponse as generateInitialMock,
   generateAssessmentInitialResponse
-} from './chat-detail/services/mock/generators/initialMock.js';
+} from './chat-detail/chatbot-message/services/mock/generators/initialMock.js';
 export { 
   generateFollowUpResponse as generateFollowUpMock,
   generateContextualResponse as generateContextualMock
-} from './chat-detail/services/mock/generators/followUpMock.js';
+} from './chat-detail/chatbot-message/services/mock/generators/followUpMock.js';
 
 // ===================================
 // CONVENIENCE FUNCTIONS
@@ -177,7 +177,7 @@ export {
  * @returns {Promise<Object>} - Complete conversation with initial exchange
  */
 export const quickStart = async (userId, message, assessmentId = null) => {
-  const { createConversationWithMessage } = await import('./chat-detail/create-conversation/createFlow.js');
+  const { createConversationWithMessage } = await import('./chat-detail/shared/create-conversation/createFlow.js');
   return await createConversationWithMessage(userId, message, assessmentId);
 };
 
@@ -200,7 +200,7 @@ export const getDisplayReady = async (conversationId, userId) => {
  * @returns {Promise<Object>} - Message exchange result
  */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  const { sendMessage } = await import('./chat-detail/continue-conversation/sendMessage.js');
+  const { sendMessage } = await import('./chat-detail/user-message/add-message/sendMessage.js');
   return await sendMessage(conversationId, userId, message);
 };
 
@@ -209,7 +209,7 @@ export const sendAndRespond = async (conversationId, userId, message) => {
  * @returns {Promise<Object>} - Service status information
  */
 export const healthCheck = async () => {
-  const { getServiceStatus } = await import('./chat-detail/services/serviceDetector.js');
+  const { getServiceStatus } = await import('./chat-detail/chatbot-message/services/serviceDetector.js');
   return await getServiceStatus();
 };
 

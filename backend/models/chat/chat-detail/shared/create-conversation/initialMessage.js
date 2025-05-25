@@ -1,10 +1,10 @@
-import logger from '../../../../services/logger.js';
-import { insertChatMessage } from '../shared/database/chatCreateMessage.js';
-import { formatUserMessage } from '../shared/utils/messageFormatters.js';
-import { generateMessageId } from '../shared/utils/responseBuilders.js';
-import { detectService } from '../services/serviceDetector.js';
-import { generateInitialResponse as generateInitialAI } from '../services/ai/generators/initialAI.js';
-import { generateInitialResponse as generateInitialMock } from '../services/mock/generators/initialMock.js';
+import logger from '../../../../../services/logger.js';
+import { insertChatMessage } from '../database/chatCreateMessage.js';
+import { formatUserMessage } from '../utils/messageFormatters.js';
+import { generateMessageId } from '../utils/responseBuilders.js';
+import { detectService } from '../../chatbot-message/services/serviceDetector.js';
+import { generateInitialResponse as generateInitialAI } from '../../chatbot-message/services/ai/generators/initialAI.js';
+import { generateInitialResponse as generateInitialMock } from '../../chatbot-message/services/mock/generators/initialMock.js';
 
 /**
  * Create and send the initial message for a new conversation

@@ -2,9 +2,9 @@ import logger from '../../../../services/logger.js';
 import { insertChatMessage } from '../shared/database/chatCreateMessage.js';
 import { formatAssistantMessage } from '../shared/utils/messageFormatters.js';
 import { generateMessageId } from '../shared/utils/responseBuilders.js';
-import { detectService } from '../services/serviceDetector.js';
-import { generateFollowUpResponse as generateFollowUpAI } from '../services/ai/generators/followUpAI.js';
-import { generateFollowUpResponse as generateFollowUpMock } from '../services/mock/generators/followUpMock.js';
+import { detectService } from './services/serviceDetector.js';
+import { generateFollowUpResponse as generateFollowUpAI } from './services/ai/generators/followUpAI.js';
+import { generateFollowUpResponse as generateFollowUpMock } from './services/mock/generators/followUpMock.js';
 import { getConversationHistory } from '../read-conversation/getConversation.js';
 
 /**

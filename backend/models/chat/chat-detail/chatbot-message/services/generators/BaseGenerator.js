@@ -1,5 +1,5 @@
-import logger from '../../../../../services/logger.js';
-import { withServiceCall } from '../../shared/utils/errorHandler.js';
+import logger from '../../../../../../services/logger.js';
+import { withServiceCall } from '../../../shared/utils/errorHandler.js';
 
 /**
  * Base class for response generators (AI and Mock)
