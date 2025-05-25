@@ -72,7 +72,7 @@ class AssessmentBase {
 
       
       // Dynamically import models once
-      const LegacyAssessment = (await import('./LegacyAssessment.js')).default;
+      const LegacyAssessment = (await import('./archive/LegacyAssessment.js')).default;
       const FlattenedAssessment = (await import('./FlattenedAssessment.js')).default;
 
       const transformedAssessments = rawAssessments.map(assessment => {

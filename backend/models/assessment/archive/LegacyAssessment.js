@@ -1,6 +1,6 @@
-import { AssessmentBase, testAssessments, isTestMode } from './AssessmentBase.js';
+import { AssessmentBase, testAssessments, isTestMode } from '../AssessmentBase.js';
 import { v4 as uuidv4 } from 'uuid';
-import DbService from '../../services/dbService.js';
+import DbService from '../../../services/dbService.js';
 
 class LegacyAssessment extends AssessmentBase {
   /**

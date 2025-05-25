@@ -1,4 +1,4 @@
-import LegacyAssessment from './LegacyAssessment.js';
+import LegacyAssessment from './archive/LegacyAssessment.js';
 import FlattenedAssessment from './FlattenedAssessment.js';
 import { testAssessments, isTestMode } from './AssessmentBase.js';
 
