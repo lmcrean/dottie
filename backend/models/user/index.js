@@ -24,10 +24,6 @@ import SanitizeUserData from './transformers/SanitizeUserData.js';
 // Base
 import UserBase from './base/UserBase.js';
 
-// Legacy exports for backward compatibility
-import UserAuth from './UserAuth.js';
-import UserPasswordReset from './UserPasswordReset.js';
-
 // Main exports - new granular structure
 export {
   // Main orchestrator
@@ -54,11 +50,7 @@ export {
   SanitizeUserData,
   
   // Base
-  UserBase,
-  
-  // Legacy compatibility
-  UserAuth,
-  UserPasswordReset
+  UserBase
 };
 
 // Default export is the main User orchestrator
