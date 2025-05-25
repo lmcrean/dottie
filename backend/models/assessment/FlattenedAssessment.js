@@ -82,9 +82,9 @@ class FlattenedAssessment extends AssessmentBase {
       };
 
 
-        payload.physical_symptoms ? JSON.stringify(payload.physical_symptoms) : 'null');
+        payload.physical_symptoms ? JSON.stringify(payload.physical_symptoms) : 'null';
 
-        payload.emotional_symptoms ? JSON.stringify(payload.emotional_symptoms) : 'null');
+        payload.emotional_symptoms ? JSON.stringify(payload.emotional_symptoms) : 'null';
 
       // Insert into database
       const inserted = await DbService.create('assessments', payload);
@@ -190,14 +190,7 @@ class FlattenedAssessment extends AssessmentBase {
       // This should be handled by the Assessment class which will route to LegacyAssessment
       return null;
     }
-    
-
-      id: record.id,
-      user_id: record.user_id,
-      physical_symptoms_type: record.physical_symptoms ? typeof record.physical_symptoms : 'null',
-      emotional_symptoms_type: record.emotional_symptoms ? typeof record.emotional_symptoms : 'null',
-      other_symptoms_raw: record.other_symptoms ? record.other_symptoms : 'null' // Log raw other_symptoms
-    });
+  
     
     let physical_symptoms = [];
     let emotional_symptoms = [];
@@ -328,14 +321,6 @@ class FlattenedAssessment extends AssessmentBase {
       delete result.updated_at;
     }
     
-
-      id: result.id,
-      pattern: result.pattern,
-      physical_symptoms: result.physical_symptoms,
-      emotional_symptoms: result.emotional_symptoms,
-      other_symptoms: result.other_symptoms
-    });
-    
     return result;
   }
 
@@ -368,15 +353,6 @@ class FlattenedAssessment extends AssessmentBase {
         return null;
       }
       
-
-        id: assessment.id,
-        user_id: assessment.user_id,
-        physical_symptoms: assessment.physical_symptoms ? 
-          (typeof assessment.physical_symptoms === 'string' ? 'JSON string' : typeof assessment.physical_symptoms) : 'null',
-        emotional_symptoms: assessment.emotional_symptoms ?
-          (typeof assessment.emotional_symptoms === 'string' ? 'JSON string' : typeof assessment.emotional_symptoms) : 'null',
-      });
-      
       // Check if this class can handle this format
       if (!this._canProcessRecord(assessment)) {
 
@@ -385,16 +361,6 @@ class FlattenedAssessment extends AssessmentBase {
       
       // Transform to API format before returning
       const transformedAssessment = this._transformDbRecordToApiResponse(assessment);
-
-        id: transformedAssessment.id,
-        user_id: transformedAssessment.user_id,
-        physical_symptoms: Array.isArray(transformedAssessment.physical_symptoms) 
-          ? `Array with ${transformedAssessment.physical_symptoms.length} items` 
-          : typeof transformedAssessment.physical_symptoms,
-        emotional_symptoms: Array.isArray(transformedAssessment.emotional_symptoms)
-          ? `Array with ${transformedAssessment.emotional_symptoms.length} items`
-          : typeof transformedAssessment.emotional_symptoms,
-      });
       
       return transformedAssessment;
     } catch (error) {

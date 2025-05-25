@@ -29,7 +29,7 @@ beforeAll(async () => {
       email: `test_${Date.now()}@example.com`,
       password_hash: 'test-hash',
       created_at: new Date().toISOString()
-    });
+    }, 'id');
 
   } catch (error) {
     console.error('Failed to create test user:', error);
@@ -40,7 +40,7 @@ beforeAll(async () => {
 afterAll(async () => {
   // Clean up test user
   try {
-    await db('users').where('id', testUserId).delete();
+    await db('users').where('id', testUserId).delete('*');
   } catch (error) {
     console.error('Failed to clean up test user:', error);
   }
@@ -48,7 +48,7 @@ afterAll(async () => {
   await closeTestServer(server);
 }, 15000);
 
-describe("Assessment Send Endpoint - Error Cases", { tags: ['assessment', 'dev'] }, () => {
+describe("Assessment Send Endpoint - Error Cases", () => {
   // Test submitting assessment without authentication
   test("POST /api/assessment/send - should reject request without token", async () => {
     const assessmentData = {

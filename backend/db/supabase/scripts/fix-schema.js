@@ -18,7 +18,7 @@ const supabase = createClient(
 
 async function fixSchema() {
   try {
-
+    console.log("Starting schema fix...");
 
     // Check if the assessments table exists
     let { data: tables, error: tablesError } = await supabase.rpc(
@@ -71,12 +71,8 @@ async function fixSchema() {
         
         if (createTableError) {
           // If RPC fails, try direct SQL (this might not work depending on permissions)
-
-          
-          // This is a fallback but might not work with standard permissions
           console.error("Failed to create table via RPC:", createTableError.message);
-
-
+          console.log("Manual SQL needed:", `
             CREATE TABLE IF NOT EXISTS public.assessments (
               id UUID PRIMARY KEY,
               user_id UUID NOT NULL REFERENCES public.users(id),
@@ -88,11 +84,11 @@ async function fixSchema() {
             CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON public.assessments(user_id);
           `);
         } else {
-
+          console.log("Assessments table created successfully");
         }
       }
     } else {
-
+      console.log("Assessments table already exists");
       
       // Check if user_id column exists in assessments table
       const { data: columnInfo, error: columnError } = await supabase.rpc('get_column_info', {
@@ -115,22 +111,21 @@ async function fixSchema() {
         
         if (alterTableError) {
           console.error("Failed to add user_id column:", alterTableError.message);
-
-
+          console.log("Manual SQL needed:", `
             ALTER TABLE public.assessments 
             ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.users(id);
             
             CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON public.assessments(user_id);
           `);
         } else {
-
+          console.log("User_id column added successfully");
         }
       } else {
-
+        console.log("User_id column already exists");
       }
     }
     
-
+    console.log("Schema fix completed successfully!");
     
   } catch (error) {
     console.error("Error fixing schema:", error);
