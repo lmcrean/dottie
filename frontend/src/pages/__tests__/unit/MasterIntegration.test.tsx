@@ -57,23 +57,23 @@ describe('Master Integration Test', () => {
 
   // This test follows the flow described in the README
   it('should run through the complete assessment flow', async () => {
-    console.log('Starting master integration test...');
+
     
     // 1. Create account and authenticate
-    console.log('Step 1: Creating account and authenticating...');
+
     state = await runAuthFlow(mockPage, state);
     expect(state.userId).toBeDefined();
     expect(state.authToken).toBeDefined();
     
     // 2. Go through assessment steps
-    console.log('Step 2: Going through assessment steps...');
+
     state = await runAssessmentFlow(mockPage, state);
     expect(state.assessmentIds).toBeDefined();
     
     // 3-4. Verify results and saved data
-    console.log('Step 3-4: Verifying results and saved data...');
+
     expect(state.assessmentIds?.length).toBeGreaterThan(0);
     
-    console.log('Master integration test completed successfully');
+
   });
 });

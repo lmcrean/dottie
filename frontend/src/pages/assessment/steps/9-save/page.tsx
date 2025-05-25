@@ -19,9 +19,7 @@ export default function SaveAssessmentPage() {
       }
 
       try {
-        console.log('Saving assessment data to backend:', state.result);
         const savedAssessment = await postSend(state.result);
-        console.log('Assessment saved successfully with ID:', savedAssessment.id);
 
         // Navigate to the details page with the new assessment ID
         navigate(`/assessment/results/${savedAssessment.id}`);

@@ -55,7 +55,7 @@ export default function HistoryPage() {
       try {
         const data = await assessmentApi.list();
         setAssessments(data);
-        console.log('Fetched assessments:', data);
+
         setError(null);
       } catch (error) {
         console.error('Error fetching assessments:', error);

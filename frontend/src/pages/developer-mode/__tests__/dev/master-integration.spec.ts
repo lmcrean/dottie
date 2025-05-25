@@ -56,7 +56,7 @@ test.describe('Test Page Integration', () => {
     
     // Take screenshot
     await page.screenshot({ path: './test_screenshots/test_page/frontend-integration/01-test-page-loaded.png' });
-    console.log('Captured test page screenshot - ready to start tests');
+
     
     // Verify page title
     const title = await page.locator('h1').textContent();
@@ -82,7 +82,7 @@ test.describe('Test Page Integration', () => {
     testState.username = authState.username;
     testState.email = authState.email;
     
-    console.log('Auth tests completed, user ID:', testState.userId);
+
   });
   
   // =====================
@@ -95,7 +95,7 @@ test.describe('Test Page Integration', () => {
     // Update global state with assessment IDs
     testState.assessmentIds = updatedState.assessmentIds;
     
-    console.log('Assessment tests completed, assessment IDs:', testState.assessmentIds);
+
   });
   
   // =====================
@@ -105,7 +105,7 @@ test.describe('Test Page Integration', () => {
     // Delete all assessments
     await testDeleteAssessments(page, testState);
     
-    console.log('Cleanup completed, all test resources deleted');
+
     
     // Final screenshot
     await page.screenshot({ path: './test_screenshots/test_page/frontend-integration/99-tests-completed.png' });

@@ -12,7 +12,6 @@ export const usePainLevel = () => {
 
   // Function to update pain level in the assessment context
   const setPainLevel = (value: PainLevel) => {
-    console.log('usePainLevel - Updating pain level in context:', value);
     updateResult({ pain_level: value });
   };
 

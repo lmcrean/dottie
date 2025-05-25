@@ -22,7 +22,7 @@ export async function getUserById(request, token, userId) {
 
   // Get response as text first
   const responseText = await response.text();
-  console.log(`Get user response:`, responseText.substring(0, 150));
+
 
   if (response.status() !== 200) {
     throw new Error(`Failed to get user info: ${response.status()}`);
@@ -52,7 +52,7 @@ export async function getAllUsers(request, token) {
 
   // Get response as text first
   const responseText = await response.text();
-  console.log(`Get all users response:`, responseText.substring(0, 150));
+
 
   if (response.status() !== 200) {
     throw new Error(`Failed to get all users: ${response.status()}`);
@@ -85,7 +85,7 @@ export async function updateUserProfile(request, token, userId, profileData) {
   });
 
   const responseText = await response.text();
-  console.log(`Update user response:`, responseText.substring(0, 150));
+
 
   if (response.status() !== 200) {
     throw new Error(`Failed to update user profile: ${response.status()}`);
@@ -116,7 +116,7 @@ export async function deleteUser(request, token, userId) {
 
   try {
     const responseText = await response.text();
-    console.log(`Delete user response:`, responseText.substring(0, 150));
+
   } catch (error) {
     console.error("Failed to get delete response text:", error);
   }

@@ -9,16 +9,16 @@ import { updateFlattenedAssessmentSchema } from '../db/migrations/updateFlattene
 import db from '../db/index.js';
 
 async function runMigration() {
-  console.log('Starting assessment schema migration to flattened structure...');
+
   
   try {
     // Run the migration
     await updateFlattenedAssessmentSchema(db);
-    console.log('Migration completed successfully!');
+
     
     // Example of what changed
-    console.log('\nExample of the new structure:');
-    console.log(`{
+
+
   "id": "uuid-here",
   "user_id": "user-uuid-here",
   "created_at": "2023-01-01T00:00:00.000Z",

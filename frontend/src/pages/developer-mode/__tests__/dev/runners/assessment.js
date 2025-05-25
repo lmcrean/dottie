@@ -43,7 +43,7 @@ export async function runAssessmentTests(page, testState) {
  * @param {object} testState Test state with user data
  */
 export async function testCreateAssessment(page, testState) {
-  console.log('Running create assessment endpoint test');
+
   
   // Navigate to the test page if needed
   const url = page.url();
@@ -60,7 +60,7 @@ export async function testCreateAssessment(page, testState) {
   
   // Click the button
   await createButton.click();
-  console.log('Clicked create assessment button');
+
   
   // Fill assessment data
   await fillRequestData(page, {
@@ -81,9 +81,9 @@ export async function testCreateAssessment(page, testState) {
   
   // Save assessment ID for later tests
   testState.assessmentIds.push(responseData.id);
-  console.log('Created assessment:', responseData.id);
+
   
-  console.log('Create assessment endpoint test completed successfully');
+
 }
 
 /**
@@ -92,7 +92,7 @@ export async function testCreateAssessment(page, testState) {
  * @param {object} testState Test state with user data
  */
 export async function testGetAssessments(page, testState) {
-  console.log('Running get assessments endpoint test');
+
   
   // Find the get assessments button
   const getButton = page.getByRole('button', { name: /GET \/api\/assessments/i });
@@ -103,7 +103,7 @@ export async function testGetAssessments(page, testState) {
   
   // Click the button
   await getButton.click();
-  console.log('Clicked get assessments button');
+
   
   // Wait for response
   await page.waitForSelector('.api-response', { timeout: 15000 });
@@ -118,7 +118,7 @@ export async function testGetAssessments(page, testState) {
   const hasAssessment = assessmentsList.some((a) => a.id === testState.assessmentIds[0]);
   expect(hasAssessment).toBeTruthy();
   
-  console.log('Get assessments endpoint test completed successfully');
+
 }
 
 /**
@@ -127,7 +127,7 @@ export async function testGetAssessments(page, testState) {
  * @param {object} testState Test state with user data
  */
 export async function testCreateSecondAssessment(page, testState) {
-  console.log('Running create second assessment endpoint test');
+
   
   // Find the create assessment button
   const createButton = page.getByRole('button', { name: /POST \/api\/assessments/i });
@@ -138,7 +138,7 @@ export async function testCreateSecondAssessment(page, testState) {
   
   // Click the button
   await createButton.click();
-  console.log('Clicked create assessment button');
+
   
   // Fill assessment data (more severe)
   await fillRequestData(page, {
@@ -159,9 +159,9 @@ export async function testCreateSecondAssessment(page, testState) {
   
   // Save assessment ID for later tests
   testState.assessmentIds.push(responseData.id);
-  console.log('Created second assessment:', responseData.id);
+
   
-  console.log('Create second assessment endpoint test completed successfully');
+
 }
 
 /**
@@ -170,7 +170,7 @@ export async function testCreateSecondAssessment(page, testState) {
  * @param {object} testState Test state with user data
  */
 export async function testGetAssessmentById(page, testState) {
-  console.log('Running get assessment by ID endpoint test');
+
   
   // Find the get assessment by ID button
   const getByIdButton = page.getByRole('button', { name: /GET \/api\/assessments\/\:assessmentId/i });
@@ -181,7 +181,7 @@ export async function testGetAssessmentById(page, testState) {
   
   // Click the button
   await getByIdButton.click();
-  console.log('Clicked get assessment by ID button');
+
   
   // Fill assessment ID
   await fillRequestData(page, {
@@ -195,7 +195,7 @@ export async function testGetAssessmentById(page, testState) {
   expect(assessment).toHaveProperty('id', testState.assessmentIds[0]);
   expect(assessment).toHaveProperty('user_id', testState.userId);
   
-  console.log('Get assessment by ID endpoint test completed successfully');
+
 }
 
 /**
@@ -204,7 +204,7 @@ export async function testGetAssessmentById(page, testState) {
  * @param {object} testState Test state with user data
  */
 export async function testDeleteAssessments(page, testState) {
-  console.log('Running delete assessments endpoint test');
+
   
   // Delete each assessment
   for (const assessmentId of testState.assessmentIds) {
@@ -217,7 +217,7 @@ export async function testDeleteAssessments(page, testState) {
     
     // Click the button
     await deleteButton.click();
-    console.log(`Clicked delete assessment button for ID: ${assessmentId}`);
+
     
     // Fill assessment ID
     await fillRequestData(page, {
@@ -231,7 +231,7 @@ export async function testDeleteAssessments(page, testState) {
     const deleteResponse = await getResponseData(page);
     expect(deleteResponse).toHaveProperty('success', true);
     
-    console.log(`Deleted assessment: ${assessmentId}`);
+
   }
   
   // Verify all deleted by checking assessments list
@@ -251,5 +251,5 @@ export async function testDeleteAssessments(page, testState) {
     expect(stillExists).toBeFalsy();
   }
   
-  console.log('Delete assessments endpoint test completed successfully');
+
 } 

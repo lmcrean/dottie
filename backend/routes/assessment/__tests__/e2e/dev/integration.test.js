@@ -76,7 +76,7 @@ afterAll(async () => {
         // Use raw query to delete
         await db.raw("DELETE FROM assessments WHERE id = ?", [testAssessmentId]);
       } catch (error) {
-        console.log(`Error deleting assessment ${testAssessmentId}:`, error);
+
       }
     }
     
@@ -85,7 +85,7 @@ afterAll(async () => {
         // Use raw query to delete
         await db.raw("DELETE FROM users WHERE id = ?", [testUserId]);
       } catch (error) {
-        console.log(`Error deleting user ${testUserId}:`, error);
+
       }
     }
   } catch (error) {
@@ -95,17 +95,17 @@ afterAll(async () => {
 
 describe("Assessment API Integration Test", () => {
   test("Complete assessment lifecycle flow - create, get, list, delete", async () => {
-    console.log("Starting assessment lifecycle test...");
+
     
     // Step 1: Create a new assessment
-    console.log("Step 1: Creating assessment...");
+
     const createResponse = await request
       .post("/api/assessment/send")
       .set("Authorization", `Bearer ${testToken}`)
       .send({ assessmentData: testAssessmentData });
     
-    console.log("Create response status:", createResponse.status);
-    console.log("Create response body:", createResponse.body);
+
+
 
     // Validate assessment creation
     expect(createResponse.status).toBe(201);
@@ -113,16 +113,16 @@ describe("Assessment API Integration Test", () => {
     
     // Store the assessment ID for subsequent steps
     testAssessmentId = createResponse.body.id;
-    console.log(`Created assessment with ID: ${testAssessmentId}`);
+
 
     // Step 2: Get the assessment details
-    console.log("Step 2: Getting assessment details...");
+
     const getResponse = await request
       .get(`/api/assessment/${testAssessmentId}`)
       .set("Authorization", `Bearer ${testToken}`);
     
-    console.log("Get response status:", getResponse.status);
-    console.log("Get response body:", getResponse.body);
+
+
 
     // Validate get assessment detail
     expect(getResponse.status).toBe(200);
@@ -142,13 +142,13 @@ describe("Assessment API Integration Test", () => {
     }
 
     // Step 3: List all user assessments
-    console.log("Step 3: Listing all user assessments...");
+
     const listResponse = await request
       .get("/api/assessment/list")
       .set("Authorization", `Bearer ${testToken}`);
     
-    console.log("List response status:", listResponse.status);
-    console.log("List response body:", listResponse.body);
+
+
 
     // Validate assessment list
     expect(listResponse.status).toBe(200);
@@ -159,13 +159,13 @@ describe("Assessment API Integration Test", () => {
     expect(foundAssessment).toBeTruthy();
 
     // Step 4: Delete the assessment
-    console.log("Step 4: Deleting assessment...");
+
     const deleteResponse = await request
       .delete(`/api/assessment/${testUserId}/${testAssessmentId}`)
       .set("Authorization", `Bearer ${testToken}`);
     
-    console.log("Delete response status:", deleteResponse.status);
-    console.log("Delete response body:", deleteResponse.body);
+
+
 
     // Validate assessment deletion
     expect(deleteResponse.status).toBe(200);
@@ -178,6 +178,6 @@ describe("Assessment API Integration Test", () => {
     
     expect(verifyResponse.status).toBe(403);
     
-    console.log("Assessment lifecycle test completed successfully!");
+
   });
 }); 

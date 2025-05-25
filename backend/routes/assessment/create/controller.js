@@ -15,8 +15,8 @@ export const createAssessment = async (req, res) => {
     const userId = req.user.userId;
     const { assessmentData } = req.body;
 
-    console.log("Assessment creation payload:", JSON.stringify(req.body));
-    console.log("User ID from token:", userId);
+
+
 
     // Validate assessment data
     if (!assessmentData) {
@@ -112,13 +112,13 @@ export const createAssessment = async (req, res) => {
     // Validate assessment data using our shared validator
     const validationError = validateAssessmentData(assessmentData);
     if (!validationError.isValid) {
-      console.log("Validation error:", JSON.stringify(validationError));
+
       return res.status(400).json({ error: validationError });
     }
     
     // Create assessment using the model layer
     // This will automatically handle both flattened and nested formats
-    console.log("Creating assessment with model layer, data:", JSON.stringify(assessmentData));
+
     
     // Ensure arrays are properly initialized
     const processedData = {
@@ -131,12 +131,12 @@ export const createAssessment = async (req, res) => {
         : (assessmentData.emotional_symptoms ? [assessmentData.emotional_symptoms] : []),
     };
     
-    console.log("Processed physical_symptoms:", processedData.physical_symptoms);
-    console.log("Processed emotional_symptoms:", processedData.emotional_symptoms);
+
+
     
     try {
       const newAssessment = await Assessment.create(processedData, userId);
-      console.log("Successfully created assessment:", newAssessment.id);
+
       res.status(201).json(newAssessment);
     } catch (modelError) {
       console.error("Error in Assessment.create:", modelError);

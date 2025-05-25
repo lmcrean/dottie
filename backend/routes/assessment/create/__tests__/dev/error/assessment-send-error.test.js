@@ -30,7 +30,7 @@ beforeAll(async () => {
       password_hash: 'test-hash',
       created_at: new Date().toISOString()
     });
-    console.log('Test user created for error tests:', testUserId);
+
   } catch (error) {
     console.error('Failed to create test user:', error);
   }

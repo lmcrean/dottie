@@ -21,7 +21,6 @@ export const useDeterminedPattern = (): { pattern: MenstrualPattern } => {
 
       // Update pattern in context if it's different
       if (calculatedPattern !== result.pattern) {
-        console.log('Setting pattern to:', calculatedPattern);
         updateResult({ pattern: calculatedPattern });
       }
     }

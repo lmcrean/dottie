@@ -100,8 +100,8 @@ describe('Results Page Integration Test', () => {
     expect(ageElement.textContent).toBe('18-24 years');
 
     // Log debug information
-    console.log('AgeRange displayed value:', ageElement.textContent);
-    console.log('SessionStorage values used:', mockSessionStorage.getItem('age'));
+
+
   });
 
   it('should handle missing age data gracefully', async () => {

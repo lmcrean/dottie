@@ -33,7 +33,7 @@ interface MockPage {
 }
 
 export async function runAssessmentFlow(page: MockPage, state: AppState): Promise<AppState> {
-  console.log('Running assessment flow...');
+
   
   // Go through assessment steps
   await page.goto('/assessment/start');
@@ -90,7 +90,7 @@ export async function runAssessmentFlow(page: MockPage, state: AppState): Promis
   await page.waitForNetworkIdle();
   await page.waitForSelector('[data-testid="results-list-item"]');
   
-  console.log('Assessment flow completed');
+
   
   return {
     ...state,

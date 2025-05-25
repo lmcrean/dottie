@@ -52,7 +52,6 @@ test.describe('Frontend Pages Integration', () => {
     testState.screenshotCount++;
     const filename = `${screenshotDir}/${String(testState.screenshotCount).padStart(2, '0')}-${name}.png`;
     await page.screenshot({ path: filename, fullPage: true });
-    console.log(`Screenshot saved: ${filename}`);
   };
 
   test('1. Setup and landing page tests', async ({ page }) => {
@@ -74,7 +73,6 @@ test.describe('Frontend Pages Integration', () => {
     testState.authToken = authState.authToken;
 
     await saveScreenshot(page, 'auth-complete');
-    console.log('Auth tests completed, user ID:', testState.userId);
   });
 
   test('3. User profile tests', async ({ page }) => {
@@ -85,7 +83,6 @@ test.describe('Frontend Pages Integration', () => {
     testState.username = userState.username;
 
     await saveScreenshot(page, 'user-complete');
-    console.log('User tests completed');
   });
 
   test('4. Assessment tests', async ({ page }) => {
@@ -96,7 +93,6 @@ test.describe('Frontend Pages Integration', () => {
     testState.assessmentIds = assessmentState.assessmentIds;
 
     await saveScreenshot(page, 'assessment-complete');
-    console.log('Assessment tests completed, IDs:', testState.assessmentIds);
   });
 
   test('5. Chat functionality tests', async ({ page }) => {
@@ -107,7 +103,6 @@ test.describe('Frontend Pages Integration', () => {
     testState.conversationId = chatState.conversationId;
 
     await saveScreenshot(page, 'chat-complete');
-    console.log('Chat tests completed, conversation ID:', testState.conversationId);
   });
 
   test('6. Cleanup test resources', async ({ page }) => {
@@ -120,6 +115,5 @@ test.describe('Frontend Pages Integration', () => {
     }
 
     await saveScreenshot(page, 'cleanup-complete');
-    console.log('All test resources cleaned up');
   });
 });

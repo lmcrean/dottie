@@ -138,12 +138,12 @@ export async function createTables(db) {
   // Determine which assessment schema to use
   if (process.env.TEST_MODE === "true") {
     // In test mode, use the special assessment schema (includes 'age')
-    console.log("TEST_MODE active: Applying test assessment schema.");
+
     await updateAssessmentSchema(db);
   } else {
     // For development/production, ensure the flattened schema with 'age' is used.
     // We can directly call updateAssessmentSchema as it handles dropping and recreating if needed.
-    console.log("Applying primary assessment schema (flattened, with 'age' column).");
+
     await updateAssessmentSchema(db); 
   }
 

@@ -18,7 +18,7 @@ const supabase = createClient(
 
 async function executeSQL() {
   try {
-    console.log("Attempting to fix the assessments table schema directly...");
+
 
     // Check if the assessments table exists by querying it
     const { data: assessmentCheck, error: assessmentCheckError } = await supabase
@@ -27,10 +27,10 @@ async function executeSQL() {
       .limit(1);
 
     if (assessmentCheckError) {
-      console.log("Error checking assessments table:", assessmentCheckError.message);
+
       
       if (assessmentCheckError.message.includes("relation") && assessmentCheckError.message.includes("does not exist")) {
-        console.log("Assessments table doesn't exist, creating it...");
+
         
         // Direct PostgreSQL query to create the assessments table
         const { error } = await supabase.auth.admin.executeSql(`
@@ -48,11 +48,11 @@ async function executeSQL() {
         if (error) {
           console.error("Failed to create table:", error.message);
         } else {
-          console.log("Successfully created assessments table");
+
         }
       }
     } else {
-      console.log("Assessments table exists, checking its columns...");
+
       
       // Direct PostgreSQL query to check columns
       const { data, error } = await supabase.auth.admin.executeSql(`
@@ -65,11 +65,11 @@ async function executeSQL() {
       if (error) {
         console.error("Failed to check columns:", error.message);
       } else {
-        console.log("Existing columns:", data);
+
         
         const columns = data.map(row => row.column_name);
         if (!columns.includes('user_id')) {
-          console.log("user_id column missing, attempting to add it...");
+
           
           // Direct PostgreSQL query to add the user_id column
           const { error: alterError } = await supabase.auth.admin.executeSql(`
@@ -82,15 +82,15 @@ async function executeSQL() {
           if (alterError) {
             console.error("Failed to add user_id column:", alterError.message);
           } else {
-            console.log("Successfully added user_id column");
+
           }
         } else {
-          console.log("user_id column already exists");
+
         }
       }
     }
 
-    console.log("Direct SQL execution completed");
+
     
   } catch (error) {
     console.error("Unexpected error:", error);

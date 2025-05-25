@@ -9,7 +9,6 @@ import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
  */
 export const runPainStep = async (page: Page): Promise<void> => {
   // Now on pain page
-  console.log('Running pain step');
 
   // Take screenshot
   await page.screenshot({
@@ -21,20 +20,19 @@ export const runPainStep = async (page: Page): Promise<void> => {
   await debugPage(page);
 
   // Select a pain option
-  console.log('Selecting pain option');
+
   try {
     // Try to click the "Mild" option
-    console.log("Attempting to click the 'Mild' pain option");
+
     const mildPainButton = await page.locator('button').filter({ hasText: /Mild/ }).first();
     await mildPainButton.waitFor({ state: 'visible' });
     await mildPainButton.click();
-    console.log("Selected 'Mild' pain option");
 
     // Wait after selection
     await page.waitForTimeout(500);
 
     // Click Continue button
-    console.log('Clicking Continue button on pain page');
+
     const continueButton = await page.getByRole('button', { name: /continue/i });
     await continueButton.waitFor({ state: 'visible' });
 
@@ -43,11 +41,9 @@ export const runPainStep = async (page: Page): Promise<void> => {
 
     // Click the button
     await continueButton.click();
-    console.log('Continue button clicked, waiting for navigation to symptoms page...');
 
     // Wait for navigation to complete
     await navigationPromise;
-    console.log('Successfully navigated to symptoms page');
 
     // Wait for the page to stabilize
     await page.waitForLoadState('networkidle');

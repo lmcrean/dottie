@@ -37,8 +37,8 @@ base.describe("Master Integration Test", () => {
   // Log the test environment configuration
   base.beforeAll(async () => {
     // Log the baseURL from the config file
-    console.log(`TESTING AGAINST PRODUCTION API`);
-    console.log(`Test run started at: ${new Date().toISOString()}`);
+
+
   });
 
   // =====================

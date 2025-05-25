@@ -8,11 +8,6 @@ import { storeAuthData } from '../../../core/tokenManager';
  */
 export const postLogin = async (credentials: LoginInput): Promise<AuthResponse> => {
   try {
-    console.log('[Login Debug] Making login request with:', {
-      email: credentials.email,
-      hasPassword: !!credentials.password
-    });
-
     const response = await apiClient.post('/api/auth/login', credentials);
 
     // Use the centralized token manager to handle token storage

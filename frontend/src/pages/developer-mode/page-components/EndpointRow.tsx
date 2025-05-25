@@ -123,12 +123,13 @@ export default function EndpointRow({
                 });
 
                 if (response.ok) {
-                  console.log('[Logout Debug] Logout API call succeeded');
+                  // Logout successful
                 } else {
                   await response.json();
                 }
               } catch (error: unknown) {
-                console.log('[Logout Debug] API call error:', error);
+                // Handle fetch error silently for logout
+                console.warn('Logout request failed, but continuing with cleanup:', error);
               }
 
               // Clear local storage tokens after API call attempt
@@ -200,7 +201,7 @@ export default function EndpointRow({
           newPathParamValues[param] = formData[param] as string;
           delete formData[param]; // Remove from form data
         } else {
-          console.log(`Path param ${param} not found in form data`);
+          // Path parameter missing, will be handled by form validation
         }
       });
 
@@ -220,7 +221,6 @@ export default function EndpointRow({
       handleApiCall(undefined, formData as Record<string, string>);
     } else {
       // Otherwise keep the form open for body parameters
-
       setShowInputForm(true);
     }
   };

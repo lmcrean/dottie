@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 // Get the path to the SQLite database file
 const dbPath = path.join(__dirname, '..', 'dev.sqlite3');
 
-console.log('Database path:', dbPath);
+
 
 // Check if the database file exists
 if (!fs.existsSync(dbPath)) {
@@ -29,7 +29,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.error('Error opening database:', err.message);
     process.exit(1);
   }
-  console.log('Connected to the SQLite database.');
+
 });
 
 // Run the schema updates
@@ -40,7 +40,7 @@ db.serialize(() => {
       console.error('Error dropping assessments table:', err.message);
       return;
     }
-    console.log('Assessments table dropped (if it existed).');
+
 
     // Create the assessments table with the correct schema
     const createTable = `
@@ -66,7 +66,7 @@ db.serialize(() => {
         console.error('Error creating assessments table:', err.message);
         return;
       }
-      console.log('Assessments table created with updated schema.');
+
 
       // Verify the schema
       db.all('PRAGMA table_info(assessments);', (err, rows) => {
@@ -75,9 +75,9 @@ db.serialize(() => {
           return;
         }
         
-        console.log('Assessments table columns:');
+
         rows.forEach((row) => {
-          console.log(`- ${row.name} (${row.type})`);
+
         });
 
         // Close the database
@@ -86,7 +86,7 @@ db.serialize(() => {
             console.error('Error closing database:', err.message);
             return;
           }
-          console.log('Schema update completed successfully and database closed.');
+
         });
       });
     });

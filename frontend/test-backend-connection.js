@@ -1,28 +1,28 @@
-import { spawn } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import axios from "axios";
+import { spawn } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import axios from 'axios';
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // API configuration
-const API_BASE_URL = process.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.VITE_API_BASE_URL || 'http://localhost:5000';
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 3000,
+  timeout: 3000
 });
 
 // Check if API is running
 const isApiRunning = async () => {
   try {
-    const response = await apiClient.get("/api/hello", { timeout: 1000 });
+    const response = await apiClient.get('/api/hello', { timeout: 1000 });
 
     return true;
   } catch (error) {
-    console.error("API check failed:", error.message);
+    console.error('API check failed:', error.message);
     return false;
   }
 };
@@ -31,17 +31,17 @@ const isApiRunning = async () => {
 const startBackendServer = async () => {
   try {
     // Calculate paths
-    const projectRoot = path.resolve(__dirname, "..");
-    const backendDir = path.join(projectRoot, "backend");
-    const serverPath = path.join(backendDir, "server.js");
+    const projectRoot = path.resolve(__dirname, '..');
+    const backendDir = path.join(projectRoot, 'backend');
+    const serverPath = path.join(backendDir, 'server.js');
 
     // Check if paths exist
-    const fs = await import("fs");
+    const fs = await import('fs');
     const backendExists = fs.existsSync(backendDir);
     const serverFileExists = fs.existsSync(serverPath);
 
     if (!backendExists || !serverFileExists) {
-      console.error("❌ Required paths not found");
+      console.error('❌ Required paths not found');
       return false;
     }
 
@@ -50,16 +50,16 @@ const startBackendServer = async () => {
 
     const serverProcess = spawn(nodeExecutable, [serverPath], {
       cwd: backendDir,
-      stdio: "pipe",
-      env: { ...process.env, PORT: "5000" },
+      stdio: 'pipe',
+      env: { ...process.env, PORT: '5000' }
     });
 
-    serverProcess.stderr.on("data", (data) => {
+    serverProcess.stderr.on('data', (data) => {
       console.error(`Backend server error: ${data.toString().trim()}`);
     });
 
     // Handle server exit
-    serverProcess.on("exit", (code) => {});
+    serverProcess.on('exit', (code) => {});
 
     // Wait and check if server is running
     let serverStarted = false;
@@ -77,10 +77,9 @@ const startBackendServer = async () => {
       return false;
     }
 
-    console.log("Press Ctrl+C to stop the server and exit");
     return true;
   } catch (error) {
-    console.error("Error starting server:", error);
+    console.error('Error starting server:', error);
     return false;
   }
 };
@@ -97,5 +96,5 @@ const runTest = async () => {
 };
 
 runTest().catch((error) => {
-  console.error("Test failed:", error);
+  console.error('Test failed:', error);
 });

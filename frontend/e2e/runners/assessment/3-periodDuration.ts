@@ -9,7 +9,6 @@ import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
  */
 export const runPeriodDurationStep = async (page: Page): Promise<void> => {
   // Now on period duration page
-  console.log('Running period duration step');
 
   // Take screenshot
   await page.screenshot({
@@ -21,23 +20,22 @@ export const runPeriodDurationStep = async (page: Page): Promise<void> => {
   await debugPage(page);
 
   // Select a period duration option
-  console.log('Selecting period duration option');
+
   try {
     // Try to click the "4-5 days" option (Average duration)
-    console.log("Attempting to click the '4-5 days' option");
+
     const averageDurationButton = await page
       .locator('button')
       .filter({ hasText: /4-5 days/i })
       .first();
     await averageDurationButton.waitFor({ state: 'visible' });
     await averageDurationButton.click();
-    console.log("Selected '4-5 days' option");
 
     // Wait after selection
     await page.waitForTimeout(500);
 
     // Click Continue button
-    console.log('Clicking Continue button on period duration page');
+
     const continueButton = await page.getByRole('button', { name: /continue/i });
     await continueButton.waitFor({ state: 'visible' });
 
@@ -46,11 +44,9 @@ export const runPeriodDurationStep = async (page: Page): Promise<void> => {
 
     // Click the button
     await continueButton.click();
-    console.log('Continue button clicked, waiting for navigation to flow page...');
 
     // Wait for navigation to complete
     await navigationPromise;
-    console.log('Successfully navigated to flow page');
 
     // Wait for the page to stabilize
     await page.waitForLoadState('networkidle');

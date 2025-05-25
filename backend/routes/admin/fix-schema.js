@@ -17,15 +17,15 @@ router.get('/fix-schema', async (req, res) => {
       });
     }
     
-    console.log('Starting schema fix operation...');
+
     
     // Get database type for logging
     const dbType = db.client.config.client;
-    console.log(`Database type: ${dbType}`);
+
     
     // Check if assessments table exists
     const hasTable = await db.schema.hasTable('assessments');
-    console.log(`Assessments table exists: ${hasTable}`);
+
     
     if (hasTable) {
       // Check for the age column
@@ -34,8 +34,8 @@ router.get('/fix-schema', async (req, res) => {
         const columnInfo = await db('assessments').columnInfo();
         hasAgeColumn = !!columnInfo.age;
         
-        console.log(`Column info for assessments table:`, Object.keys(columnInfo));
-        console.log(`Has age column: ${hasAgeColumn}`);
+
+
       } catch (err) {
         console.error('Error checking columns:', err.message);
       }
@@ -43,19 +43,19 @@ router.get('/fix-schema', async (req, res) => {
       // Add age column if it doesn't exist
       if (!hasAgeColumn) {
         try {
-          console.log('Adding age column to assessments table...');
+
           await db.schema.alterTable('assessments', (table) => {
             table.string('age');
           });
-          console.log('Age column added successfully');
+
         } catch (alterErr) {
           console.error('Error adding age column:', alterErr.message);
           
           // If alter table fails, try with raw SQL
           try {
-            console.log('Trying raw SQL to add age column...');
+
             await db.raw('ALTER TABLE assessments ADD COLUMN age TEXT');
-            console.log('Age column added with raw SQL');
+
           } catch (rawErr) {
             console.error('Raw SQL also failed:', rawErr.message);
             return res.status(500).json({
@@ -78,18 +78,18 @@ router.get('/fix-schema', async (req, res) => {
       for (const column of requiredColumns) {
         if (!columnInfo[column]) {
           try {
-            console.log(`Adding ${column} column...`);
+
             await db.schema.alterTable('assessments', (table) => {
               table.string(column);
             });
-            console.log(`${column} column added`);
+
           } catch (colErr) {
             console.error(`Error adding ${column} column:`, colErr.message);
             
             // Try raw SQL
             try {
               await db.raw(`ALTER TABLE assessments ADD COLUMN ${column} TEXT`);
-              console.log(`${column} column added with raw SQL`);
+
             } catch (rawColErr) {
               console.error(`Raw SQL failed for ${column}:`, rawColErr.message);
             }
@@ -109,7 +109,7 @@ router.get('/fix-schema', async (req, res) => {
       
     } else {
       // Create assessments table if it doesn't exist
-      console.log('Creating assessments table...');
+
       
       await db.schema.createTable('assessments', (table) => {
         table.string('id').primary();
@@ -127,7 +127,7 @@ router.get('/fix-schema', async (req, res) => {
         table.text('assessment_data');
       });
       
-      console.log('Assessments table created with all required columns');
+
       
       return res.status(200).json({
         success: true,

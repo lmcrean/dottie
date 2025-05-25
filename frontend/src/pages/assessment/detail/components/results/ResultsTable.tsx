@@ -53,19 +53,6 @@ export const ResultsTable = ({
   if (data) {
     const { pattern, age, cycle_length, period_duration, flow_heaviness, pain_level } = data;
 
-    useEffect(() => {
-      console.log('DEBUG [ResultsTable Component]');
-      console.log('  - Received data:', data);
-      console.log('  - All props:', {
-        pattern,
-        age,
-        cycle_length,
-        period_duration,
-        flow_heaviness,
-        pain_level
-      });
-    }, [data, pattern, age, cycle_length, period_duration, flow_heaviness, pain_level]);
-
     return (
       <CardContent className="pb-8 pt-8">
         <div className="mb-8 grid grid-cols-1 items-start gap-6 dark:text-gray-900 md:grid-cols-2">

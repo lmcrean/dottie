@@ -18,25 +18,13 @@ export const determinePattern = (result: AssessmentResult): MenstrualPattern => 
 
   const { age, cycle_length, period_duration, flow_heaviness, pain_level } = safeResult;
 
-  console.log('determinePattern received data:', {
-    age,
-    cycle_length,
-    period_duration,
-    flow_heaviness,
-    pain_level,
-    physical_symptoms_count: safeResult.physical_symptoms.length,
-    emotional_symptoms_count: safeResult.emotional_symptoms.length
-  });
-
   // Developing Pattern (O5)
   if (age === 'under-13' || age === '13-17') {
-    console.log('Pattern determined as "developing" due to age:', age);
     return 'developing';
   }
 
   // Irregular Timing Pattern (O1)
   if (cycle_length === 'irregular' || cycle_length === 'less-than-21' || cycle_length === '36-40') {
-    console.log('Pattern determined as "irregular" due to cycle_length:', cycle_length);
     return 'irregular';
   }
 
@@ -46,18 +34,11 @@ export const determinePattern = (result: AssessmentResult): MenstrualPattern => 
     flow_heaviness === 'very-heavy' ||
     period_duration === '8-plus'
   ) {
-    console.log(
-      'Pattern determined as "heavy" due to flow_heaviness:',
-      flow_heaviness,
-      'or period_duration:',
-      period_duration
-    );
     return 'heavy';
   }
 
   // Pain-Predominant Pattern (O3)
   if (pain_level === 'severe' || pain_level === 'debilitating') {
-    console.log('Pattern determined as "pain" due to pain_level:', pain_level);
     return 'pain';
   }
 
@@ -70,7 +51,6 @@ export const determinePattern = (result: AssessmentResult): MenstrualPattern => 
     );
 
     if (hasPainSymptoms) {
-      console.log('Pattern inferred as "pain" from pain-related symptoms');
       return 'pain';
     }
 
@@ -81,12 +61,10 @@ export const determinePattern = (result: AssessmentResult): MenstrualPattern => 
     );
 
     if (hasHeavyFlowSymptoms) {
-      console.log('Pattern inferred as "heavy" from heavy-flow related symptoms');
       return 'heavy';
     }
   }
 
   // Regular Menstrual Cycles (O4)
-  console.log('Pattern determined as "regular" as no other conditions matched');
   return 'regular';
 };

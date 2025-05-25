@@ -24,7 +24,6 @@ export default function PainPage() {
 
   useEffect(() => {
     if (painLevel) {
-      console.log('PainPage - Updating selectedPain from context:', painLevel);
       setSelectedPain(painLevel);
     }
   }, [painLevel]);
@@ -49,14 +48,12 @@ export default function PainPage() {
   }, [isQuickResponse]);
 
   const handleOptionClick = (value: PainLevel) => {
-    console.log('PainPage - handleOptionClick with value:', value);
     setSelectedPain(value);
     setPainLevel(value);
   };
 
   const handleContinue = () => {
     if (selectedPain) {
-      console.log('PainPage - Continuing with pain level:', selectedPain);
       const queryParams = location.search.includes('mode=quickresponse')
         ? '?mode=quickresponse'
         : '';

@@ -40,8 +40,8 @@ export async function createAssessment(
     }
   };
 
-  console.log('Creating assessment with payload:', JSON.stringify(payload));
-  console.log('Using auth token:', token.substring(0, 20) + '...');
+
+
 
   const response = await request.post("/api/assessment/send", {
     headers: {
@@ -50,12 +50,12 @@ export async function createAssessment(
     data: payload,
   });
 
-  console.log('Assessment creation response status:', response.status());
+
   
   let responseText;
   try {
     responseText = await response.text();
-    console.log('Assessment creation response body:', responseText);
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
@@ -98,19 +98,19 @@ export async function getAssessments(request, token) {
     },
   });
 
-  console.log('Get assessments list status:', response.status());
+
   
   let responseText;
   try {
     responseText = await response.text();
-    console.log('Assessments list response:', responseText.substring(0, 300) + '...');
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
 
   // If we get a 404 (no assessments found), return an empty array
   if (response.status() === 404) {
-    console.log('No assessments found - returning empty array');
+
     return [];
   }
 
@@ -145,12 +145,12 @@ export async function getAssessmentById(request, token, assessmentId) {
     },
   });
 
-  console.log(`Get assessment by ID ${assessmentId} - Status: ${response.status()}`);
+
   
   let responseText;
   try {
     responseText = await response.text();
-    console.log(`Get assessment response: ${responseText}`);
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
@@ -201,8 +201,8 @@ export async function updateAssessment(
     emotional_symptoms: updateData.symptoms?.emotional || updateData.emotional_symptoms || []
   };
 
-  console.log(`Updating assessment ${assessmentId} for user ${userId}`);
-  console.log('Update payload:', JSON.stringify(payload));
+
+
 
   // Try the correct endpoint format - just assessment ID
   const response = await request.put(
@@ -215,12 +215,12 @@ export async function updateAssessment(
     }
   );
 
-  console.log(`Update assessment status: ${response.status()}`);
+
 
   let responseText;
   try {
     responseText = await response.text();
-    console.log(`Update assessment response: ${responseText}`);
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
@@ -265,7 +265,7 @@ export async function updateAssessment(
  */
 export async function deleteAssessment(request, token, userId, assessmentId) {
   // Use the correct endpoint format with both userId and assessmentId
-  console.log(`Deleting assessment ${assessmentId} for user ${userId}`);
+
   
   const response = await request.delete(
     `/api/assessment/${userId}/${assessmentId}`,
@@ -276,12 +276,12 @@ export async function deleteAssessment(request, token, userId, assessmentId) {
     }
   );
 
-  console.log(`Delete assessment status: ${response.status()}`);
+
   
   // Log the response for debugging
   try {
     const responseText = await response.text();
-    console.log(`Delete assessment response: ${responseText}`);
+
   } catch (error) {
     console.error("Failed to get delete response text:", error);
   }

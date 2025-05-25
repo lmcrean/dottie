@@ -75,7 +75,7 @@ afterAll(async () => {
       try {
         await db("users").where("id", testUserId).delete();
       } catch (error) {
-        console.log(`Error deleting user ${testUserId}:`, error);
+
       }
     }
   } catch (error) {
@@ -90,8 +90,8 @@ describe("Assessment Delete Endpoint - Success Cases", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     // Debug the response
-    console.log("Response status:", response.status);
-    console.log("Response body:", response.body);
+
+
 
     // Check response
     expect(response.status).toBe(200);
@@ -106,7 +106,7 @@ describe("Assessment Delete Endpoint - Success Cases", () => {
       
       expect(deletedAssessment).toBeUndefined();
     } catch (error) {
-      console.log("Database verification error:", error);
+
       console.log(
         "Skipping database verification - test still passes based on API response"
       );

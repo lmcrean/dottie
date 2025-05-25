@@ -72,16 +72,6 @@ describe("User Authentication Flow (E2E)", () => {
   it("2. should register a new user", async () => {
     const response = await request.post("/api/auth/signup").send(testUser);
 
-    if (response.status !== 201) {
-      console.log("Registration response:", response.body);
-    } else {
-      console.log("Created user:", {
-        id: response.body.id,
-        username: response.body.username,
-        email: response.body.email,
-      });
-    }
-
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("username", testUser.username);

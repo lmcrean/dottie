@@ -34,11 +34,7 @@ export const useAssessmentData = () => {
   });
 
   useEffect(() => {
-    console.log('useAssessmentData - Context result:', result);
-
     if (result) {
-      console.log('useAssessmentData - Using context data, age:', result.age);
-
       const updatedData: Partial<AssessmentData> = {
         age: result.age || '',
         cycle_length: result.cycle_length || '',
@@ -56,8 +52,6 @@ export const useAssessmentData = () => {
         pattern: result.pattern
       };
 
-      console.log('useAssessmentData - Mapped context data:', updatedData);
-
       setData((current) => ({ ...current, ...updatedData }));
     }
   }, [result]);
@@ -69,8 +63,6 @@ export const useAssessmentData = () => {
   const setIsClamped = (value: boolean) => {
     setData((current) => ({ ...current, isClamped: value }));
   };
-
-  console.log('useAssessmentData - Final data state:', data);
 
   return {
     ...data,

@@ -16,8 +16,8 @@ export async function getUserById(request, token, userId) {
   const response = await request.get(`/api/auth/users/me`)
     .set('Authorization', `Bearer ${token}`);
 
-  console.log(`Get user response status:`, response.status);
-  console.log(`Get user response body:`, JSON.stringify(response.body).substring(0, 150));
+
+
 
   if (response.status !== 200) {
     const error = new Error(`Failed to get user info: ${response.status}`);
@@ -40,8 +40,8 @@ export async function getAllUsers(request, token) {
   const response = await request.get("/api/auth/users")
     .set('Authorization', `Bearer ${token}`);
 
-  console.log(`Get all users status:`, response.status);
-  console.log(`Get all users body:`, JSON.stringify(response.body).substring(0, 150));
+
+
 
   if (response.status !== 200) {
     const error = new Error(`Failed to get all users: ${response.status}`);
@@ -66,8 +66,8 @@ export async function updateUserProfile(request, token, userId, profileData) {
     .set('Authorization', `Bearer ${token}`)
     .send(profileData);
 
-  console.log(`Update user status:`, response.status);
-  console.log(`Update user body:`, JSON.stringify(response.body).substring(0, 150));
+
+
 
   if (response.status !== 200) {
     const error = new Error(`Failed to update user profile: ${response.status}`);
@@ -90,9 +90,9 @@ export async function deleteUser(request, token, userId) {
   const response = await request.delete(`/api/auth/users/${userId}`)
     .set('Authorization', `Bearer ${token}`);
 
-  console.log(`Delete user ${userId} status:`, response.status);
+
   try {
-    console.log(`Delete user response body:`, JSON.stringify(response.body || response.text).substring(0, 150));
+
   } catch (error) {
     console.error("Error logging delete response body:", error);
   }

@@ -19,7 +19,6 @@ export default function GenerateRecommendationsPage() {
       state.result.recommendations &&
       state.result.recommendations.length > 0
     ) {
-      console.log('Recommendations generated, navigating to save page.');
       navigate('/assessment/save');
     } else if (!state.result || !state.result.pattern) {
       // Handle case where data/pattern might not be loaded yet, or redirect if accessed directly

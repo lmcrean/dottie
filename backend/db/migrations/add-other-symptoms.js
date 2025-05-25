@@ -11,14 +11,14 @@ export async function addOtherSymptomsColumn(db) {
     // Check if the assessments table exists
     const hasTable = await db.schema.hasTable('assessments');
     if (!hasTable) {
-      console.log('Assessments table does not exist. No migration needed.');
+
       return;
     }
 
     // Check if the other_symptoms column already exists
     const hasColumn = await db.schema.hasColumn('assessments', 'other_symptoms');
     if (hasColumn) {
-      console.log('other_symptoms column already exists. No migration needed.');
+
       return;
     }
 
@@ -27,7 +27,7 @@ export async function addOtherSymptomsColumn(db) {
       table.text('other_symptoms');
     });
     
-    console.log('Successfully added other_symptoms column to assessments table.');
+
   } catch (error) {
     console.error('Error adding other_symptoms column:', error);
     throw error;

@@ -8,43 +8,32 @@ import { Page } from '@playwright/test';
  * @returns Boolean indicating if sign-in was successful
  */
 export const signInUser = async (page: Page, email: string, password: string) => {
-  console.log('Starting sign-in process...');
-  console.log(`Using credentials: ${email} (password not logged)`);
-
   // Navigate to login page
   await page.goto('http://localhost:3005/auth/sign-in');
   await page.waitForLoadState('networkidle');
 
   // Log the current state
-  console.log('Current URL:', page.url());
-  console.log('Page title:', await page.title());
 
-  // Debug form elements
-  const emailInputs = await page.locator('input[type="email"]').all();
-  console.log(`Found ${emailInputs.length} email input fields`);
+  // Debug form elements (commented out to avoid unused variables)
+  // const emailInputs = await page.locator('input[type="email"]').all();
+  // const passwordInputs = await page.locator('input[type="password"]').all();
+  // const buttons = await page.locator('button').all();
 
-  const passwordInputs = await page.locator('input[type="password"]').all();
-  console.log(`Found ${passwordInputs.length} password input fields`);
-
-  const buttons = await page.locator('button').all();
-  console.log(`Found ${buttons.length} buttons`);
-  for (const button of buttons) {
-    console.log(`Button text: "${await button.textContent()}"`);
-  }
+  // for (const button of buttons) {
+  //   // Debug button text if needed
+  // }
 
   // Fill in login form
   try {
-    console.log('Filling email field');
     await page.getByLabel(/email/i).fill(email);
 
-    console.log('Filling password field');
     await page.getByLabel(/password/i).fill(password);
 
     // Wait a moment for form validation if any
     await page.waitForTimeout(500);
 
     // Click login button
-    console.log('Clicking sign in button');
+
     const signInButton = await page.getByRole('button', { name: /sign in/i });
     await signInButton.waitFor({ state: 'visible' });
     await signInButton.click();
@@ -55,7 +44,6 @@ export const signInUser = async (page: Page, email: string, password: string) =>
 
     // Verify we're logged in
     const currentUrl = page.url();
-    console.log('Post-login URL:', currentUrl);
 
     // If we're still on the login page, something went wrong
     if (currentUrl.includes('/sign-in')) {
@@ -67,14 +55,12 @@ export const signInUser = async (page: Page, email: string, password: string) =>
         console.error(`Error message found: "${await error.textContent()}"`);
       }
 
-      // Check page content for clues
-      const pageText = await page.evaluate(() => document.body.textContent);
-      console.log('Page content after login attempt:', pageText);
+      // Check page content for clues (commented out to avoid unused variable)
+      // const pageText = await page.evaluate(() => document.body.textContent);
 
       return false;
     }
 
-    console.log('Authentication successful');
     return true;
   } catch (error) {
     console.error('Error during sign-in process:', error);

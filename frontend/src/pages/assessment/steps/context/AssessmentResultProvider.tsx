@@ -16,7 +16,6 @@ export function AssessmentResultProvider({ children }: { children: ReactNode }) 
   const [state, dispatch] = useReducer(assessmentResultReducer, initialState);
 
   // Debug current state
-  console.log('AssessmentResultProvider - Current state:', state);
 
   return (
     <AssessmentResultContext.Provider

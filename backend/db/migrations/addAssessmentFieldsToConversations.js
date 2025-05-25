@@ -5,13 +5,13 @@
  * @param {object} db - Knex database instance
  */
 export async function addAssessmentFieldsToConversations(db) {
-  console.log('Adding assessment fields to conversations table...');
+
   
   const isSQLite = db.client.config.client === 'sqlite3';
   
   // Check if the conversations table exists
   if (await db.schema.hasTable('conversations')) {
-    console.log('Conversations table exists, adding assessment fields...');
+
     
     // Add the assessment-related columns
     await db.schema.table('conversations', (table) => {
@@ -31,7 +31,7 @@ export async function addAssessmentFieldsToConversations(db) {
       }
     });
     
-    console.log('Successfully added assessment fields to conversations table');
+
   } else {
     console.warn('Conversations table does not exist, skipping migration');
   }
@@ -42,7 +42,7 @@ export async function addAssessmentFieldsToConversations(db) {
  * @param {object} db - Knex database instance
  */
 export async function revertAssessmentFieldsFromConversations(db) {
-  console.log('Removing assessment fields from conversations table...');
+
   
   if (await db.schema.hasTable('conversations')) {
     await db.schema.table('conversations', (table) => {
@@ -50,6 +50,6 @@ export async function revertAssessmentFieldsFromConversations(db) {
       table.dropColumn('assessment_pattern');
     });
     
-    console.log('Successfully removed assessment fields from conversations table');
+
   }
 } 

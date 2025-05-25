@@ -38,13 +38,6 @@ export default function DetailPage() {
   // Determine if we're viewing an assessment from history or a new assessment
   const isHistoryView = !!id && !isNewAssessment;
 
-  console.log('[DetailPage] Values after hooks: ', { id, isNewAssessment, isHistoryView });
-  console.log('[DetailPage] Assessment data:', {
-    assessment,
-    hasAssessment: !!assessment,
-    assessmentDataFromContext
-  });
-
   // Format related variables for legacy assessment
   const hasFlattenedFormat = !!assessment && !assessment.assessment_data;
   const hasLegacyFormat = !!assessment?.assessment_data;
@@ -140,20 +133,8 @@ export default function DetailPage() {
 
   // Fetch existing assessment data if viewing from history
   useEffect(() => {
-    console.log(
-      '[DetailPage] Running useEffect for history view. Current isHistoryView:',
-      isHistoryView,
-      'ID:',
-      id
-    );
     const fetchAssessment = async () => {
-      console.log('[DetailPage] useEffect for fetchAssessment triggered.', {
-        id,
-        isHistoryView,
-        isNewAssessment
-      });
       if (!id || !isHistoryView) {
-        console.log('[DetailPage] Skipping fetchAssessment: No ID or not a history view.');
         setIsLoading(false);
         return;
       }
@@ -192,12 +173,6 @@ export default function DetailPage() {
             }>(processedData.assessment_data.recommendations);
           }
           setAssessment(processedData);
-          if (processedData && processedData.physical_symptoms) {
-            console.log(
-              '[DetailPage] physical_symptoms set in assessment state:',
-              processedData.physical_symptoms
-            );
-          }
         } else {
           setAssessment(null); // Explicitly set to null if no data
         }
@@ -239,7 +214,7 @@ export default function DetailPage() {
     if (hasFlattenedFormat && assessment) {
       symptomsToLog = ensureArrayFormat<string>(assessment.physical_symptoms);
     }
-    console.log('[DetailPage] physicalSymptoms useMemo result:', symptomsToLog);
+
     return symptomsToLog;
   }, [assessment, hasLegacyFormat, hasFlattenedFormat]);
 

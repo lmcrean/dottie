@@ -154,8 +154,6 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   };
 
   const handleConversationSelect = async (conversation: ConversationListItem) => {
-    console.log('[useChatState] Selected conversation:', conversation);
-
     try {
       setIsLoading(true);
       const fullConversation = await fetchConversation(conversation.id);

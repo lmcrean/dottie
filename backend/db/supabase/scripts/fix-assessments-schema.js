@@ -18,7 +18,7 @@ const supabase = createClient(
 
 async function fixAssessmentsSchema() {
   try {
-    console.log("Starting fix for assessments table schema in Supabase...");
+
 
     // Check if assessments table exists
     const { error: checkError } = await supabase
@@ -27,7 +27,7 @@ async function fixAssessmentsSchema() {
       .limit(1);
 
     if (checkError && checkError.message.includes("does not exist")) {
-      console.log("Assessments table does not exist. Creating it...");
+
       
       // Create the assessments table with all required columns
       const { error: createError } = await supabase.auth.admin.executeSql(`
@@ -53,9 +53,9 @@ async function fixAssessmentsSchema() {
         return;
       }
       
-      console.log("Assessments table created successfully with correct schema.");
+
     } else {
-      console.log("Assessments table exists. Checking for age column...");
+
       
       // Check if the age column exists
       const { data: columnInfo, error: columnError } = await supabase.rpc("get_column_info", {
@@ -64,7 +64,7 @@ async function fixAssessmentsSchema() {
       }).maybeSingle();
 
       if (columnError || !columnInfo) {
-        console.log("Age column does not exist. Adding it...");
+
         
         // Add the age column if it doesn't exist
         const { error: alterError } = await supabase.auth.admin.executeSql(`
@@ -76,9 +76,9 @@ async function fixAssessmentsSchema() {
           return;
         }
         
-        console.log("Age column added successfully.");
+
       } else {
-        console.log("Age column already exists.");
+
       }
     }
 
@@ -95,8 +95,8 @@ async function fixAssessmentsSchema() {
       return;
     }
 
-    console.log("Current assessments table schema columns:", columns);
-    console.log("Schema fix completed successfully!");
+
+
 
   } catch (error) {
     console.error("Unexpected error during schema fix:", error);

@@ -13,7 +13,7 @@ export const setupTestServer = async (port = 5001) => {
   try {
     if (process.env.TEST_MODE === 'true') {
       await updateAssessmentSchema(db);
-      console.log('Assessment schema updated for tests');
+
     }
   } catch (error) {
     console.warn('Warning: Failed to update assessment schema:', error.message);

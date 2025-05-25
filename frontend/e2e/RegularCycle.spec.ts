@@ -26,11 +26,11 @@ test('Regular Cycle Assessment Path - complete flow', async ({ page }) => {
 
   try {
     // First sign up a new test user
-    console.log('Creating new test user');
+
     const userCredentials = await signUpTestUser(page);
 
     // Then sign in with the new user
-    console.log('Signing in with test user');
+
     authenticationSuccessful = await signInUser(
       page,
       userCredentials.email,
@@ -40,7 +40,7 @@ test('Regular Cycle Assessment Path - complete flow', async ({ page }) => {
     if (!authenticationSuccessful) {
       console.warn('Authentication failed, but continuing with the assessment test');
     } else {
-      console.log('Authentication successful, proceeding with assessment');
+      // Authentication successful
     }
   } catch (error) {
     console.error('Error during authentication:', error);
@@ -57,5 +57,4 @@ test('Regular Cycle Assessment Path - complete flow', async ({ page }) => {
   await checkResultsPage(page);
 
   // Test completed successfully
-  console.log('Test completed successfully - Full assessment flow verified');
 });

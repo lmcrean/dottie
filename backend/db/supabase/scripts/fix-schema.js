@@ -18,7 +18,7 @@ const supabase = createClient(
 
 async function fixSchema() {
   try {
-    console.log("Starting schema fix for Supabase PostgreSQL database...");
+
 
     // Check if the assessments table exists
     let { data: tables, error: tablesError } = await supabase.rpc(
@@ -39,7 +39,7 @@ async function fixSchema() {
       tables = data.map(row => row.tablename);
     }
 
-    console.log("Existing tables:", tables || "Could not retrieve tables");
+
 
     // First, try to verify if assessments table exists by querying it
     const { data: assessmentCheck, error: assessmentCheckError } = await supabase
@@ -48,11 +48,11 @@ async function fixSchema() {
       .limit(1);
 
     if (assessmentCheckError) {
-      console.log("Error checking assessments table:", assessmentCheckError.message);
+
       
       // If the table doesn't exist, create it
       if (assessmentCheckError.message.includes("relation") && assessmentCheckError.message.includes("does not exist")) {
-        console.log("Creating assessments table with proper schema...");
+
         
         // Execute raw SQL to create the table
         const { error: createTableError } = await supabase.rpc('exec_sql', {
@@ -71,12 +71,12 @@ async function fixSchema() {
         
         if (createTableError) {
           // If RPC fails, try direct SQL (this might not work depending on permissions)
-          console.log("RPC failed, attempting direct SQL query...");
+
           
           // This is a fallback but might not work with standard permissions
           console.error("Failed to create table via RPC:", createTableError.message);
-          console.log("You may need to run this SQL directly in the Supabase SQL editor:");
-          console.log(`
+
+
             CREATE TABLE IF NOT EXISTS public.assessments (
               id UUID PRIMARY KEY,
               user_id UUID NOT NULL REFERENCES public.users(id),
@@ -88,11 +88,11 @@ async function fixSchema() {
             CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON public.assessments(user_id);
           `);
         } else {
-          console.log("Successfully created assessments table");
+
         }
       }
     } else {
-      console.log("Assessments table exists, checking for user_id column...");
+
       
       // Check if user_id column exists in assessments table
       const { data: columnInfo, error: columnError } = await supabase.rpc('get_column_info', {
@@ -101,7 +101,7 @@ async function fixSchema() {
       });
       
       if (columnError || !columnInfo || columnInfo.length === 0) {
-        console.log("user_id column not found, attempting to add it...");
+
         
         // Add user_id column if it doesn't exist
         const { error: alterTableError } = await supabase.rpc('exec_sql', {
@@ -115,22 +115,22 @@ async function fixSchema() {
         
         if (alterTableError) {
           console.error("Failed to add user_id column:", alterTableError.message);
-          console.log("You may need to run this SQL directly in the Supabase SQL editor:");
-          console.log(`
+
+
             ALTER TABLE public.assessments 
             ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.users(id);
             
             CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON public.assessments(user_id);
           `);
         } else {
-          console.log("Successfully added user_id column to assessments table");
+
         }
       } else {
-        console.log("user_id column already exists in assessments table");
+
       }
     }
     
-    console.log("Schema fix process completed. Please run the tests again.");
+
     
   } catch (error) {
     console.error("Error fixing schema:", error);

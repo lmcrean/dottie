@@ -17,7 +17,7 @@ const DebugBox: React.FC<DebugBoxProps> = ({ assessmentId, assessmentData, isVis
 
   // Log physical_symptoms when props are received
   if (assessmentData && 'physical_symptoms' in assessmentData) {
-    console.log('[DebugBox] physical_symptoms from props:', assessmentData.physical_symptoms);
+    // Debug logging would go here if needed
   }
 
   // Format JSON data for display

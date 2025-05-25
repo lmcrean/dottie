@@ -70,7 +70,7 @@ export async function runAuthTests(page) {
  * @param {object} testState Test state with user data
  */
 export async function testRegister(page, testState) {
-  console.log('Running register endpoint test');
+
   
   // Navigate to the test page if needed
   const url = page.url();
@@ -103,10 +103,10 @@ export async function testRegister(page, testState) {
     console.error('Error finding register button:', error);
     // Try one more approach - find all buttons and click the one with register/signup text
     const allButtons = await page.getByRole('button').all();
-    console.log(`Found ${allButtons.length} buttons`);
+
     for (const button of allButtons) {
       const text = await button.textContent();
-      console.log(`Button text: ${text}`);
+
       if (text.toLowerCase().includes('register') || 
           text.toLowerCase().includes('signup') || 
           text.toLowerCase().includes('auth')) {
@@ -126,7 +126,7 @@ export async function testRegister(page, testState) {
   try {
     await registerButton.scrollIntoViewIfNeeded();
   } catch (error) {
-    console.log('Error scrolling to register button:', error);
+
   }
   
   await page.waitForTimeout(500); // Small wait for animations
@@ -137,7 +137,7 @@ export async function testRegister(page, testState) {
   // Click the button
   try {
     await registerButton.click();
-    console.log('Clicked register button');
+
   } catch (error) {
     console.error('Error clicking register button:', error);
     throw error;
@@ -148,7 +148,7 @@ export async function testRegister(page, testState) {
   try {
     jsonInput = page.locator('.json-input');
     await jsonInput.waitFor({ timeout: 5000 });
-    console.log('Found JSON input');
+
   } catch (error) {
     console.error('Error waiting for JSON input:', error);
     await page.screenshot({ path: `./test_screenshots/test_page/frontend-integration/auth/register-form-not-found.png` });
@@ -166,7 +166,7 @@ export async function testRegister(page, testState) {
     // Find and click send request button
     const sendButton = page.getByRole('button', { name: 'Send Request' });
     await sendButton.click();
-    console.log('Filled and submitted registration form');
+
     
     // Wait for response
     await page.waitForTimeout(3000);
@@ -185,7 +185,7 @@ export async function testRegister(page, testState) {
     // Try finding response in various ways
     const successIndicator = page.locator('text=Success');
     if (await successIndicator.isVisible({ timeout: 1000 })) {
-      console.log('Found success indicator');
+
     }
     
     // Look for pre tag or api-response
@@ -197,7 +197,7 @@ export async function testRegister(page, testState) {
         // Try any pre tag in the third column
         const preTags = page.locator('pre');
         const count = await preTags.count();
-        console.log(`Found ${count} pre tags`);
+
         
         for (let i = 0; i < count; i++) {
           const preTag = preTags.nth(i);
@@ -208,11 +208,11 @@ export async function testRegister(page, testState) {
         }
       }
     } catch (error) {
-      console.log('Error getting response text:', error);
+
     }
     
     if (responseText) {
-      console.log('Found response text:', responseText.substring(0, 100) + '...');
+
       
       // Try to parse the response text into JSON
       try {
@@ -222,7 +222,7 @@ export async function testRegister(page, testState) {
         
         if (match) {
           responseData = JSON.parse(match[0]);
-          console.log('Successfully parsed response JSON');
+
         }
       } catch (error) {
         console.error('Failed to parse response JSON:', error);
@@ -234,22 +234,22 @@ export async function testRegister(page, testState) {
   
   // If we have a response, check if it has the expected properties
   if (responseData) {
-    console.log('Response data:', responseData);
+
     
     // Verify response content
     if (responseData.user && responseData.user.id) {
       // Save user ID for later tests
       testState.userId = responseData.user.id;
-      console.log('Created test user:', testState.userId);
-      console.log('Register endpoint test completed successfully');
+
+
     } else {
-      console.log('Response doesn\'t contain user ID');
+
       throw new Error('Response doesn\'t contain user ID');
     }
   } else {
     // Take a screenshot of the full page for debugging
     await page.screenshot({ path: `./test_screenshots/test_page/frontend-integration/auth/register-no-response.png`, fullPage: true });
-    console.log('Could not parse response data');
+
     throw new Error('Could not parse response data');
   }
 }
@@ -260,7 +260,7 @@ export async function testRegister(page, testState) {
  * @param {object} testState Test state with user data
  */
 export async function testLogin(page, testState) {
-  console.log('Running login endpoint test');
+
   
   // Find the login button
   const loginButton = page.getByRole('button', { name: /POST \/api\/auth\/login/i });
@@ -271,7 +271,7 @@ export async function testLogin(page, testState) {
   
   // Click the button
   await loginButton.click();
-  console.log('Clicked login button');
+
   
   // Fill login form
   await fillRequestData(page, {
@@ -288,5 +288,5 @@ export async function testLogin(page, testState) {
   // Verify UI shows logged in status
   await expect(page.locator('.auth-status')).toContainText('Logged in');
   
-  console.log('Login endpoint test completed successfully');
+
 } 

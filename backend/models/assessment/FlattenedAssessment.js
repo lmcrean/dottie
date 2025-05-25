@@ -51,7 +51,7 @@ class FlattenedAssessment extends AssessmentBase {
       // const dataToSave = { ...assessmentData, user_id: userId }; // This line was part of a previous attempt, let's use direct variables
 
       // Log physical_symptoms before stringify
-      console.log('[FlattenedAssessment.create] physical_symptoms before stringify:', physical_symptoms);
+
 
       // Handle symptoms arrays: store as JSON strings
       const physicalSymptomsString = JSON.stringify(physical_symptoms || []);
@@ -81,9 +81,9 @@ class FlattenedAssessment extends AssessmentBase {
         recommendations: recommendations ? JSON.stringify(recommendations) : null
       };
 
-      console.log(`Creating assessment with ID ${id}, physical symptoms:`, 
+
         payload.physical_symptoms ? JSON.stringify(payload.physical_symptoms) : 'null');
-      console.log(`Creating assessment with ID ${id}, emotional symptoms:`, 
+
         payload.emotional_symptoms ? JSON.stringify(payload.emotional_symptoms) : 'null');
 
       // Insert into database
@@ -191,7 +191,7 @@ class FlattenedAssessment extends AssessmentBase {
       return null;
     }
     
-    console.log(`Transforming record to API response:`, {
+
       id: record.id,
       user_id: record.user_id,
       physical_symptoms_type: record.physical_symptoms ? typeof record.physical_symptoms : 'null',
@@ -210,12 +210,12 @@ class FlattenedAssessment extends AssessmentBase {
         // Handle case when physical_symptoms is already an array (from test environment)
         if (Array.isArray(record.physical_symptoms)) {
           physical_symptoms = record.physical_symptoms;
-          console.log(`Physical symptoms already an array with ${physical_symptoms.length} items`);
+
         } else {
           physical_symptoms = JSON.parse(record.physical_symptoms);
-          console.log(`Successfully parsed physical_symptoms for assessment ${record.id}:`, physical_symptoms);
+
           // Log physical_symptoms after parse
-          console.log('[FlattenedAssessment._transformDbRecordToApiResponse] physical_symptoms after parse:', physical_symptoms);
+
         }
       }
     } catch (error) {
@@ -229,10 +229,10 @@ class FlattenedAssessment extends AssessmentBase {
         // Handle case when emotional_symptoms is already an array (from test environment)
         if (Array.isArray(record.emotional_symptoms)) {
           emotional_symptoms = record.emotional_symptoms;
-          console.log(`Emotional symptoms already an array with ${emotional_symptoms.length} items`);
+
         } else {
           emotional_symptoms = JSON.parse(record.emotional_symptoms);
-          console.log(`Successfully parsed emotional_symptoms for assessment ${record.id}:`, emotional_symptoms);
+
         }
       }
     } catch (error) {
@@ -246,10 +246,10 @@ class FlattenedAssessment extends AssessmentBase {
         // Handle case when recommendations is already an array (from test environment)
         if (Array.isArray(record.recommendations)) {
           recommendations = record.recommendations;
-          console.log(`Recommendations already an array with ${recommendations.length} items`);
+
         } else {
           recommendations = JSON.parse(record.recommendations);
-          console.log(`Successfully parsed recommendations for assessment ${record.id}`);
+
         }
         
         // Ensure recommendations have title and description
@@ -287,23 +287,23 @@ class FlattenedAssessment extends AssessmentBase {
         const parsed_other = JSON.parse(record.other_symptoms);
         if (Array.isArray(parsed_other)) {
           other_symptoms_array = parsed_other.filter(s => typeof s === 'string'); // Ensure all elements are strings
-          console.log(`Successfully parsed other_symptoms as array for assessment ${record.id}:`, other_symptoms_array);
+
         } else if (typeof parsed_other === 'string' && parsed_other.trim() !== '') {
           // If parsing resulted in a single string (should not happen with current create logic but good for safety)
           other_symptoms_array = [parsed_other.trim()];
-           console.log(`Parsed other_symptoms as single string and wrapped in array for assessment ${record.id}:`, other_symptoms_array);
+
         }
       } catch (e) {
         // If JSON.parse fails, assume it's a plain string
         if (typeof record.other_symptoms === 'string' && record.other_symptoms.trim() !== '') {
           other_symptoms_array = [record.other_symptoms.trim()];
-          console.log(`Treated other_symptoms as plain string and wrapped in array for assessment ${record.id}:`, other_symptoms_array);
+
         } else {
-          console.log(`other_symptoms for assessment ${record.id} is not a valid JSON array or non-empty string: "${record.other_symptoms}", setting to empty array.`);
+
         }
       }
     } else {
-      console.log(`other_symptoms is null or empty for assessment ${record.id}, setting to empty array.`);
+
     }
     
     // Return flattened format with all fields in snake_case
@@ -328,7 +328,7 @@ class FlattenedAssessment extends AssessmentBase {
       delete result.updated_at;
     }
     
-    console.log(`Final transformed assessment:`, {
+
       id: result.id,
       pattern: result.pattern,
       physical_symptoms: result.physical_symptoms,
@@ -355,20 +355,20 @@ class FlattenedAssessment extends AssessmentBase {
   static async findById(id) {
     try {
       if (isTestMode && testAssessments[id]) {
-        console.log(`[TEST MODE] Found assessment in test store:`, id);
+
         return testAssessments[id];
       }
       
-      console.log(`Finding assessment by ID: ${id}`);
+
       // Get the assessment from database
       const assessment = await DbService.findById('assessments', id);
       
       if (!assessment) {
-        console.log(`Assessment not found: ${id}`);
+
         return null;
       }
       
-      console.log(`Raw assessment data from database:`, {
+
         id: assessment.id,
         user_id: assessment.user_id,
         physical_symptoms: assessment.physical_symptoms ? 
@@ -379,13 +379,13 @@ class FlattenedAssessment extends AssessmentBase {
       
       // Check if this class can handle this format
       if (!this._canProcessRecord(assessment)) {
-        console.log(`Assessment format not supported by ${this.name}`);
+
         return null;
       }
       
       // Transform to API format before returning
       const transformedAssessment = this._transformDbRecordToApiResponse(assessment);
-      console.log(`Transformed assessment data:`, {
+
         id: transformedAssessment.id,
         user_id: transformedAssessment.user_id,
         physical_symptoms: Array.isArray(transformedAssessment.physical_symptoms) 

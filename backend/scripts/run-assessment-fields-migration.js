@@ -9,11 +9,11 @@ import { addAssessmentFieldsToConversations } from '../db/migrations/addAssessme
 
 async function runMigration() {
   try {
-    console.log('Starting assessment fields migration for conversations table...');
+
     
     await addAssessmentFieldsToConversations(db);
     
-    console.log('Migration completed successfully!');
+
   } catch (error) {
     console.error('Migration failed:', error);
   } finally {

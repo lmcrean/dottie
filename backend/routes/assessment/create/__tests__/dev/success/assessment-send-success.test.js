@@ -109,8 +109,8 @@ describe("Assessment Send Endpoint - Success Cases", () => {
       .send(assessmentData);
 
     // Debug response
-    console.log("Response status:", response.status);
-    console.log("Response body:", response.body);
+
+
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
@@ -178,7 +178,7 @@ describe("Assessment Send Endpoint - Success Cases", () => {
         // Skip database assertions but don't fail the test
       }
     } catch (error) {
-      console.log("Database verification error:", error);
+
       console.log(
         "Skipping database verification - test still passes based on API response"
       );

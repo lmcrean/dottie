@@ -84,7 +84,7 @@ describe('Password Update API', () => {
   test('POST /api/user/pw/update - should update password successfully', async () => {
     // Skip test if setup failed to get auth token
     if (!authToken) {
-      console.log('Skipping test: Auth token not available');
+
       return;
     }
 
@@ -117,7 +117,7 @@ describe('Password Update API', () => {
   test('POST /api/user/pw/update - should reject with incorrect current password', async () => {
     // Skip test if setup failed to get auth token
     if (!authToken) {
-      console.log('Skipping test: Auth token not available');
+
       return;
     }
 
@@ -137,7 +137,7 @@ describe('Password Update API', () => {
   test('POST /api/user/pw/update - should reject invalid new password format', async () => {
     // Skip test if setup failed to get auth token
     if (!authToken) {
-      console.log('Skipping test: Auth token not available');
+
       return;
     }
 

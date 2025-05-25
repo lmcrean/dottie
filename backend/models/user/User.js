@@ -91,7 +91,7 @@ class User {
         await DbService.delete('symptoms', { user_id: id });
       } catch (error) {
         // Table might not exist, ignore the error
-        console.log('Symptoms table not found or error deleting symptoms:', error.message);
+
       }
       
       // 7. Finally, delete the user

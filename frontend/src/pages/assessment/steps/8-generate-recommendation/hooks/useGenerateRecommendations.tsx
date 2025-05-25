@@ -21,7 +21,6 @@ export const useGenerateRecommendations = (): { recommendations: Recommendation[
       !hasRecommendationForPattern(result.pattern, result.recommendations);
 
     if (shouldGenerateRecommendations) {
-      console.log('Generating recommendations for pattern:', result.pattern);
       const newRecommendations = generateRecommendations(result);
 
       // Update recommendations in context

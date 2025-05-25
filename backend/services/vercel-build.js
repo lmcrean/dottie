@@ -2,7 +2,7 @@
 process.env.VERCEL = "1";
 process.env.NODE_ENV = "production";
 
-console.log("Running Vercel build process...");
+
 
 // Import required modules 
 import { createClient } from "@supabase/supabase-js";
@@ -16,11 +16,11 @@ async function fixProductionDatabaseSchema() {
   try {
     // Check if Supabase credentials are available
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.log("Supabase credentials not found in environment. Skipping schema fix.");
+
       return;
     }
 
-    console.log("Found Supabase credentials. Attempting to fix schema...");
+
 
     // Create Supabase client with admin role key
     const supabase = createClient(
@@ -29,7 +29,7 @@ async function fixProductionDatabaseSchema() {
     );
 
     // Fix schema for assessments table
-    console.log("Checking assessments table schema...");
+
 
     // First check if the assessments table exists
     const { error: checkError } = await supabase
@@ -39,7 +39,7 @@ async function fixProductionDatabaseSchema() {
 
     // If table doesn't exist, create it with all required columns
     if (checkError && checkError.message.includes("does not exist")) {
-      console.log("Assessments table does not exist. Creating it...");
+
       
       // Using rpc to execute SQL directly
       const { error: createError } = await supabase.rpc('exec_sql', {
@@ -65,11 +65,11 @@ async function fixProductionDatabaseSchema() {
       if (createError) {
         console.error("Error creating assessments table:", createError.message);
       } else {
-        console.log("Assessments table created successfully.");
+
       }
     } else {
       // Table exists, check for missing columns
-      console.log("Assessments table exists. Checking for required columns...");
+
       
       // Create and execute the SQL to add missing columns
       // Instead of using auth.admin.executeSql which doesn't exist,
@@ -86,7 +86,7 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (ageError || !ageColumn) {
-        console.log('Age column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS age TEXT;'
         });
@@ -102,7 +102,7 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (cycleError || !cycleColumn) {
-        console.log('cycle_length column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS cycle_length TEXT;'
         });
@@ -118,7 +118,7 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (durationError || !durationColumn) {
-        console.log('period_duration column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS period_duration TEXT;'
         });
@@ -134,7 +134,7 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (flowError || !flowColumn) {
-        console.log('flow_heaviness column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS flow_heaviness TEXT;'
         });
@@ -150,7 +150,7 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (painError || !painColumn) {
-        console.log('pain_level column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS pain_level TEXT;'
         });
@@ -166,7 +166,7 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (physicalError || !physicalColumn) {
-        console.log('physical_symptoms column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS physical_symptoms TEXT;'
         });
@@ -182,17 +182,17 @@ async function fixProductionDatabaseSchema() {
         .single();
       
       if (emotionalError || !emotionalColumn) {
-        console.log('emotional_symptoms column missing. Adding it...');
+
         await supabase.rpc('exec_sql', {
           sql_query: 'ALTER TABLE public.assessments ADD COLUMN IF NOT EXISTS emotional_symptoms TEXT;'
         });
       }
       
-      console.log("Database schema update completed.");
+
     }
 
     // Verify schema after changes
-    console.log("Verifying schema...");
+
     const { data: columns, error: verifyError } = await supabase
       .from('information_schema.columns')
       .select('column_name')
@@ -205,7 +205,7 @@ async function fixProductionDatabaseSchema() {
       
       // Alternative verification approach if the first method fails
       try {
-        console.log("Trying alternative verification method...");
+
         // Simple query to get column names directly from the assessments table
         const { data: assessmentData, error: assessmentError } = await supabase
           .from('assessments')
@@ -217,16 +217,16 @@ async function fixProductionDatabaseSchema() {
         } else {
           // If data is returned, we can look at the keys of the first row
           if (assessmentData && assessmentData.length > 0) {
-            console.log("Assessments table columns:", Object.keys(assessmentData[0]));
+
           } else {
-            console.log("Assessments table exists but is empty.");
+
           }
         }
       } catch (altError) {
         console.error("Error in alternative verification:", altError);
       }
     } else {
-      console.log("Current assessments table columns:", columns);
+
     }
 
   } catch (error) {
@@ -237,4 +237,4 @@ async function fixProductionDatabaseSchema() {
 // Run the schema fix during build
 await fixProductionDatabaseSchema();
 
-console.log("Vercel build process completed.");
+

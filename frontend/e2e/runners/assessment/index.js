@@ -7,8 +7,6 @@
  */
 
 export async function runAssessmentTests(page, state) {
-  console.log('Assessment tests not yet implemented');
-
   // In a real implementation, these functions would:
   // - Test creating an assessment
   // - Test viewing assessment history
@@ -22,8 +20,6 @@ export async function runAssessmentTests(page, state) {
 }
 
 export async function cleanupAssessments(page, state) {
-  console.log('Assessment cleanup not yet implemented');
-
   // In a real implementation, this would delete test assessments
 
   return {

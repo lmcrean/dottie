@@ -20,8 +20,8 @@ export async function sendMessage(request, token, message, conversationId = null
     ...(conversationId && { conversationId }) // Include conversationId only if provided
   };
 
-  console.log('Sending message with payload:', JSON.stringify(payload));
-  console.log('Using auth token:', token.substring(0, 20) + '...');
+
+
 
   const response = await request.post("/api/chat/send", {
     headers: {
@@ -30,12 +30,12 @@ export async function sendMessage(request, token, message, conversationId = null
     data: payload,
   });
 
-  console.log('Send message response status:', response.status());
+
   
   let responseText;
   try {
     responseText = await response.text();
-    console.log('Send message response body:', responseText.substring(0, 300) + '...');
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
@@ -73,12 +73,12 @@ export async function getConversationHistory(request, token) {
     },
   });
 
-  console.log('Get conversation history status:', response.status());
+
   
   let responseText;
   try {
     responseText = await response.text();
-    console.log('Conversation history response:', responseText.substring(0, 300) + '...');
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
@@ -114,12 +114,12 @@ export async function getConversation(request, token, conversationId) {
     },
   });
 
-  console.log(`Get conversation ${conversationId} - Status: ${response.status()}`);
+
   
   let responseText;
   try {
     responseText = await response.text();
-    console.log(`Get conversation response: ${responseText.substring(0, 300) + '...'}`);
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }
@@ -149,7 +149,7 @@ export async function getConversation(request, token, conversationId) {
  * @returns {Promise<boolean>} True if successfully deleted
  */
 export async function deleteConversation(request, token, conversationId) {
-  console.log(`Deleting conversation ${conversationId}`);
+
 
   const response = await request.delete(`/api/chat/history/${conversationId}`, {
     headers: {
@@ -157,12 +157,12 @@ export async function deleteConversation(request, token, conversationId) {
     },
   });
 
-  console.log(`Delete conversation status: ${response.status()}`);
+
 
   let responseText;
   try {
     responseText = await response.text();
-    console.log(`Delete conversation response: ${responseText}`);
+
   } catch (error) {
     console.error("Failed to get response text:", error);
   }

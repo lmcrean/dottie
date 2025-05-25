@@ -19,10 +19,10 @@ const conditionalApiTest = (testName: string, testFn: () => Promise<void>) => {
         // API is available, run the test
         await testFn();
       } else {
-        console.log(`⚠️ API returned non-200 status (${response.status}), skipping test: ${testName}`);
+
       }
     } catch (error) {
-      console.log(`⚠️ API is not available, skipping test: ${testName}`);
+
     }
   };
 };

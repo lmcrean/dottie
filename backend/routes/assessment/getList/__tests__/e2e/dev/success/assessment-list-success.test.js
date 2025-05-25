@@ -106,7 +106,7 @@ afterAll(async () => {
           }
         }
       } catch (error) {
-        console.log("Error cleaning symptoms table:", error);
+
         // Continue with cleanup of other tables
       }
       
@@ -115,7 +115,7 @@ afterAll(async () => {
         try {
           await db("assessments").where("id", assessmentId).delete();
         } catch (error) {
-          console.log(`Error deleting assessment ${assessmentId}:`, error);
+
         }
       }
     }
@@ -125,7 +125,7 @@ afterAll(async () => {
       try {
         await db("users").where("id", testUserId).delete();
       } catch (error) {
-        console.log(`Error deleting user ${testUserId}:`, error);
+
       }
     }
 
@@ -144,8 +144,8 @@ describe("Assessment List Endpoint - Success Cases", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     // Debug response
-    console.log("Response status:", response.status);
-    console.log("Response body:", response.body);
+
+
 
     // API now always returns 200 with an array (possibly empty)
     expect(response.status).toBe(200);

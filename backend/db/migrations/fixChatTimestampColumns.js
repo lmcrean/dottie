@@ -13,13 +13,13 @@
 import { fileURLToPath } from 'url';
 
 export async function fixChatTimestampColumns(db) {
-  console.log('Running fixChatTimestampColumns migration...');
+
   const isSQLite = db.client.config.client === 'sqlite3';
   const isPg = db.client.config.client === 'pg';
 
   // Check if the conversations table exists
   if (await db.schema.hasTable('conversations')) {
-    console.log('Conversations table exists, checking columns...');
+
 
     // Get table info to check which columns exist
     let columns;
@@ -46,7 +46,7 @@ export async function fixChatTimestampColumns(db) {
       }
     }
 
-    console.log('Existing columns:', columns);
+
 
     // Check if we need to add the snake_case columns
     const hasCreatedAt = columns.includes('created_at');
@@ -56,7 +56,7 @@ export async function fixChatTimestampColumns(db) {
 
     // If we don't have snake_case columns but have camelCase ones, we need to fix
     if ((!hasCreatedAt && hasCamelCaseCreatedAt) || (!hasUpdatedAt && hasCamelCaseUpdatedAt)) {
-      console.log('Adding missing snake_case timestamp columns to conversations table...');
+
 
       // Add missing columns
       await db.schema.table('conversations', table => {
@@ -70,24 +70,24 @@ export async function fixChatTimestampColumns(db) {
 
       // Copy data from camelCase to snake_case columns
       if (!hasCreatedAt && hasCamelCaseCreatedAt) {
-        console.log('Copying data from createdAt to created_at...');
+
         await db.raw(`UPDATE conversations SET created_at = "createdAt"`);
       }
 
       if (!hasUpdatedAt && hasCamelCaseUpdatedAt) {
-        console.log('Copying data from updatedAt to updated_at...');
+
         await db.raw(`UPDATE conversations SET updated_at = "updatedAt"`);
       }
 
-      console.log('Successfully migrated timestamp data from camelCase to snake_case');
+
     } else {
-      console.log('Conversations table already has proper snake_case columns');
+
     }
   }
 
   // Check if the chat_messages table exists and needs fixing
   if (await db.schema.hasTable('chat_messages')) {
-    console.log('Chat_messages table exists, checking columns...');
+
 
     // Get table info to check which columns exist
     let columns;
@@ -114,7 +114,7 @@ export async function fixChatTimestampColumns(db) {
       }
     }
 
-    console.log('Existing columns:', columns);
+
 
     // Check if we need to add the snake_case column
     const hasCreatedAt = columns.includes('created_at');
@@ -122,7 +122,7 @@ export async function fixChatTimestampColumns(db) {
 
     // If we don't have snake_case column but have camelCase one, we need to fix
     if (!hasCreatedAt && hasCamelCaseCreatedAt) {
-      console.log('Adding missing snake_case created_at column to chat_messages table...');
+
 
       // Add missing column
       await db.schema.table('chat_messages', table => {
@@ -130,12 +130,12 @@ export async function fixChatTimestampColumns(db) {
       });
 
       // Copy data from camelCase to snake_case column
-      console.log('Copying data from createdAt to created_at...');
+
       await db.raw(`UPDATE chat_messages SET created_at = "createdAt"`);
 
-      console.log('Successfully migrated timestamp data from camelCase to snake_case');
+
     } else {
-      console.log('Chat_messages table already has proper snake_case columns');
+
     }
   }
 }
@@ -143,9 +143,9 @@ export async function fixChatTimestampColumns(db) {
 // If this file is run directly, execute the migration
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   import('../../db/index.js').then(async ({ db }) => {
-    console.log('Running fixChatTimestampColumns migration directly...');
+
     await fixChatTimestampColumns(db);
-    console.log('Migration completed successfully!');
+
     process.exit(0);
   }).catch(err => {
     console.error('Error running migration:', err);

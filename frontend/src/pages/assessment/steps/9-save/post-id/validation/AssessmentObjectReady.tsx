@@ -7,27 +7,16 @@ import { determinePattern } from '@/src/pages/assessment/steps/7-calculate-patte
  * @returns The assessment data with a valid pattern field
  */
 export function calculatePattern(data: AssessmentResult): MenstrualPattern {
-  console.log('calculatePattern input data:', {
-    age: data.age,
-    cycle_length: data.cycle_length,
-    period_duration: data.period_duration,
-    flow_heaviness: data.flow_heaviness,
-    pain_level: data.pain_level,
-    pattern: data.pattern
-  });
-
   // Return existing pattern if it's valid
   if (
     data.pattern &&
     ['regular', 'irregular', 'heavy', 'pain', 'developing'].includes(data.pattern)
   ) {
-    console.log('Using existing valid pattern:', data.pattern);
     return data.pattern;
   }
 
   // Use the determinePattern function from the dedicated file
   const calculatedPattern = determinePattern(data);
-  console.log('Calculated new pattern:', calculatedPattern);
   return calculatedPattern;
 }
 
@@ -50,15 +39,8 @@ export function prepareAssessmentData(data: AssessmentResult): AssessmentResult 
     emotional_symptoms: Array.isArray(data.emotional_symptoms) ? [...data.emotional_symptoms] : []
   };
 
-  console.log('AssessmentObjectReady - Original data received:', {
-    ...safeData,
-    physical_symptoms: safeData.physical_symptoms.length,
-    emotional_symptoms: safeData.emotional_symptoms.length
-  });
-
   // Calculate pattern if not already set
   const pattern = calculatePattern(safeData);
-  console.log('Pattern after calculation:', pattern);
 
   // Ensure arrays are properly initialized and not null/undefined
   const physical_symptoms = Array.isArray(safeData.physical_symptoms)
@@ -79,12 +61,6 @@ export function prepareAssessmentData(data: AssessmentResult): AssessmentResult 
       ? [safeData.recommendations]
       : [];
 
-  console.log('AssessmentObjectReady - Processed arrays:', {
-    physical_symptoms: physical_symptoms.length,
-    emotional_symptoms: emotional_symptoms.length,
-    recommendations: recommendations.length
-  });
-
   // Return a clean object with all fields properly set
   const result = {
     ...safeData,
@@ -95,11 +71,6 @@ export function prepareAssessmentData(data: AssessmentResult): AssessmentResult 
     recommendations
   };
 
-  console.log('AssessmentObjectReady - Final data prepared for API:', {
-    ...result,
-    physical_symptoms: result.physical_symptoms.length,
-    emotional_symptoms: result.emotional_symptoms.length
-  });
   return result;
 }
 

@@ -14,15 +14,9 @@ export default function CalculatePatternPage() {
   useEffect(() => {
     // Ensure result and pattern calculation have a chance to run
     if (state.result && state.result.pattern) {
-      console.log(
-        'Pattern calculated/ensured (' +
-          state.result.pattern +
-          '), navigating to generate recommendations.'
-      );
       navigate('/assessment/generate-recommendations');
     } else if (state.result === null) {
       // Handle case where data might not be loaded yet, or redirect if accessed directly
-      console.warn('CalculatePatternPage: Assessment data not found, redirecting to start.');
       navigate('/assessment/age'); // Or a more appropriate starting page
     }
     // If pattern is not yet set, the useDeterminedPattern hook's useEffect will trigger an update,

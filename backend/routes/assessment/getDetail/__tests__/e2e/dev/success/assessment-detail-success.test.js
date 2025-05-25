@@ -86,13 +86,13 @@ afterAll(async () => {
             .delete();
         }
       } catch (error) {
-        console.log("Error cleaning symptoms table:", error);
+
       }
 
       try {
         await db("assessments").where("id", testAssessmentId).delete();
       } catch (error) {
-        console.log(`Error deleting assessment ${testAssessmentId}:`, error);
+
       }
     }
     
@@ -100,7 +100,7 @@ afterAll(async () => {
       try {
         await db("users").where("id", testUserId).delete();
       } catch (error) {
-        console.log(`Error deleting user ${testUserId}:`, error);
+
       }
     }
   } catch (error) {
@@ -115,8 +115,8 @@ describe("Assessment Detail Endpoint - Success Cases", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     // Debug the response
-    console.log("Response status:", response.status);
-    console.log("Response body:", response.body);
+
+
 
     // API can return various status codes during the refactoring process
     if (response.status === 200) {
@@ -130,15 +130,15 @@ describe("Assessment Detail Endpoint - Success Cases", () => {
         expect(response.body.user_id).toBe(testUserId);
       }
       
-      console.log("Test passes with 200 response");
+
     } 
     else if (response.status === 404) {
       // Not Found is acceptable during refactoring
-      console.log("API returned 404 - acceptable during refactoring");
+
     }
     else if (response.status === 500) {
       // Check if there's an internal server error that we can document
-      console.log("API returned 500 - checking database state");
+
       
       // Verify the database has our test data
       const dbAssessment = await db("assessments")
@@ -146,10 +146,10 @@ describe("Assessment Detail Endpoint - Success Cases", () => {
         .first();
       
       if (dbAssessment) {
-        console.log("Assessment exists in database but API returns 500 - likely a model transformation issue");
-        console.log("This is expected during refactoring - test doesn't fail");
+
+
       } else {
-        console.log("Assessment doesn't exist in database - test data setup issue");
+
       }
     }
     else {

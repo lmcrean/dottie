@@ -9,11 +9,11 @@ async function checkProdSchema() {
     // Get the production API URL from the test config
     const apiUrl = process.env.VERCEL_URL || 'https://dottie-backend-lmcreans-projects.vercel.app';
     
-    console.log(`Using API URL: ${apiUrl}`);
-    console.log('Checking schema in production...');
+
+
 
     // Step 1: Register a test user to get a token
-    console.log('1. Registering test user...');
+
     const testUser = {
       username: `schema_check_${Date.now()}`,
       email: `schema.check.${Date.now()}@example.com`,
@@ -31,17 +31,17 @@ async function checkProdSchema() {
       });
       
       const registerData = await registerResponse.json();
-      console.log('Registration response:', registerData);
+
       
       if (registerResponse.status !== 201) {
         throw new Error(`Failed to register: ${registerResponse.status}`);
       }
       
       userId = registerData.id;
-      console.log(`User registered with ID: ${userId}`);
+
       
       // Step 2: Login to get token
-      console.log('2. Logging in...');
+
       const loginResponse = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,10 +58,10 @@ async function checkProdSchema() {
       }
       
       token = loginData.token;
-      console.log('Login successful, got token');
+
       
       // Step 3: Create a simple assessment to test the schema
-      console.log('3. Creating a test assessment...');
+
       const assessmentResponse = await fetch(`${apiUrl}/assessment/create`, {
         method: 'POST',
         headers: { 
@@ -82,7 +82,7 @@ async function checkProdSchema() {
       });
       
       const assessmentData = await assessmentResponse.json();
-      console.log('Assessment creation response:', assessmentData);
+
       
       if (assessmentResponse.status !== 201) {
         console.error('Assessment creation failed with status:', assessmentResponse.status);
@@ -92,28 +92,28 @@ async function checkProdSchema() {
           // Extract schema information from the error message
           if (assessmentData.details.includes('schema cache')) {
             const schemaError = assessmentData.details;
-            console.log('Schema error detected:', schemaError);
+
             
             // Try to determine the columns that are missing or incorrect
             const missingColumnMatch = schemaError.match(/Could not find the '([^']+)' column/);
             if (missingColumnMatch) {
-              console.log(`Missing column detected: ${missingColumnMatch[1]}`);
-              console.log('Solution: Need to add this column to the schema');
+
+
             }
           }
         }
       } else {
-        console.log('Assessment created successfully!');
+
       }
       
       // Step 4: Clean up by deleting the test user
-      console.log('4. Cleaning up test user...');
+
       const deleteResponse = await fetch(`${apiUrl}/user/${userId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      console.log(`User deletion response status: ${deleteResponse.status}`);
+
       
     } catch (error) {
       console.error('Error during schema check:', error);

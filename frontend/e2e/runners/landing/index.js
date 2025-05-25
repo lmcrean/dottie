@@ -4,8 +4,6 @@
  */
 
 export async function runLandingTests(page) {
-  console.log('Starting landing page tests...');
-
   // Test home page
   await testHomePage(page);
 
@@ -22,18 +20,13 @@ async function testHomePage(page) {
   // Wait for the main content to load (adjust selector as needed)
   try {
     await page.waitForSelector('main', { state: 'visible', timeout: 5000 });
-  } catch (error) {
-    console.log('Main content selector not found, but continuing test');
-  }
+  } catch (error) {}
 
   // Check page title
   const title = await page.title();
-  console.log(`Page title: ${title}`);
 
   // Take a screenshot of the home page
   await page.screenshot({ path: 'test_screenshots/page_integration/home-page.png' });
-
-  console.log('Home page test completed');
 }
 
 async function testHealthEndpoints(page) {
@@ -43,8 +36,6 @@ async function testHealthEndpoints(page) {
 
     // Wait for page to load
     await page.waitForLoadState('networkidle');
-
-    console.log('Test page loaded');
 
     // Use more flexible selector methods
     try {
@@ -63,7 +54,7 @@ async function testHealthEndpoints(page) {
           const button = await page.$(selector);
           if (button) {
             await button.click();
-            console.log(`Clicked API button using selector: ${selector}`);
+
             buttonFound = true;
             break;
           }
@@ -73,16 +64,11 @@ async function testHealthEndpoints(page) {
       }
 
       if (!buttonFound) {
-        console.log('API test button not found using any selector');
       }
-    } catch (error) {
-      console.log('Error finding/clicking API button:', error.message);
-    }
+    } catch (error) {}
 
     // Take a screenshot after API test attempt
     await page.screenshot({ path: 'test_screenshots/page_integration/api-test.png' });
-
-    console.log('Health endpoints test completed');
   } catch (error) {
     console.error('Error in health endpoints test:', error.message);
     // Continue test execution despite errors

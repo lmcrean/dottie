@@ -20,8 +20,6 @@ export interface SendMessageResponse {
  * @endpoint /api/chat/:chatId/message (POST)
  */
 export const sendMessage = async (params: SendMessageRequest): Promise<SendMessageResponse> => {
-  console.log(`[sendMessage] Sending follow-up message:`, params);
-
   try {
     // Get the user data from token manager
     const userData = getUserData();
@@ -35,17 +33,11 @@ export const sendMessage = async (params: SendMessageRequest): Promise<SendMessa
       conversationId: params.conversationId
     };
 
-    console.log(
-      `[sendMessage] User ID ${userData.id} found. Sending message to chat ${params.chat_id}:`,
-      requestBody
-    );
-
     const response = await apiClient.post<SendMessageResponse>(
       `/api/chat/${params.chat_id}/message`,
       requestBody
     );
 
-    console.log('[sendMessage] Successfully sent message:', response.data);
     return response.data;
   } catch (error) {
     console.error('[sendMessage] Failed to send message:', error);

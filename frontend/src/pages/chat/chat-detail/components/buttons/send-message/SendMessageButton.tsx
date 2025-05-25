@@ -32,15 +32,11 @@ export function SendMessageButton({
     setInput('');
 
     try {
-      console.log('[SendMessageButton] Sending message to chat:', chatId);
-
       const response = await sendMessage({
         chat_id: chatId,
         message: messageText,
         conversationId: chatId
       });
-
-      console.log('[SendMessageButton] Message sent successfully:', response);
 
       // Call callback if provided
       if (onMessageSent) {

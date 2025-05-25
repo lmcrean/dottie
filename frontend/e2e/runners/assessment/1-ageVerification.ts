@@ -9,7 +9,7 @@ import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
  */
 export const runAgeVerificationStep = async (page: Page): Promise<void> => {
   // Navigate to age verification
-  console.log('Running age verification step');
+
   await page.goto('http://localhost:3005/assessment/age-verification');
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(1000); // Give the page a moment to stabilize
@@ -30,12 +30,11 @@ export const runAgeVerificationStep = async (page: Page): Promise<void> => {
   await debugPage(page);
 
   // Select "25+ years" option
-  console.log("Selecting '25+ years' option");
+
   try {
     // Try finding the option using data-testid
     const ageOption = page.getByTestId('option-25-plus');
     await ageOption.click();
-    console.log('Selected 25+ years using data-testid');
   } catch (error) {
     console.error('Error selecting age option:', error);
 
@@ -44,13 +43,11 @@ export const runAgeVerificationStep = async (page: Page): Promise<void> => {
       const ageOptions = await page.locator('label').filter({ hasText: '25+ years' }).all();
       if (ageOptions.length > 0) {
         await ageOptions[0].click();
-        console.log('Selected 25+ years using label text');
       } else {
         // Try finding all radio buttons and click the last one (25+ years)
         const radioButtons = await page.locator('input[type="radio"]').all();
         if (radioButtons.length > 0) {
           await radioButtons[radioButtons.length - 1].click();
-          console.log('Selected last radio button (assumed to be 25+ years)');
         }
       }
     } catch (innerError) {
@@ -62,7 +59,7 @@ export const runAgeVerificationStep = async (page: Page): Promise<void> => {
   await page.waitForTimeout(500); // Short wait after selection
 
   // Click Continue button
-  console.log('Clicking Continue button on age verification page');
+
   try {
     // Use data-testid to find the continue button
     const continueButton = page.getByTestId('continue-button');
@@ -73,11 +70,9 @@ export const runAgeVerificationStep = async (page: Page): Promise<void> => {
 
     // Click the button
     await continueButton.click();
-    console.log('Continue button clicked, waiting for navigation to cycle length page...');
 
     // Wait for navigation to complete
     await navigationPromise;
-    console.log('Successfully navigated to cycle length page');
 
     // Wait for the page to stabilize
     await page.waitForLoadState('networkidle');

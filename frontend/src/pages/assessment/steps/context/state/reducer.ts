@@ -15,19 +15,15 @@ export function assessmentResultReducer(
 ): AssessmentResultState {
   switch (action.type) {
     case 'SET_RESULT':
-      console.log('Reducer - SET_RESULT action with payload:', action.payload);
       return {
         ...state,
         result: action.payload,
         isComplete: true
       };
     case 'UPDATE_RESULT': {
-      console.log('Reducer - UPDATE_RESULT action with payload:', action.payload);
-      console.log('Reducer - Current state:', state);
-
       // Special handling for pain_level for debugging
       if ('pain_level' in action.payload) {
-        console.log('Reducer - Updating pain_level to:', action.payload.pain_level);
+        // Debug logging would go here if needed
       }
 
       // Handle case where result is null and this is the first update
@@ -41,7 +37,6 @@ export function assessmentResultReducer(
           }
         };
 
-        console.log('Reducer - New state after update:', updatedState);
         return updatedState;
       }
 
@@ -51,21 +46,17 @@ export function assessmentResultReducer(
         result: { ...state.result, ...action.payload }
       };
 
-      console.log('Reducer - New state after update:', updatedState);
       return updatedState;
     }
     case 'RESET_RESULT':
-      console.log('Reducer - RESET_RESULT action');
       return initialState;
     case 'SET_PATTERN': {
-      console.log('Reducer - SET_PATTERN action with payload:', action.payload);
       return {
         ...state,
         result: state.result ? { ...state.result, pattern: action.payload } : null
       };
     }
     case 'SET_RECOMMENDATIONS': {
-      console.log('Reducer - SET_RECOMMENDATIONS action');
       return {
         ...state,
         result: state.result ? { ...state.result, recommendations: action.payload } : null

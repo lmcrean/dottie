@@ -12,19 +12,19 @@
  * @returns {Promise<Object>} Result with user ID and token
  */
 export async function registerUser(request, userData) {
-  console.log(`Attempting to register user with data:`, JSON.stringify(userData));
+
   
   try {
     const response = await request.post("/api/auth/signup", {
       data: userData,
     });
 
-    console.log(`Registration response status: ${response.status()}`);
+
     
     let responseText;
     try {
       responseText = await response.text();
-      console.log(`Registration response body: ${responseText}`);
+
     } catch (error) {
       console.error("Failed to get response text:", error);
     }
@@ -44,7 +44,7 @@ export async function registerUser(request, userData) {
       throw new Error(`Failed to register user: ${response.status()}`);
     }
 
-    console.log("Registration successful. User ID:", data.id);
+
 
     // The API directly returns the user object and doesn't wrap it in a 'user' property
     // and the token is generated separately - we'll handle this by logging in after registration

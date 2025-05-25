@@ -93,7 +93,7 @@ describe('AgeRange component', () => {
       // Create a debug wrapper component that logs the actual prop
       const DebugAgeRangeWrapper = () => {
         const { age } = useAssessmentDataModule.useAssessmentData();
-        console.log(`DEBUG: AgeRange received age prop: ${age}`);
+
         return <AgeRange age={age} />;
       };
 

@@ -14,7 +14,7 @@ interface MockPage {
 }
 
 export async function runAuthFlow(page: MockPage, state: AppState): Promise<AppState> {
-  console.log('Running auth flow...');
+
   
   // Define common selectors
   const selectors = {
@@ -68,7 +68,7 @@ export async function runAuthFlow(page: MockPage, state: AppState): Promise<AppS
   // Generate a fake user ID for testing purposes
   const userId = `user-${Math.floor(Math.random() * 10000)}`;
   
-  console.log('Auth flow completed');
+
   
   return {
     ...state,

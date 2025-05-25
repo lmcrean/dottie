@@ -57,19 +57,19 @@ class AssessmentBase {
    */
   static async listByUser(userId) {
     try {
-      console.log('[AssessmentBase.listByUser] Listing assessments for userId:', userId);
+
 
       // Use in-memory store for tests
       if (isTestMode) {
         const testUserAssessments = Object.values(testAssessments)
           .filter(assessment => assessment.user_id === userId);
-        console.log('[AssessmentBase.listByUser] Test mode - assessments for user:', testUserAssessments);
+
         return testUserAssessments;
       }
       
       // Get all assessments for user
       const rawAssessments = await DbService.findBy('assessments', 'user_id', userId);
-      console.log('[AssessmentBase.listByUser] Raw assessments from DbService.findBy:', rawAssessments);
+
       
       // Dynamically import models once
       const LegacyAssessment = (await import('./LegacyAssessment.js')).default;
@@ -83,7 +83,7 @@ class AssessmentBase {
           return FlattenedAssessment._transformDbRecordToApiResponse(assessment);
         }
       });
-      console.log('[AssessmentBase.listByUser] Transformed assessments:', transformedAssessments);
+
       return transformedAssessments;
     } catch (error) {
       console.error(`[AssessmentBase.listByUser] Error listing assessments for userId ${userId}:`, error);

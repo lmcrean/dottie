@@ -27,8 +27,6 @@ export interface SendInitialMessageResponse {
 export const sendInitialMessage = async (
   params: SendInitialMessageRequest
 ): Promise<SendInitialMessageResponse> => {
-  console.log(`[sendInitialMessage] Sending initial message:`, params);
-
   try {
     // Get the user data from token manager
     const userData = getUserData();
@@ -43,17 +41,11 @@ export const sendInitialMessage = async (
       is_initial: true
     };
 
-    console.log(
-      `[sendInitialMessage] User ID ${userData.id} found. Sending message to chat ${params.chat_id}:`,
-      requestBody
-    );
-
     const response = await apiClient.post<SendInitialMessageResponse>(
       `/api/chat/${params.chat_id}/message/initial`,
       requestBody
     );
 
-    console.log('[sendInitialMessage] Successfully sent initial message:', response.data);
     return response.data;
   } catch (error) {
     console.error('[sendInitialMessage] Failed to send initial message:', error);

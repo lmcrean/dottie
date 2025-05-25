@@ -7,8 +7,6 @@
  */
 
 export async function runChatTests(page, state) {
-  console.log('Chat tests not yet implemented');
-
   // In a real implementation, these functions would:
   // - Test starting a new conversation
   // - Test sending messages
@@ -22,8 +20,6 @@ export async function runChatTests(page, state) {
 }
 
 export async function cleanupChatResources(page, state) {
-  console.log('Chat cleanup not yet implemented');
-
   // In a real implementation, this would delete test conversations
 
   return {

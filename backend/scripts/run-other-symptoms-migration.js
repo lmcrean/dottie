@@ -5,12 +5,12 @@ import { addOtherSymptomsColumn } from '../db/migrations/add-other-symptoms.js';
 import { db } from '../db/index.js';
 
 async function runMigration() {
-  console.log('Starting migration to add other_symptoms column to assessments table...');
+
   
   try {
     // Run the migration using the existing database connection
     await addOtherSymptomsColumn(db);
-    console.log('Migration completed successfully');
+
   } catch (error) {
     console.error('Migration failed:', error);
   }

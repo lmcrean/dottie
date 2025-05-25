@@ -240,7 +240,7 @@ app.post("/api/assessment/send", async (req, res) => {
 
 // Catch-all 404 handler
 app.use((req, res) => {
-  console.log(`Route not found: ${req.method} ${req.path}`);
+
   res.status(404).json({ error: "Resource not found" });
 });
 

@@ -13,7 +13,7 @@ import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { login, isAuthenticated, user } = useAuth();
+  const { login } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
 
@@ -52,23 +52,6 @@ export default function SignInPage() {
     try {
       await login(data);
       toast.success('Successfully signed in!');
-
-      // Debug: Log authentication token and user data
-      console.log('[Auth Debug] After login - localStorage items:', {
-        authToken: localStorage.getItem('authToken'),
-        refresh_token: localStorage.getItem('refresh_token'),
-        user: localStorage.getItem('user'),
-        auth_user: localStorage.getItem('auth_user')
-      });
-
-      // Log context values
-      setTimeout(() => {
-        // Log auth state after login
-        console.log('[Auth Debug] Auth context after login:', {
-          isAuthenticated,
-          user
-        });
-      }, 100);
 
       navigate('/assessment/age-verification');
     } catch (error: unknown) {

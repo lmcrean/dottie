@@ -7,8 +7,6 @@
  */
 
 export async function runUserTests(page, state) {
-  console.log('User tests not yet implemented');
-
   // In a real implementation, these functions would:
   // - Test viewing user profile
   // - Test updating user information

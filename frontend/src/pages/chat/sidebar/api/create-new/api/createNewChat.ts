@@ -19,8 +19,6 @@ export interface CreateChatResponse {
  * @endpoint /api/chat (POST)
  */
 export const createNewChat = async (params?: CreateChatRequest): Promise<CreateChatResponse> => {
-  console.log(`[createNewChat] Creating new chat with params:`, params);
-
   try {
     // Get the user data from token manager
     const userData = getUserData();
@@ -34,11 +32,8 @@ export const createNewChat = async (params?: CreateChatRequest): Promise<CreateC
       initial_message: params?.initial_message
     };
 
-    console.log(`[createNewChat] User ID ${userData.id} found. Creating chat with:`, requestBody);
-
     const response = await apiClient.post<CreateChatResponse>('/api/chat', requestBody);
 
-    console.log('[createNewChat] Successfully created chat:', response.data);
     return response.data;
   } catch (error) {
     console.error('[createNewChat] Failed to create new chat:', error);

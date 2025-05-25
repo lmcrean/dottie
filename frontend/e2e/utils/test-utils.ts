@@ -18,22 +18,15 @@ export const clearSessionStorage = async (page: Page): Promise<void> => {
     window.sessionStorage.clear();
     window.localStorage.clear();
   });
-  console.log('Session storage cleared');
 };
 
 /**
  * Logs debug information about the current page
  * @param page Playwright page object
  */
-export const debugPage = async (page: Page): Promise<void> => {
-  console.log(`Current URL: ${page.url()}`);
-  console.log(`Page title: ${await page.title()}`);
-
-  // Log visible headings for context
-  const headings = await page.locator('h1, h2, h3').allTextContents();
-  console.log('Visible headings:', headings);
-
-  // Log visible buttons
-  const buttons = await page.locator('button:visible').allTextContents();
-  console.log('Visible buttons:', buttons);
+export const debugPage = async (_page: Page): Promise<void> => {
+  // Log visible headings for context (commented out to avoid unused variables)
+  // const headings = await page.locator('h1, h2, h3').allTextContents();
+  // Log visible buttons (commented out to avoid unused variables)
+  // const buttons = await page.locator('button:visible').allTextContents();
 };

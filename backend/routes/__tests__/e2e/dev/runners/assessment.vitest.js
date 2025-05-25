@@ -32,16 +32,16 @@ export async function createAssessment(
     }
   };
 
-  console.log('Creating assessment payload:', JSON.stringify(flattenedData));
-  console.log('Using auth token:', token?.substring(0, 20) + '...'); // Check if token exists
+
+
 
   // Use supertest: post(url).set(header, value).send(data)
   const response = await request.post("/api/assessment/send")
     .set('Authorization', `Bearer ${token}`)
     .send(flattenedData);
 
-  console.log('Assessment creation status:', response.status);
-  console.log('Assessment creation body:', JSON.stringify(response.body || response.text));
+
+
 
   if (response.status !== 201) {
     const error = new Error(`Failed to create assessment: ${response.status}`);
@@ -64,12 +64,12 @@ export async function getAssessments(request, token) {
   const response = await request.get("/api/assessment/list")
     .set('Authorization', `Bearer ${token}`);
 
-  console.log('Get assessments list status:', response.status);
-  console.log('Assessments list body:', JSON.stringify(response.body).substring(0, 300) + '...');
+
+
 
   // If 404 (no assessments found), return empty array as per original logic
   if (response.status === 404) {
-    console.log('No assessments found - returning empty array');
+
     return [];
   }
 
@@ -94,8 +94,8 @@ export async function getAssessmentById(request, token, assessmentId) {
   const response = await request.get(`/api/assessment/${assessmentId}`)
     .set('Authorization', `Bearer ${token}`);
 
-  console.log(`Get assessment by ID ${assessmentId} - Status: ${response.status}`);
-  console.log(`Get assessment body: ${JSON.stringify(response.body)}`);
+
+
 
   // Check for non-200 status BEFORE returning body
   if (response.status !== 200) {
@@ -133,16 +133,16 @@ export async function updateAssessment(
     emotional_symptoms: updateData.symptoms?.emotional || updateData.emotional_symptoms || []
   };
 
-  console.log(`Updating assessment ${assessmentId}`); // Removed userId reference as it might be implicit
-  console.log('Update payload:', JSON.stringify(payload));
+
+
 
   // Use supertest: put(url).set(header, value).send(data)
   const response = await request.put(`/api/assessment/${assessmentId}`)
     .set('Authorization', `Bearer ${token}`)
     .send(payload);
 
-  console.log(`Update assessment status: ${response.status}`);
-  console.log(`Update assessment body: ${JSON.stringify(response.body || response.text)}`);
+
+
 
   // Accept 200 or 204 (no content) as success
   if (response.status !== 200 && response.status !== 204) {
@@ -174,15 +174,15 @@ export async function updateAssessment(
  * @returns {Promise<boolean>} True if deleted successfully
  */
 export async function deleteAssessment(request, token, userId, assessmentId) {
-  console.log(`Deleting assessment ${assessmentId} for user ${userId}`);
+
 
   // Use supertest: delete(url).set(header, value)
   const response = await request.delete(`/api/assessment/${userId}/${assessmentId}`)
     .set('Authorization', `Bearer ${token}`);
 
-  console.log(`Delete assessment status: ${response.status}`);
+
   try {
-    console.log(`Delete assessment response body: ${JSON.stringify(response.body || response.text)}`);
+
   } catch (error) {
     console.error("Error logging delete response body:", error);
   }
