@@ -1,4 +1,4 @@
-class FormatDetector {
+class DetectAssessmentFormat {
   /**
    * Determine if a record is in legacy format
    * @param {Object} record - Database record
@@ -31,4 +31,4 @@ class FormatDetector {
   }
 }
 
-export default FormatDetector; 
+export default DetectAssessmentFormat; 

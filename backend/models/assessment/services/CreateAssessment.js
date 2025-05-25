@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import DbService from '../../../services/dbService.js';
-import TransformApiToDb from './TransformApiToDb.js';
+import TransformApiToDb from '../transformers/TransformApiToDb.js';
 
 class CreateAssessment {
   /**

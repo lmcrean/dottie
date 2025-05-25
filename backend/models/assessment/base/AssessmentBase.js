@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import FindAssessment from './FindAssessment.js';
-import DeleteAssessment from './DeleteAssessment.js';
-import ValidateAssessment from './ValidateAssessment.js';
+import FindAssessment from '../services/FindAssessment.js';
+import DeleteAssessment from '../services/DeleteAssessment.js';
+import ValidateAssessmentData from '../validators/ValidateAssessmentData.js';
+import ValidateAssessmentOwnership from '../validators/ValidateAssessmentOwnership.js';
 
 class AssessmentBase {
   /**
@@ -24,7 +25,7 @@ class AssessmentBase {
    * @returns {boolean} True if this class can process the record
    */
   static _canProcessRecord(record) {
-    return ValidateAssessment._canProcessRecord(record);
+    return ValidateAssessmentData._canProcessRecord(record);
   }
 
   /**
@@ -52,7 +53,7 @@ class AssessmentBase {
    * @returns {Promise<boolean>} True if user is owner, false otherwise
    */
   static async validateOwnership(assessmentId, userId) {
-    return ValidateAssessment.validateOwnership(assessmentId, userId);
+    return ValidateAssessmentOwnership.validateOwnership(assessmentId, userId);
   }
 }
 

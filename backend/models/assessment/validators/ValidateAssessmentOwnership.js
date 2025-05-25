@@ -1,18 +1,6 @@
 import db from '../../../db/index.js';
 
-class ValidateAssessment {
-  /**
-   * Check if this class can process the given record format
-   * Must be implemented by subclasses
-   * @param {Object} record - Database record
-   * @returns {boolean} True if this class can process the record
-   */
-  static _canProcessRecord(record) {
-    // Base implementation always returns false
-    // Subclasses should override with specific format checks
-    return false;
-  }
-
+class ValidateAssessmentOwnership {
   /**
    * Validate if user is the owner of assessment
    * @param {string} assessmentId - Assessment ID
@@ -36,4 +24,4 @@ class ValidateAssessment {
   }
 }
 
-export default ValidateAssessment; 
+export default ValidateAssessmentOwnership; 

@@ -1,7 +1,7 @@
 import DbService from '../../../services/dbService.js';
-import FormatDetector from './FormatDetector.js';
+import DetectAssessmentFormat from '../detectors/DetectAssessmentFormat.js';
 
-class CleanAssessmentOperations {
+class RouteAssessment {
   /**
    * Find an assessment by ID, routing to appropriate handler
    * @param {string} id - Assessment ID
@@ -17,11 +17,11 @@ class CleanAssessmentOperations {
       }
       
       // Route to appropriate transformer
-      if (FormatDetector.isLegacyFormat(rawRecord)) {
+      if (DetectAssessmentFormat.isLegacyFormat(rawRecord)) {
         const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
         return LegacyAssessment._transformDbRecordToApiResponse(rawRecord);
-      } else if (FormatDetector.isCurrentFormat(rawRecord)) {
-        const TransformDbToApi = (await import('../assessment-main/TransformDbToApi.js')).default;
+      } else if (DetectAssessmentFormat.isCurrentFormat(rawRecord)) {
+        const TransformDbToApi = (await import('../transformers/TransformDbToApi.js')).default;
         return TransformDbToApi.transform(rawRecord);
       }
       
@@ -44,11 +44,11 @@ class CleanAssessmentOperations {
       // Transform each assessment based on its format
       const transformedAssessments = await Promise.all(
         rawAssessments.map(async (assessment) => {
-          if (FormatDetector.isLegacyFormat(assessment)) {
+          if (DetectAssessmentFormat.isLegacyFormat(assessment)) {
             const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
             return LegacyAssessment._transformDbRecordToApiResponse(assessment);
-          } else if (FormatDetector.isCurrentFormat(assessment)) {
-            const TransformDbToApi = (await import('../assessment-main/TransformDbToApi.js')).default;
+          } else if (DetectAssessmentFormat.isCurrentFormat(assessment)) {
+            const TransformDbToApi = (await import('../transformers/TransformDbToApi.js')).default;
             return TransformDbToApi.transform(assessment);
           }
           return null;
@@ -104,14 +104,14 @@ class CleanAssessmentOperations {
    * @returns {Promise<Object>} Created assessment object
    */
   static async create(assessmentData, userId) {
-    const format = FormatDetector.detectDataFormat(assessmentData);
+    const format = DetectAssessmentFormat.detectDataFormat(assessmentData);
     
     if (format === 'legacy') {
       const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
       return await LegacyAssessment.create(assessmentData, userId);
     } else {
-      const Assessment = (await import('../assessment-main/Assessment.js')).default;
-      return await Assessment.create(assessmentData, userId);
+      const CreateAssessment = (await import('./CreateAssessment.js')).default;
+      return await CreateAssessment.execute(assessmentData, userId);
     }
   }
 
@@ -122,16 +122,16 @@ class CleanAssessmentOperations {
    * @returns {Promise<Object>} Updated assessment object
    */
   static async update(id, assessmentData) {
-    const format = FormatDetector.detectDataFormat(assessmentData);
+    const format = DetectAssessmentFormat.detectDataFormat(assessmentData);
     
     if (format === 'legacy') {
       const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
       return await LegacyAssessment.update(id, assessmentData);
     } else {
-      const Assessment = (await import('../assessment-main/Assessment.js')).default;
-      return await Assessment.update(id, assessmentData);
+      const UpdateAssessment = (await import('./UpdateAssessment.js')).default;
+      return await UpdateAssessment.execute(id, assessmentData);
     }
   }
 }
 
-export default CleanAssessmentOperations; 
+export default RouteAssessment; 

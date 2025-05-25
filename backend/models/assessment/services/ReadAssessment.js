@@ -1,6 +1,6 @@
 import DbService from '../../../services/dbService.js';
-import TransformDbToApi from './TransformDbToApi.js';
-import FormatDetector from '../assessment-base/FormatDetector.js';
+import TransformDbToApi from '../transformers/TransformDbToApi.js';
+import DetectAssessmentFormat from '../detectors/DetectAssessmentFormat.js';
 
 class ReadAssessment {
   /**
@@ -18,7 +18,7 @@ class ReadAssessment {
       }
       
       // Check if this class can handle this format
-      if (!FormatDetector.isCurrentFormat(assessment)) {
+      if (!DetectAssessmentFormat.isCurrentFormat(assessment)) {
         return null;
       }
       
@@ -45,7 +45,7 @@ class ReadAssessment {
    * @returns {boolean} True if this class can process the record
    */
   static canProcessRecord(record) {
-    return FormatDetector.isCurrentFormat(record);
+    return DetectAssessmentFormat.isCurrentFormat(record);
   }
 }
 

@@ -40,14 +40,14 @@ class FindAssessment {
       
       // Dynamically import models once
       const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
-      const Assessment = (await import('../assessment-main/Assessment.js')).default;
+      const TransformDbToApi = (await import('../transformers/TransformDbToApi.js')).default;
 
       const transformedAssessments = rawAssessments.map(assessment => {
         // We need to decide which _transformDbRecordToApiResponse to call.
         if (assessment.assessment_data) { // If legacy
           return LegacyAssessment._transformDbRecordToApiResponse(assessment);
         } else { // If current format
-          return Assessment._transformDbRecordToApiResponse(assessment);
+          return TransformDbToApi.transform(assessment);
         }
       });
 
