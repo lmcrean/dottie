@@ -17,29 +17,29 @@ foreach ($file in $files) {
             $fileFixed = $false
             
             # Fix empty app imports
-            if ($content -match "import app from '';") {
-                $content = $content -replace "import app from '';", "import app from '../../../server.js';"
+            if ($content -match 'import app from '''';') {
+                $content = $content -replace 'import app from '''';', 'import app from ''../../../server.js'';'
                 $fileFixed = $true
                 $totalFixes++
             }
             
             # Fix empty User imports
-            if ($content -match "import User from '';") {
-                $content = $content -replace "import User from '';", "import User from '../../../models/user/User.js';"
+            if ($content -match 'import User from '''';') {
+                $content = $content -replace 'import User from '''';', 'import User from ''../../../models/user/User.js'';'
                 $fileFixed = $true
                 $totalFixes++
             }
             
             # Fix empty db imports with curly braces
-            if ($content -match "import \{ db \} from '';") {
-                $content = $content -replace "import \{ db \} from '';", "import { db } from '../../db/index.js';"
+            if ($content -match 'import \{ db \} from '''';') {
+                $content = $content -replace 'import \{ db \} from '''';', 'import { db } from ''../../db/index.js'';'
                 $fileFixed = $true
                 $totalFixes++
             }
             
             # Fix empty db default imports
-            if ($content -match "import db from '';") {
-                $content = $content -replace "import db from '';", "import db from '../../db/index.js';"
+            if ($content -match 'import db from '''';') {
+                $content = $content -replace 'import db from '''';', 'import db from ''../../db/index.js'';'
                 $fileFixed = $true
                 $totalFixes++
             }
