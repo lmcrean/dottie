@@ -1,5 +1,5 @@
 // TODO: Fix empty import
-import db from '../../db/index.js';
+import db from '../../../../db/index.js';
 // TODO: Fix empty import
 
 
@@ -34,7 +34,7 @@ export const listAssessments = async (req, res) => {
             // Determine format based on presence of assessment_data field
             if (assessment.assessment_data) {
               // Legacy format - parse symptoms from separate table or JSON
-              let symptoms = { physical: [], emotional: [] };
+              const symptoms = { physical: [], emotional: [] };
               
               // Parse physical and emotional symptoms from JSON if they exist
               try {

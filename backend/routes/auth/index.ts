@@ -1,12 +1,10 @@
 import express from 'express';
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
-import userRoutes from './routes/user/index.js';
-// Import other auth routes as needed
-// // TODO: Fix empty import
+import loginRoutes from './login/route.js';
+import logoutRoutes from './logout/route.js';
+import signupRoutes from './signup/route.js';
+import refreshRoutes from './refresh/route.js';
+import verifyRoutes from './verify/route.js';
+import userRoutes from '../user/index.js';
 
 const router = express.Router();
 

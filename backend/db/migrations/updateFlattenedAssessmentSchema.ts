@@ -1,4 +1,7 @@
 /**
+
+import db from '../../../db/index.js';
+/**
  * Migration script to update assessment schema from nested to flattened structure
  * This changes the assessments table to have individual columns for all assessment fields
  * instead of keeping them in a JSON field called assessment_data

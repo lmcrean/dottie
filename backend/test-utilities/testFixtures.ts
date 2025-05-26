@@ -2,7 +2,7 @@
 
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import { TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common.js';
+import { TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 
 /**
  * Generate test user data

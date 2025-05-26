@@ -1,12 +1,12 @@
 import express from "express";
 
 // Import route files
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
+import createRouter from './create/routes.js';
+import listRouter from './getList/routes.js';
+import detailRouter from './getDetail/routes.js';
+import deleteRouter from './delete/routes.js';
 // TODO: Update route implementation missing - uncomment when implemented
-// // TODO: Fix empty import
-// TODO: Fix empty import
+// import updateRouter from './update/routes.js';
 
 const router = express.Router();
 

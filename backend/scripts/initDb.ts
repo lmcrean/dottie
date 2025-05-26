@@ -1,4 +1,4 @@
-import { createTables } from '../db/init.js';
+// TODO: Fix createTables import
 import db from '../../db/index.js';
 
 /**

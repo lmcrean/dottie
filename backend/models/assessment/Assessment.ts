@@ -1,4 +1,4 @@
-// TODO: Fix empty import
+import RouteAssessment from './services/RouteAssessment.ts';
 
 /**
  * Assessment - Unified entry point for all assessment operations

@@ -1,6 +1,6 @@
 // Admin-only route to fix database schema issues
 import express from 'express';
-import db from '../../db/index.js';
+import db from '../../../db/index.js';
 
 const router = express.Router();
 

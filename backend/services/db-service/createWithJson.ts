@@ -1,5 +1,5 @@
-import { db } from '../../db/index.js';
-import { findById } from '../../services/db-service/findById.js';
+import { db } from '../../../db/index.js';
+import { findById } from './findById.js';
 
 /**
  * Create a new record with JSON fields auto-stringified

@@ -1,10 +1,10 @@
+import CreateAssessment from '../types/common'
+import Assessment from '../types/common'
 import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../types/common';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-// TODO: Fix empty import
-// TODO: Fix empty import
 
 // Mock the operations class
-vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.ts');
+vi.mock('../../../models/assessment/assessment-base/CreateAssessment.ts');
 
 describe('Assessment', () => {
   beforeEach(() => {
@@ -16,20 +16,20 @@ describe('Assessment', () => {
   });
 
   describe('findById', () => {
-    it('should delegate to CleanAssessmentOperations.findById', async () => {
+    it('should delegate to CreateAssessment.findById', async () => {
       const testId = 'test-assessment-123';
       const mockAssessment = { id: testId, user_id: 'test-user' };
 
-      CleanAssessmentOperations.findById.mockResolvedValue(mockAssessment);
+      CreateAssessment.findById.mockResolvedValue(mockAssessment);
 
       const result = await Assessment.findById(testId);
 
-      expect(CleanAssessmentOperations.findById).toHaveBeenCalledWith(testId);
+      expect(CreateAssessment.findById).toHaveBeenCalledWith(testId);
       expect(result).toEqual(mockAssessment);
     });
 
     it('should return null when assessment not found', async () => {
-      CleanAssessmentOperations.findById.mockResolvedValue(null);
+      CreateAssessment.findById.mockResolvedValue(null);
 
       const result = await Assessment.findById('non-existent');
 
@@ -38,75 +38,75 @@ describe('Assessment', () => {
   });
 
   describe('create', () => {
-    it('should delegate to CleanAssessmentOperations.create', async () => {
+    it('should delegate to CreateAssessment.create', async () => {
       const assessmentData = { age: 30, pattern: 'regular' };
       const userId = 'test-user-123';
       const mockCreated = { id: 'new-assessment', ...assessmentData, user_id: userId };
 
-      CleanAssessmentOperations.create.mockResolvedValue(mockCreated);
+      CreateAssessment.create.mockResolvedValue(mockCreated);
 
       const result = await Assessment.create(assessmentData, userId);
 
-      expect(CleanAssessmentOperations.create).toHaveBeenCalledWith(assessmentData, userId);
+      expect(CreateAssessment.create).toHaveBeenCalledWith(assessmentData, userId);
       expect(result).toEqual(mockCreated);
     });
   });
 
   describe('update', () => {
-    it('should delegate to CleanAssessmentOperations.update', async () => {
+    it('should delegate to CreateAssessment.update', async () => {
       const assessmentId = 'test-assessment-123';
       const updateData = { age: 31, pattern: 'irregular' };
       const mockUpdated = { id: assessmentId, ...updateData };
 
-      CleanAssessmentOperations.update.mockResolvedValue(mockUpdated);
+      CreateAssessment.update.mockResolvedValue(mockUpdated);
 
       const result = await Assessment.update(assessmentId, updateData);
 
-      expect(CleanAssessmentOperations.update).toHaveBeenCalledWith(assessmentId, updateData);
+      expect(CreateAssessment.update).toHaveBeenCalledWith(assessmentId, updateData);
       expect(result).toEqual(mockUpdated);
     });
   });
 
   describe('listByUser', () => {
-    it('should delegate to CleanAssessmentOperations.listByUser', async () => {
+    it('should delegate to CreateAssessment.listByUser', async () => {
       const userId = 'test-user-123';
       const mockAssessments = [
         { id: 'assessment-1', user_id: userId },
         { id: 'assessment-2', user_id: userId }
       ];
 
-      CleanAssessmentOperations.listByUser.mockResolvedValue(mockAssessments);
+      CreateAssessment.listByUser.mockResolvedValue(mockAssessments);
 
       const result = await Assessment.listByUser(userId);
 
-      expect(CleanAssessmentOperations.listByUser).toHaveBeenCalledWith(userId);
+      expect(CreateAssessment.listByUser).toHaveBeenCalledWith(userId);
       expect(result).toEqual(mockAssessments);
     });
   });
 
   describe('delete', () => {
-    it('should delegate to CleanAssessmentOperations.delete', async () => {
+    it('should delegate to CreateAssessment.delete', async () => {
       const assessmentId = 'test-assessment-123';
 
-      CleanAssessmentOperations.delete.mockResolvedValue(true);
+      CreateAssessment.delete.mockResolvedValue(true);
 
       const result = await Assessment.delete(assessmentId);
 
-      expect(CleanAssessmentOperations.delete).toHaveBeenCalledWith(assessmentId);
+      expect(CreateAssessment.delete).toHaveBeenCalledWith(assessmentId);
       expect(result).toBe(true);
     });
   });
 
   describe('validateOwnership', () => {
-    it('should delegate to CleanAssessmentOperations.validateOwnership', async () => {
+    it('should delegate to CreateAssessment.validateOwnership', async () => {
       const assessmentId = 'test-assessment-123';
       const userId = 'test-user-123';
 
-      CleanAssessmentOperations.validateOwnership.mockResolvedValue(true);
+      CreateAssessment.validateOwnership.mockResolvedValue(true);
 
       const result = await Assessment.validateOwnership(assessmentId, userId);
 
-      expect(CleanAssessmentOperations.validateOwnership).toHaveBeenCalledWith(assessmentId, userId);
+      expect(CreateAssessment.validateOwnership).toHaveBeenCalledWith(assessmentId, userId);
       expect(result).toBe(true);
     });
 
@@ -114,7 +114,7 @@ describe('Assessment', () => {
       const assessmentId = 'test-assessment-123';
       const userId = 'different-user';
 
-      CleanAssessmentOperations.validateOwnership.mockResolvedValue(false);
+      CreateAssessment.validateOwnership.mockResolvedValue(false);
 
       const result = await Assessment.validateOwnership(assessmentId, userId);
 

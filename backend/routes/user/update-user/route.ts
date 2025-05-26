@@ -1,7 +1,7 @@
 import express from 'express';
 import { updateUser } from './controller.js';
-import { authenticateToken } from '../../auth/middleware/index.js';
-import { validateUserUpdate } from '../../auth/middleware/validators/userValidators.js';
+// TODO: Fix middleware import: 
+// TODO: Fix middleware import: 
 
 const router = express.Router();
 

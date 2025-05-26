@@ -1,3 +1,4 @@
+import DbService from '../../../db/index.ts'
 // TODO: Fix empty import
 
 class DeleteAssessment {

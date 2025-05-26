@@ -1,5 +1,5 @@
 import logger from './logger';
-import { MockResponse } from '../types/common.js';
+import { MockResponse } from '../types/common';
 
 // Type definitions
 interface WebhookEndpoint {

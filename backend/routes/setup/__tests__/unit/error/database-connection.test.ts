@@ -1,6 +1,6 @@
 import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import db from '../../db/index.js';
+import db from '../../../../../../db/index.js';
 
 // Mock the database module
 vi.mock('../../../../../db/index.js', () => {

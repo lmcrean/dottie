@@ -14,4 +14,4 @@ const require = createRequire(import.meta.url);
 const serverPath = resolve(__dirname, '../../server.js');
 
 // Import and re-export the default export from the main server.js
-export { default } from './index.js'; 
+export { default } from '../types/common'; 

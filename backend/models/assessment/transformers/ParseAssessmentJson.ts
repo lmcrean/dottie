@@ -1,3 +1,4 @@
+import ParseAssessmentJson from '../validators/ParseAssessmentJson.ts'
 class ParseAssessmentJson {
   /**
    * Parse array field from database (handles both JSON strings and arrays)

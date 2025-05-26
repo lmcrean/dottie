@@ -1,4 +1,4 @@
-// TODO: Fix empty import
+import UserBase from '../base/UserBase.ts';
 
 /**
  * User data sanitization utilities
@@ -46,7 +46,7 @@ class SanitizeUserData {
     const safUser = {};
 
     safeColumns.forEach(column => {
-      if (user.hasOwnProperty(column)) {
+      if (Object.prototype.hasOwnProperty.call(user, column)) {
         safUser[column] = user[column];
       }
     });

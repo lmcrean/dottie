@@ -1,3 +1,4 @@
+import ParseAssessmentJson from '../validators/ParseAssessmentJson.ts'
 // TODO: Fix empty import
 
 class TransformDbToApi {

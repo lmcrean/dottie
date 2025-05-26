@@ -1,4 +1,4 @@
-import { findById } from '../../services/db-service/findById.js';
+import { findById } from './findById.js';
 
 /**
  * Find a record by ID and auto-parse JSON fields

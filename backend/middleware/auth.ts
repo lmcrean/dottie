@@ -1,3 +1,4 @@
+import logger from '../services/logger.ts'
 import jwt from 'jsonwebtoken';
 // TODO: Fix empty import
 

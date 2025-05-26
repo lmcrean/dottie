@@ -1,4 +1,4 @@
-import User from '../../../models/user/User.js';
+import User from '../../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 // TODO: Fix empty import

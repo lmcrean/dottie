@@ -11,6 +11,7 @@
  */
 
 import { fileURLToPath } from 'url';
+import db from '../../../db/index.js';
 
 export async function fixChatTimestampColumns(db) {
 

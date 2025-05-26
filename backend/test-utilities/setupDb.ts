@@ -1,5 +1,5 @@
 // Global setup file for test database
-import { getEnvironment } from './urls.js';
+import { getEnvironment } from '../types/common';
 
 // Set test mode
 process.env.TEST_MODE = 'true';

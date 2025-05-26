@@ -1,4 +1,4 @@
-import { db } from '../../db/index.js';
+import { db } from '../../../db/index.js';
 
 /**
  * Delete record(s) from a table

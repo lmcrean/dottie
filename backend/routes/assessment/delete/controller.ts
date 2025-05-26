@@ -1,5 +1,5 @@
 // TODO: Fix empty import
-import db from '../../db/index.js';
+import db from '../../../../db/index.js';
 // TODO: Fix empty import
 
 

@@ -13,7 +13,8 @@ export default [
       'coverage/**',
       '*.config.js',
       'playwright-report/**',
-      'test-results/**'
+      'test-results/**',
+      '../.archive/**'
     ],
     languageOptions: {
       parser: typescriptParser,
@@ -21,6 +22,24 @@ export default [
         ecmaVersion: 2022,
         sourceType: 'module',
         project: './tsconfig.json'
+      },
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        global: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        exports: 'writable',
+        module: 'readonly',
+        require: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        fetch: 'readonly',
+        Response: 'readonly',
+        AbortController: 'readonly'
       }
     },
     plugins: {

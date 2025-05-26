@@ -1,20 +1,20 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '../../db/index.js';
+import db from '../../../../../../../../db/index.js';
 import {
   setupTestServer,
   closeTestServer,
   createMockToken,
-} from '';
+} from '../types/common';
 
 // Store server instance and test data
 let server;
 let request;
 let testUserId;
 let testToken;
-let testAssessmentIds = [];
+const testAssessmentIds = [];
 
 // Use a different port for tests
 const TEST_PORT = 5006;

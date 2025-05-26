@@ -1,4 +1,4 @@
-import User from '../../../models/user/User.js';
+import User from '../../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 
 // In-memory storage for test data
@@ -33,7 +33,7 @@ function isStrongPassword(password) {
   
   // Create detailed error message if validation fails
   if (!hasLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecialChar) {
-    let missingRequirements = [];
+    const missingRequirements = [];
     if (!hasLength) missingRequirements.push("at least 8 characters");
     if (!hasUppercase) missingRequirements.push("an uppercase letter");
     if (!hasLowercase) missingRequirements.push("a lowercase letter");

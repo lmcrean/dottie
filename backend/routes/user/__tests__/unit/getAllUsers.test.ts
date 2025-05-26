@@ -2,7 +2,7 @@ import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycl
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
-import User from '../../../models/user/User.js';
+import User from '../../../../../models/user/User.js';
 
 // Mock the User model
 vi.mock('../../../../models/user/User.js', () => ({

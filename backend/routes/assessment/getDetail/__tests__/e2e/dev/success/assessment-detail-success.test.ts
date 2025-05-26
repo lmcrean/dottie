@@ -1,10 +1,10 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '../../db/index.js';
+import db from '../../../../../../../../db/index.js';
 import jwt from "jsonwebtoken";
-import app from '../../../server.js';
+import app from '../types/common';
 
 // Store test data
 let testUserId;

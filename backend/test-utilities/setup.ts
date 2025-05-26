@@ -2,9 +2,9 @@ import supertest from 'supertest';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
-import { resolveFromRoot } from '../paths.js';
-import { getApiUrl, getEnvironment, URLS } from './urls.js';
-import { MockResponse, TestRequestBody, TestOptions } from '../types/common.js';
+// TODO: Fix resolveFromRoot import
+// TODO: Fix getApiUrl, getEnvironment, URLS imports
+import { MockResponse, TestRequestBody, TestOptions } from '../types/common';
 
 /**
  * Dynamically import the app from server.js

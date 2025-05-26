@@ -1,4 +1,5 @@
-import User from '../../../models/user/User.js';
+import User from '../../../../models/user/User.js';
+import EmailService from '../../../services/emailService.js';
 // TODO: Fix empty import
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';

@@ -1,15 +1,17 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../../types/common';
+import logger from '/logger'
+import DbService from '../../../../../../../db/index.js'
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { describe, beforeEach, afterEach, vi } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
 
 // Import test runners
-import { runMessageCreationTests } from './runners/messageCreation.js';
-import { runChatbotResponseTests } from './runners/chatbotResponse.js';
-import { runDialogueSequenceTests } from './runners/dialogueSequence.js';
-import { runDatabaseIntegrationTests } from './runners/databaseIntegration.js';
+import { runMessageCreationTests } from './runners/messageCreation.ts';
+import { runChatbotResponseTests } from './runners/chatbotResponse.ts';
+import { runDialogueSequenceTests } from './runners/dialogueSequence.ts';
+import { runDatabaseIntegrationTests } from './runners/databaseIntegration.ts';
 
 // Import mock data
-import { messageFlowTestData } from './mock-data/messageFlowTestData.js';
+import { messageFlowTestData } from './mock-data/messageFlowTestData.ts';
 
 // Mock dependencies without importing them directly
 vi.mock('@/services/dbService.ts', () => ({

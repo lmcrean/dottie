@@ -1,13 +1,13 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../types/common';
+import logger from '/logger'
+import DbService from '../../../../../../db/index.js'
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { describe, beforeEach, afterEach, vi } from 'vitest';
-// TODO: Fix empty import
-// TODO: Fix empty import
 
 // Import test runners
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
+import { runSuccessfulCreationTests } from './runners/successfulCreation.ts';
+import { runErrorHandlingTests } from './runners/errorHandling.ts';
+import { runDatabaseSequenceTests } from './runners/databaseSequence.ts';
+import { runAssessmentIntegrationTests } from './runners/assessmentIntegration.ts';
 
 // Mock all dependencies
 vi.mock('@/services/dbService.ts');

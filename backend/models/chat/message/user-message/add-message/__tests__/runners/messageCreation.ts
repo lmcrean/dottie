@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendUserMessage.js';
+import { sendMessage } from '../../sendUserMessage.ts';
 
 /**
  * Tests for user message creation and database storage

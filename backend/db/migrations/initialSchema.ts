@@ -2,7 +2,8 @@
 // TODO: Fix empty import
 
 //for test - TODO: remove
-import { updateAssessmentSchema } from '../../db/migrations/updateAssessmentSchema.js';
+import { updateAssessmentSchema } from '../types/common';
+import db from '../../../db/index.js';
 
 /**
  * Create all tables for the Dottie application

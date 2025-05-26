@@ -2,11 +2,11 @@ import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycl
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '../../db/index.js';
+import db from '../../../../../../../db/index.js';
 import jwt from "jsonwebtoken";
 
 // We'll import the app directly from the server file
-import app from '../../../server.js';
+import app from '../types/common';
 
 // Store test data
 let testUserId;

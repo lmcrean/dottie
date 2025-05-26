@@ -1,6 +1,6 @@
 import express from 'express';
 import { getAllUsers } from './controller.js';
-import { authenticateToken } from '../../auth/middleware/index.js';
+// TODO: Fix middleware import: 
 
 const router = express.Router();
 

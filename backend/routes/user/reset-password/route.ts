@@ -1,6 +1,6 @@
 import express from 'express';
 import { requestPasswordReset, completePasswordReset } from './controller.js';
-import { validateResetPasswordRequest, validateResetPasswordCompletion } from '../../auth/middleware/validators/resetPasswordValidators.js';
+// TODO: Fix middleware import: 
 
 const router = express.Router();
 

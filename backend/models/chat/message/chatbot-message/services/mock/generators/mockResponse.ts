@@ -1,3 +1,4 @@
+import logger from '/logger'
 // TODO: Fix empty import
 // TODO: Fix empty import
 

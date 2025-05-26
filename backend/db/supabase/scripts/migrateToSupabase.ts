@@ -11,7 +11,7 @@ const requiredEnvVars = ["SUPABASE_ANON_PUBLIC", "SUPABASE_SERVICE_ROLE_KEY"];
 
 // Load .env file manually to check variables
 const envPath = path.join(rootDir, ".env");
-let envVars = {};
+const envVars = {};
 
 try {
   const envContent = fs.readFileSync(envPath, "utf8");

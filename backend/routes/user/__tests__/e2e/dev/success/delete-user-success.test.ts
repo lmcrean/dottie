@@ -2,8 +2,8 @@ import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycl
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '../../db/index.js';
-import app from '../../../server.js';
+import db from '../../../../../../../db/index.js';
+import app from '../types/common';
 import { createServer } from "http";
 import jwt from "jsonwebtoken";
 
@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 let server;
 let request;
 let testUsers = [];
-let accessTokens: { user1?: string; user2?: string } = {};
+const accessTokens: { user1?: string; user2?: string } = {};
 const TEST_PORT = 5104;
 
 // Setup before all tests

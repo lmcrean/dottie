@@ -1,7 +1,7 @@
 import express from 'express';
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
+import databaseRoutes from './database/index.js';
+import healthRoutes from './health/index.js';
+import { errorHandlers } from './middleware/index.js';
 
 const router = express.Router();
 

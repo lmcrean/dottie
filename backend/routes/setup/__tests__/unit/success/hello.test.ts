@@ -1,7 +1,7 @@
 import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../types/common';
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
-import app from '../../../server.js';
+import app from '../types/common';
 
 describe('GET /api/setup/health/hello', () => {
   it('should return a 200 status code', async () => {

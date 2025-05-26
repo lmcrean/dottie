@@ -2,11 +2,11 @@
 // Set test mode before importing db
 process.env.TEST_MODE = "true";
 
-import db from '../../db/index.js';
+import db from '../../../../db/index.js';
 import {
   createTables,
   dropTables,
-} from '';
+} from '../types/common';
 import bcrypt from "bcrypt";
 // TODO: Fix empty import
 

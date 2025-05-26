@@ -1,3 +1,4 @@
+import logger from '/logger'
 import { describe, it, expect, beforeEach } from 'vitest';
 // TODO: Fix empty import
 // TODO: Fix empty import

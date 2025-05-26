@@ -1,6 +1,6 @@
-import { setupTestClient, closeTestServer } from '../../test-utilities/setup.js';
+// TODO: Fix setupTestClient, closeTestServer imports
 import jwt from 'jsonwebtoken';
-import { updateAssessmentSchema } from '../../db/migrations/updateAssessmentSchema.js';
+// TODO: Fix updateAssessmentSchema import
 import db from '../../db/index.js';
 
 /**

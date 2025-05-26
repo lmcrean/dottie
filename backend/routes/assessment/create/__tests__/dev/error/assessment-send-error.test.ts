@@ -3,7 +3,7 @@ import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycl
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
 // TODO: Fix empty import
-import db from '../../db/index.js';
+import db from '../../../../../../../db/index.js';
 
 // Variables to store server instance and request
 let server;

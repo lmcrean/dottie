@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
-// TODO: Fix empty import
+import ValidateAssessmentOwnership from '../validators/ValidateAssessmentOwnership.ts'
+import ValidateAssessmentData from '../validators/ValidateAssessmentData.ts'
+import DeleteAssessment from '../services/DeleteAssessment.ts'
+import FindAssessment from '../services/FindAssessment.ts'
 
 class AssessmentBase {
   /**

@@ -3,7 +3,7 @@
  * This file selects the appropriate database implementation based on the environment
  */
 
-import db from '../../db/index.js';
+import { db, dbType } from './database.ts';
 
-export { db };
+export { db, dbType };
 export default db; 
