@@ -1,23 +1,20 @@
 import logger from '../../../../services/logger.js';
 import { createConversation } from '../database/chatCreate.js';
 import { setupAssessmentContext, validateAssessmentContext } from './assessment/assessmentSetupContext.js';
-import { createInitialMessage } from '../../message/chatbot-message/createInitialMessage.js';
-import { autoTriggerInitialConversation } from '../../message/user-message/add-message/autoTriggerConversation.js';
+import { createInitialMessage } from '../../message/user-message/add-message/create-initial-message/createInitialMessage.js';
 
 /**
  * Complete conversation creation flow
  * @param {string} userId - User ID
  * @param {Object} options - Creation options
  * @param {string} options.assessmentId - Assessment ID to link (required)
- * @param {string} [options.initialMessage] - Custom initial message
- * @param {boolean} [options.autoTrigger=true] - Auto-trigger initial conversation
+ * @param {boolean} [options.createInitialMessage=true] - Create automated initial message
  * @returns {Promise<Object>} - Created conversation with initial messages
  */
 export const createCompleteConversation = async (userId, options = {}) => {
   const { 
     assessmentId, 
-    initialMessage = null, 
-    autoTrigger = true 
+    createInitialMessage: shouldCreateInitialMessage = true 
   } = options;
 
   try {
@@ -37,12 +34,8 @@ export const createCompleteConversation = async (userId, options = {}) => {
 
     // Step 4: Handle initial message
     let messages = null;
-    if (autoTrigger) {
-      if (initialMessage) {
-        messages = await createInitialMessage(conversationId, userId, initialMessage, assessmentData);
-      } else {
-        messages = await autoTriggerInitialConversation(conversationId, userId, assessmentData);
-      }
+    if (shouldCreateInitialMessage) {
+      messages = await createInitialMessage(conversationId, userId);
     }
 
     logger.info(`Conversation creation flow completed for conversation ${conversationId}`);
@@ -71,8 +64,7 @@ export const createCompleteConversation = async (userId, options = {}) => {
 export const createConversationWithMessage = async (userId, firstMessage, assessmentId) => {
   return await createCompleteConversation(userId, {
     assessmentId,
-    initialMessage: firstMessage,
-    autoTrigger: true
+    createInitialMessage: true
   });
 };
 
@@ -85,7 +77,7 @@ export const createConversationWithMessage = async (userId, firstMessage, assess
 export const createEmptyConversation = async (userId, assessmentId) => {
   return await createCompleteConversation(userId, {
     assessmentId,
-    autoTrigger: false
+    createInitialMessage: false
   });
 };
 
@@ -93,11 +85,11 @@ export const createEmptyConversation = async (userId, assessmentId) => {
  * Quick conversation creation for assessment discussion
  * @param {string} userId - User ID
  * @param {string} assessmentId - Assessment ID
- * @returns {Promise<Object>} - Created conversation with assessment context
+ * @returns {Promise<Object>} - Created conversation with automated initial message
  */
 export const createAssessmentConversation = async (userId, assessmentId) => {
   return await createCompleteConversation(userId, {
     assessmentId,
-    autoTrigger: true
+    createInitialMessage: true
   });
 }; 
