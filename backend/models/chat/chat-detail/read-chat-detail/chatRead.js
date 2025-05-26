@@ -1,5 +1,5 @@
-import DbService from '../../../services/dbService.js';
-import logger from '../../../services/logger.js';
+import DbService from '../../../../services/dbService.js';
+import logger from '../../../../services/logger.js';
 
 /**
  * Get a conversation and its messages by ID

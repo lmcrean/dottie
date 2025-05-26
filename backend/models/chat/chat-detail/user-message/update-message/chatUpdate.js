@@ -1,5 +1,5 @@
-import DbService from '../../../services/dbService.js';
-import logger from '../../../services/logger.js';
+import DbService from '../../../../../services/dbService.js';
+import logger from '../../../../../services/logger.js';
 
 /**
  * Update a conversation's assessment links
