@@ -1,5 +1,5 @@
-import db from '../db/index.ts';
-import { createConversation, getAssessmentPattern } from '../models/chat/chat.ts';
+import db from '';
+import { createConversation, getAssessmentPattern } from '';
 
 async function testAssessmentLinking() {
   try {

@@ -1,4 +1,4 @@
-import logger from '../../../../../services/logger.ts';
+import logger from '';
 
 /**
  * Wrapper for validation functions with error handling

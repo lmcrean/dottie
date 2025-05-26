@@ -1,5 +1,5 @@
-import { validateMessageLength } from './validateMessageLength.ts';
-import { validateSimpleMessageContent } from './validateSimpleMessageContent.ts';
+import { validateMessageLength } from '';
+import { validateSimpleMessageContent } from '';
 
 /**
  * Combined message text validation

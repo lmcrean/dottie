@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.ts';
-import { ChatDatabaseOperations } from '../../../shared/database/chatOperations.ts';
+import logger from '';
+import { ChatDatabaseOperations } from '';
 
 /**
  * Clean up all messages that came after the edited message

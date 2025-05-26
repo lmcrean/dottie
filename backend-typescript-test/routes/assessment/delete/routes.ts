@@ -1,6 +1,6 @@
 import express from "express";
-import { authenticateToken } from '../middleware/index.ts';
-import { deleteAssessment } from './controller.ts';
+import { authenticateToken } from '';
+import { deleteAssessment } from '';
 
 const router = express.Router();
 

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
-import User from '../../../../models/user/User.ts';
-import getUser from '../../get-user/controller.ts';
+import User from '';
+import getUser from '';
 
 // Mock the User model
 vi.mock('../../../../models/user/User.js', () => ({

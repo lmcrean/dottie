@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.ts';
-import DbService from '../../../../../../services/dbService.ts';
+import logger from '';
+import DbService from '';
 
 /**
  * Insert a user message into the database

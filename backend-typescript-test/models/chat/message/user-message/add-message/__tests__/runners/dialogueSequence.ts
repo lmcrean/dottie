@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendUserMessage.ts';
-import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.ts';
-import logger from '@/services/logger.ts';
+import { sendMessage } from '';
+import { generateResponseToMessage } from '';
+import logger from '';
 
 /**
  * Tests for complete dialogue sequence and conversation order

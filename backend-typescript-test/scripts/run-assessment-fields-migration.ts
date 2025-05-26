@@ -4,8 +4,8 @@
  * conversations to specific assessments
  */
 
-import db from '../db/index.ts';
-import { addAssessmentFieldsToConversations } from '../db/migrations/addAssessmentFieldsToConversations.ts';
+import db from '';
+import { addAssessmentFieldsToConversations } from '';
 
 async function runMigration() {
   try {

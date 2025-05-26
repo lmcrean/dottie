@@ -1,5 +1,5 @@
-import logger from '../../../services/logger.ts';
-import { createConversation } from '../../../models/chat/chat.ts';
+import logger from '';
+import { createConversation } from '';
 
 /**
  * Create a new chat conversation

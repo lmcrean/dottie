@@ -1,5 +1,5 @@
-import DbService from '../../../services/dbService.ts';
-import DetectAssessmentFormat from '../detectors/DetectAssessmentFormat.ts';
+import DbService from '';
+import DetectAssessmentFormat from '';
 
 class RouteAssessment {
   /**

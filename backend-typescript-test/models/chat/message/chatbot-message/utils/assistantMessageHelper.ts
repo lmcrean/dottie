@@ -1,12 +1,12 @@
-import logger from '../../../../../../services/logger.ts';
-import { ConfigHelper } from './configHelper.ts';
-import { ChatDatabaseOperations } from '../../../shared/database/chatOperations.ts';
-import { generateMessageId } from '../../shared/utils/responseBuilders.ts';
-import { generateInitialResponse as generateInitialAI } from '../services/ai/generators/initialAI.ts';
-import { generateInitialResponse as generateInitialMock } from '../services/mock/generators/initialMock.ts';
-import { generateFollowUpResponse as generateFollowUpAI } from '../services/ai/generators/followUpAI.ts';
-import { generateFollowUpResponse as generateFollowUpMock } from '../services/mock/generators/followUpMock.ts';
-import { getConversationHistory } from '../../../read-chat-detail/getWithContext.ts';
+import logger from '';
+import { ConfigHelper } from '';
+import { ChatDatabaseOperations } from '';
+import { generateMessageId } from '';
+import { generateInitialResponse as generateInitialAI } from '';
+import { generateInitialResponse as generateInitialMock } from '';
+import { generateFollowUpResponse as generateFollowUpAI } from '';
+import { generateFollowUpResponse as generateFollowUpMock } from '';
+import { getConversationHistory } from '';
 
 /**
  * Generate and store assistant response for conversations

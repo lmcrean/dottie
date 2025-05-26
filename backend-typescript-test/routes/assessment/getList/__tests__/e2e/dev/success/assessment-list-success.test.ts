@@ -1,12 +1,12 @@
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '../../../../../../../db/index.ts';
+import db from '';
 import {
   setupTestServer,
   closeTestServer,
   createMockToken,
-} from '../../../../../../../test-utilities/testSetup.ts';
+} from '';
 
 // Store server instance and test data
 let server;

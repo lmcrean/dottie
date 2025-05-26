@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ReadAssessment from '../../../models/assessment/assessment-main/ReadAssessment.ts';
-import DbService from '../../../services/dbService.ts';
-import TransformDbToApi from '../../../models/assessment/assessment-main/TransformDbToApi.ts';
-import FormatDetector from '../../../models/assessment/assessment-base/FormatDetector.ts';
+import ReadAssessment from '';
+import DbService from '';
+import TransformDbToApi from '';
+import FormatDetector from '';
 
 // Mock dependencies
 vi.mock('../../../services/dbService.ts');

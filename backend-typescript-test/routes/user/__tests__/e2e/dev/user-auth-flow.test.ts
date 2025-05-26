@@ -1,8 +1,8 @@
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '../../../../../db/index.ts';
-import app from '../../../../../server.ts';
+import db from '';
+import app from '';
 import { createServer } from "http";
 import jwt from "jsonwebtoken";
 

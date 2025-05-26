@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import UserAuth from '../UserAuth.ts';
-import DbService from '@/services/dbService.ts';
-import { generateUser } from '@test-utils/testFixtures.ts';
+import UserAuth from '';
+import DbService from '';
+import { generateUser } from '';
 
 // Mock DbService
 vi.mock('@/services/dbService.ts');

@@ -1,5 +1,5 @@
 import express from "express";
-import router from './index.ts';
+import router from '';
 
 const assessmentRouter = express.Router();
 

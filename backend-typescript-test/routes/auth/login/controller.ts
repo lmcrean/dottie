@@ -1,7 +1,7 @@
-import User from '../../../models/user/User.ts';
+import User from '';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { refreshTokens } from '../middleware/index.ts';
+import { refreshTokens } from '';
 
 // Helper function for validation
 function isValidEmail(email) {

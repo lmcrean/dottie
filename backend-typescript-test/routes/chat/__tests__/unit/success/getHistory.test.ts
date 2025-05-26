@@ -24,7 +24,7 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
 }));
 
 // Import controller after mocks are set up
-import * as historyController from '../../../get-history/controller.ts';
+import * as historyController from '';
 
 describe('Get History Controller', () => {
   let req, res;

@@ -1,5 +1,5 @@
-import { db } from '../../db/index.ts';
-import { findById } from './findById.ts';
+import { db } from '';
+import { findById } from '';
 
 /**
  * Create a new record

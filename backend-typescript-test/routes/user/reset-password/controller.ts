@@ -1,5 +1,5 @@
-import User from '../../../models/user/User.ts';
-import EmailService from '../../../services/emailService.ts';
+import User from '';
+import EmailService from '';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 

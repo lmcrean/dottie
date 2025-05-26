@@ -1,4 +1,4 @@
-import { db } from '../../db/index.ts';
+import { db } from '';
 
 /**
  * Find records by a field value

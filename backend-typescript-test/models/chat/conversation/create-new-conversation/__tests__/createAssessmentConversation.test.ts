@@ -1,12 +1,12 @@
 import { describe, beforeEach, afterEach, vi } from 'vitest';
-import DbService from '@/services/dbService.ts';
-import logger from '@/services/logger.ts';
+import DbService from '';
+import logger from '';
 
 // Import test runners
-import { runSuccessfulCreationTests } from './runners/successfulCreation.ts';
-import { runErrorHandlingTests } from './runners/errorHandling.ts';
-import { runDatabaseSequenceTests } from './runners/databaseSequence.ts';
-import { runAssessmentIntegrationTests } from './runners/assessmentIntegration.ts';
+import { runSuccessfulCreationTests } from '';
+import { runErrorHandlingTests } from '';
+import { runDatabaseSequenceTests } from '';
+import { runAssessmentIntegrationTests } from '';
 
 // Mock all dependencies
 vi.mock('@/services/dbService.ts');

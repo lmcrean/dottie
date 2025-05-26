@@ -1,8 +1,8 @@
 /**
  * Script to run the migration that adds the other_symptoms column to the assessments table
  */
-import { addOtherSymptomsColumn } from '../db/migrations/add-other-symptoms.ts';
-import { db } from '../db/index.ts';
+import { addOtherSymptomsColumn } from '';
+import { db } from '';
 
 async function runMigration() {
 

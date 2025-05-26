@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import Assessment from '../../../models/assessment/Assessment.ts';
-import CleanAssessmentOperations from '../../../models/assessment/assessment-base/CleanAssessmentOperations.ts';
+import Assessment from '';
+import CleanAssessmentOperations from '';
 
 // Mock the operations class
 vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.ts');

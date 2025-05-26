@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getHistory } from '../../../get-history/controller.ts';
+import { getHistory } from '';
 
 // Mock the logger
 vi.mock('../../../../../services/logger.js', () => ({

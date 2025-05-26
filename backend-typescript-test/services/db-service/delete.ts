@@ -1,4 +1,4 @@
-import { db } from '../../db/index.ts';
+import { db } from '';
 
 /**
  * Delete record(s) from a table

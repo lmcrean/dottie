@@ -1,4 +1,4 @@
-import { withValidation } from '../errorHandler.ts';
+import { withValidation } from '';
 
 /**
  * Validate with async function using error handling wrapper

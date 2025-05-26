@@ -1,10 +1,10 @@
 import { test as base, expect } from "@playwright/test";
 
 // Import utility modules in order: auth → assessment → user → chat
-import * as auth from './runners/auth.ts';
-import * as assessment from './runners/assessment.ts';
-import * as user from './runners/user.ts';
-import * as chat from './runners/chat.ts';
+import * as auth from '';
+import * as assessment from '';
+import * as user from '';
+import * as chat from '';
 
 /**
  * Master Integration Test

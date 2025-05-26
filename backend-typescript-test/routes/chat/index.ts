@@ -1,11 +1,11 @@
 import express from 'express';
-import sendMessageRoute from './send-message/route.ts';
-import getHistoryRoute from './get-history/route.ts';
-import getConversationRoute from './get-conversation/route.ts';
-import deleteConversationRoute from './delete-conversation/route.ts';
-import createChatRoute from './create-chat/route.ts';
-import sendInitialMessageRoute from './send-initial-message/route.ts';
-import sendFollowUpMessageRoute from './send-follow-up-message/route.ts';
+import sendMessageRoute from '';
+import getHistoryRoute from '';
+import getConversationRoute from '';
+import deleteConversationRoute from '';
+import createChatRoute from '';
+import sendInitialMessageRoute from '';
+import sendFollowUpMessageRoute from '';
 
 const router = express.Router();
 

@@ -1,8 +1,8 @@
-import { db } from '../../../db/index.ts';
+import { db } from '';
 import { v4 as uuidv4 } from "uuid";
-import { assessments } from '../store/index.ts';
-import { validateAssessmentData } from '../validators/index.ts';
-import Assessment from '../../../models/assessment/Assessment.ts';
+import { assessments } from '';
+import { validateAssessmentData } from '';
+import Assessment from '';
 
 /**
  * Create a new assessment for a user

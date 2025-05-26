@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createAssessmentConversation } from '../../createFlow.ts';
-import DbService from '@/services/dbService.ts';
+import { createAssessmentConversation } from '';
+import DbService from '';
 
 /**
  * Tests for assessment data integration and linking

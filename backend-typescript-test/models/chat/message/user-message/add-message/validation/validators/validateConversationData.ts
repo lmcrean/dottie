@@ -1,6 +1,6 @@
-import { validateRequiredFields } from './validateRequiredFields.ts';
-import { validateUserId } from './validateUserId.ts';
-import { validateAssessmentId } from './validateAssessmentId.ts';
+import { validateRequiredFields } from '';
+import { validateUserId } from '';
+import { validateAssessmentId } from '';
 
 /**
  * Validate conversation creation data

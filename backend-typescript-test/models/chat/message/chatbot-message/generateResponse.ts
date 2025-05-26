@@ -1,4 +1,4 @@
-import logger from '../../../../services/logger.ts';
+import logger from '';
 
 /**
  * Generate response to a user message in an ongoing conversation

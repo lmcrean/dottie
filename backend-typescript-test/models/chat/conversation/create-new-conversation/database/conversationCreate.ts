@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import DbService from '../../../../../services/db-service/dbService.ts';
-import logger from '../../../../../services/logger.ts';
+import DbService from '';
+import logger from '';
 
 /**
  * Create a new conversation in the database

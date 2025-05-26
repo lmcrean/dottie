@@ -1,5 +1,5 @@
-import logger from '../../../services/logger.ts';
-import { getUserConversations } from '../../../models/chat/chat.ts';
+import logger from '';
+import { getUserConversations } from '';
 
 /**
  * Get all conversations for the authenticated user

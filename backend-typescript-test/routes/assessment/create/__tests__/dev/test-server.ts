@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import db from '../../../../../db/index.ts';
+import db from '';
 
 // Create Express app for testing
 const app = express();

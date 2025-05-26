@@ -2,13 +2,13 @@
 // Set test mode before importing db
 process.env.TEST_MODE = "true";
 
-import db from '../../../db/index.ts';
+import db from '';
 import {
   createTables,
   dropTables,
-} from '../../../db/migrations/initialSchema.ts';
+} from '';
 import bcrypt from "bcrypt";
-import { generateUser } from '../../../test-utilities/testFixtures.ts';
+import { generateUser } from '';
 
 /**
  * Initialize the test database

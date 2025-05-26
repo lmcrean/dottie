@@ -2,7 +2,7 @@
 import { spawn } from "child_process";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { URLS } from '../test-utilities/urls.ts';
+import { URLS } from '';
 
 // Get the directory path
 const __filename = fileURLToPath(import.meta.url);

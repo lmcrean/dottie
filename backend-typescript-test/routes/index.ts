@@ -1,9 +1,9 @@
 import express from 'express';
-import authRoutes from './auth/index.ts';
-import assessmentRoutes from './assessment/index.ts';
-import userRoutes from './user/index.ts';
-import setupRoutes from './setup/index.ts';
-import chatRoutes from './chat/index.ts';const router = express.Router();
+import authRoutes from '';
+import assessmentRoutes from '';
+import userRoutes from '';
+import setupRoutes from '';
+import chatRoutes from '';const router = express.Router();
 
 // Mount routes
 router.use('/auth', authRoutes);

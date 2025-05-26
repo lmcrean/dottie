@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.ts';
-import DbService from '../../../../../../services/db-service/dbService.ts';
+import logger from '';
+import DbService from '';
 import { v4 as uuidv4 } from 'uuid';
 
 /**

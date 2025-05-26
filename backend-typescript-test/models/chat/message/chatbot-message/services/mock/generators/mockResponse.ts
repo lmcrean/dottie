@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.ts';
-import { buildMockResponse } from '../../../shared/utils/responseBuilders.ts';
+import logger from '';
+import { buildMockResponse } from '';
 
 /**
  * Generate mock response for any conversation stage

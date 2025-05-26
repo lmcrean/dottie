@@ -1,4 +1,4 @@
-import DbService from '../../../services/dbService.ts';
+import DbService from '';
 
 class DeleteAssessment {
   /**

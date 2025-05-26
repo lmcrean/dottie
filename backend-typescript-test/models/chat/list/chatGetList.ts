@@ -1,5 +1,5 @@
-import DbService from '../../../services/dbService.ts';
-import logger from '../../../services/logger.ts';
+import DbService from '';
+import logger from '';
 
 /**
  * Get all conversations for a user (with preview of last message)

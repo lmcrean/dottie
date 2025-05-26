@@ -1,6 +1,6 @@
-import DbService from '../../../services/db-service/dbService.ts';
-import UserBase from '../base/UserBase.ts';
-import ReadUser from './ReadUser.ts';
+import DbService from '';
+import UserBase from '';
+import ReadUser from '';
 
 /**
  * User deletion service with cascade cleanup

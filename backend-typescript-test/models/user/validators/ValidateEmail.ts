@@ -1,5 +1,5 @@
-import DbService from '../../../services/db-service/dbService.ts';
-import UserBase from '../base/UserBase.ts';
+import DbService from '';
+import UserBase from '';
 
 /**
  * Email validation utilities

@@ -1,5 +1,5 @@
 import express from 'express';
-import db, { dbType } from '../../../db/database.ts';
+import db, { dbType } from '';
 
 const router = express.Router();
 

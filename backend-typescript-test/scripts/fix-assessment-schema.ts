@@ -5,7 +5,7 @@
  * using raw SQL for maximum reliability.
  */
 
-import db from '../db/index.ts';
+import db from '';
 
 async function fixAssessmentSchema() {
   try {

@@ -3,7 +3,7 @@
  * This file provides a Knex-like interface to Supabase for backward compatibility
  */
 
-import supabase from '../services/supabaseService.ts';
+import supabase from '';
 
 // Create a wrapper that simulates the Knex query builder
 const createQueryBuilder = (tableName) => {

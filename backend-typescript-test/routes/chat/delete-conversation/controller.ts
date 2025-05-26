@@ -1,5 +1,5 @@
-import logger from '../../../services/logger.ts';
-import { deleteConversation as deleteConversationModel } from '../../../models/chat/chat.ts';
+import logger from '';
+import { deleteConversation as deleteConversationModel } from '';
 
 /**
  * Delete a conversation and all its messages

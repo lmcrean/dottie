@@ -1,9 +1,9 @@
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import { db } from '../../../../../db/index.ts';
+import { db } from '';
 import jwt from "jsonwebtoken";
-import app from '../../../../../server.ts';
+import app from '';
 
 // Store test data
 let testUserId;

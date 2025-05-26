@@ -1,8 +1,8 @@
-import logger from '../../../../../../services/logger.ts';
-import { ChatDatabaseOperations } from '../../shared/database/chatOperations.ts';
-import { generateResponseToMessage } from '../../chatbot-message/generateResponse.ts';
-import Chat from '../../../read-chat-list/chat.ts';
-import { cleanupChildrenMessages } from './cleanupChildrenMessages.ts';
+import logger from '';
+import { ChatDatabaseOperations } from '';
+import { generateResponseToMessage } from '';
+import Chat from '';
+import { cleanupChildrenMessages } from '';
 
 /**
  * Edit an existing message and handle thread updates

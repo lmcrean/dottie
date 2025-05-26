@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createAssessmentConversation } from '../../createFlow.ts';
-import logger from '@/services/logger.ts';
+import { createAssessmentConversation } from '';
+import logger from '';
 
 /**
  * Tests for error handling and edge cases

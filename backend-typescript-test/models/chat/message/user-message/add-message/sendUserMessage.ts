@@ -1,9 +1,9 @@
-import logger from '../../../../../services/logger.ts';
-import { insertUserMessage } from './database/sendUserMessage.ts';
-import { formatUserMessage } from './validation/formatters/formatUserMessage.ts';
-import { generateMessageId } from '../../shared/utils/responseBuilders.ts';
-import { generateResponseToMessage } from '../../chatbot-message/generateResponse.ts';
-import Chat from '../../../list/chat.ts';
+import logger from '';
+import { insertUserMessage } from '';
+import { formatUserMessage } from '';
+import { generateMessageId } from '';
+import { generateResponseToMessage } from '';
+import Chat from '';
 
 /**
  * Send a message in a conversation

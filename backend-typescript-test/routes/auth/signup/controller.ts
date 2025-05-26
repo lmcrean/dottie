@@ -1,4 +1,4 @@
-import User from '../../../models/user/User.ts';
+import User from '';
 import bcrypt from 'bcrypt';
 
 // In-memory storage for test data

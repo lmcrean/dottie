@@ -1,6 +1,6 @@
-import ValidateCredentials from '../validators/ValidateCredentials.ts';
-import SanitizeUserData from '../transformers/SanitizeUserData.ts';
-import ReadUser from './ReadUser.ts';
+import ValidateCredentials from '';
+import SanitizeUserData from '';
+import ReadUser from '';
 
 /**
  * User authentication service

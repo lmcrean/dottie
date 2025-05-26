@@ -7,28 +7,28 @@
 // ===================================
 // ENTITY MODELS
 // ===================================
-export { Message } from './message/message.ts';
-export { Conversation } from './conversation/conversation.ts';
-export { Conversation as default } from './conversation/conversation.ts';
+export { Message } from '';
+export { Conversation } from '';
+export { Conversation as default } from '';
 
 // ===================================
 // CONVERSATION OPERATIONS
 // ===================================
-export { getUserConversations } from './list/chatGetList.ts';
-export { deleteConversation } from './conversation/delete-chat-detail/chatDelete.ts';
+export { getUserConversations } from '';
+export { deleteConversation } from '';
 
 export { 
   createCompleteConversation,
   createConversationWithMessage,
   createEmptyConversation,
   createAssessmentConversation
-} from './conversation/create-new-conversation/createFlow.ts';
+} from '';
 
 export { 
   getConversation,
   getConversationForUser,
   getConversationSummary
-} from './conversation/read-chat-detail/getConversation.ts';
+} from '';
 
 // ===================================
 // MESSAGE OPERATIONS
@@ -41,7 +41,7 @@ export {
   continueWithContext,
   editMessageWithRegeneration,
   continueConversationWithContext
-} from './message/user-message/add-message/sendMessage.ts';
+} from '';
 
 // ===================================
 // CONVENIENCE FUNCTIONS

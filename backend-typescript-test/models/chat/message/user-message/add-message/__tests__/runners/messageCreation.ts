@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendUserMessage.ts';
-import logger from '@/services/logger.ts';
+import { sendMessage } from '';
+import logger from '';
 
 /**
  * Tests for user message creation and database storage

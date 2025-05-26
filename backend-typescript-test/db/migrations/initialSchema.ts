@@ -1,8 +1,8 @@
 // include updateAssessmentToJsonSchema.js - updated assessment table to use JSON
-import { updateAssessmentToJsonSchema } from './updateAssessmentToJsonSchema.ts';
+import { updateAssessmentToJsonSchema } from '';
 
 //for test - TODO: remove
-import { updateAssessmentSchema } from './assessmentSchema.ts';
+import { updateAssessmentSchema } from '';
 
 /**
  * Create all tables for the Dottie application

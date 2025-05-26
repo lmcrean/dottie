@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
-import { importModels, setupMocks } from '../setup.ts';
+import { importModels, setupMocks } from '';
 
 // Will hold our imported models and mocks
 let User;

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import DbService from '../../../services/dbService.ts';
-import TransformApiToDb from '../transformers/TransformApiToDb.ts';
+import DbService from '';
+import TransformApiToDb from '';
 
 class CreateAssessment {
   /**

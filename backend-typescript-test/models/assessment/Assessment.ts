@@ -1,4 +1,4 @@
-import RouteAssessment from './services/RouteAssessment.ts';
+import RouteAssessment from '';
 
 /**
  * Assessment - Unified entry point for all assessment operations

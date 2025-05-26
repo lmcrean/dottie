@@ -1,6 +1,6 @@
-import { AssessmentBase } from '../assessment-base/AssessmentBase.ts';
+import { AssessmentBase } from '';
 import { v4 as uuidv4 } from 'uuid';
-import DbService from '../../../services/dbService.ts';
+import DbService from '';
 
 class LegacyAssessment extends AssessmentBase {
   /**

@@ -1,12 +1,12 @@
 import express from "express";
 
 // Import route files
-import createRouter from './create/routes.ts';
-import listRouter from './getList/routes.ts';
-import detailRouter from './getDetail/routes.ts';
+import createRouter from '';
+import listRouter from '';
+import detailRouter from '';
 // TODO: Update route implementation missing - uncomment when implemented
-// import updateRouter from './update/routes.ts';
-import deleteRouter from './delete/routes.ts';
+// import updateRouter from '';
+import deleteRouter from '';
 
 const router = express.Router();
 

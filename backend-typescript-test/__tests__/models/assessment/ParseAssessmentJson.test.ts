@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ParseAssessmentJson from '../../../models/assessment/assessment-main/ParseAssessmentJson.ts';
+import ParseAssessmentJson from '';
 
 describe('ParseAssessmentJson', () => {
   beforeEach(() => {

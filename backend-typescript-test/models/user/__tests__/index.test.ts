@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { User, UserAuth, UserPasswordReset } from '../index.ts';
-import defaultExport from '../index.ts';
+import { User, UserAuth, UserPasswordReset } from '';
+import defaultExport from '';
 
 describe('User Models Index', () => {
   describe('Named Exports', () => {

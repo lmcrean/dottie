@@ -1,10 +1,10 @@
-import DbService from '../../../services/db-service/dbService.ts';
-import UserBase from '../base/UserBase.ts';
-import ValidateEmail from '../validators/ValidateEmail.ts';
-import ValidatePassword from '../validators/ValidatePassword.ts';
-import SanitizeUserData from '../transformers/SanitizeUserData.ts';
-import ReadUser from './ReadUser.ts';
-import UpdatePassword from './UpdatePassword.ts';
+import DbService from '';
+import UserBase from '';
+import ValidateEmail from '';
+import ValidatePassword from '';
+import SanitizeUserData from '';
+import ReadUser from '';
+import UpdatePassword from '';
 
 /**
  * Password reset service

@@ -1,4 +1,4 @@
-import { db } from '../../db/index.ts';
+import { db } from '';
 
 /**
  * Get all records from a table

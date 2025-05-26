@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
-import { resolveFromRoot } from './paths.ts';
+import { resolveFromRoot } from '';
 import { getApiUrl, getEnvironment, URLS } from './urls.ts';
 
 /**

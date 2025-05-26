@@ -1,5 +1,5 @@
 // Debug script for token generation and validation
-import { createMockToken } from '../../../../../../test-utilities/testSetup.ts';
+import { createMockToken } from '';
 import jwt from "jsonwebtoken";
 
 // Generate a test token

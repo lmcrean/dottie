@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { listAssessments } from '../../../controller.ts';
-import Assessment from '../../../../../../models/assessment/Assessment.ts';
+import { listAssessments } from '';
+import Assessment from '';
 
 // Mock the Assessment model
 vi.mock('../../../../../../models/assessment/Assessment.js', () => {

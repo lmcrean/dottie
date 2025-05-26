@@ -1,6 +1,6 @@
 import express from 'express';
-import { verify } from './controller.ts';
-import { authenticateToken } from '../middleware/index.ts';
+import { verify } from '';
+import { authenticateToken } from '';
 
 const router = express.Router();
 

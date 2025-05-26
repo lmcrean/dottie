@@ -1,4 +1,4 @@
-import ValidateEmail from './ValidateEmail.ts';
+import ValidateEmail from '';
 
 /**
  * Credentials validation utilities for login

@@ -1,6 +1,6 @@
-import { assessments } from '../store/index.ts';
-import db from '../../../db/index.ts';
-import Assessment from '../../../models/assessment/Assessment.ts';
+import { assessments } from '';
+import db from '';
+import Assessment from '';
 
 
 /**

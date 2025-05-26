@@ -1,28 +1,28 @@
 // Main User model (orchestrator)
-import User from './User.ts';
+import User from '';
 
 // Services
-import CreateUser from './services/CreateUser.ts';
-import ReadUser from './services/ReadUser.ts';
-import UpdateEmail from './services/UpdateEmail.ts';
-import UpdateUsername from './services/UpdateUsername.ts';
-import UpdatePassword from './services/UpdatePassword.ts';
-import DeleteUser from './services/DeleteUser.ts';
-import AuthenticateUser from './services/AuthenticateUser.ts';
-import ResetPassword from './services/ResetPassword.ts';
+import CreateUser from '';
+import ReadUser from '';
+import UpdateEmail from '';
+import UpdateUsername from '';
+import UpdatePassword from '';
+import DeleteUser from '';
+import AuthenticateUser from '';
+import ResetPassword from '';
 
 // Validators
-import ValidateUserData from './validators/ValidateUserData.ts';
-import ValidateEmail from './validators/ValidateEmail.ts';
-import ValidateUsername from './validators/ValidateUsername.ts';
-import ValidatePassword from './validators/ValidatePassword.ts';
-import ValidateCredentials from './validators/ValidateCredentials.ts';
+import ValidateUserData from '';
+import ValidateEmail from '';
+import ValidateUsername from '';
+import ValidatePassword from '';
+import ValidateCredentials from '';
 
 // Transformers
-import SanitizeUserData from './transformers/SanitizeUserData.ts';
+import SanitizeUserData from '';
 
 // Base
-import UserBase from './base/UserBase.ts';
+import UserBase from '';
 
 // Main exports - new granular structure
 export {

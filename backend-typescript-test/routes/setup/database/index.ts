@@ -1,7 +1,7 @@
 import express from 'express';
-import statusRouter from './status.ts';
-import helloRouter from './hello.ts';
-import crudRouter from './crud.ts';
+import statusRouter from '';
+import helloRouter from '';
+import crudRouter from '';
 
 const router = express.Router();
 

@@ -23,7 +23,7 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
 }));
 
 // Import the controller after all mocks are set up
-import * as conversationController from '../../../get-conversation/controller.ts';
+import * as conversationController from '';
 
 describe('Get Conversation Controller', () => {
   let req, res;

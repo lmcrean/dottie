@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import db from '../../../../../db/index.ts';
+import db from '';
 
 // Mock the database module
 vi.mock('../../../../../db/index.js', () => {

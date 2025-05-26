@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import FindAssessment from '../services/FindAssessment.ts';
-import DeleteAssessment from '../services/DeleteAssessment.ts';
-import ValidateAssessmentData from '../validators/ValidateAssessmentData.ts';
-import ValidateAssessmentOwnership from '../validators/ValidateAssessmentOwnership.ts';
+import FindAssessment from '';
+import DeleteAssessment from '';
+import ValidateAssessmentData from '';
+import ValidateAssessmentOwnership from '';
 
 class AssessmentBase {
   /**
