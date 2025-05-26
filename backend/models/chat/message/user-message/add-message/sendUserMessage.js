@@ -1,9 +1,9 @@
 import logger from '../../../../../services/logger.js';
 import { insertUserMessage } from './database/sendUserMessage.js';
-import { formatUserMessage } from './validation/messageFormatters.js';
+import { formatUserMessage } from './validation/formatters/formatUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
-import Chat from '../../../read-chat-list/chat.js';
+import Chat from '../../../list/chat.js';
 
 /**
  * Send a message in a conversation
