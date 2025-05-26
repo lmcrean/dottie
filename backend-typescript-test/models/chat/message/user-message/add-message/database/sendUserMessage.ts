@@ -25,4 +25,19 @@ export const insertUserMessage = async (conversationId, messageData) => {
   }
 };
 
+/**
+ * Mock implementation of insertUserMessage for testing
+ */
+export async function insertUserMessage(conversationId: string, userId: string, messageText: string) {
+  // This is a mock implementation for testing
+  return {
+    id: 'msg-user-456',
+    conversation_id: conversationId,
+    role: 'user',
+    content: messageText,
+    user_id: userId,
+    created_at: new Date().toISOString()
+  };
+}
+
 

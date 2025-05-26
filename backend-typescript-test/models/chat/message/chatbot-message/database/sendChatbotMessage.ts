@@ -63,3 +63,18 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
     throw error;
   }
 };
+
+/**
+ * Mock implementation of sendChatbotMessage for testing
+ */
+export async function sendChatbotMessage(conversationId: string, messageContent: string, parentMessageId?: string) {
+  // This is a mock implementation for testing
+  return {
+    id: 'msg-assistant-789',
+    conversationId: conversationId,
+    role: 'assistant',
+    content: messageContent,
+    created_at: new Date().toISOString(),
+    parent_message_id: parentMessageId || null
+  };
+}

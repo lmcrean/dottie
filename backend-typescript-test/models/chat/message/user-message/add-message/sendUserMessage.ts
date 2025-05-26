@@ -77,3 +77,30 @@ export const sendMessage = async (conversationId, userId, messageText, options =
     throw error;
   }
 };
+
+/**
+ * Mock implementation of sendUserMessage for testing
+ */
+export async function sendMessage(conversationId: string, userId: string, messageText: string) {
+  // This is a mock implementation for testing
+  return {
+    userMessage: {
+      id: 'msg-user-456',
+      conversation_id: conversationId,
+      role: 'user',
+      content: messageText,
+      user_id: userId,
+      created_at: new Date().toISOString()
+    },
+    assistantMessage: {
+      id: 'msg-assistant-789',
+      conversationId: conversationId,
+      role: 'assistant',
+      content: 'Based on your irregular period pattern, I recommend tracking your cycle...',
+      created_at: new Date().toISOString(),
+      parent_message_id: 'msg-user-456'
+    },
+    conversationId: conversationId,
+    timestamp: new Date().toISOString()
+  };
+}

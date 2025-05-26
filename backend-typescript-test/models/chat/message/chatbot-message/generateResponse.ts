@@ -7,7 +7,7 @@ import logger from '';
  * @param {string} messageText - User message text
  * @returns {Promise<Object>} - Generated response
  */
-export async function generateResponseToMessage(conversationId, userMessageId, messageText) {
+export async function generateResponseToMessage(conversationId: string, userMessageId: string, messageText: string) {
   try {
     logger.info(`Generating response for message ${userMessageId} in conversation ${conversationId}`);
     
@@ -23,7 +23,7 @@ export async function generateResponseToMessage(conversationId, userMessageId, m
     
     return response;
   } catch (error) {
-    logger.error('Error generating response:', error);
+    console.error('Error generating response:', error);
     throw error;
   }
 } 
