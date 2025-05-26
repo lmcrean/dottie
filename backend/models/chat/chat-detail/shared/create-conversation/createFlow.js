@@ -1,7 +1,7 @@
 import logger from '../../../../../services/logger.js';
-import { createConversation } from './chatCreate.js';
-import { setupAssessmentContext, validateAssessmentContext } from './assessment/assessmentSetup.js';
-import { createInitialMessage, autoTriggerInitialConversation } from './initialMessage.js';
+import { createConversation } from '../database/chatCreate.js';
+import { setupAssessmentContext, validateAssessmentContext } from './assessment/assessmentSetupContext.js';
+import { ResponseCoordinator } from '../../chatbot-message/ResponseCoordinator.js';
 
 /**
  * Complete conversation creation flow
@@ -44,9 +44,9 @@ export const createCompleteConversation = async (userId, options = {}) => {
     let messages = null;
     if (autoTrigger) {
       if (initialMessage) {
-        messages = await createInitialMessage(conversationId, userId, initialMessage, assessmentPattern);
+        messages = await ResponseCoordinator.createInitialMessage(conversationId, userId, initialMessage, assessmentPattern);
       } else {
-        messages = await autoTriggerInitialConversation(conversationId, userId, assessmentPattern);
+        messages = await ResponseCoordinator.autoTriggerInitialConversation(conversationId, userId, assessmentPattern);
       }
     }
 

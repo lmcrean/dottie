@@ -1,8 +1,38 @@
 import logger from '../../../../services/logger.js';
 import DbService from '../../../../services/dbService.js';
-import { getConversationHistory, getConversationSummary } from './chatOperations.js';
+import { ChatDatabaseOperations } from '../shared/database/chatOperations.js';
 import { detectService } from '../chatbot-message/services/serviceDetector.js';
-import { getAssessmentPattern } from '../shared/assessment/assessmentGetPattern.js';
+import { getAssessmentPattern } from '../shared/create-conversation/assessment/assessmentGetPattern.js';
+import Chat from '../../read-chat-list/chat.js';
+
+/**
+ * Get conversation with all messages (replaces the one from basic chatOperations.js)
+ * @param {string} conversationId - Conversation ID
+ * @param {string} [userId] - User ID for ownership verification
+ * @returns {Promise<Object>} - Conversation with messages
+ */
+export const getConversationHistory = async (conversationId, userId = null) => {
+  try {
+    // Verify ownership if userId provided
+    if (userId) {
+      const isOwner = await Chat.isOwner(conversationId, userId);
+      if (!isOwner) {
+        throw new Error('User does not own this conversation');
+      }
+    }
+
+    // Get conversation data using consolidated operations
+    const conversation = await ChatDatabaseOperations.getConversationWithMessages(conversationId);
+
+    logger.info(`Retrieved conversation ${conversationId} with ${conversation.messages.length} messages`);
+    
+    return conversation;
+
+  } catch (error) {
+    logger.error('Error getting conversation history:', error);
+    throw error;
+  }
+};
 
 /**
  * Get conversation with enhanced context and metadata
@@ -23,7 +53,12 @@ export const getConversationWithContext = async (conversationId, userId = null, 
 
   try {
     // Get base conversation data
-    const conversation = await getConversationHistory(conversationId, userId);
+    const conversation = await ChatDatabaseOperations.getConversationWithMessages(conversationId, { includeDeleted: false });
+
+    // Verify ownership if userId provided
+    if (userId && conversation.user_id !== userId) {
+      throw new Error('User does not own this conversation');
+    }
 
     // Build enhanced context
     const enhancedConversation = { ...conversation };
@@ -68,7 +103,7 @@ export const getConversationWithContext = async (conversationId, userId = null, 
 
     // Add conversation statistics
     if (includeStats) {
-      const summary = await getConversationSummary(conversationId);
+      const summary = await ChatDatabaseOperations.getConversationSummary(conversationId);
       enhancedConversation.statistics = summary.statistics;
     }
 
@@ -179,7 +214,7 @@ export const getConversationContextForAI = async (conversationId) => {
  */
 export const getConversationPreview = async (conversationId, userId) => {
   try {
-    const summary = await getConversationSummary(conversationId);
+    const summary = await ChatDatabaseOperations.getConversationSummary(conversationId);
     
     // Verify ownership
     if (summary.user_id !== userId) {

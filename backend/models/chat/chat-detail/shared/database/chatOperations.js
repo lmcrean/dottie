@@ -1,6 +1,6 @@
 import logger from '../../../../../services/logger.js';
 import DbService from '../../../../../services/dbService.js';
-import { withDatabaseOperation } from '../utils/errorHandler.js';
+import { withDatabaseOperation } from '../alerts/errorHandler.js';
 
 /**
  * Unified database operations for chat functionality
@@ -218,5 +218,49 @@ export class ChatDatabaseOperations {
     await DbService.update('conversations', conversationId, {
       updated_at: new Date().toISOString()
     });
+  }
+
+  /**
+   * Get conversation summary/metadata
+   * @param {string} conversationId - Conversation ID
+   * @returns {Promise<Object>} - Conversation summary
+   */
+  static async getConversationSummary(conversationId) {
+    return withDatabaseOperation(async () => {
+      const conversation = await DbService.getById('conversations', conversationId);
+      if (!conversation) {
+        throw new Error('Conversation not found');
+      }
+
+      // Get message statistics
+      const messageStats = await DbService.query(`
+        SELECT 
+          COUNT(*) as total_messages,
+          COUNT(CASE WHEN role = 'user' THEN 1 END) as user_messages,
+          COUNT(CASE WHEN role = 'assistant' THEN 1 END) as assistant_messages,
+          MIN(created_at) as first_message_at,
+          MAX(created_at) as last_message_at
+        FROM chat_messages 
+        WHERE conversation_id = ?
+      `, [conversationId]);
+
+      const stats = messageStats[0] || {};
+
+      return {
+        id: conversation.id,
+        user_id: conversation.user_id,
+        assessment_id: conversation.assessment_id,
+        assessment_pattern: conversation.assessment_pattern,
+        created_at: conversation.created_at,
+        updated_at: conversation.updated_at,
+        statistics: {
+          total_messages: stats.total_messages || 0,
+          user_messages: stats.user_messages || 0,
+          assistant_messages: stats.assistant_messages || 0,
+          first_message_at: stats.first_message_at,
+          last_message_at: stats.last_message_at
+        }
+      };
+    }, 'get', 'conversation summary', conversationId);
   }
 } 

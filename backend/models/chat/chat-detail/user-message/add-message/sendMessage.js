@@ -1,9 +1,8 @@
 import logger from '../../../../../services/logger.js';
-import { insertChatMessage } from '../../shared/database/chatCreateMessage.js';
-import { updateChatMessage } from '../../shared/database/chatUpdateMessage.js';
-import { formatUserMessage } from '../../shared/utils/messageFormatters.js';
+import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
+import { formatUserMessage } from '../validation/messageFormatters.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
-import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
+import { ResponseCoordinator } from '../../chatbot-message/ResponseCoordinator.js';
 import Chat from '../../../read-chat-list/chat.js';
 
 /**
@@ -51,13 +50,8 @@ export const sendMessage = async (conversationId, userId, messageText, options =
       created_at: new Date().toISOString()
     };
 
-    // Insert user message into database
-    await insertChatMessage(conversationId, messageData);
-
-    // Update conversation timestamp
-    await Chat.update(conversationId, {
-      updated_at: new Date().toISOString()
-    });
+    // Insert user message into database using consolidated operations
+    await ChatDatabaseOperations.insertMessage(conversationId, messageData);
 
     const userMessage = {
       id: messageId,
@@ -73,7 +67,7 @@ export const sendMessage = async (conversationId, userId, messageText, options =
     // Generate AI response if enabled
     let assistantMessage = null;
     if (autoResponse) {
-      assistantMessage = await generateResponseToMessage(conversationId, messageId, messageText);
+      assistantMessage = await ResponseCoordinator.generateResponseToMessage(conversationId, messageId, messageText);
     }
 
     logger.info(`Message sent successfully in conversation ${conversationId}`);
@@ -143,15 +137,10 @@ export const editMessage = async (conversationId, messageId, userId, newContent)
       throw new Error('User does not own this conversation');
     }
 
-    // Update the message and handle thread cleanup
-    const updatedMessage = await updateChatMessage(conversationId, messageId, {
+    // Update the message and handle thread cleanup using consolidated operations
+    const updatedMessage = await ChatDatabaseOperations.updateMessage(conversationId, messageId, {
       content: newContent,
       edited_at: new Date().toISOString()
-    });
-
-    // Update conversation timestamp
-    await Chat.update(conversationId, {
-      updated_at: new Date().toISOString()
     });
 
     logger.info(`Message ${messageId} edited in conversation ${conversationId}`);
@@ -159,6 +148,65 @@ export const editMessage = async (conversationId, messageId, userId, newContent)
 
   } catch (error) {
     logger.error('Error editing message:', error);
+    throw error;
+  }
+};
+
+/**
+ * Edit message and regenerate subsequent responses (replaces editMessageWithRegeneration.js)
+ * @param {string} conversationId - Conversation ID
+ * @param {string} messageId - Message ID to edit
+ * @param {string} userId - User ID
+ * @param {string} newContent - New message content
+ * @param {Object} [options] - Edit options
+ * @param {boolean} [options.regenerateResponse=true] - Regenerate AI response
+ * @returns {Promise<Object>} - Updated message and new response
+ */
+export const editMessageWithRegeneration = async (conversationId, messageId, userId, newContent, options = {}) => {
+  const { regenerateResponse = true } = options;
+
+  try {
+    logger.info(`Starting message edit flow for message ${messageId}`);
+
+    // Step 1: Edit the message (this will handle thread cleanup)
+    const updatedMessage = await editMessage(conversationId, messageId, userId, newContent);
+
+    // Step 2: Generate new response if requested
+    let newResponse = null;
+    if (regenerateResponse) {
+      newResponse = await ResponseCoordinator.generateResponseToMessage(conversationId, messageId, newContent);
+    }
+
+    logger.info(`Message edit flow completed for message ${messageId}`);
+
+    return {
+      updatedMessage,
+      newResponse,
+      conversationId,
+      timestamp: new Date().toISOString()
+    };
+
+  } catch (error) {
+    logger.error('Error in message edit flow:', error);
+    throw error;
+  }
+};
+
+/**
+ * Continue conversation with contextual awareness (replaces continueConversationWithContext.js)
+ * @param {string} conversationId - Conversation ID
+ * @param {string} userId - User ID
+ * @param {string} messageText - Message content
+ * @param {Object} [context] - Additional context
+ * @returns {Promise<Object>} - Complete message exchange with context
+ */
+export const continueConversationWithContext = async (conversationId, userId, messageText, context = {}) => {
+  try {
+    const result = await sendMessage(conversationId, userId, messageText, { context });
+    
+    return result;
+  } catch (error) {
+    logger.error('Error continuing conversation with context:', error);
     throw error;
   }
 };

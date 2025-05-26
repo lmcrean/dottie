@@ -18,7 +18,7 @@ export { createConversation } from './chat-detail/shared/create-conversation/cha
 export { 
   setupAssessmentContext, 
   validateAssessmentContext 
-} from './chat-detail/shared/create-conversation/assessment/assessmentSetup.js';
+} from './chat-detail/shared/create-conversation/assessment/assessmentSetupContext.js';
 export { 
   createInitialMessage, 
   generateInitialResponse, 
@@ -86,7 +86,7 @@ export {
   withValidation,
   withDatabaseOperation,
   withServiceCall
-} from './chat-detail/shared/utils/errorHandler.js';
+} from './chat-detail/shared/alerts/errorHandler.js';
 export { ValidationHelper } from './chat-detail/shared/utils/validationHelper.js';
 export { ConfigHelper } from './chat-detail/shared/utils/configHelper.js';
 
@@ -97,7 +97,7 @@ export {
   formatMessageForDisplay,
   formatMessagesForAI,
   validateMessageContent
-} from './chat-detail/shared/utils/messageFormatters.js';
+} from './chat-detail/user-message/validation/messageFormatters.js';
 
 // Response builders
 export { 
