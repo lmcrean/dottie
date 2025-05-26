@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Dottie is a user-friendly application designed to help individuals understand their menstrual health better. Through a series of simple questions, Dottie collects information about your menstrual cycle and provides personalized analysis and recommendations.",
-  "main": "server.js",
+  "main": "server.ts",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
