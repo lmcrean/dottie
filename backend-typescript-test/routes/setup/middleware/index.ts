@@ -1,5 +1,5 @@
 import express from 'express';
-import errorHandlers from './errorHandlers.js';
+import errorHandlers from './errorHandlers.ts';
 
 const router = express.Router();
 

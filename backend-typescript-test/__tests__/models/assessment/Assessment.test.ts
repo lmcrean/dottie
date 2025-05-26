@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import Assessment from '../../../models/assessment/Assessment.js';
-import CleanAssessmentOperations from '../../../models/assessment/assessment-base/CleanAssessmentOperations.js';
+import Assessment from '../../../models/assessment/Assessment.ts';
+import CleanAssessmentOperations from '../../../models/assessment/assessment-base/CleanAssessmentOperations.ts';
 
 // Mock the operations class
-vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.js');
+vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.ts');
 
 describe('Assessment', () => {
   beforeEach(() => {

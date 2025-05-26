@@ -1,4 +1,4 @@
-import { db } from '../../db/index.js';
+import { db } from '../../db/index.ts';
 
 /**
  * Find many records by field and parse JSON fields

@@ -10,7 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import initializeSQLiteDatabase from '../db/init-sqlite.js';
+import initializeSQLiteDatabase from '../db/init-sqlite.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,4 +44,5 @@ try {
   console.error("Error initializing database:", error);
   process.exit(1);
 }
+
 

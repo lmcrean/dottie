@@ -1,7 +1,7 @@
-import { setupTestClient, closeTestServer } from './setup.js';
+import { setupTestClient, closeTestServer } from './setup.ts';
 import jwt from 'jsonwebtoken';
-import { updateAssessmentSchema } from '../db/migrations/assessmentSchema.js';
-import db from '../db/index.js';
+import { updateAssessmentSchema } from '../db/migrations/assessmentSchema.ts';
+import db from '../db/index.ts';
 
 /**
  * Setup a test server for e2e tests

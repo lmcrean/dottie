@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import logger from '../services/logger.js';
+import logger from '../services/logger.ts';
 
 /**
  * Middleware to authenticate JWT tokens

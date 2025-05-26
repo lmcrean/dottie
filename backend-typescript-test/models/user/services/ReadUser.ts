@@ -1,6 +1,6 @@
-import DbService from '../../../services/db-service/dbService.js';
-import UserBase from '../base/UserBase.js';
-import SanitizeUserData from '../transformers/SanitizeUserData.js';
+import DbService from '../../../services/db-service/dbService.ts';
+import UserBase from '../base/UserBase.ts';
+import SanitizeUserData from '../transformers/SanitizeUserData.ts';
 
 /**
  * User reading service

@@ -1,6 +1,6 @@
-import logger from '../../../../../services/logger.js';
-import DbService from '../../../../../services/dbService.js';
-import { generateMessageId } from '../../shared/utils/responseBuilders.js';
+import logger from '../../../../../services/logger.ts';
+import DbService from '../../../../../services/dbService.ts';
+import { generateMessageId } from '../../shared/utils/responseBuilders.ts';
 
 /**
  * Send a chatbot message and store it in the database

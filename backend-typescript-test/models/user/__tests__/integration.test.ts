@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { User, UserAuth, UserPasswordReset } from '../index.js';
-import DbService from '@/services/dbService.js';
-import { generateUser } from '@test-utils/testFixtures.js';
+import { User, UserAuth, UserPasswordReset } from '../index.ts';
+import DbService from '@/services/dbService.ts';
+import { generateUser } from '@test-utils/testFixtures.ts';
 
 // Mock DbService and UserAuth
-vi.mock('@/services/dbService.js');
+vi.mock('@/services/dbService.ts');
 vi.mock('../UserAuth.js', () => ({
   default: {
     findByEmail: vi.fn(),

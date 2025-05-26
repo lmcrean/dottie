@@ -1,28 +1,28 @@
 // Main User model (orchestrator)
-import User from './User.js';
+import User from './User.ts';
 
 // Services
-import CreateUser from './services/CreateUser.js';
-import ReadUser from './services/ReadUser.js';
-import UpdateEmail from './services/UpdateEmail.js';
-import UpdateUsername from './services/UpdateUsername.js';
-import UpdatePassword from './services/UpdatePassword.js';
-import DeleteUser from './services/DeleteUser.js';
-import AuthenticateUser from './services/AuthenticateUser.js';
-import ResetPassword from './services/ResetPassword.js';
+import CreateUser from './services/CreateUser.ts';
+import ReadUser from './services/ReadUser.ts';
+import UpdateEmail from './services/UpdateEmail.ts';
+import UpdateUsername from './services/UpdateUsername.ts';
+import UpdatePassword from './services/UpdatePassword.ts';
+import DeleteUser from './services/DeleteUser.ts';
+import AuthenticateUser from './services/AuthenticateUser.ts';
+import ResetPassword from './services/ResetPassword.ts';
 
 // Validators
-import ValidateUserData from './validators/ValidateUserData.js';
-import ValidateEmail from './validators/ValidateEmail.js';
-import ValidateUsername from './validators/ValidateUsername.js';
-import ValidatePassword from './validators/ValidatePassword.js';
-import ValidateCredentials from './validators/ValidateCredentials.js';
+import ValidateUserData from './validators/ValidateUserData.ts';
+import ValidateEmail from './validators/ValidateEmail.ts';
+import ValidateUsername from './validators/ValidateUsername.ts';
+import ValidatePassword from './validators/ValidatePassword.ts';
+import ValidateCredentials from './validators/ValidateCredentials.ts';
 
 // Transformers
-import SanitizeUserData from './transformers/SanitizeUserData.js';
+import SanitizeUserData from './transformers/SanitizeUserData.ts';
 
 // Base
-import UserBase from './base/UserBase.js';
+import UserBase from './base/UserBase.ts';
 
 // Main exports - new granular structure
 export {

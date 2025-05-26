@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendUserMessage.js';
-import DbService from '@/services/dbService.js';
-import logger from '@/services/logger.js';
+import { sendMessage } from '../../sendUserMessage.ts';
+import DbService from '@/services/dbService.ts';
+import logger from '@/services/logger.ts';
 
 /**
  * Tests for database integration and message persistence
@@ -169,3 +169,4 @@ export const runDatabaseIntegrationTests = (mockData) => {
     });
   });
 }; 
+

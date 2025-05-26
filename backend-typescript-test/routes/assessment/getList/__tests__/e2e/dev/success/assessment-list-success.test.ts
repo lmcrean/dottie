@@ -1,12 +1,12 @@
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from "../../../../../../../db/index.js";
+import db from '../../../../../../../db/index.ts';
 import {
   setupTestServer,
   closeTestServer,
   createMockToken,
-} from "../../../../../../../test-utilities/testSetup.js";
+} from '../../../../../../../test-utilities/testSetup.ts';
 
 // Store server instance and test data
 let server;
@@ -159,3 +159,4 @@ describe("Assessment List Endpoint - Success Cases", () => {
     }
   });
 });
+

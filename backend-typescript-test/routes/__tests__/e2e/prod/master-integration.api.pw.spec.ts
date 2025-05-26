@@ -1,10 +1,10 @@
 import { test as base, expect } from "@playwright/test";
 
 // Import utility modules in order: auth → assessment → user → chat
-import * as auth from "./runners/auth.js";
-import * as assessment from "./runners/assessment.js";
-import * as user from "./runners/user.js";
-import * as chat from "./runners/chat.js";
+import * as auth from './runners/auth.ts';
+import * as assessment from './runners/assessment.ts';
+import * as user from './runners/user.ts';
+import * as chat from './runners/chat.ts';
 
 /**
  * Master Integration Test for Production
@@ -549,3 +549,4 @@ base.describe("Master Integration Test", () => {
     }
   });
 });
+

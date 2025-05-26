@@ -1,6 +1,6 @@
-import DbService from '../../../services/dbService.js';
-import TransformDbToApi from '../transformers/TransformDbToApi.js';
-import DetectAssessmentFormat from '../detectors/DetectAssessmentFormat.js';
+import DbService from '../../../services/dbService.ts';
+import TransformDbToApi from '../transformers/TransformDbToApi.ts';
+import DetectAssessmentFormat from '../detectors/DetectAssessmentFormat.ts';
 
 class ReadAssessment {
   /**

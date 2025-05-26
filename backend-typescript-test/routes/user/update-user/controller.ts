@@ -1,4 +1,4 @@
-import User from "../../../models/user/User.js";
+import User from '../../../models/user/User.ts';
 import bcrypt from "bcrypt";
 
 /**
@@ -68,3 +68,4 @@ export const updateUser = async (req, res) => {
 export default {
   updateUser,
 };
+

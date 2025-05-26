@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { refreshTokens } from '../middleware/index.js';
+import { refreshTokens } from '../middleware/index.ts';
 
 export const logout = (req, res) => {
   try {

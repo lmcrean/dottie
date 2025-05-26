@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import UserPasswordReset from '../UserPasswordReset.js';
-import DbService from '@/services/dbService.js';
-import UserAuth from '../UserAuth.js';
-import { generateUser } from '@test-utils/testFixtures.js';
+import UserPasswordReset from '../UserPasswordReset.ts';
+import DbService from '@/services/dbService.ts';
+import UserAuth from '../UserAuth.ts';
+import { generateUser } from '@test-utils/testFixtures.ts';
 
 // Mock dependencies
-vi.mock('@/services/dbService.js');
-vi.mock('../UserAuth.js');
+vi.mock('@/services/dbService.ts');
+vi.mock('../UserAuth.ts');
 
 describe('UserPasswordReset Model', () => {
   beforeEach(() => {

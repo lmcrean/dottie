@@ -1,4 +1,4 @@
-import { findById } from './findById.js';
+import { findById } from './findById.ts';
 
 /**
  * Find a record by ID and auto-parse JSON fields

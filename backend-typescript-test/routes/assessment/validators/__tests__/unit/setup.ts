@@ -1,4 +1,4 @@
-import { resolveFromRoot } from '../../../../test-utilities/paths.js';
+import { resolveFromRoot } from '../../../../test-utilities/paths.ts';
 import { vi } from 'vitest';
 
 // Import models and controllers directly from their absolute paths

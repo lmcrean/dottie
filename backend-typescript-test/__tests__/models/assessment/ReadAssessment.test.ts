@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ReadAssessment from '../../../models/assessment/assessment-main/ReadAssessment.js';
-import DbService from '../../../services/dbService.js';
-import TransformDbToApi from '../../../models/assessment/assessment-main/TransformDbToApi.js';
-import FormatDetector from '../../../models/assessment/assessment-base/FormatDetector.js';
+import ReadAssessment from '../../../models/assessment/assessment-main/ReadAssessment.ts';
+import DbService from '../../../services/dbService.ts';
+import TransformDbToApi from '../../../models/assessment/assessment-main/TransformDbToApi.ts';
+import FormatDetector from '../../../models/assessment/assessment-base/FormatDetector.ts';
 
 // Mock dependencies
-vi.mock('../../../services/dbService.js');
-vi.mock('../../../models/assessment/assessment-main/TransformDbToApi.js');
-vi.mock('../../../models/assessment/assessment-base/FormatDetector.js');
+vi.mock('../../../services/dbService.ts');
+vi.mock('../../../models/assessment/assessment-main/TransformDbToApi.ts');
+vi.mock('../../../models/assessment/assessment-base/FormatDetector.ts');
 
 describe('ReadAssessment', () => {
   beforeEach(() => {

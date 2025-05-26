@@ -1,6 +1,6 @@
-import logger from '../../../../services/logger.js';
-import { createConversation } from './database/conversationCreate.js';
-import { createInitialMessage } from '../../message/user-message/add-message/create-initial-message/createInitialMessage.js';
+import logger from '../../../../services/logger.ts';
+import { createConversation } from './database/conversationCreate.ts';
+import { createInitialMessage } from '../../message/user-message/add-message/create-initial-message/createInitialMessage.ts';
 
 /**
  * Create conversation with assessment and initial message

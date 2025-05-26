@@ -1,2 +1,2 @@
-export * from './userValidators.js';
-// export * from './authValidators.js'; 
+export * from './userValidators.ts';
+// export * from './authValidators.ts'; 

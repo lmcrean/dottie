@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest';
-import Assessment from '../../../../models/assessment/Assessment.js';
+import Assessment from '../../../../models/assessment/Assessment.ts';
 
 describe('Assessment Schema Flattening Tests', () => {
   const userId = 'test-user-123';

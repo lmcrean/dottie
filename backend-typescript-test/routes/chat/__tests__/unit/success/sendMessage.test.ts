@@ -49,7 +49,7 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
 }));
 
 // Import the controller after all mocks are set up
-import * as sendMessageController from '../../../send-message/controller.js';
+import * as sendMessageController from '../../../send-message/controller.ts';
 
 describe('Send Message Controller', () => {
   let req, res;

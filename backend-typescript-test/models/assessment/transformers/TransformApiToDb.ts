@@ -1,4 +1,4 @@
-import ParseAssessmentJson from './ParseAssessmentJson.js';
+import ParseAssessmentJson from './ParseAssessmentJson.ts';
 
 class TransformApiToDb {
   /**

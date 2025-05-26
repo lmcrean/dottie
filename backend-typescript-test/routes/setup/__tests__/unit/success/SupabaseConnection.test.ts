@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import supabase from '../../../../../services/supabaseService.js';
+import supabase from '../../../../../services/supabaseService.ts';
 
 // Mock the Supabase client
 vi.mock('../../../../../services/supabaseService.js', () => {

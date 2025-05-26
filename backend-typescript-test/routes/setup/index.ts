@@ -1,7 +1,7 @@
 import express from 'express';
-import databaseRoutes from './database/index.js';
-import healthRoutes from './health/index.js';
-import errorHandlers from './middleware/index.js';
+import databaseRoutes from './database/index.ts';
+import healthRoutes from './health/index.ts';
+import errorHandlers from './middleware/index.ts';
 
 const router = express.Router();
 

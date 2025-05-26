@@ -1,8 +1,8 @@
-import DbService from '../../../services/db-service/dbService.js';
-import UserBase from '../base/UserBase.js';
-import ValidatePassword from '../validators/ValidatePassword.js';
-import SanitizeUserData from '../transformers/SanitizeUserData.js';
-import ReadUser from './ReadUser.js';
+import DbService from '../../../services/db-service/dbService.ts';
+import UserBase from '../base/UserBase.ts';
+import ValidatePassword from '../validators/ValidatePassword.ts';
+import SanitizeUserData from '../transformers/SanitizeUserData.ts';
+import ReadUser from './ReadUser.ts';
 
 /**
  * Password update service

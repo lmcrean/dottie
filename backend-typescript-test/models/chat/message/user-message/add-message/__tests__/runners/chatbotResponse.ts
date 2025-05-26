@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.js';
-import logger from '@/services/logger.js';
+import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.ts';
+import logger from '@/services/logger.ts';
 
 /**
  * Tests for chatbot response generation (AI or mock based on config)

@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.js';
-import DbService from '../../../../../../services/dbService.js';
+import logger from '../../../../../../services/logger.ts';
+import DbService from '../../../../../../services/dbService.ts';
 
 /**
  * Insert a user message into the database
@@ -24,4 +24,5 @@ export const insertUserMessage = async (conversationId, messageData) => {
     throw error;
   }
 };
+
 

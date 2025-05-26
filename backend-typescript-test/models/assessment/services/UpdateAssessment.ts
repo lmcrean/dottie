@@ -1,5 +1,5 @@
-import DbService from '../../../services/dbService.js';
-import TransformApiToDb from '../transformers/TransformApiToDb.js';
+import DbService from '../../../services/dbService.ts';
+import TransformApiToDb from '../transformers/TransformApiToDb.ts';
 
 class UpdateAssessment {
   /**

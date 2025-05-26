@@ -1,5 +1,5 @@
-import { update } from './update.js';
-import { findByIdWithJson } from './findByIdWithJson.js';
+import { update } from './update.ts';
+import { findByIdWithJson } from './findByIdWithJson.ts';
 
 /**
  * Update records with JSON fields

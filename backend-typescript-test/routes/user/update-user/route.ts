@@ -1,7 +1,7 @@
 import express from 'express';
-import { updateUser } from './controller.js';
-import { authenticateToken } from '../../auth/middleware/index.js';
-import { validateUserUpdate } from '../../auth/middleware/validators/userValidators.js';
+import { updateUser } from './controller.ts';
+import { authenticateToken } from '../../auth/middleware/index.ts';
+import { validateUserUpdate } from '../../auth/middleware/validators/userValidators.ts';
 
 const router = express.Router();
 

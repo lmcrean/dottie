@@ -1,5 +1,5 @@
-import logger from '../../../../../../services/logger.js';
-import { ChatDatabaseOperations } from '../../../shared/database/chatOperations.js';
+import logger from '../../../../../../services/logger.ts';
+import { ChatDatabaseOperations } from '../../../shared/database/chatOperations.ts';
 
 /**
  * Clean up all messages that came after the edited message
@@ -44,3 +44,4 @@ export const cleanupChildrenMessages = async (conversationId, messageId) => {
     throw error;
   }
 };
+

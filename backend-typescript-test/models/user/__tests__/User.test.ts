@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import User from '../User.js';
-import DbService from '@/services/dbService.js';
-import { generateUser } from '@test-utils/testFixtures.js';
+import User from '../User.ts';
+import DbService from '@/services/dbService.ts';
+import { generateUser } from '@test-utils/testFixtures.ts';
 
 // Mock DbService
-vi.mock('@/services/dbService.js');
+vi.mock('@/services/dbService.ts');
 
 describe('User Model', () => {
   beforeEach(() => {

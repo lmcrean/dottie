@@ -1,11 +1,11 @@
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from "../../../../../../db/index.js";
+import db from '../../../../../../db/index.ts';
 import jwt from "jsonwebtoken";
 
 // We'll import the app directly from the server file
-import app from "../../../../../../server.js";
+import app from '../../../../../../server.ts';
 
 // Store test data
 let testUserId;
@@ -186,3 +186,4 @@ describe("Assessment Send Endpoint - Success Cases", () => {
     }
   });
 });
+

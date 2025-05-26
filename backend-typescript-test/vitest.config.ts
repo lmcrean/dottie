@@ -18,7 +18,9 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
     },
     testTimeout: 60000,
-    globalSetup: './test-utilities/setupDb.js',
+    globals: true,
+    setupFiles: ['./vitest-setup.ts'],
+    globalSetup: './test-utilities/setupDb.ts',
     // Match anything with 'dev' in the file path or test name
     includeMatch: [
       // Include tests with 'dev' in the file path

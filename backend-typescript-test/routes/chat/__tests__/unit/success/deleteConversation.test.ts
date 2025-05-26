@@ -20,7 +20,7 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
 }));
 
 // Import the controller after all mocks are set up
-import * as deleteController from '../../../delete-conversation/controller.js';
+import * as deleteController from '../../../delete-conversation/controller.ts';
 
 describe('Delete Conversation Controller', () => {
   let req, res;

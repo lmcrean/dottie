@@ -7,28 +7,28 @@
 // ===================================
 // ENTITY MODELS
 // ===================================
-export { Message } from './message/message.js';
-export { Conversation } from './conversation/conversation.js';
-export { Conversation as default } from './conversation/conversation.js';
+export { Message } from './message/message.ts';
+export { Conversation } from './conversation/conversation.ts';
+export { Conversation as default } from './conversation/conversation.ts';
 
 // ===================================
 // CONVERSATION OPERATIONS
 // ===================================
-export { getUserConversations } from './list/chatGetList.js';
-export { deleteConversation } from './conversation/delete-chat-detail/chatDelete.js';
+export { getUserConversations } from './list/chatGetList.ts';
+export { deleteConversation } from './conversation/delete-chat-detail/chatDelete.ts';
 
 export { 
   createCompleteConversation,
   createConversationWithMessage,
   createEmptyConversation,
   createAssessmentConversation
-} from './conversation/create-new-conversation/createFlow.js';
+} from './conversation/create-new-conversation/createFlow.ts';
 
 export { 
   getConversation,
   getConversationForUser,
   getConversationSummary
-} from './conversation/read-chat-detail/getConversation.js';
+} from './conversation/read-chat-detail/getConversation.ts';
 
 // ===================================
 // MESSAGE OPERATIONS
@@ -41,7 +41,7 @@ export {
   continueWithContext,
   editMessageWithRegeneration,
   continueConversationWithContext
-} from './message/user-message/add-message/sendMessage.js';
+} from './message/user-message/add-message/sendMessage.ts';
 
 // ===================================
 // CONVENIENCE FUNCTIONS

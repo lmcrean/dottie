@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createAssessmentConversation } from '../../createFlow.js';
-import logger from '@/services/logger.js';
+import { createAssessmentConversation } from '../../createFlow.ts';
+import logger from '@/services/logger.ts';
 
 /**
  * Tests for database operation sequence and timing

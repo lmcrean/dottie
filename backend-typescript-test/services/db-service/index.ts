@@ -1,15 +1,15 @@
 // Import all individual functions
-import { findById } from './findById.js';
-import { findBy } from './findBy.js';
-import { create } from './create.js';
-import { update } from './update.js';
-import { deleteRecord } from './delete.js';
-import { getAll } from './getAll.js';
-import { getConversationsWithPreviews } from './getConversationsWithPreviews.js';
-import { createWithJson } from './createWithJson.js';
-import { findByIdWithJson } from './findByIdWithJson.js';
-import { findByFieldWithJson } from './findByFieldWithJson.js';
-import { updateWithJson } from './updateWithJson.js';
+import { findById } from './findById.ts';
+import { findBy } from './findBy.ts';
+import { create } from './create.ts';
+import { update } from './update.ts';
+import { deleteRecord } from './delete.ts';
+import { getAll } from './getAll.ts';
+import { getConversationsWithPreviews } from './getConversationsWithPreviews.ts';
+import { createWithJson } from './createWithJson.ts';
+import { findByIdWithJson } from './findByIdWithJson.ts';
+import { findByFieldWithJson } from './findByFieldWithJson.ts';
+import { updateWithJson } from './updateWithJson.ts';
 
 /**
  * Database service for common operations

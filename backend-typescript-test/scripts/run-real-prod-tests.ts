@@ -2,7 +2,7 @@
 import { spawn } from "child_process";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { URLS } from "../test-utilities/urls.js";
+import { URLS } from '../test-utilities/urls.ts';
 
 // Get the directory path
 const __filename = fileURLToPath(import.meta.url);
@@ -54,3 +54,4 @@ testProcess.on("close", (code) => {
   }
   process.exit(code);
 });
+

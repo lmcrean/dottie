@@ -2,13 +2,13 @@
 // Set test mode before importing db
 process.env.TEST_MODE = "true";
 
-import db from "../../../db/index.js";
+import db from '../../../db/index.ts';
 import {
   createTables,
   dropTables,
-} from "../../../db/migrations/initialSchema.js";
+} from '../../../db/migrations/initialSchema.ts';
 import bcrypt from "bcrypt";
-import { generateUser } from "../../../test-utilities/testFixtures.js";
+import { generateUser } from '../../../test-utilities/testFixtures.ts';
 
 /**
  * Initialize the test database
@@ -126,3 +126,4 @@ export async function createTestUser(userData) {
     return null;
   }
 }
+

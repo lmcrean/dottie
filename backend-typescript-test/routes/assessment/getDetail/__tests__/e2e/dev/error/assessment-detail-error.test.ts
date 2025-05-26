@@ -1,7 +1,7 @@
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
-import { setupTestServer, closeTestServer, createMockToken } from '../../../../../../test-utilities/testSetup.js';
+import { setupTestServer, closeTestServer, createMockToken } from '../../../../../../test-utilities/testSetup.ts';
 
 // Variables to store server instance and request
 let server;

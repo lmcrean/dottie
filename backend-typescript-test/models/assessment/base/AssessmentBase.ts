@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import FindAssessment from '../services/FindAssessment.js';
-import DeleteAssessment from '../services/DeleteAssessment.js';
-import ValidateAssessmentData from '../validators/ValidateAssessmentData.js';
-import ValidateAssessmentOwnership from '../validators/ValidateAssessmentOwnership.js';
+import FindAssessment from '../services/FindAssessment.ts';
+import DeleteAssessment from '../services/DeleteAssessment.ts';
+import ValidateAssessmentData from '../validators/ValidateAssessmentData.ts';
+import ValidateAssessmentOwnership from '../validators/ValidateAssessmentOwnership.ts';
 
 class AssessmentBase {
   /**

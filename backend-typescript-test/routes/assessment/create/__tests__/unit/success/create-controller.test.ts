@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createAssessment } from '../../../controller.js';
-import Assessment from '../../../../../../models/assessment/Assessment.js';
-import { validateAssessmentData } from '../../../validators/index.js';
+import { createAssessment } from '../../../controller.ts';
+import Assessment from '../../../../../../models/assessment/Assessment.ts';
+import { validateAssessmentData } from '../../../validators/index.ts';
 
 // Mock the Assessment model
 vi.mock('../../../../../../models/assessment/Assessment.js', () => {
@@ -90,7 +90,7 @@ vi.mock('../../../controller.js', () => {
 });
 
 // Import after mocking
-import { createAssessment } from '../../../controller.js';
+import { createAssessment } from '../../../controller.ts';
 
 describe('Create Assessment Controller - Success Case', () => {
   // Mock request and response

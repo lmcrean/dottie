@@ -1,6 +1,6 @@
-import logger from '../../../../../../services/logger.js';
-import { buildAIResponse, buildFallbackResponse } from '../../../shared/utils/responseBuilders.js';
-import { formatMessagesForAI } from '../../../shared/utils/messageFormatters.js';
+import logger from '../../../../../../services/logger.ts';
+import { buildAIResponse, buildFallbackResponse } from '../../../shared/utils/responseBuilders.ts';
+import { formatMessagesForAI } from '../../../shared/utils/messageFormatters.ts';
 
 /**
  * Generate AI response for any conversation stage

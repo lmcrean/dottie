@@ -1,5 +1,5 @@
 // Debug script for token generation and validation
-import { createMockToken } from "../../../../../../test-utilities/testSetup.js";
+import { createMockToken } from '../../../../../../test-utilities/testSetup.ts';
 import jwt from "jsonwebtoken";
 
 // Generate a test token
@@ -16,3 +16,4 @@ try {
 } catch (error) {
   console.error("Token verification failed:", error.message);
 }
+

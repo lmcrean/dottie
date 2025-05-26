@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import logger from '../../../services/logger.js';
-import { insertChatMessage, createConversation, getConversation } from '../../../models/chat/chat.js';
+import logger from '../../../services/logger.ts';
+import { insertChatMessage, createConversation, getConversation } from '../../../models/chat/chat.ts';
 
 // Initialize Gemini API
 const API_KEY = process.env.VITE_GEMINI_API_KEY;

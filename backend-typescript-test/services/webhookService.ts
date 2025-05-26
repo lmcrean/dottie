@@ -1,4 +1,4 @@
-import logger from './logger.js';
+import logger from './logger.ts';
 
 /**
  * Webhook service for notifying external systems of conversation updates

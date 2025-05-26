@@ -1,10 +1,10 @@
-import DbService from '../../../services/db-service/dbService.js';
-import UserBase from '../base/UserBase.js';
-import ValidateUserData from '../validators/ValidateUserData.js';
-import ValidateEmail from '../validators/ValidateEmail.js';
-import ValidateUsername from '../validators/ValidateUsername.js';
-import ValidatePassword from '../validators/ValidatePassword.js';
-import SanitizeUserData from '../transformers/SanitizeUserData.js';
+import DbService from '../../../services/db-service/dbService.ts';
+import UserBase from '../base/UserBase.ts';
+import ValidateUserData from '../validators/ValidateUserData.ts';
+import ValidateEmail from '../validators/ValidateEmail.ts';
+import ValidateUsername from '../validators/ValidateUsername.ts';
+import ValidatePassword from '../validators/ValidatePassword.ts';
+import SanitizeUserData from '../transformers/SanitizeUserData.ts';
 
 /**
  * User creation service

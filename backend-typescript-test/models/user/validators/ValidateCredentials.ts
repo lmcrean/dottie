@@ -1,4 +1,4 @@
-import ValidateEmail from './ValidateEmail.js';
+import ValidateEmail from './ValidateEmail.ts';
 
 /**
  * Credentials validation utilities for login

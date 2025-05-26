@@ -1,4 +1,4 @@
-import User from "../../../models/user/User.js";
+import User from '../../../models/user/User.ts';
 
 /**
  * Delete user
@@ -57,3 +57,4 @@ export const deleteUser = async (req, res) => {
 export default {
   deleteUser,
 };
+

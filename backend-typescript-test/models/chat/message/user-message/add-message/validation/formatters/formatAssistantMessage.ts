@@ -1,4 +1,4 @@
-import logger from '../../../../../../services/logger.js';
+import logger from '../../../../../../services/logger.ts';
 
 /**
  * Format assistant message for consistency

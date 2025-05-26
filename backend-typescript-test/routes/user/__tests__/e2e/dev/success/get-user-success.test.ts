@@ -1,8 +1,8 @@
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from "../../../../../../db/index.js";
-import app from "../../../../../../server.js";
+import db from '../../../../../../db/index.ts';
+import app from '../../../../../../server.ts';
 import { createServer } from "http";
 import jwt from "jsonwebtoken";
 
@@ -105,3 +105,4 @@ describe("Get User API - Success Cases", () => {
     expect(response.body).toHaveProperty("error");
   });
 });
+

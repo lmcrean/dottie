@@ -1,5 +1,5 @@
-import { createTables } from "../db/migrations/initialSchema.js";
-import db from "../db/index.js";
+import { createTables } from '../db/migrations/initialSchema.ts';
+import db from '../db/index.ts';
 
 /**
  * Initialize the database with all tables
@@ -17,3 +17,4 @@ async function init() {
 
 // Run the initialization
 init();
+

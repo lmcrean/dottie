@@ -1,5 +1,5 @@
 // Global setup file for Vitest
-import { initTestDatabase } from "./setup.js";
+import { initTestDatabase } from './setup.ts';
 
 // Export an async setup function that will be called by Vitest
 export async function setup() {
@@ -10,3 +10,4 @@ export async function setup() {
     process.exit(1);
   }
 }
+

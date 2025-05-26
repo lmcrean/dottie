@@ -1,6 +1,6 @@
 // @ts-check
 import { describe, test, expect } from 'vitest';
-import { validateAssessmentData } from '../../../validators/index.js';
+import { validateAssessmentData } from '../../../validators/index.ts';
 
 describe('Assessment Validation - Success Cases', () => {
   test('should validate a complete assessment in nested format', () => {

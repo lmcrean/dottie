@@ -1,8 +1,8 @@
-import { db } from "../../../db/index.js";
+import { db } from '../../../db/index.ts';
 import { v4 as uuidv4 } from "uuid";
-import { assessments } from "../store/index.js";
-import { validateAssessmentData } from "../validators/index.js";
-import Assessment from "../../../models/assessment/Assessment.js";
+import { assessments } from '../store/index.ts';
+import { validateAssessmentData } from '../validators/index.ts';
+import Assessment from '../../../models/assessment/Assessment.ts';
 
 /**
  * Create a new assessment for a user
@@ -148,3 +148,4 @@ export const createAssessment = async (req, res) => {
     res.status(500).json({ error: "Failed to create assessment", details: error.message });
   }
 };
+

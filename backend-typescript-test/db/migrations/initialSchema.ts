@@ -1,8 +1,8 @@
 // include updateAssessmentToJsonSchema.js - updated assessment table to use JSON
-import { updateAssessmentToJsonSchema } from "./updateAssessmentToJsonSchema.js";
+import { updateAssessmentToJsonSchema } from './updateAssessmentToJsonSchema.ts';
 
 //for test - TODO: remove
-import { updateAssessmentSchema } from "./assessmentSchema.js";
+import { updateAssessmentSchema } from './assessmentSchema.ts';
 
 /**
  * Create all tables for the Dottie application
@@ -172,3 +172,4 @@ export async function dropTables(db) {
   await db.schema.dropTableIfExists("chat_messages");
   await db.schema.dropTableIfExists("conversations");
 }
+

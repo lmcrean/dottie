@@ -2,8 +2,8 @@ import supertest from 'supertest';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
-import { resolveFromRoot } from './paths.js';
-import { getApiUrl, getEnvironment, URLS } from './urls.js';
+import { resolveFromRoot } from './paths.ts';
+import { getApiUrl, getEnvironment, URLS } from './urls.ts';
 
 /**
  * Dynamically import the app from server.js

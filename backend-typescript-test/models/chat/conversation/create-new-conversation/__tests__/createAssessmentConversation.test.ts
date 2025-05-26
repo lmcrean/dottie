@@ -1,16 +1,16 @@
 import { describe, beforeEach, afterEach, vi } from 'vitest';
-import DbService from '@/services/dbService.js';
-import logger from '@/services/logger.js';
+import DbService from '@/services/dbService.ts';
+import logger from '@/services/logger.ts';
 
 // Import test runners
-import { runSuccessfulCreationTests } from './runners/successfulCreation.js';
-import { runErrorHandlingTests } from './runners/errorHandling.js';
-import { runDatabaseSequenceTests } from './runners/databaseSequence.js';
-import { runAssessmentIntegrationTests } from './runners/assessmentIntegration.js';
+import { runSuccessfulCreationTests } from './runners/successfulCreation.ts';
+import { runErrorHandlingTests } from './runners/errorHandling.ts';
+import { runDatabaseSequenceTests } from './runners/databaseSequence.ts';
+import { runAssessmentIntegrationTests } from './runners/assessmentIntegration.ts';
 
 // Mock all dependencies
-vi.mock('@/services/dbService.js');
-vi.mock('@/services/logger.js');
+vi.mock('@/services/dbService.ts');
+vi.mock('@/services/logger.ts');
 vi.mock('../database/conversationCreate.js', () => ({
   createConversation: vi.fn()
 }));

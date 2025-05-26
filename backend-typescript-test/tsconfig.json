@@ -20,7 +20,8 @@
     "**/*.ts",
     "**/*.js",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

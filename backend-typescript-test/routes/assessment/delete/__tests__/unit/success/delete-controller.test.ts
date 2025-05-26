@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { deleteAssessment } from '../../../controller.js';
-import Assessment from '../../../../../../models/assessment/Assessment.js';
+import { deleteAssessment } from '../../../controller.ts';
+import Assessment from '../../../../../../models/assessment/Assessment.ts';
 
 // Mock the Assessment model
 vi.mock('../../../../../../models/assessment/Assessment.js', () => {

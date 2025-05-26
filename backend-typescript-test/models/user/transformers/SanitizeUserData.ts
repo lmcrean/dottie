@@ -1,4 +1,4 @@
-import UserBase from '../base/UserBase.js';
+import UserBase from '../base/UserBase.ts';
 
 /**
  * User data sanitization utilities

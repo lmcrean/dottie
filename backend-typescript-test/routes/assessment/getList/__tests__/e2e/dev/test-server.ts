@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import db from "../../../../../../db/index.js";
+import db from '../../../../../../db/index.ts';
 
 // Create Express app for testing
 const app = express();
@@ -245,3 +245,4 @@ app.use((req, res) => {
 });
 
 export default app;
+
