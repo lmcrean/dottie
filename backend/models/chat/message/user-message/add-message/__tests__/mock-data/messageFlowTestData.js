@@ -19,7 +19,7 @@ export const messageFlowTestData = {
 
   mockAssistantMessage: {
     id: 'msg-assistant-789',
-    conversation_id: 'test-conversation-789',
+    conversationId: 'test-conversation-789',
     role: 'assistant',
     content: 'Based on your irregular period pattern, I recommend tracking your cycle...',
     created_at: '2024-01-15T10:01:00.000Z',

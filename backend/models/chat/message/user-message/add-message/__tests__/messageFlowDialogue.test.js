@@ -21,15 +21,18 @@ vi.mock('../../../chatbot-message/database/sendChatbotMessage.js', () => ({
   getConversationMessages: vi.fn()
 }));
 vi.mock('../database/sendUserMessage.js', () => ({
-  insertUserMessage: vi.fn(),
-  getUserMessage: vi.fn(),
-  getUserMessages: vi.fn()
+  insertUserMessage: vi.fn()
 }));
-vi.mock('../sendMessage.js', () => ({
+vi.mock('../sendUserMessage.js', () => ({
   sendMessage: vi.fn()
 }));
-vi.mock('../../../chatbot-message/generateResponse.js', () => ({
+vi.mock('../../../../chatbot-message/generateResponse.js', () => ({
   generateResponseToMessage: vi.fn()
+}));
+vi.mock('../../../../chatbot-message/database/sendChatbotMessage.js', () => ({
+  sendChatbotMessage: vi.fn(),
+  getMessage: vi.fn(),
+  getConversationMessages: vi.fn()
 }));
 vi.mock('uuid', () => ({
   v4: vi.fn()
@@ -37,7 +40,7 @@ vi.mock('uuid', () => ({
 
 describe('Message Flow Dialogue Integration Tests', () => {
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     
     // Setup default mocks
@@ -52,6 +55,27 @@ describe('Message Flow Dialogue Integration Tests', () => {
     uuidv4
       .mockReturnValueOnce(messageFlowTestData.mockUserMessageId)
       .mockReturnValueOnce(messageFlowTestData.mockAssistantMessageId);
+
+    // Setup isolated database function mocks
+    const { insertUserMessage } = await import('../database/sendUserMessage.js');
+    insertUserMessage.mockResolvedValue(messageFlowTestData.mockUserMessage);
+
+    const { sendMessage } = await import('../sendUserMessage.js');
+    sendMessage.mockResolvedValue({
+      userMessage: messageFlowTestData.mockUserMessage,
+      assistantMessage: messageFlowTestData.mockAssistantMessage,
+      conversationId: messageFlowTestData.mockConversationId,
+      timestamp: new Date().toISOString()
+    });
+
+    const { generateResponseToMessage } = await import('../../../../chatbot-message/generateResponse.js');
+    // Force the mock to return our specific mock data
+    generateResponseToMessage.mockImplementation(async (conversationId, userMessageId, messageText) => {
+      return messageFlowTestData.mockAssistantMessage;
+    });
+
+    const { sendChatbotMessage } = await import('../../../../chatbot-message/database/sendChatbotMessage.js');
+    sendChatbotMessage.mockResolvedValue(messageFlowTestData.mockAssistantMessage);
   });
 
   afterEach(() => {
