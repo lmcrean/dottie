@@ -57,6 +57,7 @@ Always ask follow-up questions to keep the conversation engaging.
 
 The user has completed a menstrual health assessment with the following results:
 - Pattern: ${pattern}
+- Age: ${age}
 - Cycle length: ${cycle_length} days
 - Period duration: ${period_duration} days  
 - Pain level: ${pain_level}/10
