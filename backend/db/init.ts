@@ -1,5 +1,5 @@
 import db from '../../db/index.js';
-import { createTables } from '../db/init.js';
+import { createTables } from './migrations/initialSchema.js';
 
 /**
  * Initialize the database with required tables

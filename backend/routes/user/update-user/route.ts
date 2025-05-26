@@ -1,5 +1,5 @@
 import express from 'express';
-import { updateUser } from '';
+import { updateUser } from './controller.js';
 import { authenticateToken } from '../auth/middleware/index.js';
 import { validateUserUpdate } from '../auth/middleware/validators/userValidators.js';
 
