@@ -5,165 +5,43 @@
 // organized according to the new modular structure
 
 // ===================================
-// CHAT LIST - Browse existing conversations
+// ENTITY MODELS
 // ===================================
-export { getUserConversations } from './list/chatGetList.js';
-export { deleteConversation } from './chat-detail/delete-chat-detail/chatDelete.js';
-export { Chat as default } from './list/chat.js';
+export { Message } from './message/message.js';
+export { Conversation } from './conversation/conversation.js';
+export { Conversation as default } from './conversation/conversation.js';
 
 // ===================================
-// CREATE CONVERSATION - New conversation flow
+// CONVERSATION OPERATIONS
 // ===================================
-export { createConversation } from './chat-detail/shared/create-conversation/chatCreate.js';
-export { 
-  setupAssessmentContext, 
-  validateAssessmentContext 
-} from './chat-detail/shared/create-conversation/assessment/assessmentSetupContext.js';
-export { 
-  createInitialMessage, 
-  generateInitialResponse, 
-  autoTriggerInitialConversation 
-} from './chat-detail/shared/create-conversation/initialMessage.js';
+export { getUserConversations } from './list/chatGetList.js';
+export { deleteConversation } from './conversation/delete-chat-detail/chatDelete.js';
+
 export { 
   createCompleteConversation,
   createConversationWithMessage,
   createEmptyConversation,
   createAssessmentConversation
-} from './chat-detail/shared/create-conversation/createFlow.js';
+} from './conversation/create-new-conversation/createFlow.js';
+
+export { 
+  getConversation,
+  getConversationForUser,
+  getConversationSummary
+} from './conversation/read-chat-detail/getConversation.js';
 
 // ===================================
-// CONTINUE CONVERSATION - Ongoing messages
+// MESSAGE OPERATIONS
 // ===================================
 export { 
   sendMessage,
   editMessage,
   sendMessageOnly,
   sendQuickReply,
-  continueWithContext
-} from './chat-detail/user-message/add-message/sendMessage.js';
-export { 
-  generateResponseToMessage,
-  generateFollowUpResponse,
-  autoGenerateResponse,
-  generateResponseOptions
-} from './message/chatbot-message/generateResponse.js';
-export { editMessageWithRegeneration } from './chat-detail/user-message/update-message/editMessageWithRegeneration.js';
-export { triggerResponse } from './message/chatbot-message/utils/triggerResponse.js';
-export { continueConversationWithContext } from './chat-detail/user-message/add-message/continueConversationWithContext.js';
-
-// ===================================
-// READ CONVERSATION - Read conversation data
-// ===================================
-export { 
-  getConversationHistory,
-  getConversationMessages,
-  getRecentMessages,
-  getConversationSummary
-} from './chat-detail/read-chat-detail/getConversation.js';
-export { 
-  getConversationWithContext,
-  getConversationForDisplay,
-  getConversationContextForAI,
-  getConversationPreview
-} from './chat-detail/read-chat-detail/getWithContext.js';
-
-// ===================================
-// SHARED UTILITIES
-// ===================================
-
-// Assessment helpers
-export { getAssessmentPattern } from './chat-detail/shared/assessment/assessmentGetPattern.js';
-export { 
-  validateAssessmentOwnership,
-  validateAssessmentExists,
-  validateAndGetAssessment,
-  validateMultipleAssessments
-} from './chat-detail/shared/assessment/assessmentValidator.js';
-
-// Error handling and validation utilities
-export { 
-  withErrorHandling,
-  withValidation,
-  withDatabaseOperation,
-  withServiceCall
-} from './chat-detail/alerts/errorHandler.js';
-export { ValidationHelper } from './message/chatbot-message/utils/validationHelper.js';
-export { ConfigHelper } from './message/chatbot-message/utils/configHelper.js';
-
-// Message formatting and validation
-export { 
-  formatUserMessage,
-  formatAssistantMessage,
-  formatMessageForDisplay,
-  formatMessagesForAI,
-  validateMessageContent
-} from './chat-detail/user-message/validation/messageFormatters.js';
-
-// Response builders
-export { 
-  generateMessageId,
-  buildResponse,
-  buildAIResponse,
-  buildMockResponse,
-  buildErrorResponse,
-  buildFallbackResponse,
-  buildTypingResponse,
-  buildAssessmentResponse,
-  combineResponses,
-  buildSummaryResponse
-} from './message/chatbot-message/utils/responseBuilders.js';
-
-// Database operations
-export { 
-  insertChatMessage,
-  insertChatMessageBatch,
-  insertUserMessage,
-  insertAssistantMessage
-} from './chat-detail/shared/database/chatCreateMessage.js';
-export { 
-  updateChatMessage,
-  deleteSubsequentMessages,
-  updateMessageAndTriggerResponse,
-  softDeleteMessage,
-  updateMessageMetadata,
-  markMessageAsEdited
-} from './chat-detail/shared/database/chatUpdateMessage.js';
-export { ChatDatabaseOperations } from './chat-detail/shared/database/chatOperations.js';
-
-// ===================================
-// SERVICES
-// ===================================
-
-// Service detection and configuration
-export { 
-  detectService,
-  checkAIServiceAvailability,
-  getServiceConfig,
-  forceServiceMode,
-  resetServiceMode,
-  getServiceStatus,
-  validateServiceConfig
-} from './message/chatbot-message/services/serviceDetector.js';
-
-// Base Generator
-export { BaseGenerator } from './message/chatbot-message/services/generators/BaseGenerator.js';
-
-// AI Services
-export { generateInitialResponse as generateInitialAI } from './message/chatbot-message/services/ai/generators/initialAI.js';
-export { 
-  generateFollowUpResponse as generateFollowUpAI,
-  generateContextualAIResponse
-} from './message/chatbot-message/services/ai/generators/followUpAI.js';
-
-// Mock Services
-export { 
-  generateInitialResponse as generateInitialMock,
-  generateAssessmentInitialResponse
-} from './message/chatbot-message/services/mock/generators/initialMock.js';
-export { 
-  generateFollowUpResponse as generateFollowUpMock,
-  generateContextualResponse as generateContextualMock
-} from './message/chatbot-message/services/mock/generators/followUpMock.js';
+  continueWithContext,
+  editMessageWithRegeneration,
+  continueConversationWithContext
+} from './message/user-message/add-message/sendMessage.js';
 
 // ===================================
 // CONVENIENCE FUNCTIONS
@@ -177,19 +55,8 @@ export {
  * @returns {Promise<Object>} - Complete conversation with initial exchange
  */
 export const quickStart = async (userId, message, assessmentId = null) => {
-  const { createConversationWithMessage } = await import('./chat-detail/shared/create-conversation/createFlow.js');
+  const { createConversationWithMessage } = await import('./conversation/create-new-conversation/createFlow.js');
   return await createConversationWithMessage(userId, message, assessmentId);
-};
-
-/**
- * Get conversation ready for display in frontend
- * @param {string} conversationId - Conversation ID
- * @param {string} userId - User ID
- * @returns {Promise<Object>} - Frontend-ready conversation data
- */
-export const getDisplayReady = async (conversationId, userId) => {
-  const { getConversationForDisplay } = await import('./chat-detail/read-chat-detail/getWithContext.js');
-  return await getConversationForDisplay(conversationId, userId);
 };
 
 /**
@@ -200,17 +67,8 @@ export const getDisplayReady = async (conversationId, userId) => {
  * @returns {Promise<Object>} - Message exchange result
  */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  const { sendMessage } = await import('./chat-detail/user-message/add-message/sendMessage.js');
+  const { sendMessage } = await import('./message/user-message/add-message/sendMessage.js');
   return await sendMessage(conversationId, userId, message);
-};
-
-/**
- * Get service status and health check
- * @returns {Promise<Object>} - Service status information
- */
-export const healthCheck = async () => {
-  const { getServiceStatus } = await import('./message/chatbot-message/services/serviceDetector.js');
-  return await getServiceStatus();
 };
 
 // ===================================
@@ -219,9 +77,13 @@ export const healthCheck = async () => {
 // Re-export legacy function names for backward compatibility
 
 export { getUserConversations as getConversations };
-export { createConversation as newConversation };
-export { getConversationHistory as readConversation };
+export { createCompleteConversation as createConversation };
+export { createCompleteConversation as newConversation };
+export { getConversation as readConversation };
 export { sendMessage as sendMessageNew };
+
+// Legacy Chat class alias for backward compatibility
+export { Conversation as Chat };
 
 // ===================================
 // TYPE DEFINITIONS (for JSDoc)
@@ -244,14 +106,4 @@ export { sendMessage as sendMessageNew };
  * @property {Object} assistantMessage - Assistant response object
  * @property {string} conversationId - Conversation ID
  * @property {string} timestamp - Exchange timestamp
- */
-
-/**
- * @typedef {Object} ServiceStatus
- * @property {string} currentService - Current service type ('ai' or 'mock')
- * @property {boolean} aiServiceAvailable - AI service availability
- * @property {boolean} isForced - Whether service mode is forced
- * @property {string|null} forcedMode - Forced service mode if any
- * @property {Object} config - Service configuration
- * @property {string} timestamp - Status check timestamp
  */ 

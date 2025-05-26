@@ -1,16 +1,14 @@
-import DbService from '../../services/dbService.js';
-import logger from '../../services/logger.js';
-
 /**
- * Chat/Conversation Model
- * Pure data model representing conversation fields
+ * Conversation Model
+ * Pure data model representing conversation entities
  */
-export class Chat {
+export class Conversation {
   constructor(data) {
     this.id = data.id;
-    this.user_id = data.user_id;
-    this.assessment_id = data.assessment_id;
+    this.user_id = data.user_id;                     // FK to User
+    this.assessment_id = data.assessment_id;         // FK to Assessment (nullable)
     this.assessment_pattern = data.assessment_pattern;
+    this.preview = data.preview; // preview of most recent message
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
     this.deleted_at = data.deleted_at;
@@ -26,6 +24,7 @@ export class Chat {
       user_id: this.user_id,
       assessment_id: this.assessment_id,
       assessment_pattern: this.assessment_pattern,
+      preview: this.preview,
       created_at: this.created_at,
       updated_at: this.updated_at,
       deleted_at: this.deleted_at
@@ -33,4 +32,4 @@ export class Chat {
   }
 }
 
-export default Chat; 
+export default Conversation; 
