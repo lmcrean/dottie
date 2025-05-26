@@ -7,9 +7,9 @@
 // ===================================
 // CHAT LIST - Browse existing conversations
 // ===================================
-export { getUserConversations } from './chat-list/chatGetList.js';
+export { getUserConversations } from './list/chatGetList.js';
 export { deleteConversation } from './chat-detail/delete-chat-detail/chatDelete.js';
-export { Chat as default } from './chat-list/chat.js';
+export { Chat as default } from './list/chat.js';
 
 // ===================================
 // CREATE CONVERSATION - New conversation flow
@@ -46,9 +46,9 @@ export {
   generateFollowUpResponse,
   autoGenerateResponse,
   generateResponseOptions
-} from './chat-detail/message/chatbot-message/generateResponse.js';
+} from './message/chatbot-message/generateResponse.js';
 export { editMessageWithRegeneration } from './chat-detail/user-message/update-message/editMessageWithRegeneration.js';
-export { triggerResponse } from './chat-detail/message/chatbot-message/utils/triggerResponse.js';
+export { triggerResponse } from './message/chatbot-message/utils/triggerResponse.js';
 export { continueConversationWithContext } from './chat-detail/user-message/add-message/continueConversationWithContext.js';
 
 // ===================================
@@ -87,8 +87,8 @@ export {
   withDatabaseOperation,
   withServiceCall
 } from './chat-detail/alerts/errorHandler.js';
-export { ValidationHelper } from './chat-detail/message/chatbot-message/utils/validationHelper.js';
-export { ConfigHelper } from './chat-detail/message/chatbot-message/utils/configHelper.js';
+export { ValidationHelper } from './message/chatbot-message/utils/validationHelper.js';
+export { ConfigHelper } from './message/chatbot-message/utils/configHelper.js';
 
 // Message formatting and validation
 export { 
@@ -111,7 +111,7 @@ export {
   buildAssessmentResponse,
   combineResponses,
   buildSummaryResponse
-} from './chat-detail/message/chatbot-message/utils/responseBuilders.js';
+} from './message/chatbot-message/utils/responseBuilders.js';
 
 // Database operations
 export { 
@@ -143,27 +143,27 @@ export {
   resetServiceMode,
   getServiceStatus,
   validateServiceConfig
-} from './chat-detail/message/chatbot-message/services/serviceDetector.js';
+} from './message/chatbot-message/services/serviceDetector.js';
 
 // Base Generator
-export { BaseGenerator } from './chat-detail/message/chatbot-message/services/generators/BaseGenerator.js';
+export { BaseGenerator } from './message/chatbot-message/services/generators/BaseGenerator.js';
 
 // AI Services
-export { generateInitialResponse as generateInitialAI } from './chat-detail/message/chatbot-message/services/ai/generators/initialAI.js';
+export { generateInitialResponse as generateInitialAI } from './message/chatbot-message/services/ai/generators/initialAI.js';
 export { 
   generateFollowUpResponse as generateFollowUpAI,
   generateContextualAIResponse
-} from './chat-detail/message/chatbot-message/services/ai/generators/followUpAI.js';
+} from './message/chatbot-message/services/ai/generators/followUpAI.js';
 
 // Mock Services
 export { 
   generateInitialResponse as generateInitialMock,
   generateAssessmentInitialResponse
-} from './chat-detail/message/chatbot-message/services/mock/generators/initialMock.js';
+} from './message/chatbot-message/services/mock/generators/initialMock.js';
 export { 
   generateFollowUpResponse as generateFollowUpMock,
   generateContextualResponse as generateContextualMock
-} from './chat-detail/message/chatbot-message/services/mock/generators/followUpMock.js';
+} from './message/chatbot-message/services/mock/generators/followUpMock.js';
 
 // ===================================
 // CONVENIENCE FUNCTIONS
@@ -209,7 +209,7 @@ export const sendAndRespond = async (conversationId, userId, message) => {
  * @returns {Promise<Object>} - Service status information
  */
 export const healthCheck = async () => {
-  const { getServiceStatus } = await import('./chat-detail/message/chatbot-message/services/serviceDetector.js');
+  const { getServiceStatus } = await import('./message/chatbot-message/services/serviceDetector.js');
   return await getServiceStatus();
 };
 
