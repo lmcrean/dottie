@@ -1,5 +1,5 @@
 import logger from '../../../../../services/logger.js';
-import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
+import DbService from '../../../../../services/dbService.js';
 import { formatUserMessage } from './validation/messageFormatters.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
@@ -43,8 +43,14 @@ export const sendMessage = async (conversationId, userId, messageText, options =
       created_at: new Date().toISOString()
     };
 
-    // Insert user message into database using consolidated operations
-    await ChatDatabaseOperations.insertMessage(conversationId, messageData);
+    // Insert user message into database
+    const messageToInsert = {
+      ...messageData,
+      conversation_id: conversationId
+    };
+
+    await DbService.create('chat_messages', messageToInsert);
+    logger.info(`User message ${messageId} inserted into conversation ${conversationId}`);
 
     const userMessage = {
       id: messageId,
