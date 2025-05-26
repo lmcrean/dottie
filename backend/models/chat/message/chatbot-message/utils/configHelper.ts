@@ -1,4 +1,4 @@
-import logger from '';
+// TODO: Fix empty import
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 

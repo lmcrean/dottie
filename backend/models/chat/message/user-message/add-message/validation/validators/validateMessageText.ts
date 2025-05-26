@@ -1,5 +1,5 @@
-import { validateMessageLength } from '';
-import { validateSimpleMessageContent } from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 /**
  * Combined message text validation

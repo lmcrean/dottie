@@ -1,4 +1,4 @@
-import ValidateEmail from '';
+// TODO: Fix empty import
 
 /**
  * Credentials validation utilities for login

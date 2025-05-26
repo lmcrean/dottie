@@ -1,5 +1,5 @@
 // Global setup file for Vitest
-import { initTestDatabase } from '';
+// TODO: Fix empty import
 
 // Export an async setup function that will be called by Vitest
 export async function setup() {

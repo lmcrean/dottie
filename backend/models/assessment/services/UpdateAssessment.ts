@@ -1,5 +1,5 @@
-import DbService from '';
-import TransformApiToDb from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 class UpdateAssessment {
   /**

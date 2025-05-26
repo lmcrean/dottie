@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../../../../services/logger', () => ({
@@ -24,7 +24,7 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
 }));
 
 // Import the controller after all mocks are set up
-import * as conversationController from '';
+// TODO: Fix empty import
 
 describe('Get Conversation Controller', () => {
   let req, res;

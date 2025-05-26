@@ -1,4 +1,4 @@
-import logger from '';
+// TODO: Fix empty import
 
 /**
  * Generate response to a user message in an ongoing conversation

@@ -1,4 +1,4 @@
-import logger from '';
+// TODO: Fix empty import
 
 /**
  * Wrapper for validation functions with error handling

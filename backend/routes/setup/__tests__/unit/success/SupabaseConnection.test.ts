@@ -1,6 +1,6 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../types/common';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import supabase from '';
+// TODO: Fix empty import
 
 // Mock the Supabase client
 vi.mock('../../../../../services/supabaseService.js', () => {

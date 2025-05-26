@@ -1,7 +1,7 @@
 import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { refreshTokens } from '';
+// TODO: Fix empty import
 
 // Helper function for validation
 function isValidEmail(email) {

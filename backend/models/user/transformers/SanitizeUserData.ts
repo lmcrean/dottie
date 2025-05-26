@@ -1,4 +1,4 @@
-import UserBase from '';
+// TODO: Fix empty import
 
 /**
  * User data sanitization utilities

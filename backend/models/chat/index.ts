@@ -7,28 +7,28 @@
 // ===================================
 // ENTITY MODELS
 // ===================================
-export { Message } from '';
-export { Conversation } from '';
-export { Conversation as default } from '';
+export { Message } from './message/message.js';
+export { Conversation } from './conversation/conversation.js';
+export { Conversation as default } from './conversation/conversation.js';
 
 // ===================================
 // CONVERSATION OPERATIONS
 // ===================================
-export { getUserConversations } from '';
-export { deleteConversation } from '';
+export { getUserConversations } from './list/chatGetList.js';
+export { deleteConversation } from './conversation/delete-chat-detail/chatDelete.js';
 
 export { 
   createCompleteConversation,
   createConversationWithMessage,
   createEmptyConversation,
   createAssessmentConversation
-} from '';
+} from './conversation/create-new-conversation/createFlow.js';
 
 export { 
   getConversation,
   getConversationForUser,
   getConversationSummary
-} from '';
+} from './conversation/conversation.js';
 
 // ===================================
 // MESSAGE OPERATIONS
@@ -41,7 +41,7 @@ export {
   continueWithContext,
   editMessageWithRegeneration,
   continueConversationWithContext
-} from '';
+} from './message/user-message/add-message/sendUserMessage.js';
 
 // ===================================
 // CONVENIENCE FUNCTIONS

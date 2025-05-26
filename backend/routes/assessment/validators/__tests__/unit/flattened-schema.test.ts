@@ -1,6 +1,6 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { expect, describe, it } from 'vitest';
-import Assessment from '';
+// TODO: Fix empty import
 
 describe('Assessment Schema Flattening Tests', () => {
   const userId = 'test-user-123';

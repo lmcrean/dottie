@@ -1,6 +1,6 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../types/common';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ParseAssessmentJson from '';
+// TODO: Fix empty import
 
 describe('ParseAssessmentJson', () => {
   beforeEach(() => {

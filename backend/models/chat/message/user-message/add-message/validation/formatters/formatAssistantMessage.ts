@@ -1,4 +1,4 @@
-import logger from '';
+// TODO: Fix empty import
 
 /**
  * Format assistant message for consistency

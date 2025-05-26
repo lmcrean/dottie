@@ -1,4 +1,4 @@
-import RouteAssessment from '';
+// TODO: Fix empty import
 
 /**
  * Assessment - Unified entry point for all assessment operations

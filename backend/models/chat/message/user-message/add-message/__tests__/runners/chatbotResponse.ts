@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { sendMessage } from '';
-import logger from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 /**
  * Tests for chatbot response generation (AI or mock based on config)

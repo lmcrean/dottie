@@ -1,6 +1,6 @@
-import { AssessmentBase } from '';
+// TODO: Fix empty import
 import { v4 as uuidv4 } from 'uuid';
-import DbService from '';
+// TODO: Fix empty import
 
 class LegacyAssessment extends AssessmentBase {
   /**

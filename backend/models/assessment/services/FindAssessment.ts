@@ -1,4 +1,4 @@
-import DbService from '';
+// TODO: Fix empty import
 
 class FindAssessment {
   /**

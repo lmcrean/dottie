@@ -1,4 +1,4 @@
-import logger from '';
+// TODO: Fix empty import
 
 /**
  * Format user message for consistency and validation

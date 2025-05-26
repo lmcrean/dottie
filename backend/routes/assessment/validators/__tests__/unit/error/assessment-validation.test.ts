@@ -1,7 +1,7 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../types/common';
 // @ts-check
 import { describe, test, expect } from 'vitest';
-import { validateAssessmentData } from '';
+// TODO: Fix empty import
 
 describe('Assessment Validation - Error Cases', () => {
   test('should reject empty assessment object', () => {

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import logger from '';
+// TODO: Fix empty import
 
 /**
  * Middleware to authenticate JWT tokens

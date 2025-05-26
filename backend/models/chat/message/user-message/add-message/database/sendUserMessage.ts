@@ -1,5 +1,5 @@
-import logger from '';
-import DbService from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 /**
  * Insert a user message into the database

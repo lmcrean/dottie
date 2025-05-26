@@ -1,8 +1,8 @@
 import express from 'express';
-import { updatePassword } from '';
-import { authenticateToken } from '../auth/middleware/index.js';
-import { validateUserAccess } from '';
-import { validatePasswordUpdate } from '';
+import { updatePassword } from './controller.js';
+import { authenticateToken } from '../../auth/middleware/index.js';
+import { validateUserAccess } from '../../auth/middleware/validators/accessValidator.js';
+import { validatePasswordUpdate } from '../../auth/middleware/validators/passwordValidators.js';
 
 const router = express.Router();
 

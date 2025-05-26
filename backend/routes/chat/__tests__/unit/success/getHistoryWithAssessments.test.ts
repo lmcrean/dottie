@@ -1,6 +1,6 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getHistory } from '';
+// TODO: Fix empty import
 
 // Mock the logger
 vi.mock('../../../../../services/logger.js', () => ({

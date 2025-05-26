@@ -8,7 +8,7 @@ import {
   dropTables,
 } from '';
 import bcrypt from "bcrypt";
-import { generateUser } from '';
+// TODO: Fix empty import
 
 /**
  * Initialize the test database

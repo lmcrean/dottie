@@ -1,5 +1,5 @@
-import logger from '';
-import { deleteConversation as deleteConversationModel } from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 /**
  * Delete a conversation and all its messages

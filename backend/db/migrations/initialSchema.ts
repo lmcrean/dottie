@@ -1,5 +1,5 @@
 // include updateAssessmentToJsonSchema.js - updated assessment table to use JSON
-import { updateAssessmentToJsonSchema } from '';
+// TODO: Fix empty import
 
 //for test - TODO: remove
 import { updateAssessmentSchema } from '../../db/migrations/updateAssessmentSchema.js';

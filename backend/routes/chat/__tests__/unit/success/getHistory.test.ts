@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock dependencies
@@ -25,7 +25,7 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
 }));
 
 // Import controller after mocks are set up
-import * as historyController from '';
+// TODO: Fix empty import
 
 describe('Get History Controller', () => {
   let req, res;

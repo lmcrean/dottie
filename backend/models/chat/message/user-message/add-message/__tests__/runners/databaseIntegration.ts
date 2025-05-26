@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '';
-import DbService from '';
-import logger from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 /**
  * Tests for database integration and message persistence

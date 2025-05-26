@@ -1,4 +1,4 @@
-import logger from '';
+// TODO: Fix empty import
 
 /**
  * Validate that a user owns an assessment

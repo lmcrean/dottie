@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import logger from '';
-import { insertChatMessage, getConversation, updateConversationAssessmentLinks } from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 // Initialize Gemini API
 const API_KEY = process.env.VITE_GEMINI_API_KEY;

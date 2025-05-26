@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { refreshTokens } from '';
+// TODO: Fix empty import
 
 export const logout = (req, res) => {
   try {

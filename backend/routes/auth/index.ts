@@ -1,12 +1,12 @@
 import express from 'express';
-import loginRoutes from '';
-import logoutRoutes from '';
-import signupRoutes from '';
-import refreshRoutes from '';
-import verifyRoutes from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
+// TODO: Fix empty import
+// TODO: Fix empty import
+// TODO: Fix empty import
 import userRoutes from './routes/user/index.js';
 // Import other auth routes as needed
-// import resetPasswordRoutes from '';
+// // TODO: Fix empty import
 
 const router = express.Router();
 

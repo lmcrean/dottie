@@ -1,7 +1,7 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../types/common';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import Assessment from '';
-import CleanAssessmentOperations from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 // Mock the operations class
 vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.ts');

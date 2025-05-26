@@ -1,8 +1,8 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../../../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createAssessment } from '';
-import Assessment from '';
-import { validateAssessmentData } from '';
+// TODO: Fix empty import
+// TODO: Fix empty import
+// TODO: Fix empty import
 
 // Mock the Assessment model
 vi.mock('../../../../../../models/assessment/Assessment.js', () => {
@@ -91,7 +91,7 @@ vi.mock('../../../controller.js', () => {
 });
 
 // Import after mocking
-import { createAssessment } from '';
+// TODO: Fix empty import
 
 describe('Create Assessment Controller - Success Case', () => {
   // Mock request and response

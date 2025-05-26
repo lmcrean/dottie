@@ -1,5 +1,5 @@
 import express from "express";
-import router from '';
+// TODO: Fix empty import
 
 const assessmentRouter = express.Router();
 

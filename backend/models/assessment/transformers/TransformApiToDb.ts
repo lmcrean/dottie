@@ -1,4 +1,4 @@
-import ParseAssessmentJson from '';
+// TODO: Fix empty import
 
 class TransformApiToDb {
   /**

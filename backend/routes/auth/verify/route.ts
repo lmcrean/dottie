@@ -1,5 +1,5 @@
 import express from 'express';
-import { verify } from '';
+// TODO: Fix empty import
 import { authenticateToken } from '../auth/middleware/index.js';
 
 const router = express.Router();

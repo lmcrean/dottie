@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { refreshTokens } from '';
+// TODO: Fix empty import
 import crypto from 'crypto';
 
 export const refresh = async (req, res) => {

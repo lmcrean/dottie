@@ -1,5 +1,5 @@
 import express from 'express';
-import db, { dbType } from '';
+// TODO: Fix empty import
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 // Simple script to start the server
 import express from 'express';
-import supabase from '';
+// TODO: Fix empty import
 
 const app = express();
 const PORT = process.env.PORT || 5000;

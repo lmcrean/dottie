@@ -1,6 +1,6 @@
 import express from 'express';
-import { requestPasswordReset, completePasswordReset } from '';
-import { validateResetPasswordRequest, validateResetPasswordCompletion } from '';
+import { requestPasswordReset, completePasswordReset } from './controller.js';
+import { validateResetPasswordRequest, validateResetPasswordCompletion } from '../../auth/middleware/validators/resetPasswordValidators.js';
 
 const router = express.Router();
 

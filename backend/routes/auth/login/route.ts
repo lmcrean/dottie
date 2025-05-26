@@ -1,5 +1,5 @@
 import express from 'express';
-import { login } from '';
+// TODO: Fix empty import
 
 const router = express.Router();
 

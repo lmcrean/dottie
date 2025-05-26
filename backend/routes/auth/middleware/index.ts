@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { verifyToken, authenticateToken } from '';
-import { optionalToken } from '';
+import { verifyToken, authenticateToken } from './tokens/verifyToken.js';
+import { optionalToken } from './tokens/optionalToken.js';
 
 // In-memory storage for refresh tokens
 // In production, this would be stored in a database

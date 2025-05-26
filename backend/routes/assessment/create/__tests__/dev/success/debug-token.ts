@@ -1,5 +1,5 @@
 // Debug script for token generation and validation
-import { createMockToken } from '';
+// TODO: Fix empty import
 import jwt from "jsonwebtoken";
 
 // Generate a test token
