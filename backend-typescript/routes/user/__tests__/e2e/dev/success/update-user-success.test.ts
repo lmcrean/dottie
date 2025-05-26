@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -94,7 +95,7 @@ describe("User Update API - Success Cases", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send(updatedData);
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("id", testUserId);
     expect(response.body).toHaveProperty("username", updatedData.username);
     expect(response.body).toHaveProperty("age", updatedData.age);
@@ -127,7 +128,7 @@ describe("User Update API - Success Cases", () => {
     // Get the user directly from the database to verify
     const updatedUser = await db("users").where("id", testUserId).first();
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(updatedUser.id).toBe(testUserId); // ID should not change
 
     // The API may allow email changes, so we don't check that specifically
@@ -154,11 +155,13 @@ describe("User Update API - Success Cases", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({});
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("id", testUserId);
     // The API returns the user data rather than a "no changes" message
     expect(response.body).toHaveProperty("email");
     expect(response.body).toHaveProperty("updated_at");
   });
 });
+
+
 

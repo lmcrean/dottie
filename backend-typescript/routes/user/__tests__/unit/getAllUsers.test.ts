@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
@@ -58,7 +59,7 @@ describe('GET / - Get All Users', () => {
     const response = await request(app).get('/users');
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(User.getAll).toHaveBeenCalledTimes(1);
     expect(response.body).toHaveLength(2);
     
@@ -79,8 +80,10 @@ describe('GET / - Get All Users', () => {
     const response = await request(app).get('/users');
     
     // Assertions
-    expect(response.status).toBe(500);
+    expect((response as MockResponse).status).toBe(500);
     expect(User.getAll).toHaveBeenCalledTimes(1);
     expect(response.body).toHaveProperty('error', 'Failed to fetch users');
   });
 }); 
+
+

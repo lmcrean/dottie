@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import app from '';
@@ -5,7 +6,7 @@ import app from '';
 describe('GET /api/setup/health/hello', () => {
   it('should return a 200 status code', async () => {
     const response = await request(app).get('/api/setup/health/hello');
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
   });
 
   it('should return a JSON response with the correct message', async () => {
@@ -21,3 +22,5 @@ describe('GET /api/setup/health/hello', () => {
     expect(Object.keys(response.body)[0]).toBe('message');
   });
 }); 
+
+

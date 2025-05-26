@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -94,7 +95,7 @@ describe("Assessment Delete Endpoint - Success Cases", () => {
 
 
     // Check response
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("message");
     expect(response.body.message).toBe("Assessment deleted successfully");
 
@@ -113,3 +114,5 @@ describe("Assessment Delete Endpoint - Success Cases", () => {
     }
   });
 }); 
+
+

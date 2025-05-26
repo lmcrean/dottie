@@ -50,8 +50,8 @@ export async function sendMessage(request, token, message, conversationId = null
     throw new Error(`Failed to parse send message response: ${error.message}`);
   }
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to send message: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to send message: ${(response as MockResponse).status()}`);
   }
 
   return {
@@ -93,8 +93,8 @@ export async function getConversationHistory(request, token) {
     throw new Error(`Failed to parse conversation history response: ${error.message}`);
   }
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to get conversation history: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to get conversation history: ${(response as MockResponse).status()}`);
   }
 
   return result.conversations || [];
@@ -134,8 +134,8 @@ export async function getConversation(request, token, conversationId) {
     throw new Error(`Failed to parse conversation response: ${error.message}`);
   }
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to get conversation: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to get conversation: ${(response as MockResponse).status()}`);
   }
 
   return result;
@@ -167,8 +167,8 @@ export async function deleteConversation(request, token, conversationId) {
     console.error("Failed to get response text:", error);
   }
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to delete conversation: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to delete conversation: ${(response as MockResponse).status()}`);
   }
 
   return true;
@@ -190,3 +190,4 @@ export function generateTestMessage() {
   const randomIndex = Math.floor(Math.random() * messages.length);
   return messages[randomIndex];
 } 
+

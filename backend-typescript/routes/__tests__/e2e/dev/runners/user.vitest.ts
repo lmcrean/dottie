@@ -19,8 +19,8 @@ export async function getUserById(request, token, userId) {
 
 
 
-  if (response.status !== 200) {
-    const error = new Error(`Failed to get user info: ${response.status}`);
+  if ((response as MockResponse).status !== 200) {
+    const error = new Error(`Failed to get user info: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
@@ -43,8 +43,8 @@ export async function getAllUsers(request, token) {
 
 
 
-  if (response.status !== 200) {
-    const error = new Error(`Failed to get all users: ${response.status}`);
+  if ((response as MockResponse).status !== 200) {
+    const error = new Error(`Failed to get all users: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
@@ -69,8 +69,8 @@ export async function updateUserProfile(request, token, userId, profileData) {
 
 
 
-  if (response.status !== 200) {
-    const error = new Error(`Failed to update user profile: ${response.status}`);
+  if ((response as MockResponse).status !== 200) {
+    const error = new Error(`Failed to update user profile: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
@@ -98,7 +98,7 @@ export async function deleteUser(request, token, userId) {
   }
 
   // Check for successful status (e.g., 200 OK or 204 No Content)
-  return response.status === 200 || response.status === 204;
+  return (response as MockResponse).status === 200 || (response as MockResponse).status === 204;
 }
 
 /**
@@ -113,3 +113,4 @@ export function generateProfileUpdate(usernamePrefix = "updated") {
     age: "25_34",
   };
 } 
+

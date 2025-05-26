@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
@@ -71,7 +72,7 @@ describe('GET /me - Get Current User', () => {
     const response = await request(app).get('/users/me');
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(response.body).not.toHaveProperty('password_hash');
     expect(response.body).toMatchObject({
@@ -92,7 +93,7 @@ describe('GET /me - Get Current User', () => {
     const response = await request(app).get('/users/me');
     
     // Assertions
-    expect(response.status).toBe(404);
+    expect((response as MockResponse).status).toBe(404);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(response.body).toHaveProperty('error', 'User not found');
   });
@@ -107,8 +108,10 @@ describe('GET /me - Get Current User', () => {
     const response = await request(app).get('/users/me');
     
     // Assertions
-    expect(response.status).toBe(500);
+    expect((response as MockResponse).status).toBe(500);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(response.body).toHaveProperty('error', 'Failed to fetch user');
   });
 }); 
+
+

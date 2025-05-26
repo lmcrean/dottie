@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
@@ -63,7 +64,7 @@ describe('DELETE /me - Delete User', () => {
       .set('test-user-id', testUserId);
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(User.findById).not.toHaveBeenCalled(); // Should not call findById for test users
     expect(User.delete).not.toHaveBeenCalled(); // Should not call delete for test users
     expect(response.body).toHaveProperty('message', `User ${testUserId} deleted successfully`);
@@ -83,7 +84,7 @@ describe('DELETE /me - Delete User', () => {
       .set('test-user-id', userId);
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(User.delete).toHaveBeenCalledWith(userId);
     expect(response.body).toHaveProperty('message', 'User deleted successfully');
@@ -102,7 +103,7 @@ describe('DELETE /me - Delete User', () => {
       .set('test-user-id', userId);
     
     // Assertions
-    expect(response.status).toBe(404);
+    expect((response as MockResponse).status).toBe(404);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(User.delete).not.toHaveBeenCalled();
     expect(response.body).toHaveProperty('error', 'User not found');
@@ -121,7 +122,7 @@ describe('DELETE /me - Delete User', () => {
       .set('test-user-id', userId);
     
     // Assertions
-    expect(response.status).toBe(500);
+    expect((response as MockResponse).status).toBe(500);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(User.delete).toHaveBeenCalledWith(userId);
     expect(response.body).toHaveProperty('error', 'Failed to delete user');
@@ -140,9 +141,11 @@ describe('DELETE /me - Delete User', () => {
       .set('test-user-id', userId);
     
     // Assertions
-    expect(response.status).toBe(500);
+    expect((response as MockResponse).status).toBe(500);
     expect(User.findById).toHaveBeenCalledWith(userId);
     expect(User.delete).toHaveBeenCalledWith(userId);
     expect(response.body).toHaveProperty('error', 'Failed to delete user');
   });
 }); 
+
+

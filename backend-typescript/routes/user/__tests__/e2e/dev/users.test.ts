@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -45,7 +46,7 @@ describe("API Health Check (E2E)", () => {
   it("should confirm API is operational", async () => {
     const response = await request.get("/api/health");
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("status", "ok");
     expect(response.body).toHaveProperty("environment");
   });
@@ -54,7 +55,9 @@ describe("API Health Check (E2E)", () => {
   it("should require authentication for user endpoints", async () => {
     const response = await request.get("/api/user");
 
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 });
+
+
 

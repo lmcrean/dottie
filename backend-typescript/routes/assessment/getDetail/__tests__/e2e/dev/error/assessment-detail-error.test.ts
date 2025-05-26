@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
@@ -31,7 +32,7 @@ describe("Assessment Detail Error Tests", () => {
   test("GET /api/assessment/:id - should reject request without token", async () => {
     const nonExistentId = `non-existent-id-${Date.now()}`;
     const response = await request.get(`/api/assessment/${nonExistentId}`);
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 
   // Test getting non-existent assessment with token
@@ -41,7 +42,7 @@ describe("Assessment Detail Error Tests", () => {
       .get(`/api/assessment/${nonExistentId}`)
       .set("Authorization", `Bearer ${testToken}`);
 
-    expect(response.status).toBe(404); // Updated from 401 to 404 for non-existent IDs
+    expect((response as MockResponse).status).toBe(404); // Updated from 401 to 404 for non-existent IDs
   });
 
   // Test getting assessment with invalid ID format
@@ -50,6 +51,8 @@ describe("Assessment Detail Error Tests", () => {
       .get("/api/assessment/invalid-id-format")
       .set("Authorization", `Bearer ${testToken}`);
 
-    expect(response.status).toBe(404); // Updated from 401 to 404 for invalid ID formats
+    expect((response as MockResponse).status).toBe(404); // Updated from 401 to 404 for invalid ID formats
   });
 }); 
+
+

@@ -43,8 +43,8 @@ export async function createAssessment(
 
 
 
-  if (response.status !== 201) {
-    const error = new Error(`Failed to create assessment: ${response.status}`);
+  if ((response as MockResponse).status !== 201) {
+    const error = new Error(`Failed to create assessment: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
@@ -68,13 +68,13 @@ export async function getAssessments(request, token) {
 
 
   // If 404 (no assessments found), return empty array as per original logic
-  if (response.status === 404) {
+  if ((response as MockResponse).status === 404) {
 
     return [];
   }
 
-  if (response.status !== 200) {
-    const error = new Error(`Failed to get assessments: ${response.status}`);
+  if ((response as MockResponse).status !== 200) {
+    const error = new Error(`Failed to get assessments: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
@@ -98,8 +98,8 @@ export async function getAssessmentById(request, token, assessmentId) {
 
 
   // Check for non-200 status BEFORE returning body
-  if (response.status !== 200) {
-    const error = new Error(`Failed to get assessment ${assessmentId}: ${response.status}`);
+  if ((response as MockResponse).status !== 200) {
+    const error = new Error(`Failed to get assessment ${assessmentId}: ${(response as MockResponse).status}`);
     error.response = response; // Attach response to error object
     throw error;
   }
@@ -145,14 +145,14 @@ export async function updateAssessment(
 
 
   // Accept 200 or 204 (no content) as success
-  if (response.status !== 200 && response.status !== 204) {
-    const error = new Error(`Failed to update assessment: ${response.status}`);
+  if ((response as MockResponse).status !== 200 && (response as MockResponse).status !== 204) {
+    const error = new Error(`Failed to update assessment: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
 
   // Return response body if it exists (status 200), otherwise return a constructed object for 204
-  if (response.status === 200 && response.body) {
+  if ((response as MockResponse).status === 200 && response.body) {
     return response.body;
   } else {
     // Construct object similar to original logic for 204 or empty 200
@@ -188,13 +188,13 @@ export async function deleteAssessment(request, token, userId, assessmentId) {
   }
 
   // Check for successful status (200 OK or 204 No Content)
-  const success = response.status === 200 || response.status === 204;
+  const success = (response as MockResponse).status === 200 || (response as MockResponse).status === 204;
   if (!success) {
       // Optionally throw an error if deletion fails, depending on test needs
-      // const error = new Error(`Failed to delete assessment ${assessmentId}: ${response.status}`);
+      // const error = new Error(`Failed to delete assessment ${assessmentId}: ${(response as MockResponse).status}`);
       // error.response = response;
       // throw error;
-      console.warn(`Failed to delete assessment ${assessmentId}: Status ${response.status}`);
+      console.warn(`Failed to delete assessment ${assessmentId}: Status ${(response as MockResponse).status}`);
   }
   return success;
 }
@@ -234,3 +234,4 @@ export function generateSevereAssessment() {
     },
   };
 } 
+

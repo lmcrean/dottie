@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
@@ -86,10 +87,10 @@ describe('PUT /me - Update User', () => {
       .send(updatedData);
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body.id).toBe(testId);
-    expect(response.body.username).toBe(updatedData.username);
-    expect(response.body.email).toBe(updatedData.email);
+    expect((response.body as TestRequestBody).username).toBe(updatedData.username);
+    expect((response.body as TestRequestBody).email).toBe(updatedData.email);
     
     // Restore environment
     process.env.NODE_ENV = originalEnv;
@@ -108,7 +109,10 @@ describe('PUT /me - Update User', () => {
       .send({ username: 'newname' });
     
     // Assertions
-    expect(response.status).toBe(404);
+    expect((response as MockResponse).status).toBe(404);
     expect(response.body).toHaveProperty('error', 'User not found');
   });
 }); 
+
+
+

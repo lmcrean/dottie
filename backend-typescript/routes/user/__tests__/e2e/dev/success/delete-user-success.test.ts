@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -133,7 +134,7 @@ describe("Delete User API - Success Cases", () => {
       .delete(`/api/user/me`)
       .set("Authorization", `Bearer ${accessTokens.user1}`);
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("message");
     expect(response.body.message).toContain("deleted");
 
@@ -169,7 +170,7 @@ describe("Delete User API - Success Cases", () => {
       .set("Authorization", `Bearer ${invalidToken}`);
 
     // The API should reject invalid tokens with 401 Unauthorized
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
     expect(response.body).toHaveProperty("error");
   });
 
@@ -193,7 +194,7 @@ describe("Delete User API - Success Cases", () => {
     // Try to delete without authorization
     const response = await request.delete(`/api/user/me`);
 
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
     expect(response.body).toHaveProperty("error");
 
     // Verify the user still exists in the database
@@ -201,4 +202,6 @@ describe("Delete User API - Success Cases", () => {
     expect(userAfterAttempt).not.toBeUndefined();
   });
 });
+
+
 

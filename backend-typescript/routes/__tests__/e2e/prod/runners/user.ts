@@ -24,8 +24,8 @@ export async function getUserById(request, token, userId) {
   const responseText = await response.text();
 
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to get user info: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to get user info: ${(response as MockResponse).status()}`);
   }
 
   // Parse the JSON response
@@ -54,8 +54,8 @@ export async function getAllUsers(request, token) {
   const responseText = await response.text();
 
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to get all users: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to get all users: ${(response as MockResponse).status()}`);
   }
 
   // Parse the JSON response
@@ -87,8 +87,8 @@ export async function updateUserProfile(request, token, userId, profileData) {
   const responseText = await response.text();
 
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to update user profile: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to update user profile: ${(response as MockResponse).status()}`);
   }
 
   // Parse the JSON response
@@ -121,7 +121,7 @@ export async function deleteUser(request, token, userId) {
     console.error("Failed to get delete response text:", error);
   }
 
-  return response.status() === 200;
+  return (response as MockResponse).status() === 200;
 }
 
 /**
@@ -136,3 +136,4 @@ export function generateProfileUpdate(usernamePrefix = "updated") {
     age: "25_34",
   };
 } 
+

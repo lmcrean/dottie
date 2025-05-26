@@ -39,9 +39,9 @@ export async function registerUser(request, userData) {
       throw new Error(`Failed to parse registration response: ${error.message}`);
     }
 
-    if (response.status() !== 201) {
+    if ((response as MockResponse).status() !== 201) {
       console.error("Registration failed:", data);
-      throw new Error(`Failed to register user: ${response.status()}`);
+      throw new Error(`Failed to register user: ${(response as MockResponse).status()}`);
     }
 
 
@@ -76,9 +76,9 @@ export async function loginUser(request, credentials) {
 
   const data = await response.json();
 
-  if (response.status() !== 200) {
+  if ((response as MockResponse).status() !== 200) {
     console.error("Login failed:", data);
-    throw new Error(`Failed to login: ${response.status()}`);
+    throw new Error(`Failed to login: ${(response as MockResponse).status()}`);
   }
 
   if (!data.token) {
@@ -110,7 +110,7 @@ export async function verifyToken(request, token) {
       },
     });
 
-    return response.status() === 200;
+    return (response as MockResponse).status() === 200;
   } catch (error) {
     console.error("Token verification error:", error);
     return false;
@@ -130,3 +130,4 @@ export function generateTestUser() {
     password: "TestPassword123!#@",  // Add even more special characters for stronger password
   };
 } 
+

@@ -1,3 +1,7 @@
+declare global {
+  var vi: typeof import('vitest').vi;
+}
+import { TestOptions, TestRequestBody, MockResponse } from '../types/common';
 // Global setup for Vitest tests
 import { vi } from 'vitest';
 
@@ -22,3 +26,5 @@ global.console = {
 };
 
 export {}; 
+
+

@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -119,7 +120,7 @@ describe("Assessment Detail Endpoint - Success Cases", () => {
 
 
     // API can return various status codes during the refactoring process
-    if (response.status === 200) {
+    if ((response as MockResponse).status === 200) {
       // Success path - check for the expected fields
       expect(response.body).toHaveProperty("id");
       
@@ -132,11 +133,11 @@ describe("Assessment Detail Endpoint - Success Cases", () => {
       
 
     } 
-    else if (response.status === 404) {
+    else if ((response as MockResponse).status === 404) {
       // Not Found is acceptable during refactoring
 
     }
-    else if (response.status === 500) {
+    else if ((response as MockResponse).status === 500) {
       // Check if there's an internal server error that we can document
 
       
@@ -154,8 +155,10 @@ describe("Assessment Detail Endpoint - Success Cases", () => {
     }
     else {
       // Any other status code is unexpected
-      expect([200, 404, 500]).toContain(response.status);
+      expect([200, 404, 500]).toContain((response as MockResponse).status);
     }
   });
 });
+
+
 

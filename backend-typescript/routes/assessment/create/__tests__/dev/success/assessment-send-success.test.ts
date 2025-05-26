@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -112,7 +113,7 @@ describe("Assessment Send Endpoint - Success Cases", () => {
 
 
 
-    expect(response.status).toBe(201);
+    expect((response as MockResponse).status).toBe(201);
     expect(response.body).toHaveProperty("id");
 
     // Save assessment ID for later cleanup
@@ -186,4 +187,6 @@ describe("Assessment Send Endpoint - Success Cases", () => {
     }
   });
 });
+
+
 

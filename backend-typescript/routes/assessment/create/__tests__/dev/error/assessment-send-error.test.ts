@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
@@ -49,7 +50,7 @@ describe("Assessment Send Endpoint - Error Cases", () => {
       .post("/api/assessment/send")
       .send(assessmentData);
 
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 
   // Test submitting incomplete assessment data
@@ -67,7 +68,7 @@ describe("Assessment Send Endpoint - Error Cases", () => {
       .send(incompleteData);
 
     // Missing token results in authentication error
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 
   // Test submitting with invalid data types
@@ -87,6 +88,8 @@ describe("Assessment Send Endpoint - Error Cases", () => {
       .send(nonStandardData);
 
     // Missing token results in authentication error
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 }); 
+
+

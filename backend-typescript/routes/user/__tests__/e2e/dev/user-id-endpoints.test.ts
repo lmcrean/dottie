@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
@@ -43,7 +44,7 @@ describe('User ID endpoints', () => {
 
       const data = await response.json();
 
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(data).toHaveProperty('id', TEST_USER_ID);
       expect(data).toHaveProperty('name', updateData.name);
       expect(data).toHaveProperty('email', updateData.email);
@@ -63,9 +64,11 @@ describe('User ID endpoints', () => {
 
       const data = await response.json();
 
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(data).toHaveProperty('message', `User ${TEST_USER_ID} deleted successfully`);
       expect(data).toHaveProperty('success', true);
     });
   });
 }); 
+
+

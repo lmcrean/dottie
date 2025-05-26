@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import express from 'express';
@@ -49,7 +50,7 @@ describe('User ID Endpoints - Unit Tests', () => {
         .set('Authorization', 'Bearer test-token-123')
         .send(updateData);
         
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('id', TEST_USER_ID);
       expect(response.body).toHaveProperty('name', updateData.name);
       expect(response.body).toHaveProperty('email', updateData.email);
@@ -62,9 +63,11 @@ describe('User ID Endpoints - Unit Tests', () => {
         .delete(`/api/user/${TEST_USER_ID}`)
         .set('Authorization', 'Bearer test-token-123');
         
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('message', `User ${TEST_USER_ID} deleted successfully`);
       expect(response.body).toHaveProperty('success', true);
     });
   });
 }); 
+
+

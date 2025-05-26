@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -104,7 +105,7 @@ describe("Get All Users API - Success Cases", () => {
       .get("/api/user")
       .set("Authorization", `Bearer ${accessToken}`);
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
 
     // We should have at least our test users
@@ -134,7 +135,7 @@ describe("Get All Users API - Success Cases", () => {
       .get("/api/user")
       .set("Authorization", `Bearer ${accessToken}`);
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
 
     // Check that users have required properties
     for (const user of response.body) {
@@ -150,4 +151,6 @@ describe("Get All Users API - Success Cases", () => {
     }
   });
 });
+
+
 

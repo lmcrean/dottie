@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
@@ -94,7 +95,7 @@ describe('Password Reset Functionality', () => {
         .post('/users/pw/reset')
         .send({ email: 'test-email' });
       
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toContain('If a user with that email exists');
       
@@ -112,7 +113,7 @@ describe('Password Reset Functionality', () => {
         .post('/users/pw/reset')
         .send({ email: 'nonexistent@example.com' });
       
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toContain('If a user with that email exists');
       
@@ -141,7 +142,7 @@ describe('Password Reset Functionality', () => {
         .post('/users/pw/reset')
         .send({ email: 'user@example.com' });
       
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toContain('If a user with that email exists');
       
@@ -180,7 +181,7 @@ describe('Password Reset Functionality', () => {
         .post('/users/pw/reset')
         .send({ email: 'error@user' });
       
-      expect(response.status).toBe(500);
+      expect((response as MockResponse).status).toBe(500);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe('Failed to process password reset request');
       
@@ -200,7 +201,7 @@ describe('Password Reset Functionality', () => {
           newPassword: 'NewPassword123!'
         });
       
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toBe('Password has been reset successfully');
       
@@ -221,7 +222,7 @@ describe('Password Reset Functionality', () => {
           newPassword: 'NewPassword123!'
         });
       
-      expect(response.status).toBe(400);
+      expect((response as MockResponse).status).toBe(400);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe('Invalid or expired reset token');
       
@@ -260,7 +261,7 @@ describe('Password Reset Functionality', () => {
           newPassword: 'NewPassword123!'
         });
       
-      expect(response.status).toBe(200);
+      expect((response as MockResponse).status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toBe('Password has been reset successfully');
       
@@ -272,3 +273,5 @@ describe('Password Reset Functionality', () => {
     });
   });
 }); 
+
+

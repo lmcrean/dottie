@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
@@ -24,7 +25,7 @@ describe("Assessment List Endpoint - Error Cases", { tags: ['assessment', 'dev']
   // Test getting assessments without authentication
   test("GET /api/assessment/list - should reject request without token", async () => {
     const response = await request.get("/api/assessment/list");
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 
   // Test with invalid token
@@ -34,7 +35,7 @@ describe("Assessment List Endpoint - Error Cases", { tags: ['assessment', 'dev']
       .set("Authorization", "Bearer invalid_token");
 
     // API rejects invalid tokens with 401
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 
   // Test with expired token
@@ -47,6 +48,8 @@ describe("Assessment List Endpoint - Error Cases", { tags: ['assessment', 'dev']
       .set("Authorization", `Bearer ${expiredToken}`);
 
     // API rejects expired tokens with 401
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 }); 
+
+

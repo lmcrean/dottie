@@ -93,7 +93,7 @@ export const registerTestUser = async (userData = null, useMocks = false) => {
       .send(user);
     
 
-    if (response.status === 201) {
+    if ((response as MockResponse).status === 201) {
 
       return { ...response, user };
     } else {
@@ -115,7 +115,7 @@ export const loginTestUser = async (credentials, useMocks = false) => {
       .send(credentials);
     
 
-    if (response.status === 200) {
+    if ((response as MockResponse).status === 200) {
 
       return response;
     } else {
@@ -137,7 +137,7 @@ export const requestPasswordReset = async (email, useMocks = false) => {
       .send({ email });
     
 
-    if (response.status === 200) {
+    if ((response as MockResponse).status === 200) {
 
     } else {
 
@@ -166,7 +166,7 @@ const generateMockResponse = (method, url, requestObj) => {
   // Check if this is an error test
   const isErrorTest = process.env.npm_lifecycle_script?.includes('test:auth:prod:error') || 
                      url.includes('error') || 
-                     (requestObj.body && JSON.parse(requestObj.body || '{}')?.error);
+                     ((requestObj as any).body && JSON.parse((requestObj as any).body || '{}')?.error);
   
   // Force error mode for all requests during error tests
   const forceErrorMode = process.env.npm_lifecycle_script?.includes('test:auth:prod:error');
@@ -175,8 +175,8 @@ const generateMockResponse = (method, url, requestObj) => {
   // Parse request body when available
   let body = {};
   try {
-    if (requestObj.body) {
-      body = JSON.parse(requestObj.body);
+    if ((requestObj as any).body) {
+      body = JSON.parse((requestObj as any).body);
     }
   } catch (e) {
     // If parsing fails, use empty object
@@ -191,7 +191,7 @@ const generateMockResponse = (method, url, requestObj) => {
     if (shouldGenerateError) {
       if (path.includes('signup')) {
         // Different error cases for signup
-        if (!body.email || !body.password || !body.username) {
+        if (!(body as TestRequestBody).email || !(body as TestRequestBody).password || !(body as TestRequestBody).username) {
           return {
             status: 400,
             body: {
@@ -199,7 +199,7 @@ const generateMockResponse = (method, url, requestObj) => {
               message: 'Email, password and username are required'
             }
           };
-        } else if (body.email && !body.email.includes('@')) {
+        } else if ((body as TestRequestBody).email && !(body as TestRequestBody).email.includes('@')) {
           return {
             status: 400,
             body: {
@@ -207,7 +207,7 @@ const generateMockResponse = (method, url, requestObj) => {
               message: 'Please provide a valid email address'
             }
           };
-        } else if (body.password && body.password.length < 8) {
+        } else if ((body as TestRequestBody).password && (body as TestRequestBody).password.length < 8) {
           return {
             status: 400,
             body: {
@@ -215,7 +215,7 @@ const generateMockResponse = (method, url, requestObj) => {
               message: 'Password must be at least 8 characters long'
             }
           };
-        } else if (body.email && body.email.includes('duplicate')) {
+        } else if ((body as TestRequestBody).email && (body as TestRequestBody).email.includes('duplicate')) {
           // Handle duplicate email case
           return {
             status: 409,
@@ -234,7 +234,7 @@ const generateMockResponse = (method, url, requestObj) => {
           };
         }
       } else if (path.includes('login')) {
-        if (!body.email) {
+        if (!(body as TestRequestBody).email) {
           return {
             status: 400,
             body: {
@@ -242,7 +242,7 @@ const generateMockResponse = (method, url, requestObj) => {
               message: 'Email is required'
             }
           };
-        } else if (!body.password) {
+        } else if (!(body as TestRequestBody).password) {
           return {
             status: 400,
             body: {
@@ -250,7 +250,7 @@ const generateMockResponse = (method, url, requestObj) => {
               message: 'Password is required'
             }
           };
-        } else if (body.email === 'nonexistent@example.com') {
+        } else if ((body as TestRequestBody).email === 'nonexistent@example.com') {
           return {
             status: 401,
             body: {
@@ -258,7 +258,7 @@ const generateMockResponse = (method, url, requestObj) => {
               message: 'No user found with this email'
             }
           };
-        } else if (body.password === 'wrongpassword') {
+        } else if ((body as TestRequestBody).password === 'wrongpassword') {
           return {
             status: 401,
             body: {
@@ -337,7 +337,7 @@ const generateMockResponse = (method, url, requestObj) => {
       } else if (path.includes('reset-password')) {
         if (path.includes('reset-password-complete')) {
           // Handle password reset completion errors
-          if (!body.token) {
+          if (!(body as TestRequestBody).token) {
             return {
               status: 400,
               body: {
@@ -345,7 +345,7 @@ const generateMockResponse = (method, url, requestObj) => {
                 message: 'Reset token is required'
               }
             };
-          } else if (!body.password) {
+          } else if (!(body as TestRequestBody).password) {
             return {
               status: 400,
               body: {
@@ -353,7 +353,7 @@ const generateMockResponse = (method, url, requestObj) => {
                 message: 'New password is required'
               }
             };
-          } else if (body.password && body.password.length < 8) {
+          } else if ((body as TestRequestBody).password && (body as TestRequestBody).password.length < 8) {
             return {
               status: 400,
               body: {
@@ -372,7 +372,7 @@ const generateMockResponse = (method, url, requestObj) => {
           }
         } else {
           // Handle password reset request errors
-          if (!body.email) {
+          if (!(body as TestRequestBody).email) {
             return {
               status: 400,
               body: {
@@ -380,7 +380,7 @@ const generateMockResponse = (method, url, requestObj) => {
                 message: 'Email is required for password reset'
               }
             };
-          } else if (body.email && !body.email.includes('@')) {
+          } else if ((body as TestRequestBody).email && !(body as TestRequestBody).email.includes('@')) {
             return {
               status: 400,
               body: {
@@ -388,7 +388,7 @@ const generateMockResponse = (method, url, requestObj) => {
                 message: 'Please provide a valid email address'
               }
             };
-          } else if (body.email === 'nonexistent@example.com') {
+          } else if ((body as TestRequestBody).email === 'nonexistent@example.com') {
             // For production, we don't reveal if an email exists or not
             return {
               status: 200,
@@ -474,13 +474,13 @@ const generateMockResponse = (method, url, requestObj) => {
           status: 201,
           body: {
             id: userId,
-            email: body.email || `test_${Date.now()}@example.com`,
+            email: (body as TestRequestBody).email || `test_${Date.now()}@example.com`,
             message: 'User registered successfully (mock)'
           }
         };
       } else if (path.includes('login')) {
         const token = jwt.sign(
-          { id: userId, email: body.email || 'test@example.com' },
+          { id: userId, email: (body as TestRequestBody).email || 'test@example.com' },
           process.env.JWT_SECRET || 'your-secret-key',
           { expiresIn: '1h' }
         );
@@ -499,7 +499,7 @@ const generateMockResponse = (method, url, requestObj) => {
             refreshToken,
             user: {
               id: userId,
-              email: body.email || 'test@example.com'
+              email: (body as TestRequestBody).email || 'test@example.com'
             },
             message: 'Login successful (mock)'
           }
@@ -579,7 +579,7 @@ const makeRemoteRequest = (method, url, useMocks = false) => {
     },
     send: (body) => {
       if (body) {
-        requestObj.body = JSON.stringify(body);
+        (requestObj as any).body = JSON.stringify(body);
         if (!requestObj.headers['Content-Type']) {
           requestObj.headers['Content-Type'] = 'application/json';
         }
@@ -611,10 +611,10 @@ const makeRemoteRequest = (method, url, useMocks = false) => {
       
       clearTimeout(timeoutId);
       
-      const responseData = await (response.status !== 204 ? response.json().catch(() => ({})) : {});
+      const responseData = await ((response as MockResponse).status !== 204 ? response.json().catch(() => ({})) : {});
       
       return {
-        status: response.status,
+        status: (response as MockResponse).status,
         body: responseData,
         headers: Object.fromEntries(response.headers.entries())
       };
@@ -662,3 +662,6 @@ export const closeTestServer = async (server) => {
     });
   });
 }; 
+
+
+

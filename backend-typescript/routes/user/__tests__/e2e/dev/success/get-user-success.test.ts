@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -88,7 +89,7 @@ describe("Get User API - Success Cases", () => {
       .get("/api/user/me")
       .set("Authorization", `Bearer ${accessToken}`);
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("id", testUserId);
     // Username may be formatted differently in the response
     expect(response.body).toHaveProperty("username");
@@ -101,8 +102,10 @@ describe("Get User API - Success Cases", () => {
     // Try to access without auth token
     const response = await request.get("/api/user/me");
 
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
     expect(response.body).toHaveProperty("error");
   });
 });
+
+
 

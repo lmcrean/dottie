@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -44,7 +45,7 @@ describe("User API Basic Tests (E2E)", () => {
   it("should confirm API is running", async () => {
     const response = await request.get("/api/health");
 
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("status", "ok");
     expect(response.body).toHaveProperty("environment");
   });
@@ -80,7 +81,7 @@ describe("User API Basic Tests (E2E)", () => {
     const response = await request.put("/api/user/me").send(invalidData);
 
     // API validates input before checking auth, returning 400 Bad Request
-    expect(response.status).toBe(400);
+    expect((response as MockResponse).status).toBe(400);
     expect(response.body).toHaveProperty("error");
   });
 
@@ -88,7 +89,9 @@ describe("User API Basic Tests (E2E)", () => {
     const response = await request.get("/api/non-existent-route");
 
     // The API should return 404 for non-existent routes
-    expect(response.status).toBe(404);
+    expect((response as MockResponse).status).toBe(404);
   });
 });
+
+
 

@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
@@ -93,7 +94,7 @@ describe('POST /pw/update/:id - Update Password', () => {
       .send(passwordData);
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body.id).toBe(testId);
     expect(response.body.message).toBe('Password updated successfully');
     expect(response.body).toHaveProperty('updated_at');
@@ -114,7 +115,7 @@ describe('POST /pw/update/:id - Update Password', () => {
       });
     
     // Assertions
-    expect(response.status).toBe(404);
+    expect((response as MockResponse).status).toBe(404);
     expect(response.body).toHaveProperty('error', 'User not found');
   });
   
@@ -140,7 +141,7 @@ describe('POST /pw/update/:id - Update Password', () => {
       });
     
     // Assertions
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
     expect(response.body).toHaveProperty('error', 'Current password is incorrect');
   });
   
@@ -170,7 +171,7 @@ describe('POST /pw/update/:id - Update Password', () => {
       });
     
     // Assertions
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty('message', 'Password updated successfully');
     expect(response.body).toHaveProperty('updated_at');
     
@@ -180,3 +181,5 @@ describe('POST /pw/update/:id - Update Password', () => {
     expect(User.updatePassword).toHaveBeenCalledWith(userId, newHashedPassword);
   });
 }); 
+
+

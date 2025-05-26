@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { test, expect, describe, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
 import app from '';
@@ -59,7 +60,7 @@ describe('Password Update API', () => {
         });
 
       expect(loginResponse.status).toBe(200);
-      authToken = loginResponse.body.token;
+      authToken = (loginResponse.body as TestRequestBody).token;
       expect(authToken).toBeDefined();
     } catch (error) {
       console.error('Setup error:', error);
@@ -108,10 +109,10 @@ describe('Password Update API', () => {
       });
 
     expect(newLoginResponse.status).toBe(200);
-    expect(newLoginResponse.body.token).toBeDefined();
+    expect((newLoginResponse.body as TestRequestBody).token).toBeDefined();
     
     // Update token for subsequent tests
-    authToken = newLoginResponse.body.token;
+    authToken = (newLoginResponse.body as TestRequestBody).token;
   });
 
   test('POST /api/user/pw/update - should reject with incorrect current password', async () => {
@@ -129,7 +130,7 @@ describe('Password Update API', () => {
         newPassword: 'AnotherPassword789!'
       });
     
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
     expect(response.body).toHaveProperty('error');
     expect(response.body.error).toContain('incorrect');
   });
@@ -149,7 +150,7 @@ describe('Password Update API', () => {
         newPassword: 'weak'
       });
     
-    expect(response.status).toBe(400);
+    expect((response as MockResponse).status).toBe(400);
     expect(response.body).toHaveProperty('error');
   });
 
@@ -161,6 +162,9 @@ describe('Password Update API', () => {
         newPassword: 'AnotherPassword789!'
       });
     
-    expect(response.status).toBe(401);
+    expect((response as MockResponse).status).toBe(401);
   });
 }); 
+
+
+

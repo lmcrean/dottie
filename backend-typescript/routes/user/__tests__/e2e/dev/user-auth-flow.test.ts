@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -65,14 +66,14 @@ afterAll(async () => {
 describe("User Authentication Flow (E2E)", () => {
   it("1. should verify API is running", async () => {
     const response = await request.get("/api/health");
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(response.body).toHaveProperty("status", "ok");
   });
 
   it("2. should register a new user", async () => {
     const response = await request.post("/api/auth/signup").send(testUser);
 
-    expect(response.status).toBe(201);
+    expect((response as MockResponse).status).toBe(201);
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("username", testUser.username);
     expect(response.body).toHaveProperty("email", testUser.email);
@@ -102,7 +103,7 @@ describe("User Authentication Flow (E2E)", () => {
       .set("Authorization", `Bearer ${accessToken}`);
 
     // We expect 200 OK for a valid token
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
   });
 
@@ -118,8 +119,10 @@ describe("User Authentication Flow (E2E)", () => {
       .send({ username: "updated-test-user!@#", age: "35_44" });
 
     // We expect validation to fail with a 400 because the username contains invalid characters
-    expect(response.status).toBe(400);
+    expect((response as MockResponse).status).toBe(400);
     expect(response.body).toHaveProperty("error");
   });
 });
+
+
 

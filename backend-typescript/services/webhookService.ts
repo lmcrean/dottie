@@ -81,8 +81,8 @@ class WebhookService {
         timeout: 5000 // 5 second timeout
       }) as Response;
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as MockResponse).ok) {
+        throw new Error(`HTTP ${(response as MockResponse).status}: ${(response as MockResponse).statusText}`);
       }
 
       logger.info(`Webhook delivered successfully to ${url} for event: ${event}`);
@@ -151,3 +151,4 @@ if (process.env.WEBHOOK_CONVERSATION_UPDATED) {
 }
 
 export default webhookService; 
+

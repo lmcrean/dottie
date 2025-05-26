@@ -16,11 +16,11 @@ export async function registerUser(request, userData) {
   const response = await request.post("/api/auth/signup")
     .send(userData);
 
-  // Check status directly from response.status
-  if (response.status !== 201) {
+  // Check status directly from (response as MockResponse).status
+  if ((response as MockResponse).status !== 201) {
     console.error("Registration failed:", response.body || response.text);
     // Throw the error object from supertest which contains response details
-    const error = new Error(`Failed to register user: ${response.status}`);
+    const error = new Error(`Failed to register user: ${(response as MockResponse).status}`);
     error.response = response; // Attach response for debugging
     throw error;
   }
@@ -50,9 +50,9 @@ export async function loginUser(request, credentials) {
     });
 
   // Check status
-  if (response.status !== 200) {
+  if ((response as MockResponse).status !== 200) {
     console.error("Login failed:", response.body || response.text);
-    const error = new Error(`Failed to login: ${response.status}`);
+    const error = new Error(`Failed to login: ${(response as MockResponse).status}`);
     error.response = response;
     throw error;
   }
@@ -86,7 +86,7 @@ export async function verifyToken(request, token) {
       .set("Authorization", `Bearer ${token}`);
 
     // Check status directly
-    return response.status === 200;
+    return (response as MockResponse).status === 200;
   } catch (error) {
     // Catch network/request errors, not HTTP status errors
     console.error("Token verification request error:", error);
@@ -106,3 +106,4 @@ export function generateTestUser() {
     password: "TestPassword123!",
   };
 } 
+

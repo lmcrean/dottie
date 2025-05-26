@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { test as base, expect } from "@playwright/test";
 
 // Import utility modules in order: auth → assessment → user → chat
@@ -519,11 +520,13 @@ base.describe("Master Integration Test", () => {
         },
       });
 
-      expect(response.status()).toBe(401);
+      expect((response as MockResponse).status()).toBe(401);
     } catch (error) {
       console.error("Error in authentication errors test:", error);
       throw error;
     }
   });
 });
+
+
 

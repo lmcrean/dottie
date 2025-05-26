@@ -68,8 +68,8 @@ export async function createAssessment(
     throw new Error(`Failed to parse assessment creation response: ${error.message}`);
   }
 
-  if (response.status() !== 201) {
-    throw new Error(`Failed to create assessment: ${response.status()}`);
+  if ((response as MockResponse).status() !== 201) {
+    throw new Error(`Failed to create assessment: ${(response as MockResponse).status()}`);
   }
 
   return result.id;
@@ -99,7 +99,7 @@ export async function getAssessments(request, token) {
   }
 
   // If we get a 404 (no assessments found), return an empty array
-  if (response.status() === 404) {
+  if ((response as MockResponse).status() === 404) {
 
     return [];
   }
@@ -114,8 +114,8 @@ export async function getAssessments(request, token) {
     throw new Error(`Failed to parse assessments list response: ${error.message}`);
   }
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to get assessments: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to get assessments: ${(response as MockResponse).status()}`);
   }
 
   return result;
@@ -155,8 +155,8 @@ export async function getAssessmentById(request, token, assessmentId) {
     throw new Error(`Failed to parse assessment response: ${error.message}`);
   }
 
-  if (response.status() !== 200) {
-    throw new Error(`Failed to get assessment: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200) {
+    throw new Error(`Failed to get assessment: ${(response as MockResponse).status()}`);
   }
 
   return result;
@@ -216,8 +216,8 @@ export async function updateAssessment(
   }
 
   // Accept 200 or 204 (no content) as success
-  if (response.status() !== 200 && response.status() !== 204) {
-    throw new Error(`Failed to update assessment: ${response.status()}`);
+  if ((response as MockResponse).status() !== 200 && (response as MockResponse).status() !== 204) {
+    throw new Error(`Failed to update assessment: ${(response as MockResponse).status()}`);
   }
 
   let result = {};
@@ -276,7 +276,7 @@ export async function deleteAssessment(request, token, userId, assessmentId) {
     console.error("Failed to get delete response text:", error);
   }
 
-  return response.status() === 200 || response.status() === 204;
+  return (response as MockResponse).status() === 200 || (response as MockResponse).status() === 204;
 }
 
 /**
@@ -314,3 +314,4 @@ export function generateSevereAssessment() {
     },
   };
 }
+

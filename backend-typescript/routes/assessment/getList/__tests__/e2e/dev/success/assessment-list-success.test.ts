@@ -1,3 +1,4 @@
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
@@ -148,7 +149,7 @@ describe("Assessment List Endpoint - Success Cases", () => {
 
 
     // API now always returns 200 with an array (possibly empty)
-    expect(response.status).toBe(200);
+    expect((response as MockResponse).status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     
     // These minimal checks verify the structure but not actual data
@@ -159,4 +160,6 @@ describe("Assessment List Endpoint - Success Cases", () => {
     }
   });
 });
+
+
 
