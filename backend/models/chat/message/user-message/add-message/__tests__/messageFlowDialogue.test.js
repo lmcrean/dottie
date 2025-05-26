@@ -11,17 +11,15 @@ import { runDatabaseIntegrationTests } from './runners/databaseIntegration.js';
 // Mock all dependencies
 vi.mock('@/services/dbService.js');
 vi.mock('@/services/logger.js');
-vi.mock('../../shared/database/chatOperations.js', () => ({
-  ChatDatabaseOperations: {
-    insertMessage: vi.fn(),
-    getMessage: vi.fn(),
-    getConversationMessages: vi.fn()
-  }
+vi.mock('../../../chatbot-message/database/sendChatbotMessage.js', () => ({
+  sendChatbotMessage: vi.fn(),
+  getMessage: vi.fn(),
+  getConversationMessages: vi.fn()
 }));
 vi.mock('../sendMessage.js', () => ({
   sendMessage: vi.fn()
 }));
-vi.mock('../../chatbot-message/generateResponse.js', () => ({
+vi.mock('../../../chatbot-message/generateResponse.js', () => ({
   generateResponseToMessage: vi.fn()
 }));
 

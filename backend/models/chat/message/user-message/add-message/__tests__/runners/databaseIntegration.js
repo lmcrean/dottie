@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendMessage.js';
+import { sendMessage } from '../../sendUserMessage.js';
 import DbService from '@/services/dbService.js';
 import logger from '@/services/logger.js';
 
@@ -17,7 +17,7 @@ export const runDatabaseIntegrationTests = (mockData) => {
   describe('Database integration and persistence', () => {
     beforeEach(async () => {
       // Setup mocks for database operations
-      const { sendMessage: mockSendMessage } = await import('../../sendMessage.js');
+      const { sendMessage: mockSendMessage } = await import('../../sendUserMessage.js');
       mockSendMessage.mockResolvedValue({
         userMessage: mockUserMessage,
         assistantMessage: mockAssistantMessage,

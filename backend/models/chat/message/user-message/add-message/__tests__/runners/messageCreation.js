@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendMessage.js';
+import { sendMessage } from '../../sendUserMessage.js';
 import logger from '@/services/logger.js';
 
 /**
@@ -17,7 +17,7 @@ export const runMessageCreationTests = (mockData) => {
   describe('User message creation and storage', () => {
     beforeEach(async () => {
       // Setup mocks for message creation scenarios
-      const { sendMessage: mockSendMessage } = await import('../../sendMessage.js');
+      const { sendMessage: mockSendMessage } = await import('../../sendUserMessage.js');
       mockSendMessage.mockResolvedValue({
         userMessage: mockUserMessage,
         assistantMessage: mockAssistantMessage,

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage } from '../../sendMessage.js';
-import { generateResponseToMessage } from '../../../chatbot-message/generateResponse.js';
+import { sendMessage } from '../../sendUserMessage.js';
+import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.js';
 import logger from '@/services/logger.js';
 
 /**
@@ -18,7 +18,7 @@ export const runDialogueSequenceTests = (mockData) => {
   describe('Dialogue sequence and conversation display', () => {
     beforeEach(async () => {
       // Setup mocks for complete dialogue flow
-      const { sendMessage: mockSendMessage } = await import('../../sendMessage.js');
+      const { sendMessage: mockSendMessage } = await import('../../sendUserMessage.js');
       mockSendMessage.mockResolvedValue({
         userMessage: mockUserMessage,
         assistantMessage: mockAssistantMessage,
@@ -138,7 +138,7 @@ export const runDialogueSequenceTests = (mockData) => {
         parent_message_id: 'msg-user-second'
       };
 
-      const { sendMessage: mockSendMessage } = await import('../../sendMessage.js');
+      const { sendMessage: mockSendMessage } = await import('../../sendUserMessage.js');
       mockSendMessage.mockResolvedValueOnce({
         userMessage: secondUserMessage,
         assistantMessage: secondAssistantMessage,
