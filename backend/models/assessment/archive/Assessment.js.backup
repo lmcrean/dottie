@@ -1,0 +1,101 @@
+import LegacyAssessment from './archive/LegacyAssessment.js';
+import CurrentAssessment from './assessment-main/Assessment.js';
+import FormatDetector from './assessment-base/FormatDetector.js';
+import AssessmentOperations from './assessment-base/AssessmentOperations.js';
+import TransformationRouter from './assessment-base/TransformationRouter.js';
+
+class Assessment {
+  /**
+   * Find an assessment by ID
+   * @param {string} id - Assessment ID
+   * @returns {Promise<Object|null>} Assessment object or null if not found
+   */
+  static async findById(id) {    
+    // Get the raw record first to determine its format
+    const DbService = (await import('../../services/dbService.js')).default;
+    const rawRecord = await DbService.findById('assessments', id);
+    
+    if (!rawRecord) {
+      return null;
+    }
+    
+    // Route to appropriate handler based on format
+    if (FormatDetector.isLegacyFormat(rawRecord)) {
+      return await LegacyAssessment.findById(id);
+    } else {
+      return await CurrentAssessment.findById(id);
+    }
+  }
+
+  /**
+   * Create a new assessment, choosing the appropriate format
+   * @param {Object} assessmentData - Assessment data
+   * @param {string} userId - User ID
+   * @returns {Promise<Object>} Created assessment object
+   */
+  static async create(assessmentData, userId) {
+    const format = FormatDetector.detectDataFormat(assessmentData);
+    
+    if (format === 'legacy') {
+      return await LegacyAssessment.create(assessmentData, userId);
+    } else {
+      return await CurrentAssessment.create(assessmentData, userId);
+    }
+  }
+
+  /**
+   * Update an assessment, choosing the appropriate format
+   * @param {string} id - Assessment ID
+   * @param {Object} assessmentData - Updated assessment data
+   * @returns {Promise<Object>} Updated assessment object
+   */
+  static async update(id, assessmentData) {
+    const format = FormatDetector.detectDataFormat(assessmentData);
+    
+    if (format === 'legacy') {
+      return await LegacyAssessment.update(id, assessmentData);
+    } else {
+      return await CurrentAssessment.update(id, assessmentData);
+    }
+  }
+
+  /**
+   * List all assessments for a user
+   * @param {string} userId - User ID
+   * @returns {Promise<Array>} Array of assessment objects
+   */
+  static async listByUser(userId) {
+    return await AssessmentOperations.listByUser(userId);
+  }
+
+  /**
+   * Delete an assessment
+   * @param {string} id - Assessment ID
+   * @returns {Promise<boolean>} True if successful
+   */
+  static async delete(id) {
+    return await AssessmentOperations.delete(id);
+  }
+
+  /**
+   * Validate if user is the owner of assessment
+   * @param {string} assessmentId - Assessment ID
+   * @param {string} userId - User ID
+   * @returns {Promise<boolean>} True if user is owner, false otherwise
+   */
+  static async validateOwnership(assessmentId, userId) {
+    return await AssessmentOperations.validateOwnership(assessmentId, userId);
+  }
+
+  /**
+   * Transform database record to API response format
+   * @param {Object} record - Database record
+   * @returns {Object} API response object
+   * @private
+   */
+  static _transformDbRecordToApiResponse(record) {
+    return TransformationRouter.transformDbRecordToApiResponse(record);
+  }
+}
+
+export default Assessment; 

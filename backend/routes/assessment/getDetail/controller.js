@@ -139,14 +139,11 @@ export const getAssessmentDetail = async (req, res) => {
     }
     
     // Log physical_symptoms from Assessment.findById
-
-    
-    // Add debugging to inspect assessment data before returning
-
-
+    console.log('Physical symptoms type:', Array.isArray(assessment.physical_symptoms) 
       ? `Array with ${assessment.physical_symptoms.length} items` 
       : typeof assessment.physical_symptoms);
 
+    console.log('Emotional symptoms type:', Array.isArray(assessment.emotional_symptoms)
       ? `Array with ${assessment.emotional_symptoms.length} items` 
       : typeof assessment.emotional_symptoms);
 
