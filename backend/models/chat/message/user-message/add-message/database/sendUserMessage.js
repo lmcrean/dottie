@@ -24,3 +24,4 @@ export const insertUserMessage = async (conversationId, messageData) => {
     throw error;
   }
 };
+
