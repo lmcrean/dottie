@@ -4,7 +4,7 @@ import { updateChatMessage } from '../../shared/database/chatUpdateMessage.js';
 import { formatUserMessage } from '../../shared/utils/messageFormatters.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
-import Chat from '../../../chat-list/chat.js';
+import Chat from '../../../read-chat-list/chat.js';
 
 /**
  * Send a message in a conversation with flexible options

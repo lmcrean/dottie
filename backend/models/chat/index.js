@@ -7,9 +7,9 @@
 // ===================================
 // CHAT LIST - Browse existing conversations
 // ===================================
-export { getUserConversations } from './chat-list/chatGetList.js';
-export { deleteConversation } from './chat-detail/delete-conversation/chatDelete.js';
-export { Chat as default } from './chat-list/chat.js';
+export { getUserConversations } from './read-chat-list/chatGetList.js';
+export { deleteConversation } from './chat-detail/delete-chat-detail/chatDelete.js';
+export { Chat as default } from './read-chat-list/chat.js';
 
 // ===================================
 // CREATE CONVERSATION - New conversation flow
@@ -59,13 +59,13 @@ export {
   getConversationMessages,
   getRecentMessages,
   getConversationSummary
-} from './chat-detail/read-conversation/getConversation.js';
+} from './chat-detail/read-chat-detail/getConversation.js';
 export { 
   getConversationWithContext,
   getConversationForDisplay,
   getConversationContextForAI,
   getConversationPreview
-} from './chat-detail/read-conversation/getWithContext.js';
+} from './chat-detail/read-chat-detail/getWithContext.js';
 
 // ===================================
 // SHARED UTILITIES
@@ -188,7 +188,7 @@ export const quickStart = async (userId, message, assessmentId = null) => {
  * @returns {Promise<Object>} - Frontend-ready conversation data
  */
 export const getDisplayReady = async (conversationId, userId) => {
-  const { getConversationForDisplay } = await import('./chat-detail/read-conversation/getWithContext.js');
+  const { getConversationForDisplay } = await import('./chat-detail/read-chat-detail/getWithContext.js');
   return await getConversationForDisplay(conversationId, userId);
 };
 

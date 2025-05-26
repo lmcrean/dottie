@@ -1,6 +1,6 @@
 import logger from '../../../../services/logger.js';
 import DbService from '../../../../services/dbService.js';
-import Chat from '../../chat-list/chat.js';
+import Chat from '../../read-chat-list/chat.js';
 
 /**
  * Get conversation with all messages

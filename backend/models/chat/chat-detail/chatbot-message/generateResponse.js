@@ -5,7 +5,7 @@ import { generateMessageId } from '../shared/utils/responseBuilders.js';
 import { detectService } from './services/serviceDetector.js';
 import { generateFollowUpResponse as generateFollowUpAI } from './services/ai/generators/followUpAI.js';
 import { generateFollowUpResponse as generateFollowUpMock } from './services/mock/generators/followUpMock.js';
-import { getConversationHistory } from '../read-conversation/getConversation.js';
+import { getConversationHistory } from '../read-chat-detail/getConversation.js';
 
 /**
  * Generate response to a user message in an ongoing conversation
