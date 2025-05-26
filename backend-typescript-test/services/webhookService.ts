@@ -1,9 +1,26 @@
-import logger from '';
+import logger from './logger';
+
+// Type definitions
+interface WebhookEndpoint {
+  url: string;
+  event: string;
+}
+
+interface WebhookPayload {
+  event: string;
+  timestamp: string;
+  data: any;
+}
 
 /**
  * Webhook service for notifying external systems of conversation updates
  */
 class WebhookService {
+  // Explicit property declarations
+  private webhookEndpoints: WebhookEndpoint[];
+  private retryAttempts: number;
+  private retryDelay: number;
+
   constructor() {
     this.webhookEndpoints = [];
     this.retryAttempts = 3;
@@ -15,7 +32,7 @@ class WebhookService {
    * @param {string} url - Webhook URL
    * @param {string} event - Event type ('conversation.created', 'message.added', etc.)
    */
-  registerWebhook(url, event) {
+  registerWebhook(url: string, event: string): void {
     this.webhookEndpoints.push({ url, event });
     logger.info(`Webhook registered: ${url} for event: ${event}`);
   }
@@ -25,7 +42,7 @@ class WebhookService {
    * @param {string} event - Event type
    * @param {Object} payload - Event payload
    */
-  async sendWebhook(event, payload) {
+  async sendWebhook(event: string, payload: any): Promise<void> {
     const relevantWebhooks = this.webhookEndpoints.filter(webhook => webhook.event === event);
     
     if (relevantWebhooks.length === 0) {
@@ -46,9 +63,9 @@ class WebhookService {
    * @param {string} event - Event type
    * @param {Object} payload - Event payload
    */
-  async deliverWebhook(url, event, payload, attempt = 1) {
+  async deliverWebhook(url: string, event: string, payload: any, attempt: number = 1): Promise<boolean> {
     try {
-      const webhookPayload = {
+      const webhookPayload: WebhookPayload = {
         event,
         timestamp: new Date().toISOString(),
         data: payload
@@ -62,7 +79,7 @@ class WebhookService {
         },
         body: JSON.stringify(webhookPayload),
         timeout: 5000 // 5 second timeout
-      });
+      }) as Response;
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -88,7 +105,7 @@ class WebhookService {
    * Delay helper for retry logic
    * @param {number} ms - Milliseconds to delay
    */
-  delay(ms) {
+  private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -96,7 +113,7 @@ class WebhookService {
    * Notify conversation created
    * @param {Object} conversationData - Conversation data
    */
-  async notifyConversationCreated(conversationData) {
+  async notifyConversationCreated(conversationData: any): Promise<void> {
     await this.sendWebhook('conversation.created', conversationData);
   }
 
@@ -104,7 +121,7 @@ class WebhookService {
    * Notify message added
    * @param {Object} messageData - Message data
    */
-  async notifyMessageAdded(messageData) {
+  async notifyMessageAdded(messageData: any): Promise<void> {
     await this.sendWebhook('message.added', messageData);
   }
 
@@ -112,7 +129,7 @@ class WebhookService {
    * Notify conversation updated
    * @param {Object} conversationData - Updated conversation data
    */
-  async notifyConversationUpdated(conversationData) {
+  async notifyConversationUpdated(conversationData: any): Promise<void> {
     await this.sendWebhook('conversation.updated', conversationData);
   }
 }
