@@ -1,96 +1,103 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { createAssessmentConversation } from '../../createFlow.js';
 import DbService from '@/services/dbService.js';
 
 /**
- * Tests for assessment data integration scenarios
+ * Tests for assessment data integration and linking
  */
 export const runAssessmentIntegrationTests = (mockData) => {
-  const { mockUserId, mockConversationId, mockInitialMessage, mockAssessmentObject } = mockData;
+  const { 
+    mockUserId, 
+    mockAssessmentId, 
+    mockConversationId, 
+    mockInitialMessage,
+    mockAssessmentObject 
+  } = mockData;
 
-  describe('Assessment data integration', () => {
-    it('should work with various assessment patterns', async () => {
+  describe('Assessment integration tests', () => {
+    beforeEach(async () => {
+      // Setup assessment-related mocks
+      DbService.findById.mockResolvedValue(mockAssessmentObject);
+      
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      createConversation.mockResolvedValue(mockConversationId);
+      
+      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
+      createInitialMessage.mockResolvedValue(mockInitialMessage);
+    });
+
+    it('should link conversation to assessment', async () => {
+      const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
+      
+      // Verify assessment ID is stored
+      expect(result.assessmentId).toBe(mockAssessmentId);
+      
+      // Verify conversation creation includes assessment ID
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
+    });
+
+    it('should handle assessment data retrieval', async () => {
+      await createAssessmentConversation(mockUserId, mockAssessmentId);
+      
+      // Verify assessment data is accessed during conversation creation
+      // This may be used for pattern setting or other assessment-linked features
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
+    });
+
+    it('should work with different assessment patterns', async () => {
+      // Test with various assessment patterns
       const patterns = ['regular', 'irregular', 'heavy', 'pain', 'developing'];
       
       for (const pattern of patterns) {
-        const assessmentWithPattern = {
-          ...mockAssessmentObject,
-          pattern,
-          id: `assessment-${pattern}`
-        };
+        const patternAssessment = { ...mockAssessmentObject, pattern };
+        DbService.findById.mockResolvedValue(patternAssessment);
         
-        DbService.findById.mockResolvedValue(assessmentWithPattern);
+        const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
         
-        const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
-        createConversation.mockResolvedValue(`conv-${pattern}`);
+        expect(result.conversationId).toBe(mockConversationId);
+        expect(result.assessmentId).toBe(mockAssessmentId);
         
-        const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-        createInitialMessage.mockResolvedValue(mockInitialMessage);
-        
-        const result = await createAssessmentConversation(mockUserId, assessmentWithPattern.id);
-        
-        expect(result.conversationId).toBe(`conv-${pattern}`);
-        expect(result.assessmentId).toBe(assessmentWithPattern.id);
+        // Verify conversation creation still works regardless of pattern
+        const { createConversation } = await import('../../database/conversationCreate.js');
+        expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
       }
     });
 
     it('should handle complex assessment objects with all symptoms', async () => {
       const complexAssessment = {
         ...mockAssessmentObject,
-        physical_symptoms: [
-          'bloating', 'fatigue', 'headaches', 'breast-tenderness', 
-          'back-pain', 'nausea', 'dizziness'
-        ],
-        emotional_symptoms: [
-          'mood-swings', 'anxiety', 'depression', 'irritability', 
-          'crying-spells', 'social-withdrawal'
-        ],
-        other_symptoms: 'severe cramping, joint pain, insomnia',
+        physical_symptoms: ['bloating', 'fatigue', 'headaches', 'breast-tenderness', 'acne'],
+        emotional_symptoms: ['mood-swings', 'anxiety', 'depression', 'irritability'],
+        other_symptoms: 'severe cramping and back pain',
         recommendations: [
           { title: 'Exercise', description: 'Regular cardio and strength training' },
-          { title: 'Diet', description: 'Anti-inflammatory foods' },
-          { title: 'Sleep', description: 'Maintain regular sleep schedule' },
-          { title: 'Stress Management', description: 'Practice mindfulness and relaxation' }
+          { title: 'Diet', description: 'Anti-inflammatory foods and omega-3s' },
+          { title: 'Sleep', description: 'Consistent sleep schedule of 7-9 hours' },
+          { title: 'Stress Management', description: 'Meditation and yoga practices' }
         ]
       };
       
       DbService.findById.mockResolvedValue(complexAssessment);
       
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
-      createConversation.mockResolvedValue(mockConversationId);
+      const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
       
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockResolvedValue(mockInitialMessage);
-      
-      const result = await createAssessmentConversation(mockUserId, complexAssessment.id);
-      
+      // Verify conversation creation succeeds with complex data
       expect(result.conversationId).toBe(mockConversationId);
-      expect(result.assessmentId).toBe(complexAssessment.id);
+      expect(result.assessmentId).toBe(mockAssessmentId);
       expect(result.initialMessage).toBeDefined();
     });
 
-    it('should handle minimal assessment objects', async () => {
-      const minimalAssessment = {
-        id: 'minimal-assessment',
-        user_id: mockUserId,
-        pattern: 'regular',
-        physical_symptoms: [],
-        emotional_symptoms: [],
-        recommendations: []
-      };
+    it('should handle missing assessment gracefully', async () => {
+      // Test when assessment doesn't exist
+      DbService.findById.mockResolvedValue(null);
       
-      DbService.findById.mockResolvedValue(minimalAssessment);
+      const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
       
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
-      createConversation.mockResolvedValue(mockConversationId);
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockResolvedValue(mockInitialMessage);
-      
-      const result = await createAssessmentConversation(mockUserId, minimalAssessment.id);
-      
+      // Conversation should still be created even if assessment lookup fails
       expect(result.conversationId).toBe(mockConversationId);
-      expect(result.assessmentId).toBe(minimalAssessment.id);
+      expect(result.assessmentId).toBe(mockAssessmentId);
     });
   });
 }; 

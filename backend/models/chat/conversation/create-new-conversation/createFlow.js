@@ -1,5 +1,5 @@
 import logger from '../../../../services/logger.js';
-import { createConversation } from '../../../chat-detail/shared/database/chatCreate.js';
+import { createConversation } from './database/conversationCreate.js';
 import { createInitialMessage } from '../../message/user-message/add-message/create-initial-message/createInitialMessage.js';
 
 /**

@@ -11,7 +11,7 @@ export const runSuccessfulCreationTests = (mockData) => {
   describe('Successful conversation creation', () => {
     beforeEach(async () => {
       // Setup mocks for successful scenarios
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
+      const { createConversation } = await import('../../database/conversationCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
@@ -26,7 +26,7 @@ export const runSuccessfulCreationTests = (mockData) => {
       expect(result.conversationId).toBe(mockConversationId);
       
       // Verify conversation has user_id
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
+      const { createConversation } = await import('../../database/conversationCreate.js');
       expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
     });
 
@@ -37,7 +37,7 @@ export const runSuccessfulCreationTests = (mockData) => {
       expect(result.assessmentId).toBe(mockAssessmentId);
       
       // The conversation should reference the assessment
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
+      const { createConversation } = await import('../../database/conversationCreate.js');
       expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
     });
 

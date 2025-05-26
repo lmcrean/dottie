@@ -11,7 +11,7 @@ import { runAssessmentIntegrationTests } from './runners/assessmentIntegration.j
 // Mock all dependencies
 vi.mock('@/services/dbService.js');
 vi.mock('@/services/logger.js');
-vi.mock('../../../chat-detail/shared/database/chatCreate.js', () => ({
+vi.mock('../database/conversationCreate.js', () => ({
   createConversation: vi.fn()
 }));
 vi.mock('../../../message/user-message/add-message/create-initial-message/createInitialMessage.js', () => ({
@@ -75,9 +75,11 @@ describe('createAssessmentConversation Integration Tests', () => {
     vi.restoreAllMocks();
   });
 
-  // Run all test suites
-  runSuccessfulCreationTests(mockData);
-  runErrorHandlingTests(mockData);
-  runDatabaseSequenceTests(mockData);
-  runAssessmentIntegrationTests(mockData);
+  // Run all test suites in sequence
+  describe('Sequential Test Execution', () => {
+    runSuccessfulCreationTests(mockData);
+    runErrorHandlingTests(mockData);
+    runDatabaseSequenceTests(mockData);
+    runAssessmentIntegrationTests(mockData);
+  });
 }); 

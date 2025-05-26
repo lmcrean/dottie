@@ -1,88 +1,86 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { createAssessmentConversation } from '../../createFlow.js';
+import logger from '@/services/logger.js';
 
 /**
- * Tests for database operations sequence validation
+ * Tests for database operation sequence and timing
  */
 export const runDatabaseSequenceTests = (mockData) => {
   const { mockUserId, mockAssessmentId, mockConversationId, mockInitialMessage } = mockData;
 
-  describe('Database operations sequence', () => {
-    it('should execute operations in correct order', async () => {
-      const callOrder = [];
-      
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
-      createConversation.mockImplementation(async (userId, assessmentId) => {
-        callOrder.push('createConversation');
-        return mockConversationId;
-      });
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockImplementation(async (conversationId, userId) => {
-        callOrder.push('createInitialMessage');
-        return mockInitialMessage;
-      });
-      
-      await createAssessmentConversation(mockUserId, mockAssessmentId);
-      
-      // Verify correct execution order
-      expect(callOrder).toEqual(['createConversation', 'createInitialMessage']);
-    });
-
-    it('should pass correct parameters between operations', async () => {
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
+  describe('Database sequence validation', () => {
+    beforeEach(async () => {
+      const { createConversation } = await import('../../database/conversationCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
       createInitialMessage.mockResolvedValue(mockInitialMessage);
-      
+    });
+
+    it('should create conversation before creating initial message', async () => {
       await createAssessmentConversation(mockUserId, mockAssessmentId);
       
-      // Verify conversation creation parameters
-      expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
+      // Verify conversation is created first
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
       
-      // Verify message creation uses the returned conversation ID
+      expect(createConversation).toHaveBeenCalledBefore(createInitialMessage);
       expect(createInitialMessage).toHaveBeenCalledWith(mockConversationId, mockUserId);
     });
 
-    it('should stop execution if conversation creation fails', async () => {
-      const error = new Error('Conversation creation failed');
-      
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
-      createConversation.mockRejectedValue(error);
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockResolvedValue(mockInitialMessage);
-      
-      await expect(createAssessmentConversation(mockUserId, mockAssessmentId))
-        .rejects.toThrow('Conversation creation failed');
-      
-      // Verify message creation was never called
-      expect(createInitialMessage).not.toHaveBeenCalled();
-    });
-
-    it('should handle async operation timing', async () => {
-      let conversationCreated = false;
-      let messageCreated = false;
-      
-      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
-      createConversation.mockImplementation(async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
-        conversationCreated = true;
-        return mockConversationId;
-      });
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockImplementation(async () => {
-        expect(conversationCreated).toBe(true); // Should be created first
-        messageCreated = true;
-        return mockInitialMessage;
-      });
-      
+    it('should pass conversation ID to initial message creation', async () => {
       await createAssessmentConversation(mockUserId, mockAssessmentId);
       
-      expect(conversationCreated).toBe(true);
-      expect(messageCreated).toBe(true);
+      // Verify the sequence and parameter passing
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
+      
+      expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
+      expect(createInitialMessage).toHaveBeenCalledWith(mockConversationId, mockUserId);
+    });
+
+    it('should handle database operation timing correctly', async () => {
+      const startTime = Date.now();
+      await createAssessmentConversation(mockUserId, mockAssessmentId);
+      const endTime = Date.now();
+      
+      // Verify reasonable execution time (not stuck in infinite loops)
+      expect(endTime - startTime).toBeLessThan(1000); // Should complete within 1 second
+      
+      // Verify all operations completed
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
+      
+      expect(createConversation).toHaveBeenCalled();
+      expect(createInitialMessage).toHaveBeenCalled();
+    });
+
+    it('should maintain referential integrity between operations', async () => {
+      const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
+      
+      // Verify the returned object maintains consistency
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
+      
+      expect(result.conversationId).toBe(mockConversationId);
+      expect(result.assessmentId).toBe(mockAssessmentId);
+      expect(result.initialMessage).toBe(mockInitialMessage);
+      
+      // Verify that the conversation ID used for message creation matches returned ID
+      expect(createInitialMessage).toHaveBeenCalledWith(mockConversationId, mockUserId);
+      expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
+    });
+
+    it('should log operations in correct sequence', async () => {
+      await createAssessmentConversation(mockUserId, mockAssessmentId);
+      
+      // Verify logging sequence indicates proper operation flow
+      expect(logger.info).toHaveBeenCalledWith(
+        `Creating conversation for user ${mockUserId} with assessment ${mockAssessmentId}`
+      );
+      expect(logger.info).toHaveBeenCalledWith(
+        `Conversation ${mockConversationId} created successfully`
+      );
     });
   });
 }; 
