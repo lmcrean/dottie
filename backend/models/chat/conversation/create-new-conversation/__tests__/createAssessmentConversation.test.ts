@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
 import { describe, beforeEach, afterEach, vi } from 'vitest';
 import DbService from '';
 import logger from '';

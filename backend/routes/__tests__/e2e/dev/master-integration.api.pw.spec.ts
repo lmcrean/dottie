@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../types/common';
 import { test as base, expect } from "@playwright/test";
 
 // Import utility modules in order: auth → assessment → user → chat

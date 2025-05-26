@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
 import { test, expect, describe } from 'vitest';
 
 describe('Password Update API Configuration', () => {

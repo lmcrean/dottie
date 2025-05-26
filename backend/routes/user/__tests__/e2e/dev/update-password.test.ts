@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../../../../types/common';
 import { test, expect, describe, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
 import app from '../../../server.js';

@@ -43,10 +43,10 @@ export const updatePassword = async (req, res) => {
     
     // Hash the new password
     const saltRounds = 10;
-    const password_hash = await bcrypt.hash(newPassword, saltRounds);
+    const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
     
-    // Update the password
-    await User.updatePassword(userId, password_hash);
+    // Update the password with current and new password hashes
+    await User.updatePassword(userId, user.password_hash, newPasswordHash);
     
     res.json({
       message: 'Password updated successfully',
