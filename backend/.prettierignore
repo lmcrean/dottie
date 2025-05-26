@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+*.sqlite3
+package-lock.json
+*.log 
