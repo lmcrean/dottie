@@ -1,6 +1,7 @@
 import logger from '../../../../../services/logger.js';
 import { getAssessmentPattern } from './assessmentGetPattern.js';
 import { validateAssessmentOwnership } from './assessmentValidator.js';
+import Assessment from '../../../../assessment/Assessment.js';
 
 /**
  * Setup assessment context for a new conversation
@@ -16,16 +17,17 @@ export const setupAssessmentContext = async (userId, assessmentId) => {
       throw new Error('User does not own this assessment');
     }
 
-    // Get the assessment pattern
-    const assessmentPattern = await getAssessmentPattern(assessmentId);
-    if (!assessmentPattern) {
-      throw new Error('Assessment pattern not found');
+    // Get the full assessment data
+    const assessmentData = await Assessment.findById(assessmentId);
+    if (!assessmentData) {
+      throw new Error('Assessment not found');
     }
 
     logger.info(`Assessment setup successful for user ${userId}, assessment ${assessmentId}`);
     return {
       assessmentId,
-      assessmentPattern,
+      assessmentData,
+      assessmentPattern: assessmentData.pattern, // Keep for backwards compatibility
       isValid: true
     };
 
@@ -46,9 +48,9 @@ export const validateAssessmentContext = async (userId, assessmentId) => {
     if (!assessmentId) return true; // Assessment is optional
 
     const isOwner = await validateAssessmentOwnership(userId, assessmentId);
-    const pattern = await getAssessmentPattern(assessmentId);
+    const assessmentData = await Assessment.findById(assessmentId);
 
-    return isOwner && !!pattern;
+    return isOwner && !!assessmentData;
   } catch (error) {
     logger.error('Error validating assessment context:', error);
     return false;

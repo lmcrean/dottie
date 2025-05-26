@@ -2,7 +2,7 @@ import logger from '../../../../../services/logger.js';
 import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
 import { formatUserMessage } from './validation/messageFormatters.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
-import { ResponseCoordinator } from '../../messages/chatbot-message/ResponseCoordinator.js';
+import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
 import Chat from '../../../read-chat-list/chat.js';
 
 /**
@@ -60,7 +60,7 @@ export const sendMessage = async (conversationId, userId, messageText, options =
     // Generate AI response if enabled
     let assistantMessage = null;
     if (autoResponse) {
-      assistantMessage = await ResponseCoordinator.generateResponseToMessage(conversationId, messageId, messageText);
+              assistantMessage = await generateResponseToMessage(conversationId, messageId, messageText);
     }
 
     logger.info(`Message sent successfully in conversation ${conversationId}`);

@@ -1,6 +1,6 @@
 import logger from '../../../../../../services/logger.js';
 import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
-import { ResponseCoordinator } from '../../messages/chatbot-message/ResponseCoordinator.js';
+import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
 import Chat from '../../../read-chat-list/chat.js';
 import { cleanupChildrenMessages } from './cleanupChildrenMessages.js';
 
@@ -60,7 +60,7 @@ export const editMessageWithRegeneration = async (conversationId, messageId, use
     // Step 3: Generate new response to the edited message
     let newResponse = null;
     if (regenerateResponse) {
-      newResponse = await ResponseCoordinator.generateResponseToMessage(conversationId, messageId, newContent);
+      newResponse = await generateResponseToMessage(conversationId, messageId, newContent);
     }
 
     logger.info(`Message edit flow completed for message ${messageId}`);

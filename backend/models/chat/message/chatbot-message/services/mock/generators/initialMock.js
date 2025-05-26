@@ -4,49 +4,26 @@ import { buildMockResponse } from '../../../../shared/utils/responseBuilders.js'
 /**
  * Generate initial mock response for new conversations
  * @param {string} messageText - User's initial message
- * @param {string} [assessmentPattern] - Assessment pattern for context
+ * @param {Object} assessmentData - Full assessment data (required)
  * @returns {Promise<Object>} - Mock response object
  */
-export const generateInitialResponse = async (messageText, assessmentPattern = null) => {
+export const generateInitialResponse = async (messageText, assessmentData) => {
+  if (!assessmentData || typeof assessmentData !== 'object') {
+    throw new Error('Assessment data is required - system error if missing');
+  }
   try {
     logger.info('Generating initial mock response');
 
-    // Simple keyword-based response selection
-    const lowerMessage = messageText.toLowerCase();
-    let responseContent;
-    let category = 'general';
-
-    // Assessment-specific responses
-    if (assessmentPattern) {
-      responseContent = `Hello! I see you'd like to discuss your ${assessmentPattern} assessment. I'm here to help you understand your results and explore what they mean for you. What specific aspects would you like to dive into?`;
-      category = 'assessment';
-    }
-    // Greeting responses
-    else if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-      responseContent = "Hello! I'm glad you're here. I'm your AI conversation partner, ready to help you explore topics, answer questions, or just have a meaningful chat. What's on your mind today?";
-      category = 'greeting';
-    }
-    // Help/question responses
-    else if (lowerMessage.includes('help') || lowerMessage.includes('question') || lowerMessage.includes('how')) {
-      responseContent = "I'm here to help! Feel free to ask me anything you'd like to discuss or explore. Whether it's about assessments, personal development, or general topics, I'm ready to assist you.";
-      category = 'help';
-    }
-    // Problem/concern responses
-    else if (lowerMessage.includes('problem') || lowerMessage.includes('issue') || lowerMessage.includes('concern')) {
-      responseContent = "I understand you might be dealing with something challenging. I'm here to listen and help you work through it. Can you tell me more about what's on your mind?";
-      category = 'support';
-    }
-    // Default response
-    else {
-      responseContent = "Thank you for starting this conversation! I'm here to support you in exploring ideas, discussing topics, or working through questions you might have. What would you like to talk about?";
-      category = 'general';
-    }
+    // Generate personalized response based on assessment data
+    const { pattern, pain_level, cycle_length, physical_symptoms, emotional_symptoms } = assessmentData;
+    
+    const responseContent = `Hello! I see you've shared your menstrual health assessment results showing a ${pattern} pattern. With a ${pain_level}/10 pain level and ${cycle_length}-day cycles, there's definitely valuable information we can explore together. What aspects of your results would you like to discuss first?`;
+    const category = 'assessment-detailed';
 
     const metadata = {
-      pattern_matched: null,
-      keyword_matched: extractKeywords(lowerMessage),
       response_category: category,
-      assessment_pattern: assessmentPattern,
+      assessment_pattern: assessmentData.pattern,
+      assessment_data: assessmentData,
       is_initial: true,
       generated_at: new Date().toISOString()
     };
@@ -68,16 +45,7 @@ export const generateInitialResponse = async (messageText, assessmentPattern = n
   }
 };
 
-/**
- * Extract keywords from user message
- * @param {string} message - User message
- * @returns {Array<string>} - Extracted keywords
- */
-const extractKeywords = (message) => {
-  const commonKeywords = ['hello', 'hi', 'help', 'question', 'how', 'problem', 'issue', 'concern', 'assessment', 'test', 'result'];
-  const words = message.toLowerCase().split(/\s+/);
-  return words.filter(word => commonKeywords.includes(word));
-};
+
 
 /**
  * Generate contextual initial response based on assessment pattern
