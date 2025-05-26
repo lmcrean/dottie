@@ -1,4 +1,4 @@
-import User from '';
+import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 
 // In-memory storage for test data

@@ -1,5 +1,5 @@
-import { db } from '';
-import { findById } from '';
+import { db } from '../../db/index.js';
+import { findById } from '../../services/db-service/findById.js';
 
 /**
  * Create a new record

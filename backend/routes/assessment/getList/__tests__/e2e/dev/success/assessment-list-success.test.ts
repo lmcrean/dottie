@@ -2,7 +2,7 @@ import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycl
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
-import db from '';
+import db from '../../db/index.js';
 import {
   setupTestServer,
   closeTestServer,

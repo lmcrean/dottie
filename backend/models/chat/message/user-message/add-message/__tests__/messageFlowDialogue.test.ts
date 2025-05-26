@@ -3,13 +3,13 @@ import { describe, beforeEach, afterEach, vi } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
 
 // Import test runners
-import { runMessageCreationTests } from './runners/messageCreation.ts';
-import { runChatbotResponseTests } from './runners/chatbotResponse.ts';
-import { runDialogueSequenceTests } from './runners/dialogueSequence.ts';
-import { runDatabaseIntegrationTests } from './runners/databaseIntegration.ts';
+import { runMessageCreationTests } from './runners/messageCreation.js';
+import { runChatbotResponseTests } from './runners/chatbotResponse.js';
+import { runDialogueSequenceTests } from './runners/dialogueSequence.js';
+import { runDatabaseIntegrationTests } from './runners/databaseIntegration.js';
 
 // Import mock data
-import { messageFlowTestData } from './mock-data/messageFlowTestData.ts';
+import { messageFlowTestData } from './mock-data/messageFlowTestData.js';
 
 // Mock dependencies without importing them directly
 vi.mock('@/services/dbService.ts', () => ({

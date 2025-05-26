@@ -1,4 +1,4 @@
-import db from '';
+import db from '../../db/index.js';
 
 class ValidateAssessmentOwnership {
   /**

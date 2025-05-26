@@ -1,5 +1,5 @@
-import db from '';
-import { updateAssessmentSchema } from '';
+import db from '../../db/index.js';
+import { updateAssessmentSchema } from '../../db/migrations/updateAssessmentSchema.js';
 
 /**
  * Apply schema updates for tests

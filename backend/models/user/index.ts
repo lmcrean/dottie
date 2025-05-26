@@ -1,5 +1,5 @@
 // Main User model (orchestrator)
-import User from '';
+import User from '../../../models/user/User.js';
 
 // Services
 import CreateUser from '';

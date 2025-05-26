@@ -5,7 +5,7 @@
  * using raw SQL for maximum reliability.
  */
 
-import db from '';
+import db from '../../db/index.js';
 
 async function fixAssessmentSchema() {
   try {

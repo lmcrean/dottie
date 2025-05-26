@@ -1,7 +1,7 @@
 // @ts-check
 import { describe, test, expect } from 'vitest';
 import supertest from 'supertest';
-import app from '';
+import app from '../../../server.js';
 import jwt from 'jsonwebtoken';
 
 // Create a supertest instance

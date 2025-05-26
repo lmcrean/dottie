@@ -2,7 +2,7 @@
 // Set test mode before importing db
 process.env.TEST_MODE = "true";
 
-import db from '';
+import db from '../../db/index.js';
 import {
   createTables,
   dropTables,

@@ -1,5 +1,5 @@
 import { createTables } from '';
-import db from '';
+import db from '../../db/index.js';
 
 /**
  * Initialize the database with all tables

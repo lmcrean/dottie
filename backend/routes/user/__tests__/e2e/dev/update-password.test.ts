@@ -1,9 +1,9 @@
 import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
 import { test, expect, describe, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
-import app from '';
+import app from '../../../server.js';
 import { createServer } from 'http';
-import User from '';
+import User from '../../../models/user/User.js';
 
 // Test constants
 const TEST_PORT = 5024;

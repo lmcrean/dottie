@@ -2,7 +2,7 @@
 import { updateAssessmentToJsonSchema } from '';
 
 //for test - TODO: remove
-import { updateAssessmentSchema } from '';
+import { updateAssessmentSchema } from '../../db/migrations/updateAssessmentSchema.js';
 
 /**
  * Create all tables for the Dottie application

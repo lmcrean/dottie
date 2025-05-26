@@ -1,4 +1,4 @@
-import { db } from '';
+import { db } from '../../db/index.js';
 
 /**
  * Get all records from a table
