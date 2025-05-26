@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config.js';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
