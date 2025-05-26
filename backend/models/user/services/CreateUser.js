@@ -1,4 +1,4 @@
-import DbService from '../../../services/dbService.js';
+import DbService from '../../../services/db-service/dbService.js';
 import UserBase from '../base/UserBase.js';
 import ValidateUserData from '../validators/ValidateUserData.js';
 import ValidateEmail from '../validators/ValidateEmail.js';

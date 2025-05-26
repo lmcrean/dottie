@@ -159,7 +159,7 @@ class User {
   static async update(id, userData) {
     // For backward compatibility - delegates to DbService directly
     // This should ideally be replaced with specific update services
-    const DbService = (await import('../../services/dbService.js')).default;
+    const DbService = (await import('../../services/db-service/dbService.js')).default;
     const updatedUser = await DbService.update(this.tableName, id, userData);
     return SanitizeUserData.sanitizeUser(updatedUser);
   }

@@ -1,5 +1,5 @@
 import logger from '../../../../../../services/logger.js';
-import DbService from '../../../../../../services/dbService.js';
+import DbService from '../../../../../../services/db-service/dbService.js';
 import { v4 as uuidv4 } from 'uuid';
 
 /**

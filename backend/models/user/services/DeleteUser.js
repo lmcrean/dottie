@@ -1,4 +1,4 @@
-import DbService from '../../../services/dbService.js';
+import DbService from '../../../services/db-service/dbService.js';
 import UserBase from '../base/UserBase.js';
 import ReadUser from './ReadUser.js';
 
