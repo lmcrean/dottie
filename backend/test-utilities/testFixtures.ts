@@ -62,10 +62,10 @@ export function generateSymptom(overrides: TestSymptomOverrides = {}) {
 
 /**
  * Generate a test assessment
- * @param {Object} overrides - Override default properties
+ * @param {TestAssessmentOverrides} overrides - Override default properties
  * @returns {Object} Test assessment
  */
-export function generateAssessment(overrides = {}) {
+export function generateAssessment(overrides: TestAssessmentOverrides = {}) {
   const timestamp = Date.now();
   return {
     id: overrides.id || timestamp,

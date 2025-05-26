@@ -1,10 +1,10 @@
 import express from 'express';
-import getAllUsersRoutes from '';
-import getUserRoutes from '';
-import updateUserRoutes from '';
-import deleteUserRoutes from '';
-import updatePasswordRoutes from '';
-import resetPasswordRoutes from '';
+import getAllUsersRoutes from './get-all-users/route.js';
+import getUserRoutes from './get-user/route.js';
+import updateUserRoutes from './update-user/route.js';
+import deleteUserRoutes from './delete-user/route.js';
+import updatePasswordRoutes from './update-password/route.js';
+import resetPasswordRoutes from './reset-password/route.js';
 
 const router = express.Router();
 
