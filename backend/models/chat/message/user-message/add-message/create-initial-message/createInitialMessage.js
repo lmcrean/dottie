@@ -1,6 +1,6 @@
 import logger from '../../../../../../services/logger.js';
-import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
-import { generateMessageId } from '../shared/utils/responseBuilders.js';
+import DbService from '../../../../../../services/dbService.js';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Create and send the initial message for a new conversation
@@ -14,17 +14,17 @@ export async function createInitialMessage(conversationId, userId) {
     const messageText = "Hi, could you look at my assessment results and provide some guidance? I'd like to understand what my results mean and get recommendations for my menstrual health.";
     
     // Create the initial user message
-    const userMessageId = generateMessageId();
+    const userMessageId = uuidv4();
     const userMessage = {
       id: userMessageId,
+      conversation_id: conversationId,
       role: 'user',
       content: messageText,
-      user_id: userId,
       created_at: new Date().toISOString()
     };
     
     // Insert user message into database
-    await ChatDatabaseOperations.insertMessage(conversationId, userMessage);
+    await DbService.create('chat_messages', userMessage);
 
     logger.info(`Initial message created for conversation ${conversationId}`);
     
