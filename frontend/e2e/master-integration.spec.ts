@@ -4,11 +4,11 @@ import path from 'path';
 import process from 'process';
 
 // Import all test modules
-import { runLandingTests } from './runners/landing/index.js';
-import { runAuthTests } from './runners/auth/index.js';
-import { runUserTests } from './runners/user/index.js';
-import { runAssessmentTests, cleanupAssessments } from './runners/assessment/index.js';
-import { runChatTests, cleanupChatResources } from './runners/chat/index.js';
+import { runLandingTests } from './runners/landing/index.ts';
+import { runAuthTests } from './runners/auth/index.ts';
+import { runUserTests } from './runners/user/index.ts';
+import { runAssessmentTests, cleanupAssessments } from './runners/assessment/index.ts';
+import { runChatTests, cleanupChatResources } from './runners/chat/index.ts';
 
 /**
  * Master Integration Test for Frontend Pages

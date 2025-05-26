@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import ResultsPage from '../../../../detail/page';
+import ResultsPage from '../../../page';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 
 // Mock sessionStorage
@@ -65,8 +65,8 @@ describe('Results Page Integration Test', () => {
     vi.resetAllMocks();
     
     // Set up session storage mock to return values mimicking real usage
-    mockSessionStorage.getItem.mockImplementation((key) => {
-      const mockData = {
+    mockSessionStorage.getItem.mockImplementation((key: string) => {
+      const mockData: Record<string, string> = {
         'age': JSON.stringify('18-24'),
         'cycleLength': JSON.stringify('26-30'),
         'periodDuration': JSON.stringify('4-5'),
@@ -106,10 +106,10 @@ describe('Results Page Integration Test', () => {
 
   it('should handle missing age data gracefully', async () => {
     // Update mock to return null for age
-    mockSessionStorage.getItem.mockImplementation((key) => {
+    mockSessionStorage.getItem.mockImplementation((key: string) => {
       if (key === 'age') return null;
       
-      const mockData = {
+      const mockData: Record<string, string> = {
         'cycleLength': JSON.stringify('26-30'),
         'periodDuration': JSON.stringify('4-5'),
         'flowHeaviness': JSON.stringify('moderate'),

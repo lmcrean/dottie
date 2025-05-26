@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AgeRange } from '../../../../detail/components/results/results-details/AgeRange';
+import { AgeRange } from '../../../results-details/AgeRange';
 import * as useAssessmentDataModule from '@/src/pages/assessment/steps/context/hooks/useAssessmentData';
 import * as useAssessmentResultModule from '@/src/pages/assessment/steps/context/hooks/use-assessment-result';
 
@@ -60,13 +60,17 @@ describe('AgeRange component', () => {
     it('should receive the correct age from the assessment context chain', () => {
       // Mock the useAssessmentResult hook
       const mockResult = {
-        age: '18-24',
-        cycle_length: '26-30',
-        period_duration: '4-5',
-        flow_heaviness: 'moderate',
-        pain_level: 'mild',
+        age: '18-24' as const,
+        cycle_length: '26-30' as const,
+        period_duration: '4-5' as const,
+        flow_heaviness: 'moderate' as const,
+        pain_level: 'mild' as const,
         physical_symptoms: [],
-        emotional_symptoms: []
+        emotional_symptoms: [],
+        pattern: 'regular' as const,
+        other_symptoms: '',
+        created_at: new Date().toISOString(),
+        recommendations: []
       };
       
       vi.mocked(useAssessmentResultModule.useAssessmentResult).mockReturnValue({
@@ -79,7 +83,7 @@ describe('AgeRange component', () => {
       vi.mocked(useAssessmentDataModule.useAssessmentData).mockReturnValue({
         pattern: 'regular',
         age: '18-24', // This is what should be passed to AgeRange
-        cycleLength: '26-30',
+        cycle_length: '26-30',
         periodDuration: '4-5',
         flowLevel: 'moderate',
         painLevel: 'mild',
@@ -112,7 +116,7 @@ describe('AgeRange component', () => {
       vi.mocked(useAssessmentDataModule.useAssessmentData).mockReturnValue({
         pattern: 'regular',
         age: '', // Empty age should trigger "Not specified"
-        cycleLength: '26-30',
+        cycle_length: '26-30',
         periodDuration: '4-5',
         flowLevel: 'moderate',
         painLevel: 'mild',

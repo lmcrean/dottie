@@ -3,15 +3,33 @@
  * Coordinates user registration and login tests
  */
 
+import { Page } from '@playwright/test';
 import { signUpTestUser } from './sign-up.spec.js';
 import { signInUser } from './sign-in.spec.js';
 
-export async function runAuthTests(page, testState) {
+interface TestState {
+  userId: string | null;
+  username: string;
+  email: string;
+  password: string;
+  authToken: string | null;
+  assessmentIds: string[];
+  conversationId: string | null;
+  screenshotCount: number;
+}
+
+interface AuthResult {
+  userId: string;
+  authToken: string;
+  success: boolean;
+}
+
+export async function runAuthTests(page: Page, testState: TestState): Promise<AuthResult> {
   // Use credentials from test state
-  const { username, email, password } = testState;
+  const { email, password } = testState;
 
   // Create new user account
-  const signUpResult = await signUpTestUser(page);
+  await signUpTestUser(page);
 
   // Sign in with the created user
   const signInSuccess = await signInUser(page, email, password);
