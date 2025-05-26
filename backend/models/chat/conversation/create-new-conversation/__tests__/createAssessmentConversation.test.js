@@ -11,7 +11,7 @@ import { runAssessmentIntegrationTests } from './runners/assessmentIntegration.j
 // Mock all dependencies
 vi.mock('@/services/dbService.js');
 vi.mock('@/services/logger.js');
-vi.mock('../../database/chatCreate.js', () => ({
+vi.mock('../../../chat-detail/shared/database/chatCreate.js', () => ({
   createConversation: vi.fn()
 }));
 vi.mock('../../../message/user-message/add-message/create-initial-message/createInitialMessage.js', () => ({

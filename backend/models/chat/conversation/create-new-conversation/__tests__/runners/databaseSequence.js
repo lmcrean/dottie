@@ -11,7 +11,7 @@ export const runDatabaseSequenceTests = (mockData) => {
     it('should execute operations in correct order', async () => {
       const callOrder = [];
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockImplementation(async (userId, assessmentId) => {
         callOrder.push('createConversation');
         return mockConversationId;
@@ -30,7 +30,7 @@ export const runDatabaseSequenceTests = (mockData) => {
     });
 
     it('should pass correct parameters between operations', async () => {
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
@@ -48,7 +48,7 @@ export const runDatabaseSequenceTests = (mockData) => {
     it('should stop execution if conversation creation fails', async () => {
       const error = new Error('Conversation creation failed');
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockRejectedValue(error);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
@@ -65,7 +65,7 @@ export const runDatabaseSequenceTests = (mockData) => {
       let conversationCreated = false;
       let messageCreated = false;
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockImplementation(async () => {
         await new Promise(resolve => setTimeout(resolve, 10));
         conversationCreated = true;

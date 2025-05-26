@@ -12,7 +12,7 @@ export const runErrorHandlingTests = (mockData) => {
     it('should handle conversation creation failure', async () => {
       const error = new Error('Database connection failed');
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockRejectedValue(error);
       
       await expect(createAssessmentConversation(mockUserId, mockAssessmentId))
@@ -27,7 +27,7 @@ export const runErrorHandlingTests = (mockData) => {
     it('should handle initial message creation failure', async () => {
       const error = new Error('Message creation failed');
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
@@ -65,7 +65,7 @@ export const runErrorHandlingTests = (mockData) => {
     it('should propagate unexpected errors', async () => {
       const unexpectedError = new Error('Unexpected system error');
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockRejectedValue(unexpectedError);
       
       await expect(createAssessmentConversation(mockUserId, mockAssessmentId))

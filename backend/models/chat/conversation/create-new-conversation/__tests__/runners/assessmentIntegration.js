@@ -21,7 +21,7 @@ export const runAssessmentIntegrationTests = (mockData) => {
         
         DbService.findById.mockResolvedValue(assessmentWithPattern);
         
-        const { createConversation } = await import('../../../database/chatCreate.js');
+        const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
         createConversation.mockResolvedValue(`conv-${pattern}`);
         
         const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
@@ -56,7 +56,7 @@ export const runAssessmentIntegrationTests = (mockData) => {
       
       DbService.findById.mockResolvedValue(complexAssessment);
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
@@ -81,7 +81,7 @@ export const runAssessmentIntegrationTests = (mockData) => {
       
       DbService.findById.mockResolvedValue(minimalAssessment);
       
-      const { createConversation } = await import('../../../database/chatCreate.js');
+      const { createConversation } = await import('../../../../chat-detail/shared/database/chatCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
       
       const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
