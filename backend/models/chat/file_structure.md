@@ -2,22 +2,38 @@ backend/models/chat/chat-detail/
 
 ├── shared/
 │   ├── database/
-│   │   └── operations/
-│   │       ├── chatCreate.js               # 75 lines - All create logic inline
-│   │       ├── insertMessage.js            # 93 lines - Prep + insert logic  
-│   │       ├── updateMessage.js            # 128 lines - Update + cleanup logic
-│   │       ├── getConversationWithMessages.js # 156 lines - Formatting logic inline
-│   │       └── index.js                    # 11 lines - Exports all operations
+│   │   ├── chatCreate.js                   # 38 lines - Chat creation logic
+│   │   └── chatOperations.js               # 266 lines - Database operations
+│   ├── create-conversation/
+│   │   ├── createFlow.js                   # 108 lines - Conversation creation flow
+│   │   └── assessment/
+│   │       ├── assessmentSetupContext.js   # 56 lines - Assessment context setup
+│   │       ├── assessmentValidator.js      # 130 lines - Assessment validation logic
+│   │       └── assessmentGetPattern.js     # 27 lines - Pattern retrieval
+│   ├── utils/
+│   │   └── configHelper.js                 # 211 lines - Configuration utilities
 │   └── alerts/
-│       └── errorHandler.js                 # 80 lines - Centralized error handling
+│       └── errorHandler.js                 # 96 lines - Centralized error handling
+├── chatbot-message/
+│   ├── ResponseCoordinator.js              # 266 lines - Response coordination logic
+│   └── services/
+│       ├── serviceDetector.js              # 228 lines - Service detection logic
+│       ├── generators/
+│       │   └── BaseGenerator.js            # 183 lines - Base generator class
+│       ├── mock/
+│       │   └── generators/
+│       │       ├── followUpMock.js         # 207 lines - Mock follow-up responses
+│       │       └── initialMock.js          # 112 lines - Mock initial responses
+│       └── ai/
+│           └── generators/
+│               ├── followUpAI.js           # 247 lines - AI follow-up responses
+│               └── initialAI.js            # 106 lines - AI initial responses
 ├── read-chat-detail/
-│   ├── getConversation.js                  # 91 lines - Simplified read interface
-│   └── index.js                            # 11 lines - Module exports
-├── user-message/
-│   └── validation/
-│       ├── messageFormatters.js            # 77 lines - User message formatting
-│       ├── messageValidation.js            # 73 lines - Content & length validation
-│       ├── contextValidation.js            # 68 lines - ID & context validation
-│       ├── userMessageValidation.js        # 42 lines - Main validation coordinator
-│       └── validationHelper.js             # 37 lines - Compatibility exports
-└── index.js                                # 7 lines - Main module exports
+│   ├── getWithContext.js                   # 248 lines - Read with context logic
+│   └── getConversation.js                  # 91 lines - Simplified read interface
+├── delete-chat-detail/
+│   └── chatDelete.js                       # 51 lines - Chat deletion logic
+├── __tests__/
+│   ├── mockResponseService.test.js         # 129 lines - Mock service tests
+│   └── aiResponseService.test.js           # 161 lines - AI service tests
+└── README.md                               # 116 lines - Documentation

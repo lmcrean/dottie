@@ -1,7 +1,7 @@
 import logger from '../../../../../services/logger.js';
 import { createConversation } from '../database/chatCreate.js';
 import { setupAssessmentContext, validateAssessmentContext } from './assessment/assessmentSetupContext.js';
-import { ResponseCoordinator } from '../../chatbot-message/ResponseCoordinator.js';
+import { ResponseCoordinator } from '../../message/chatbot-message/ResponseCoordinator.js';
 
 /**
  * Complete conversation creation flow

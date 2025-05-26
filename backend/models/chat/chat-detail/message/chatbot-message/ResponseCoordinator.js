@@ -1,13 +1,13 @@
-import logger from '../../../../services/logger.js';
-import { ChatDatabaseOperations } from '../shared/database/chatOperations.js';
-import { formatUserMessage } from '../user-message/validation/messageFormatters.js';
+import logger from '../../../../../services/logger.js';
+import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
+import { formatUserMessage } from '../../user-message/validation/messageFormatters.js';
 import { generateMessageId } from '../shared/utils/responseBuilders.js';
 import { detectService } from './services/serviceDetector.js';
 import { generateFollowUpResponse as generateFollowUpAI } from './services/ai/generators/followUpAI.js';
 import { generateFollowUpResponse as generateFollowUpMock } from './services/mock/generators/followUpMock.js';
 import { generateInitialResponse as generateInitialAI } from './services/ai/generators/initialAI.js';
 import { generateInitialResponse as generateInitialMock } from './services/mock/generators/initialMock.js';
-import { getConversationHistory } from '../read-chat-detail/getWithContext.js';
+import { getConversationHistory } from '../../read-chat-detail/getWithContext.js';
 
 /**
  * Consolidated Response Coordinator

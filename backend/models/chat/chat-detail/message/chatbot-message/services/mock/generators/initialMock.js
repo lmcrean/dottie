@@ -1,4 +1,4 @@
-import logger from '../../../../../../../services/logger.js';
+import logger from '../../../../../../../../services/logger.js';
 import { buildMockResponse } from '../../../../shared/utils/responseBuilders.js';
 
 /**
