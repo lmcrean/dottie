@@ -2,13 +2,14 @@
 
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import { TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common.js';
 
 /**
  * Generate test user data
- * @param {Object} overrides - Override default properties
+ * @param {TestUserOverrides} overrides - Override default properties
  * @returns {Object} Test user object
  */
-export function generateUser(overrides = {}) {
+export function generateUser(overrides: TestUserOverrides = {}) {
   const timestamp = Date.now();
   const id = overrides.id || `test-${timestamp}`;
   return {
@@ -24,10 +25,10 @@ export function generateUser(overrides = {}) {
 
 /**
  * Generate test period log data
- * @param {Object} overrides - Override default properties
+ * @param {TestCycleOverrides} overrides - Override default properties
  * @returns {Object} Test period log
  */
-export function generatePeriodLog(overrides = {}) {
+export function generatePeriodLog(overrides: TestCycleOverrides = {}) {
   const timestamp = Date.now();
   return {
     id: overrides.id || timestamp,
@@ -42,10 +43,10 @@ export function generatePeriodLog(overrides = {}) {
 
 /**
  * Generate test symptom data
- * @param {Object} overrides - Override default properties
+ * @param {TestSymptomOverrides} overrides - Override default properties
  * @returns {Object} Test symptom
  */
-export function generateSymptom(overrides = {}) {
+export function generateSymptom(overrides: TestSymptomOverrides = {}) {
   const timestamp = Date.now();
   return {
     id: overrides.id || timestamp,

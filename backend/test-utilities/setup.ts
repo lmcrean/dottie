@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import { resolveFromRoot } from '../paths.js';
 import { getApiUrl, getEnvironment, URLS } from './urls.js';
+import { MockResponse, TestRequestBody, TestOptions } from '../types/common.js';
 
 /**
  * Dynamically import the app from server.js
