@@ -2,89 +2,102 @@
 
 Write-Host "🔧 Fixing Empty Import Statements..." -ForegroundColor Green
 
-# Common import fixes based on file location patterns
-$importFixes = @{
-    # App imports
-    'import app from '''';' = 'import app from ''../../../server.js'';'
-    'import app from ''./app.js'';' = 'import app from ''../../../server.js'';'
-    
-    # User model imports
-    'import User from '''';' = 'import User from ''../../../models/user/User.js'';'
-    'from '''';' = 'from ''../../../models/user/User.js'';'
-    
-    # Database imports
-    'import { db } from '''';' = 'import { db } from ''../../db/index.js'';'
-    'import db from '''';' = 'import db from ''../../db/index.js'';'
-    
-    # DbService imports
-    'import { findById } from '''';' = 'import { findById } from ''../../services/db-service/findById.js'';'
-    'import { findBy } from '''';' = 'import { findBy } from ''../../services/db-service/findBy.js'';'
-    'import { create } from '''';' = 'import { create } from ''../../services/db-service/create.js'';'
-    'import { update } from '''';' = 'import { update } from ''../../services/db-service/update.js'';'
-    
-    # Test utilities
-    'import { setupTestClient, closeTestServer } from '''';' = 'import { setupTestClient, closeTestServer } from ''../../test-utilities/setup.js'';'
-    'import { resolveFromRoot } from '''';' = 'import { resolveFromRoot } from ''../paths.js'';'
-    
-    # Assessment imports
-    'import { updateAssessmentSchema } from '''';' = 'import { updateAssessmentSchema } from ''../../db/migrations/updateAssessmentSchema.js'';'
-    
-    # Types imports (for files looking for types)
-    'from ''../types/common'';' = 'from ''../../../../types/common.js'';'
-    'from ''../../types/common'';' = 'from ''../../../types/common.js'';'
-    'from ''../../../types/common'';' = 'from ''../../types/common.js'';'
-}
-
-# Files to process (get all TypeScript files)
+# Get all TypeScript files
 $files = Get-ChildItem -Recurse -Filter "*.ts" -Exclude "*.d.ts"
 
 $filesFixed = 0
 $totalFixes = 0
 
 foreach ($file in $files) {
-    $content = Get-Content $file.FullName -Raw -ErrorAction SilentlyContinue
-    
-    if ($content) {
-        $originalContent = $content
-        $fileFixed = $false
+    try {
+        $content = Get-Content $file.FullName -Raw -ErrorAction SilentlyContinue
         
-        # Apply each fix
-        foreach ($pattern in $importFixes.Keys) {
-            if ($content -match [regex]::Escape($pattern)) {
-                $content = $content -replace [regex]::Escape($pattern), $importFixes[$pattern]
+        if ($content) {
+            $originalContent = $content
+            $fileFixed = $false
+            
+            # Fix empty app imports
+            if ($content -match "import app from '';") {
+                $content = $content -replace "import app from '';", "import app from '../../../server.js';"
                 $fileFixed = $true
                 $totalFixes++
             }
-        }
-        
-        # Special handling for different file types and locations
-        if ($file.FullName -match "routes.*test") {
-            # Route test files need different app import
-            $content = $content -replace 'import app from '''';', 'import app from ''../../../../server.js'';'
-        }
-        
-        if ($file.FullName -match "models.*test") {
-            # Model test files 
-            $content = $content -replace 'import User from '''';', 'import User from ''../User.js'';'
-        }
-        
-        # Fix .ts extension imports (remove .ts for Node.js compatibility)
-        $content = $content -replace 'from ''([^'']+)\.ts'';', 'from ''$1.js'';'
-        $content = $content -replace 'from "([^"]+)\.ts";', 'from "$1.js";'
-        
-        # Write back if changes were made
-        if ($content -ne $originalContent) {
-            Set-Content $file.FullName $content -NoNewline
-            if ($fileFixed) {
-                Write-Host "Fixed imports in: $($file.Name)" -ForegroundColor Yellow
-                $filesFixed++
+            
+            # Fix empty User imports
+            if ($content -match "import User from '';") {
+                $content = $content -replace "import User from '';", "import User from '../../../models/user/User.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix empty db imports with curly braces
+            if ($content -match "import \{ db \} from '';") {
+                $content = $content -replace "import \{ db \} from '';", "import { db } from '../../db/index.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix empty db default imports
+            if ($content -match "import db from '';") {
+                $content = $content -replace "import db from '';", "import db from '../../db/index.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix empty findById imports
+            if ($content -match "import \{ findById \} from '';") {
+                $content = $content -replace "import \{ findById \} from '';", "import { findById } from '../../services/db-service/findById.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix empty test utilities imports
+            if ($content -match "import \{ setupTestClient, closeTestServer \} from '';") {
+                $content = $content -replace "import \{ setupTestClient, closeTestServer \} from '';", "import { setupTestClient, closeTestServer } from '../../test-utilities/setup.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix empty resolveFromRoot imports
+            if ($content -match "import \{ resolveFromRoot \} from '';") {
+                $content = $content -replace "import \{ resolveFromRoot \} from '';", "import { resolveFromRoot } from '../paths.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix empty updateAssessmentSchema imports
+            if ($content -match "import \{ updateAssessmentSchema \} from '';") {
+                $content = $content -replace "import \{ updateAssessmentSchema \} from '';", "import { updateAssessmentSchema } from '../../db/migrations/updateAssessmentSchema.js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Fix .ts extension imports (replace .ts with .js)
+            if ($content -match "from '[^']*\.ts';") {
+                $content = $content -replace "\.ts';", ".js';"
+                $fileFixed = $true
+                $totalFixes++
+            }
+            
+            # Write back if changes were made
+            if ($content -ne $originalContent) {
+                Set-Content $file.FullName $content -NoNewline
+                if ($fileFixed) {
+                    Write-Host "Fixed imports in: $($file.Name)" -ForegroundColor Yellow
+                    $filesFixed++
+                }
             }
         }
     }
+    catch {
+        Write-Host "Error processing $($file.Name): $($_.Exception.Message)" -ForegroundColor Red
+    }
 }
 
-Write-Host "`n✅ Import Fix Summary:" -ForegroundColor Green
+Write-Host ""
+Write-Host "✅ Import Fix Summary:" -ForegroundColor Green
 Write-Host "Files processed: $($files.Count)"
-Write-Host "Files with fixes: $filesFixed"
+Write-Host "Files with fixes: $filesFixed" 
 Write-Host "Total import fixes applied: $totalFixes"
-Write-Host "`n🎯 Run 'npx tsc --noEmit' to check progress!" -ForegroundColor Cyan 
+Write-Host ""
+Write-Host "🎯 Run 'npx tsc --noEmit' to check progress!" -ForegroundColor Cyan 
