@@ -1,6 +1,6 @@
 import logger from '../../../../services/logger.js';
 import DbService from '../../../../services/dbService.js';
-import { getConversationHistory, getConversationSummary } from './getConversation.js';
+import { getConversationHistory, getConversationSummary } from './chatOperations.js';
 import { detectService } from '../chatbot-message/services/serviceDetector.js';
 import { getAssessmentPattern } from '../shared/assessment/assessmentGetPattern.js';
 

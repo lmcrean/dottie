@@ -3,6 +3,11 @@ import DbService from '../../../../services/dbService.js';
 import Chat from '../../read-chat-list/chat.js';
 
 /**
+ * Core conversation retrieval and operations
+ * Handles basic conversation access, pagination, and statistics
+ */
+
+/**
  * Get conversation with all messages
  * @param {string} conversationId - Conversation ID
  * @param {string} [userId] - User ID for ownership verification
