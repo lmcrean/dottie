@@ -1,6 +1,6 @@
 import express from 'express';
 import { updatePassword } from '';
-import { authenticateToken } from '';
+import { authenticateToken } from '../auth/middleware/index.js';
 import { validateUserAccess } from '';
 import { validatePasswordUpdate } from '';
 

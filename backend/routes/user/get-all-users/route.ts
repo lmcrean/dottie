@@ -1,6 +1,6 @@
 import express from 'express';
 import { getAllUsers } from '';
-import { authenticateToken } from '';
+import { authenticateToken } from '../auth/middleware/index.js';
 
 const router = express.Router();
 

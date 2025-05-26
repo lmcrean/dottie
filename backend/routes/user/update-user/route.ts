@@ -1,7 +1,7 @@
 import express from 'express';
 import { updateUser } from '';
-import { authenticateToken } from '';
-import { validateUserUpdate } from '';
+import { authenticateToken } from '../auth/middleware/index.js';
+import { validateUserUpdate } from '../auth/middleware/validators/userValidators.js';
 
 const router = express.Router();
 

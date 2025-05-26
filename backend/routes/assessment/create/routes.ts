@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from '';
+import { authenticateToken } from '../auth/middleware/index.js';
 import { createAssessment } from '';
 
 const router = express.Router();

@@ -5,7 +5,7 @@
  */
 
 import db from '../../db/index.js';
-import { addAssessmentFieldsToConversations } from '';
+import { addAssessmentFieldsToConversations } from '../db/migrations/addAssessmentFields.js';
 
 async function runMigration() {
   try {

@@ -4,7 +4,7 @@ import logoutRoutes from '';
 import signupRoutes from '';
 import refreshRoutes from '';
 import verifyRoutes from '';
-import userRoutes from '';
+import userRoutes from './routes/user/index.js';
 // Import other auth routes as needed
 // import resetPasswordRoutes from '';
 

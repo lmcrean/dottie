@@ -7,12 +7,12 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
 // Import route modules
-import assessmentRoutes from '';
-import userRoutes from '';
-import authRoutes from '';
-import setupRoutes from '';
-import chatRoutes from '';
-import routes from '';
+import assessmentRoutes from './routes/assessment/index.js';
+import userRoutes from './routes/user/index.js';
+import authRoutes from './routes/auth/index.js';
+import setupRoutes from './routes/setup/index.js';
+import chatRoutes from './routes/chat/index.js';
+import routes from './routes/index.js';
 
 // Load environment variables
 dotenv.config();

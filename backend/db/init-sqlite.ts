@@ -1,5 +1,5 @@
 import db from '../../db/index.js';
-import { createTables } from '';
+import { createTables } from '../db/init.js';
 
 /**
  * Initialize SQLite database with required tables

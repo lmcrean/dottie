@@ -1,4 +1,4 @@
-import { createTables } from '';
+import { createTables } from '../db/init.js';
 import db from '../../db/index.js';
 
 /**

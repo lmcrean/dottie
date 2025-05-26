@@ -1,5 +1,5 @@
-import { update } from '';
-import { findByIdWithJson } from '';
+import { update } from './update.js';
+import { findByIdWithJson } from './findByIdWithJson.js';
 
 /**
  * Update records with JSON fields
