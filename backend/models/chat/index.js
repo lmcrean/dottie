@@ -18,7 +18,7 @@ export { createConversation } from './chat-detail/shared/create-conversation/cha
 export { 
   setupAssessmentContext, 
   validateAssessmentContext 
-} from './chat-detail/shared/create-conversation/assessmentSetup.js';
+} from './chat-detail/shared/create-conversation/assessment/assessmentSetup.js';
 export { 
   createInitialMessage, 
   generateInitialResponse, 
@@ -72,7 +72,7 @@ export {
 // ===================================
 
 // Assessment helpers
-export { getAssessmentPattern } from './chat-detail/shared/assessment/assessmentHelper.js';
+export { getAssessmentPattern } from './chat-detail/shared/assessment/assessmentGetPattern.js';
 export { 
   validateAssessmentOwnership,
   validateAssessmentExists,

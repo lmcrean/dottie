@@ -1,6 +1,6 @@
 import logger from '../../../../../services/logger.js';
 import { createConversation } from './chatCreate.js';
-import { setupAssessmentContext, validateAssessmentContext } from './assessmentSetup.js';
+import { setupAssessmentContext, validateAssessmentContext } from './assessment/assessmentSetup.js';
 import { createInitialMessage, autoTriggerInitialConversation } from './initialMessage.js';
 
 /**

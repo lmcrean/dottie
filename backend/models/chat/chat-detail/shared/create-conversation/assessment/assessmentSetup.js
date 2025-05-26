@@ -1,5 +1,5 @@
-import logger from '../../../../../services/logger.js';
-import { getAssessmentPattern } from '../assessment/assessmentHelper.js';
+import logger from '../../../../../../services/logger.js';
+import { getAssessmentPattern } from '../assessment/assessmentGetPattern.js';
 import { validateAssessmentOwnership } from '../assessment/assessmentValidator.js';
 
 /**
