@@ -3,7 +3,7 @@ import logger from '../../services/logger.js';
 
 /**
  * Chat/Conversation Model
- * Simple data model representing conversation fields
+ * Pure data model representing conversation fields
  */
 export class Chat {
   constructor(data) {
@@ -30,30 +30,6 @@ export class Chat {
       updated_at: this.updated_at,
       deleted_at: this.deleted_at
     };
-  }
-
-  /**
-   * Check if conversation is deleted
-   * @returns {boolean}
-   */
-  isDeleted() {
-    return this.deleted_at !== null;
-  }
-
-  /**
-   * Check if conversation has assessment
-   * @returns {boolean}
-   */
-  hasAssessment() {
-    return this.assessment_id !== null;
-  }
-
-  /**
-   * Get display pattern or fallback
-   * @returns {string}
-   */
-  getDisplayPattern() {
-    return this.assessment_pattern || 'General Chat';
   }
 }
 
