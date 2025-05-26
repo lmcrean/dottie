@@ -2,15 +2,15 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Dottie is a user-friendly application designed to help individuals understand their menstrual health better. Through a series of simple questions, Dottie collects information about your menstrual cycle and provides personalized analysis and recommendations.",
-  "main": "server.js",
+  "main": "server.ts",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "npm i && node scripts/setup-env.js && nodemon server.js",
-    "dev:e2e": "npm i && node scripts/setup-env.js && cross-env PORT=5005 nodemon server.js --mode e2e",
+    "dev": "npm i && node scripts/setup-env.ts && nodemon server.js",
+    "dev:e2e": "npm i && node scripts/setup-env.ts && cross-env PORT=5005 nodemon server.js --mode e2e",
     "db:init": "node db/init.js",
     "db:init:sqlite": "node db/init-sqlite.js",
     "db:reset": "node scripts/reset-db.js",
@@ -67,10 +67,22 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.21",
+    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "@vitest/ui": "^3.1.4",
     "axios": "^1.9.0",
     "cross-env": "^7.0.3",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
     "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
     "supertest": "^7.1.0",
-    "vitest": "^3.1.2"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
   }
 }
