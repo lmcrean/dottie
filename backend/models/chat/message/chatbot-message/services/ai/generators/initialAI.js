@@ -4,17 +4,20 @@ import { buildAIResponse, buildFallbackResponse } from '../../../../shared/utils
 /**
  * Generate initial AI response for new conversations
  * @param {string} messageText - User's initial message
- * @param {string} [assessmentPattern] - Assessment pattern for context
+ * @param {Object} assessmentData - Full assessment data (required)
  * @returns {Promise<Object>} - AI response object
  */
-export const generateInitialResponse = async (messageText, assessmentPattern = null) => {
+export const generateInitialResponse = async (messageText, assessmentData) => {
+  if (!assessmentData || typeof assessmentData !== 'object') {
+    throw new Error('Assessment data is required - system error if missing');
+  }
   try {
     logger.info('Generating initial AI response');
 
     // TODO: Implement actual AI integration with Gemini
     // For now, return a structured response that mimics AI behavior
     
-    const systemPrompt = buildSystemPrompt(assessmentPattern);
+    const systemPrompt = buildSystemPrompt(assessmentData);
     const userPrompt = `Initial message: ${messageText}`;
 
     // Placeholder: This would be replaced with actual AI API call
@@ -22,7 +25,8 @@ export const generateInitialResponse = async (messageText, assessmentPattern = n
     
     const metadata = {
       model: 'gemini-pro',
-      assessment_pattern: assessmentPattern,
+      assessment_pattern: assessmentData.pattern,
+      assessment_data: assessmentData,
       is_initial: true,
       system_prompt_used: true,
       generated_at: new Date().toISOString()
@@ -33,28 +37,33 @@ export const generateInitialResponse = async (messageText, assessmentPattern = n
   } catch (error) {
     logger.error('Error generating initial AI response:', error);
     
-    // Fallback to mock-style response
-    const fallbackContent = generateFallbackInitialResponse(messageText, assessmentPattern);
+    // Fallback to mock-style response with assessment context
+    const fallbackContent = generateFallbackInitialResponse(messageText, assessmentData);
     return buildFallbackResponse(fallbackContent);
   }
 };
 
 /**
  * Build system prompt for initial conversations
- * @param {string} [assessmentPattern] - Assessment pattern
+ * @param {Object} assessmentData - Full assessment data
  * @returns {string} - System prompt
  */
-const buildSystemPrompt = (assessmentPattern = null) => {
-  let basePrompt = `You are a helpful AI conversation partner specializing in personal development and self-discovery. 
-You should be empathetic, insightful, and encourage deeper exploration of topics.
-Always ask follow-up questions to keep the conversation engaging.`;
+const buildSystemPrompt = (assessmentData) => {
+  const { pattern, cycle_length, period_duration, pain_level, physical_symptoms, emotional_symptoms } = assessmentData;
+  
+  return `You are a helpful AI conversation partner specializing in menstrual health and wellness. 
+You should be empathetic, insightful, and encourage deeper exploration of health topics.
+Always ask follow-up questions to keep the conversation engaging.
 
-  if (assessmentPattern) {
-    basePrompt += `\n\nThe user has completed a ${assessmentPattern} assessment and may want to discuss their results. 
-Help them understand their results and explore what they mean for their personal and professional development.`;
-  }
+The user has completed a menstrual health assessment with the following results:
+- Pattern: ${pattern}
+- Cycle length: ${cycle_length} days
+- Period duration: ${period_duration} days  
+- Pain level: ${pain_level}/10
+- Physical symptoms: ${physical_symptoms?.join(', ') || 'none reported'}
+- Emotional symptoms: ${emotional_symptoms?.join(', ') || 'none reported'}
 
-  return basePrompt;
+Help them understand their results, provide appropriate guidance, and explore what these patterns mean for their health and wellbeing.`;
 };
 
 /**
@@ -94,13 +103,10 @@ const callGeminiAPI = async (systemPrompt, userPrompt) => {
 /**
  * Generate fallback initial response when AI fails
  * @param {string} messageText - User message
- * @param {string} [assessmentPattern] - Assessment pattern
+ * @param {Object} assessmentData - Assessment data
  * @returns {string} - Fallback response content
  */
-const generateFallbackInitialResponse = (messageText, assessmentPattern) => {
-  if (assessmentPattern) {
-    return `Hello! I see you'd like to discuss your ${assessmentPattern} assessment. I'm here to help you understand your results and explore what they mean for you. What specific aspects would you like to dive into?`;
-  }
-  
-  return "Hello! I'm here to have a meaningful conversation with you. What's on your mind today, and how can I help you explore it?";
+const generateFallbackInitialResponse = (messageText, assessmentData) => {
+  const { pattern, pain_level, cycle_length } = assessmentData;
+  return `Hello! I see you've shared your menstrual health assessment results showing a ${pattern} pattern. With a ${pain_level}/10 pain level and ${cycle_length}-day cycles, there's definitely valuable information we can explore together. What aspects of your results would you like to discuss first?`;
 }; 
