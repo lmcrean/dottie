@@ -1,4 +1,4 @@
-import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from '../types/common';
+import { TestRequestBody, TestOptions, MockResponse, TestUserOverrides, TestCycleOverrides, TestSymptomOverrides, TestAssessmentOverrides } from './types/common.js';
 import { describe, it, expect } from 'vitest';
 
 describe('Simple Test', () => {
