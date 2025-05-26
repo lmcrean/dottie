@@ -3,7 +3,7 @@ import logger from '../../services/logger.js';
 
 /**
  * Chat/Conversation Model
- * Handles the database schema and basic operations for conversations
+ * Simple data model representing conversation fields
  */
 export class Chat {
   constructor(data) {
@@ -17,100 +17,43 @@ export class Chat {
   }
 
   /**
-   * Find conversation by ID
-   * @param {string} conversationId 
-   * @returns {Promise<Chat|null>}
+   * Convert to plain object
+   * @returns {Object} - Plain object representation
    */
-  static async findById(conversationId) {
-    try {
-      const conversation = await DbService.getById('conversations', conversationId);
-      return conversation ? new Chat(conversation) : null;
-    } catch (error) {
-      logger.error('Error finding conversation by ID:', error);
-      throw error;
-    }
+  toJSON() {
+    return {
+      id: this.id,
+      user_id: this.user_id,
+      assessment_id: this.assessment_id,
+      assessment_pattern: this.assessment_pattern,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      deleted_at: this.deleted_at
+    };
   }
 
   /**
-   * Find conversations by user ID
-   * @param {string} userId 
-   * @returns {Promise<Chat[]>}
+   * Check if conversation is deleted
+   * @returns {boolean}
    */
-  static async findByUserId(userId) {
-    try {
-      const conversations = await DbService.getWhere('conversations', { user_id: userId });
-      return conversations.map(conv => new Chat(conv));
-    } catch (error) {
-      logger.error('Error finding conversations by user ID:', error);
-      throw error;
-    }
+  isDeleted() {
+    return this.deleted_at !== null;
   }
 
   /**
-   * Create new conversation
-   * @param {Object} data - Conversation data
-   * @returns {Promise<Chat>}
+   * Check if conversation has assessment
+   * @returns {boolean}
    */
-  static async create(data) {
-    try {
-      const conversation = await DbService.create('conversations', data);
-      return new Chat(conversation);
-    } catch (error) {
-      logger.error('Error creating conversation:', error);
-      throw error;
-    }
+  hasAssessment() {
+    return this.assessment_id !== null;
   }
 
   /**
-   * Update conversation
-   * @param {string} conversationId 
-   * @param {Object} data 
-   * @returns {Promise<Chat>}
+   * Get display pattern or fallback
+   * @returns {string}
    */
-  static async update(conversationId, data) {
-    try {
-      const updated = await DbService.update('conversations', conversationId, {
-        ...data,
-        updated_at: new Date().toISOString()
-      });
-      return new Chat(updated);
-    } catch (error) {
-      logger.error('Error updating conversation:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Delete conversation (soft delete)
-   * @param {string} conversationId 
-   * @returns {Promise<boolean>}
-   */
-  static async delete(conversationId) {
-    try {
-      await DbService.update('conversations', conversationId, {
-        deleted_at: new Date().toISOString()
-      });
-      return true;
-    } catch (error) {
-      logger.error('Error deleting conversation:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Check if user owns conversation
-   * @param {string} conversationId 
-   * @param {string} userId 
-   * @returns {Promise<boolean>}
-   */
-  static async isOwner(conversationId, userId) {
-    try {
-      const conversation = await this.findById(conversationId);
-      return conversation && conversation.user_id === userId;
-    } catch (error) {
-      logger.error('Error checking conversation ownership:', error);
-      return false;
-    }
+  getDisplayPattern() {
+    return this.assessment_pattern || 'General Chat';
   }
 }
 
