@@ -21,19 +21,6 @@ beforeAll(async () => {
   testUserId = `test-user-${Date.now()}`;
   testToken = createMockToken(testUserId);
   
-  // Create test user in database for authentication
-  try {
-    await db('users').insert({
-      id: testUserId,
-      username: `testuser_${Date.now()}`,
-      email: `test_${Date.now()}@example.com`,
-      password_hash: 'test-hash',
-      created_at: new Date().toISOString()
-    }, 'id');
-
-  } catch (error) {
-    console.error('Failed to create test user:', error);
-  }
 }, 15000);
 
 // Close server after tests
