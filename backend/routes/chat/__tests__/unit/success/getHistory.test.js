@@ -8,7 +8,7 @@ vi.mock('../../../../../services/logger', () => ({
   }
 }));
 
-vi.mock('../../../../../models/chat/chat.js', () => ({
+vi.mock('../../../../../models/chat/index.js', () => ({
   getUserConversations: vi.fn().mockResolvedValue([
     {
       id: 'conversation-1',
