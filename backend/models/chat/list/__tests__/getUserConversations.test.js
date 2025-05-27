@@ -173,7 +173,7 @@ describe('getUserConversations', () => {
       // Act & Assert
       await expect(getUserConversations(mockUserId)).rejects.toThrow('Database connection failed');
       
-      expect(logger.error).toHaveBeenCalledWith('Error getting user conversations:', mockError);
+      expect(logger.error).toHaveBeenCalledWith('[getUserConversations] Error getting user conversations:', mockError);
     });
 
     it('should handle invalid user_id parameter', async () => {

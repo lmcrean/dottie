@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getConversation } from '../../conversation/read-conversation/getConversation.js';
-import { insertUserMessage } from '../../message/user-message/add-message/database/sendUserMessage.js';
+import { insertChatMessage } from '../../message/user-message/add-message/database/sendUserMessage.js';
 
 export function runConversationUpdateTests(mockData) {
   describe('Conversation Update Tests', () => {
@@ -24,9 +24,9 @@ export function runConversationUpdateTests(mockData) {
 
     it('should add user message to conversation', async () => {
       // Mock message insertion
-      insertUserMessage.mockResolvedValue(mockData.mockUserMessage);
+      insertChatMessage.mockResolvedValue(mockData.mockUserMessage);
 
-      const result = await insertUserMessage(
+      const result = await insertChatMessage(
         mockData.mockConversationId,
         mockData.mockUserMessage.content,
         mockData.mockUserId
@@ -36,7 +36,7 @@ export function runConversationUpdateTests(mockData) {
       expect(result.conversation_id).toBe(mockData.mockConversationId);
       expect(result.role).toBe('user');
       expect(result.content).toBe(mockData.mockUserMessage.content);
-      expect(insertUserMessage).toHaveBeenCalledWith(
+      expect(insertChatMessage).toHaveBeenCalledWith(
         mockData.mockConversationId,
         mockData.mockUserMessage.content,
         mockData.mockUserId
@@ -85,8 +85,8 @@ export function runConversationUpdateTests(mockData) {
       expect(initialResult.conversation.preview).toBeNull();
 
       // Add message (mocked)
-      insertUserMessage.mockResolvedValue(mockData.mockUserMessage);
-      await insertUserMessage(
+      insertChatMessage.mockResolvedValue(mockData.mockUserMessage);
+      await insertChatMessage(
         mockData.mockConversationId,
         mockData.mockUserMessage.content,
         mockData.mockUserId

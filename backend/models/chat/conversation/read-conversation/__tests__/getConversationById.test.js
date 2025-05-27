@@ -111,7 +111,7 @@ describe('getConversation - Read Conversation by ID', () => {
         'chat_messages',
         'conversation_id',
         mockData.conversationId,
-        ['content'],
+        [],
         { field: 'created_at', direction: 'ASC' }
       );
     });

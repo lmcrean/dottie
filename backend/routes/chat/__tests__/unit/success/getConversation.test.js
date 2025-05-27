@@ -8,17 +8,29 @@ vi.mock('../../../../../services/logger', () => ({
 }));
 
 vi.mock('../../../../../models/chat/index.js', () => ({
-  getConversation: vi.fn().mockImplementation((conversationId, userId) => {
+  getConversationForUser: vi.fn().mockImplementation((conversationId, userId) => {
     if (conversationId === 'valid-conversation-id' && userId === 'user-123') {
       return Promise.resolve({
-        id: 'valid-conversation-id',
+        success: true,
+        conversation: {
+          id: 'valid-conversation-id',
+          user_id: 'user-123',
+          assessment_id: 'assessment-1',
+          assessment_pattern: 'regular',
+          title: 'Test Conversation',
+          created_at: '2023-01-01T10:00:00.000Z',
+          updated_at: '2023-01-01T10:01:00.000Z'
+        },
         messages: [
           { role: 'user', content: 'Hello AI', createdAt: '2023-01-01T10:00:00.000Z' },
           { role: 'assistant', content: 'Hello User!', createdAt: '2023-01-01T10:01:00.000Z' }
         ]
       });
     }
-    return Promise.resolve(null);
+    return Promise.resolve({
+      success: false,
+      error: 'Conversation not found'
+    });
   })
 }));
 
@@ -53,6 +65,12 @@ describe('Get Conversation Controller', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       id: 'valid-conversation-id',
+      user_id: 'user-123',
+      assessment_id: 'assessment-1',
+      assessment_pattern: 'regular',
+      title: 'Test Conversation',
+      created_at: '2023-01-01T10:00:00.000Z',
+      updated_at: '2023-01-01T10:01:00.000Z',
       messages: [
         { role: 'user', content: 'Hello AI', createdAt: '2023-01-01T10:00:00.000Z' },
         { role: 'assistant', content: 'Hello User!', createdAt: '2023-01-01T10:01:00.000Z' }
