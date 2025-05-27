@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import Assessment from '../../../models/assessment/Assessment.js';
-import CleanAssessmentOperations from '../../../models/assessment/assessment-base/CleanAssessmentOperations.js';
+import RouteAssessment from '../../../models/assessment/services/RouteAssessment.js';
 
 // Mock the operations class
-vi.mock('../../../models/assessment/assessment-base/CleanAssessmentOperations.js');
+vi.mock('../../../models/assessment/services/RouteAssessment.js');
 
 describe('Assessment', () => {
   beforeEach(() => {
@@ -15,20 +15,20 @@ describe('Assessment', () => {
   });
 
   describe('findById', () => {
-    it('should delegate to CleanAssessmentOperations.findById', async () => {
+    it('should delegate to RouteAssessment.findById', async () => {
       const testId = 'test-assessment-123';
       const mockAssessment = { id: testId, user_id: 'test-user' };
 
-      CleanAssessmentOperations.findById.mockResolvedValue(mockAssessment);
+      RouteAssessment.findById.mockResolvedValue(mockAssessment);
 
       const result = await Assessment.findById(testId);
 
-      expect(CleanAssessmentOperations.findById).toHaveBeenCalledWith(testId);
+      expect(RouteAssessment.findById).toHaveBeenCalledWith(testId);
       expect(result).toEqual(mockAssessment);
     });
 
     it('should return null when assessment not found', async () => {
-      CleanAssessmentOperations.findById.mockResolvedValue(null);
+      RouteAssessment.findById.mockResolvedValue(null);
 
       const result = await Assessment.findById('non-existent');
 
@@ -37,75 +37,75 @@ describe('Assessment', () => {
   });
 
   describe('create', () => {
-    it('should delegate to CleanAssessmentOperations.create', async () => {
+    it('should delegate to RouteAssessment.create', async () => {
       const assessmentData = { age: 30, pattern: 'regular' };
       const userId = 'test-user-123';
       const mockCreated = { id: 'new-assessment', ...assessmentData, user_id: userId };
 
-      CleanAssessmentOperations.create.mockResolvedValue(mockCreated);
+      RouteAssessment.create.mockResolvedValue(mockCreated);
 
       const result = await Assessment.create(assessmentData, userId);
 
-      expect(CleanAssessmentOperations.create).toHaveBeenCalledWith(assessmentData, userId);
+      expect(RouteAssessment.create).toHaveBeenCalledWith(assessmentData, userId);
       expect(result).toEqual(mockCreated);
     });
   });
 
   describe('update', () => {
-    it('should delegate to CleanAssessmentOperations.update', async () => {
+    it('should delegate to RouteAssessment.update', async () => {
       const assessmentId = 'test-assessment-123';
       const updateData = { age: 31, pattern: 'irregular' };
       const mockUpdated = { id: assessmentId, ...updateData };
 
-      CleanAssessmentOperations.update.mockResolvedValue(mockUpdated);
+      RouteAssessment.update.mockResolvedValue(mockUpdated);
 
       const result = await Assessment.update(assessmentId, updateData);
 
-      expect(CleanAssessmentOperations.update).toHaveBeenCalledWith(assessmentId, updateData);
+      expect(RouteAssessment.update).toHaveBeenCalledWith(assessmentId, updateData);
       expect(result).toEqual(mockUpdated);
     });
   });
 
   describe('listByUser', () => {
-    it('should delegate to CleanAssessmentOperations.listByUser', async () => {
+    it('should delegate to RouteAssessment.listByUser', async () => {
       const userId = 'test-user-123';
       const mockAssessments = [
         { id: 'assessment-1', user_id: userId },
         { id: 'assessment-2', user_id: userId }
       ];
 
-      CleanAssessmentOperations.listByUser.mockResolvedValue(mockAssessments);
+      RouteAssessment.listByUser.mockResolvedValue(mockAssessments);
 
       const result = await Assessment.listByUser(userId);
 
-      expect(CleanAssessmentOperations.listByUser).toHaveBeenCalledWith(userId);
+      expect(RouteAssessment.listByUser).toHaveBeenCalledWith(userId);
       expect(result).toEqual(mockAssessments);
     });
   });
 
   describe('delete', () => {
-    it('should delegate to CleanAssessmentOperations.delete', async () => {
+    it('should delegate to RouteAssessment.delete', async () => {
       const assessmentId = 'test-assessment-123';
 
-      CleanAssessmentOperations.delete.mockResolvedValue(true);
+      RouteAssessment.delete.mockResolvedValue(true);
 
       const result = await Assessment.delete(assessmentId);
 
-      expect(CleanAssessmentOperations.delete).toHaveBeenCalledWith(assessmentId);
+      expect(RouteAssessment.delete).toHaveBeenCalledWith(assessmentId);
       expect(result).toBe(true);
     });
   });
 
   describe('validateOwnership', () => {
-    it('should delegate to CleanAssessmentOperations.validateOwnership', async () => {
+    it('should delegate to RouteAssessment.validateOwnership', async () => {
       const assessmentId = 'test-assessment-123';
       const userId = 'test-user-123';
 
-      CleanAssessmentOperations.validateOwnership.mockResolvedValue(true);
+      RouteAssessment.validateOwnership.mockResolvedValue(true);
 
       const result = await Assessment.validateOwnership(assessmentId, userId);
 
-      expect(CleanAssessmentOperations.validateOwnership).toHaveBeenCalledWith(assessmentId, userId);
+      expect(RouteAssessment.validateOwnership).toHaveBeenCalledWith(assessmentId, userId);
       expect(result).toBe(true);
     });
 
@@ -113,7 +113,7 @@ describe('Assessment', () => {
       const assessmentId = 'test-assessment-123';
       const userId = 'different-user';
 
-      CleanAssessmentOperations.validateOwnership.mockResolvedValue(false);
+      RouteAssessment.validateOwnership.mockResolvedValue(false);
 
       const result = await Assessment.validateOwnership(assessmentId, userId);
 

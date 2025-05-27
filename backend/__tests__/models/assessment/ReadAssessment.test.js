@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ReadAssessment from '../../../models/assessment/assessment-main/ReadAssessment.js';
+import ReadAssessment from '../../../models/assessment/services/ReadAssessment.js';
 import DbService from '../../../services/dbService.js';
-import TransformDbToApi from '../../../models/assessment/assessment-main/TransformDbToApi.js';
-import FormatDetector from '../../../models/assessment/assessment-base/FormatDetector.js';
+import TransformDbToApi from '../../../models/assessment/transformers/TransformDbToApi.js';
+import DetectAssessmentFormat from '../../../models/assessment/detectors/DetectAssessmentFormat.js';
 
 // Mock dependencies
 vi.mock('../../../services/dbService.js');
-vi.mock('../../../models/assessment/assessment-main/TransformDbToApi.js');
-vi.mock('../../../models/assessment/assessment-base/FormatDetector.js');
+vi.mock('../../../models/assessment/transformers/TransformDbToApi.js');
+vi.mock('../../../models/assessment/detectors/DetectAssessmentFormat.js');
 
 describe('ReadAssessment', () => {
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('ReadAssessment', () => {
       };
 
       DbService.findById.mockResolvedValue(dbAssessment);
-      FormatDetector.isCurrentFormat.mockReturnValue(true);
+      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(true);
       TransformDbToApi.transform.mockReturnValue(transformedAssessment);
 
       const result = await ReadAssessment.findById(testId);

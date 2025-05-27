@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import CreateAssessment from '../../../models/assessment/assessment-main/CreateAssessment.js';
+import CreateAssessment from '../../../models/assessment/services/CreateAssessment.js';
 import DbService from '../../../services/dbService.js';
-import TransformApiToDb from '../../../models/assessment/assessment-main/TransformApiToDb.js';
+import TransformApiToDb from '../../../models/assessment/transformers/TransformApiToDb.js';
 
 // Mock dependencies
 vi.mock('../../../services/dbService.js');
-vi.mock('../../../models/assessment/assessment-main/TransformApiToDb.js');
+vi.mock('../../../models/assessment/transformers/TransformApiToDb.js');
 vi.mock('uuid', () => ({
   v4: () => 'test-uuid-123'
 }));
