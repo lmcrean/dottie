@@ -23,30 +23,30 @@ export async function runAssessmentCreationWorkflow(request, expect, authToken, 
     const assessmentData = generateDefaultAssessment();
     console.log('✅ Generated assessment data');
     
-    // Step 2: Create the assessment
-    const createdAssessment = await createAssessment(request, assessmentData, authToken);
+    // Step 2: Create the assessment (request, token, userId, assessmentData)
+    const createdAssessmentId = await createAssessment(request, authToken, userId, assessmentData);
     console.log('✅ Assessment created successfully');
     
-    // Step 3: Get all assessments
+    // Step 3: Get all assessments (request, token)
     const allAssessments = await getAssessments(request, authToken);
     console.log('✅ Retrieved all assessments');
     
-    // Step 4: Get specific assessment by ID
-    const retrievedAssessment = await getAssessmentById(request, createdAssessment.id, authToken);
+    // Step 4: Get specific assessment by ID (request, token, assessmentId)
+    const retrievedAssessment = await getAssessmentById(request, authToken, createdAssessmentId);
     console.log('✅ Retrieved assessment by ID');
     
-    // Step 5: Update the assessment
+    // Step 5: Update the assessment (request, token, userId, assessmentId, updateData)
     const updateData = {
       title: 'Updated Assessment Title',
       description: 'Updated description for testing'
     };
-    const updatedAssessment = await updateAssessment(request, createdAssessment.id, updateData, authToken);
+    const updatedAssessment = await updateAssessment(request, authToken, userId, createdAssessmentId, updateData);
     console.log('✅ Assessment updated successfully');
     
     console.log('🎉 Assessment Creation Workflow completed successfully!');
     return {
-      firstAssessmentId: createdAssessment.id,
-      secondAssessmentId: createdAssessment.id // For now using same ID, test can create multiple if needed
+      firstAssessmentId: createdAssessmentId,
+      secondAssessmentId: createdAssessmentId // For now using same ID, test can create multiple if needed
     };
     
   } catch (error) {
@@ -63,15 +63,15 @@ export async function runCleanupWorkflow(request, expect, authToken, userId, fir
   console.log('🧹 Starting Cleanup Workflow...');
   
   try {
-    // Delete the first assessment
+    // Delete the first assessment (request, token, userId, assessmentId)
     if (firstAssessmentId) {
-      const deletionResult1 = await deleteAssessment(request, firstAssessmentId, authToken);
+      const deletionResult1 = await deleteAssessment(request, authToken, userId, firstAssessmentId);
       console.log('✅ First assessment deleted successfully');
     }
     
     // Delete the second assessment (if different)
     if (secondAssessmentId && secondAssessmentId !== firstAssessmentId) {
-      const deletionResult2 = await deleteAssessment(request, secondAssessmentId, authToken);
+      const deletionResult2 = await deleteAssessment(request, authToken, userId, secondAssessmentId);
       console.log('✅ Second assessment deleted successfully');
     }
     

@@ -26,14 +26,14 @@ export async function runAuthWorkflow(request, expect) {
     console.log('✅ User registered successfully');
     
     // Step 3: Login with the registered user
-    const loginResult = await loginUser(request, {
+    const authToken = await loginUser(request, {
       email: testUser.email,
       password: testUser.password
     });
     console.log('✅ User logged in successfully');
     
     // Step 4: Verify the token
-    const tokenVerification = await verifyToken(request, loginResult.token);
+    const tokenVerification = await verifyToken(request, authToken);
     console.log('✅ Token verified successfully');
     
     console.log('🎉 Auth Workflow completed successfully!');
@@ -41,7 +41,7 @@ export async function runAuthWorkflow(request, expect) {
       success: true,
       testUser: testUser,
       userId: registrationResult.userId,
-      authToken: loginResult.token,
+      authToken: authToken,
       verification: tokenVerification
     };
     
