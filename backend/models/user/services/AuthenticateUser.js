@@ -109,6 +109,7 @@ class AuthenticateUser {
       
       if (!user) {
         return {
+          success: true,
           exists: false,
           active: false,
           reason: 'User not found'
@@ -118,6 +119,7 @@ class AuthenticateUser {
       // Check if user is soft deleted
       if (user.deleted_at) {
         return {
+          success: true,
           exists: true,
           active: false,
           reason: 'User account is deactivated'
@@ -125,6 +127,7 @@ class AuthenticateUser {
       }
 
       return {
+        success: true,
         exists: true,
         active: true,
         user: SanitizeUserData.sanitizeUser(user)
@@ -133,6 +136,7 @@ class AuthenticateUser {
     } catch (error) {
       console.error('Error checking user status:', error);
       return {
+        success: false,
         exists: false,
         active: false,
         reason: 'Failed to check user status'
