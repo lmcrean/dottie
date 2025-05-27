@@ -10,6 +10,11 @@ export const getUserConversations = async (userId) => {
   try {
     const conversations = await DbService.getConversationsWithPreviews(userId);
     
+    // Handle null or undefined results
+    if (!conversations) {
+      return [];
+    }
+    
     return conversations.map(conversation => ({
       id: conversation.id,
       last_message_date: conversation.last_message_date,
