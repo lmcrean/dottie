@@ -1,15 +1,11 @@
 import { expect, describe, it } from 'vitest';
-import Assessment from '../../../../models/assessment/Assessment.js';
+import TransformDbToApi from '../../../../../models/assessment/transformers/TransformDbToApi.js';
+import LegacyAssessment from '../../../../../models/assessment/archive/LegacyAssessment.js';
 
 describe('Assessment Schema Flattening Tests', () => {
   const userId = 'test-user-123';
   const assessmentId = 'test-assessment-123';
   const now = new Date().toISOString();
-  
-  // Helper function to access the private method for testing
-  function transformDbRecordToApiResponse(record) {
-    return Assessment._transformDbRecordToApiResponse(record);
-  }
   
   describe('Data Transformation', () => {
     it('should transform legacy nested format correctly', () => {
@@ -41,16 +37,29 @@ describe('Assessment Schema Flattening Tests', () => {
         updated_at: now
       };
       
-      // Transform the record
-      const result = transformDbRecordToApiResponse(dbRecord);
+      // Transform the record using LegacyAssessment
+      const result = LegacyAssessment._transformDbRecordToApiResponse(dbRecord);
       
-      // Verify the result
+      // Verify the result - expecting snake_case format
       expect(result).toEqual({
         id: assessmentId,
-        userId,
-        assessmentData: nestedData,
-        createdAt: now,
-        updatedAt: now
+        user_id: userId,
+        created_at: now,
+        updated_at: now,
+        age: '25-34',
+        pattern: 'regular',
+        cycle_length: '26-30',
+        period_duration: '4-5',
+        flow_heaviness: 'moderate',
+        pain_level: 'moderate',
+        physical_symptoms: ['Bloating', 'Headaches'],
+        emotional_symptoms: ['Mood swings', 'Irritability'],
+        recommendations: [
+          {
+            title: 'Recommendation 1',
+            description: 'Description for recommendation 1'
+          }
+        ]
       });
     });
     
@@ -77,33 +86,29 @@ describe('Assessment Schema Flattening Tests', () => {
         updated_at: now
       };
       
-      // Transform the record
-      const result = transformDbRecordToApiResponse(dbRecord);
+      // Transform the record using TransformDbToApi
+      const result = TransformDbToApi.transform(dbRecord);
       
-      // Verify the result is transformed to the expected API format
+      // Verify the result is in snake_case format
       expect(result).toEqual({
         id: assessmentId,
-        userId,
-        assessmentData: {
-          age: '25-34',
-          pattern: 'regular',
-          cycleLength: '26-30',
-          periodDuration: '4-5',
-          flowHeaviness: 'moderate',
-          painLevel: 'moderate',
-          symptoms: {
-            physical: ['Bloating', 'Headaches'],
-            emotional: ['Mood swings', 'Irritability']
-          },
-          recommendations: [
-            {
-              title: 'Recommendation 1',
-              description: 'Description for recommendation 1'
-            }
-          ]
-        },
-        createdAt: now,
-        updatedAt: now
+        user_id: userId,
+        created_at: now,
+        age: '25-34',
+        pattern: 'regular',
+        cycle_length: '26-30',
+        period_duration: '4-5',
+        flow_heaviness: 'moderate',
+        pain_level: 'moderate',
+        physical_symptoms: ['Bloating', 'Headaches'],
+        emotional_symptoms: ['Mood swings', 'Irritability'],
+        other_symptoms: [],
+        recommendations: [
+          {
+            title: 'Recommendation 1',
+            description: 'Description for recommendation 1'
+          }
+        ]
       });
     });
     
@@ -115,32 +120,27 @@ describe('Assessment Schema Flattening Tests', () => {
         age: '25-34',
         pattern: 'regular',
         // Some fields missing
-        created_at: now,
-        updated_at: now
+        created_at: now
       };
       
       // Transform the record
-      const result = transformDbRecordToApiResponse(dbRecord);
+      const result = TransformDbToApi.transform(dbRecord);
       
       // Verify the result handles missing fields
       expect(result).toEqual({
         id: assessmentId,
-        userId,
-        assessmentData: {
-          age: '25-34',
-          pattern: 'regular',
-          cycleLength: undefined,
-          periodDuration: undefined,
-          flowHeaviness: undefined,
-          painLevel: undefined,
-          symptoms: {
-            physical: [],
-            emotional: []
-          },
-          recommendations: []
-        },
-        createdAt: now,
-        updatedAt: now
+        user_id: userId,
+        created_at: now,
+        age: '25-34',
+        pattern: 'regular',
+        cycle_length: undefined,
+        period_duration: undefined,
+        flow_heaviness: undefined,
+        pain_level: undefined,
+        physical_symptoms: [],
+        emotional_symptoms: [],
+        other_symptoms: [],
+        recommendations: []
       });
     });
     
@@ -154,21 +154,20 @@ describe('Assessment Schema Flattening Tests', () => {
         physical_symptoms: '{"BAD_JSON',  // Malformed JSON
         emotional_symptoms: '[]',  // Valid but empty
         recommendations: '["BAD"',  // Another malformed field
-        created_at: now,
-        updated_at: now
+        created_at: now
       };
       
       // Transform the record
-      const result = transformDbRecordToApiResponse(dbRecord);
+      const result = TransformDbToApi.transform(dbRecord);
       
       // Verify it handled the malformed JSON gracefully and kept valid fields
       expect(result.id).toEqual(assessmentId);
-      expect(result.userId).toEqual(userId);
-      expect(result.assessmentData.age).toEqual('25-34');
-      expect(result.assessmentData.pattern).toEqual('regular');
-      expect(result.assessmentData.symptoms.physical).toEqual([]);  // Empty for malformed
-      expect(result.assessmentData.symptoms.emotional).toEqual([]);  // Valid empty array
-      expect(result.assessmentData.recommendations).toEqual([]);  // Empty for malformed
+      expect(result.user_id).toEqual(userId);
+      expect(result.age).toEqual('25-34');
+      expect(result.pattern).toEqual('regular');
+      expect(result.physical_symptoms).toEqual([]);  // Empty for malformed
+      expect(result.emotional_symptoms).toEqual([]);  // Valid empty array
+      expect(result.recommendations).toEqual([]);  // Empty for malformed
     });
   });
 }); 

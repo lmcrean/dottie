@@ -26,12 +26,13 @@ beforeAll(async () => {
     // We'll handle cleanup at the end rather than trying to delete all records upfront
     // as this is causing foreign key constraint issues
 
-    // Create a test user directly in the database
-    testUserId = `test-user-${Date.now()}`;
+    // Create a test user directly in the database with more unique identifiers
+    const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    testUserId = `test-user-${uniqueId}`;
     const userData = {
       id: testUserId,
-      username: `testuser_${Date.now()}`,
-      email: `test_${Date.now()}@example.com`,
+      username: `testuser_${uniqueId}`,
+      email: `test_${uniqueId}@example.com`,
       password_hash: "test-hash", // Not used for auth in these tests
       age: "18-24", // Use hyphens instead of underscores
       created_at: new Date().toISOString(),
@@ -43,7 +44,7 @@ beforeAll(async () => {
     testToken = createMockToken(testUserId);
 
     // Create two test assessments in the database
-    const testAssessment1Id = `test-assessment-1-${Date.now()}`;
+    const testAssessment1Id = `test-assessment-1-${uniqueId}`;
     const assessmentData1 = {
       id: testAssessment1Id,
       user_id: testUserId,
@@ -59,7 +60,7 @@ beforeAll(async () => {
     testAssessmentIds.push(testAssessment1Id);
 
     // Create a second assessment
-    const testAssessment2Id = `test-assessment-2-${Date.now()}`;
+    const testAssessment2Id = `test-assessment-2-${uniqueId}`;
     const assessmentData2 = {
       id: testAssessment2Id,
       user_id: testUserId,

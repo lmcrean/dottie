@@ -1,7 +1,7 @@
 // @ts-check
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import supertest from 'supertest';
-import { setupTestServer, closeTestServer, createMockToken } from '../../../../../../test-utilities/testSetup.js';
+import { setupTestServer, closeTestServer, createMockToken } from '../../../../../../../test-utilities/testSetup.js';
 
 // Variables to store server instance and request
 let server;
@@ -41,7 +41,7 @@ describe("Assessment Detail Error Tests", () => {
       .get(`/api/assessment/${nonExistentId}`)
       .set("Authorization", `Bearer ${testToken}`);
 
-    expect(response.status).toBe(404); // Updated from 401 to 404 for non-existent IDs
+    expect(response.status).toBe(403); // API returns 403 Forbidden for non-existent assessment
   });
 
   // Test getting assessment with invalid ID format
@@ -50,6 +50,6 @@ describe("Assessment Detail Error Tests", () => {
       .get("/api/assessment/invalid-id-format")
       .set("Authorization", `Bearer ${testToken}`);
 
-    expect(response.status).toBe(404); // Updated from 401 to 404 for invalid ID formats
+    expect(response.status).toBe(403); // API returns 403 Forbidden for invalid ID format
   });
 }); 

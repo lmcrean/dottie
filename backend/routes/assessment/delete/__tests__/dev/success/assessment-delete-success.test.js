@@ -3,26 +3,31 @@ import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
 import db from "../../../../../../db/index.js";
 import jwt from "jsonwebtoken";
-import app from "../../../../../../server.js";
+import { setupTestServer, closeTestServer } from "../../../../../../test-utilities/testSetup.js";
 
 // Store test data
 let testUserId;
 let testToken;
 let testAssessmentId;
 let request;
+let server;
+const TEST_PORT = 5017;
 
 // Setup before tests
 beforeAll(async () => {
   try {
-    // Create supertest request object
-    request = supertest(app);
+    // Setup test server
+    const setup = await setupTestServer(TEST_PORT);
+    server = setup.server;
+    request = supertest(setup.app);
 
-    // Create a test user
-    testUserId = `test-user-${Date.now()}`;
+    // Create a test user with more unique identifiers
+    const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    testUserId = `test-user-${uniqueId}`;
     const userData = {
       id: testUserId,
-      username: `testuser_${Date.now()}`,
-      email: `test_${Date.now()}@example.com`,
+      username: `testuser_${uniqueId}`,
+      email: `test_${uniqueId}@example.com`,
       password_hash: "test-hash",
       age: "18-24",
       created_at: new Date().toISOString(),
@@ -39,7 +44,7 @@ beforeAll(async () => {
     );
 
     // Create a test assessment
-    testAssessmentId = `test-assessment-${Date.now()}`;
+    testAssessmentId = `test-assessment-${uniqueId}`;
     const assessmentData = {
       id: testAssessmentId,
       user_id: testUserId,
@@ -78,6 +83,9 @@ afterAll(async () => {
 
       }
     }
+    
+    // Close test server
+    await closeTestServer(server);
   } catch (error) {
     console.error("Error in test cleanup:", error);
   }

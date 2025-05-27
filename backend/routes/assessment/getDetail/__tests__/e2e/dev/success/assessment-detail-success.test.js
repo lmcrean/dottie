@@ -3,19 +3,23 @@ import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import supertest from "supertest";
 import db from "../../../../../../../db/index.js";
 import jwt from "jsonwebtoken";
-import app from "../../../../../../../server.js";
+import { setupTestServer, closeTestServer } from "../../../../../../../test-utilities/testSetup.js";
 
 // Store test data
 let testUserId;
 let testToken;
 let testAssessmentId;
 let request;
+let server;
+const TEST_PORT = 5020;
 
 // Setup before tests
 beforeAll(async () => {
   try {
-    // Create supertest request object
-    request = supertest(app);
+    // Setup test server
+    const setup = await setupTestServer(TEST_PORT);
+    server = setup.server;
+    request = supertest(setup.app);
 
     // Create a test user
     testUserId = `test-user-${Date.now()}`;
@@ -103,6 +107,9 @@ afterAll(async () => {
 
       }
     }
+    
+    // Close test server
+    await closeTestServer(server);
   } catch (error) {
     console.error("Error in test cleanup:", error);
   }
