@@ -69,7 +69,7 @@ describe('Password Update API', () => {
   afterAll(async () => {
     // Clean up: Delete test user and close server
     if (userId) {
-      await User.deleteById(userId);
+      await User.delete(userId);
     }
 
     if (server) {

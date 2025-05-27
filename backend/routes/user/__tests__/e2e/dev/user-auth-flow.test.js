@@ -26,7 +26,7 @@ beforeAll(async () => {
       username: "e2etestuser",
       email: `e2e-test-${Date.now()}@example.com`,
       password: "TestPass123!",
-      age: "25_34",
+      age: 25,
     };
 
     // Start server
