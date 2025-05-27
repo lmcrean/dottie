@@ -1,4 +1,4 @@
-import { AssessmentBase } from '../assessment-base/AssessmentBase.js';
+import { AssessmentBase } from '../base/AssessmentBase.js';
 import { v4 as uuidv4 } from 'uuid';
 import DbService from '../../../services/dbService.js';
 
