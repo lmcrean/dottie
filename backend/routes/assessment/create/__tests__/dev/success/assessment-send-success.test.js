@@ -115,8 +115,9 @@ describe("Assessment Send Endpoint - Success Cases", () => {
       .send(assessmentData);
 
     // Debug response
-
-
+    console.log('Response status:', response.status);
+    console.log('Response body:', response.body);
+    console.log('Response text:', response.text);
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
