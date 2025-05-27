@@ -30,6 +30,4 @@ export class Conversation {
       deleted_at: this.deleted_at
     };
   }
-}
-
-export default Conversation; 
+} 

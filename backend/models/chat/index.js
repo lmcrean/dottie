@@ -5,33 +5,40 @@
 // organized according to the new modular structure
 
 // ===================================
+// IMPORTS
+// ===================================
+import { Message as OriginalMessage } from './message/message.js';
+import { Conversation as OriginalConversation } from './conversation/conversation.js';
+import { getUserConversations as originalGetUserConversations } from './list/chatGetList.js';
+import { deleteConversation as originalDeleteConversation } from './conversation/delete-conversation/chatDelete.js';
+import { createAssessmentConversation as originalCreateAssessmentConversation } from './conversation/create-new-conversation/createFlow.js';
+import { getConversation as originalGetConversation, getConversationForUser as originalGetConversationForUser, getConversationSummary as originalGetConversationSummary } from './conversation/read-conversation/getConversation.js';
+import { sendMessage as originalSendMessage } from './message/user-message/add-message/sendUserMessage.js';
+import { insertChatMessage as originalInsertChatMessage } from './message/user-message/add-message/database/sendUserMessage.js';
+import { updateConversationAssessmentLinks as originalUpdateConversationAssessmentLinks } from './conversation/update-conversation/updateAssessmentLinks.js';
+
+// ===================================
 // ENTITY MODELS
 // ===================================
-export { Message } from './message/message.js';
-export { Conversation } from './conversation/conversation.js';
+export const Message = OriginalMessage;
+// OriginalConversation is aliased as Chat below
 
 // ===================================
 // CONVERSATION OPERATIONS
 // ===================================
-export { getUserConversations } from './list/chatGetList.js';
-export { deleteConversation } from './conversation/delete-conversation/chatDelete.js';
-
-export { 
-  createAssessmentConversation
-} from './conversation/create-new-conversation/createFlow.js';
-
-export { 
-  getConversation,
-  getConversationForUser,
-  getConversationSummary
-} from './conversation/read-conversation/getConversation.js';
+export const getUserConversations = originalGetUserConversations;
+export const deleteConversation = originalDeleteConversation;
+export const createAssessmentConversation = originalCreateAssessmentConversation;
+export const getConversation = originalGetConversation;
+export const getConversationForUser = originalGetConversationForUser;
+export const getConversationSummary = originalGetConversationSummary;
+export const updateConversationAssessmentLinks = originalUpdateConversationAssessmentLinks;
 
 // ===================================
 // MESSAGE OPERATIONS
 // ===================================
-export { 
-  sendMessage
-} from './message/user-message/add-message/sendUserMessage.js';
+export const sendMessage = originalSendMessage;
+export const insertChatMessage = originalInsertChatMessage;
 
 // ===================================
 // CONVENIENCE FUNCTIONS
@@ -45,8 +52,8 @@ export {
  * @returns {Promise<Object>} - Complete conversation with initial exchange
  */
 export const quickStart = async (userId, message, assessmentId = null) => {
-  const { createAssessmentConversation } = await import('./conversation/create-new-conversation/createFlow.js');
-  return await createAssessmentConversation(userId, assessmentId);
+  // Using originalCreateAssessmentConversation directly as it's already imported
+  return await originalCreateAssessmentConversation(userId, assessmentId);
 };
 
 /**
@@ -57,8 +64,8 @@ export const quickStart = async (userId, message, assessmentId = null) => {
  * @returns {Promise<Object>} - Message exchange result
  */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  const { sendMessage } = await import('./message/user-message/add-message/sendUserMessage.js');
-  return await sendMessage(conversationId, userId, message);
+  // Using originalSendMessage directly as it's already imported
+  return await originalSendMessage(conversationId, userId, message);
 };
 
 // ===================================
@@ -66,14 +73,14 @@ export const sendAndRespond = async (conversationId, userId, message) => {
 // ===================================
 // Re-export legacy function names for backward compatibility
 
-export { getUserConversations as getConversations };
-export { createAssessmentConversation as createConversation };
-export { createAssessmentConversation as newConversation };
-export { getConversation as readConversation };
-export { sendMessage as sendMessageNew };
+export const getConversations = originalGetUserConversations;
+export const createConversation = originalCreateAssessmentConversation;
+export const newConversation = originalCreateAssessmentConversation;
+export const readConversation = originalGetConversation;
+export const sendMessageNew = originalSendMessage;
 
 // Legacy Chat class alias for backward compatibility
-export { Conversation as Chat };
+export const Chat = OriginalConversation;
 
 // ===================================
 // TYPE DEFINITIONS (for JSDoc)
@@ -96,4 +103,4 @@ export { Conversation as Chat };
  * @property {Object} assistantMessage - Assistant response object
  * @property {string} conversationId - Conversation ID
  * @property {string} timestamp - Exchange timestamp
- */ 
+ */

@@ -1,5 +1,5 @@
 import logger from '../../../../../services/logger.js';
-import { insertUserMessage } from './database/sendUserMessage.js';
+import { insertChatMessage } from './database/sendUserMessage.js';
 import { formatUserMessage } from './validation/formatters/formatUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
@@ -44,7 +44,7 @@ export const sendMessage = async (conversationId, userId, messageText, options =
     };
 
     // Insert user message into database
-    await insertUserMessage(conversationId, messageData);
+    await insertChatMessage(conversationId, messageData);
 
     const userMessage = {
       id: messageId,
