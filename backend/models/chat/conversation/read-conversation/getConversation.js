@@ -35,7 +35,7 @@ async function getConversation(conversationId, options = {}) {
                 'chat_messages', 
                 'conversation_id', 
                 conversationId, 
-                ['content'], 
+                [], // content is plain text, not JSON
                 { field: 'created_at', direction: 'ASC' }
             );
             

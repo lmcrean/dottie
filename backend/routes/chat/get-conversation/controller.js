@@ -1,5 +1,5 @@
 import logger from '../../../services/logger.js';
-import { getConversation as getConversationModel } from '../../../models/chat/index.js';
+import { getConversationForUser } from '../../../models/chat/index.js';
 
 /**
  * Get a specific conversation and its messages
@@ -25,14 +25,23 @@ export const getConversation = async (req, res) => {
     }
     
     // Get the conversation and verify ownership
-    const conversation = await getConversationModel(conversationId, userId);
+    const result = await getConversationForUser(conversationId, userId);
     
-    if (!conversation) {
-      return res.status(404).json({ error: 'Conversation not found' });
+    if (!result.success) {
+      return res.status(404).json({ error: result.error || 'Conversation not found' });
     }
     
-    // Return the conversation data
-    return res.status(200).json(conversation);
+    // Return the conversation data in the format expected by the frontend
+    return res.status(200).json({
+      id: result.conversation.id,
+      user_id: result.conversation.user_id,
+      assessment_id: result.conversation.assessment_id,
+      assessment_pattern: result.conversation.assessment_pattern,
+      title: result.conversation.title,
+      created_at: result.conversation.created_at,
+      updated_at: result.conversation.updated_at,
+      messages: result.messages
+    });
   } catch (error) {
     logger.error('Error in getConversation controller:', error);
     return res.status(500).json({ error: 'Failed to retrieve conversation' });
