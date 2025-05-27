@@ -44,6 +44,9 @@ export async function runChatWorkflow(request, expect, authToken) {
   expect(Array.isArray(conversationDetails.messages)).toBe(true);
   expect(conversationDetails.messages.length).toBeGreaterThan(0);
   
+  // Verify correct message ordering: user should ALWAYS message first
+  expect(conversationDetails.messages[0].role).toBe("user");
+  
   // Send a follow-up message to the same conversation
   const followUpMessage = "Can you provide more specific advice based on my assessment?";
   const followUpResult = await sendMessage(request, authToken, followUpMessage, conversationId);
