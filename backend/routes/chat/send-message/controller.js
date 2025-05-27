@@ -92,12 +92,13 @@ export const sendMessage = async (req, res) => {
     }
 
     // Save user message to database
+    const userMessageTimestamp = new Date();
     const userMessage = {
       conversation_id: currentConversationId,
       user_id: userId,
       role: 'user',
       content: message,
-      created_at: new Date()
+      created_at: userMessageTimestamp
     };
     await DbService.create('chat_messages', userMessage);
     
@@ -156,13 +157,14 @@ export const sendMessage = async (req, res) => {
       }
     }
     
-    // Save AI response to database
+    // Save AI response to database with timestamp slightly after user message
+    const assistantMessageTimestamp = new Date(userMessageTimestamp.getTime() + 1); // +1ms to ensure proper ordering
     const assistantMessage = {
       conversation_id: currentConversationId,
       user_id: userId,
       role: 'assistant',
       content: aiResponse,
-      created_at: new Date()
+      created_at: assistantMessageTimestamp
     };
     await DbService.create('chat_messages', assistantMessage);
 
