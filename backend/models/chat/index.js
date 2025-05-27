@@ -9,7 +9,6 @@
 // ===================================
 export { Message } from './message/message.js';
 export { Conversation } from './conversation/conversation.js';
-export { Conversation as default } from './conversation/conversation.js';
 
 // ===================================
 // CONVERSATION OPERATIONS
@@ -18,9 +17,6 @@ export { getUserConversations } from './list/chatGetList.js';
 export { deleteConversation } from './conversation/delete-conversation/chatDelete.js';
 
 export { 
-  createCompleteConversation,
-  createConversationWithMessage,
-  createEmptyConversation,
   createAssessmentConversation
 } from './conversation/create-new-conversation/createFlow.js';
 
@@ -49,8 +45,8 @@ export {
  * @returns {Promise<Object>} - Complete conversation with initial exchange
  */
 export const quickStart = async (userId, message, assessmentId = null) => {
-  const { createConversationWithMessage } = await import('./conversation/create-new-conversation/createFlow.js');
-  return await createConversationWithMessage(userId, message, assessmentId);
+  const { createAssessmentConversation } = await import('./conversation/create-new-conversation/createFlow.js');
+  return await createAssessmentConversation(userId, assessmentId);
 };
 
 /**
@@ -71,8 +67,8 @@ export const sendAndRespond = async (conversationId, userId, message) => {
 // Re-export legacy function names for backward compatibility
 
 export { getUserConversations as getConversations };
-export { createCompleteConversation as createConversation };
-export { createCompleteConversation as newConversation };
+export { createAssessmentConversation as createConversation };
+export { createAssessmentConversation as newConversation };
 export { getConversation as readConversation };
 export { sendMessage as sendMessageNew };
 
