@@ -105,8 +105,8 @@ app.use((err, req, res, next) => {
 // Start the server if we're running directly
 const isMainModule = import.meta.url.endsWith(process.argv[1]);
 
-// Force listen in development and when run directly
-if (isMainModule || process.env.NODE_ENV === "development" || true) {
+// Only start server when run directly (not when imported for testing)
+if (isMainModule) {
   // Start server
   app.listen(PORT, () => {
     console.log(
