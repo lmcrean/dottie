@@ -2,11 +2,10 @@
 
 from `cd backend`:
 
-1. run `npm run test:dev`
-2. run `npm run test:prod`
-3. inspect output
-4. update test file if needed
-5. update codebase if needed
-6. redeploy with `vercel --prod` command
-7. inspect logs on Vercel manually (if using Cursor IDE, Cursor should ask you to do this)
-8. run `npm run test:prod` again and inspect logs
+1. run `vercel --prod;npm run test:dev; npm run test:prod`
+2. inspect logs on Vercel manually (if using Cursor IDE, Cursor should ask you to do this)
+3. review SQL tables in `backend\db\supabase\current-tables\..` (manually taken from Supabase platform)
+4. inspect output from 1-3 altogether consider whether problem area is in tests or codebase
+5. update test file if needed
+6. update codebase if needed
+7. repeat 
