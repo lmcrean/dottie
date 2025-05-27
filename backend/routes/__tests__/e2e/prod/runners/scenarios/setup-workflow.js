@@ -27,7 +27,7 @@ export async function runSetupWorkflow(request, expect) {
     // Step 2: Test database connection with hello (may fail in prod)
     console.log('\n--- Step 2: Testing Database Hello ---');
     results.databaseHello = await testDatabaseHello(request, expect);
-    if (results.databaseHello.status === 'error') {
+    if (results.databaseHello.status === 'error' || results.databaseHello.status === 'warning') {
       hasErrors = true;
     }
     
@@ -92,9 +92,12 @@ export async function runIndividualSetupTests(request, expect) {
     if (result.status === 'success') {
       results.databaseHello.success = true;
       console.log('✅ Database Hello: PASSED');
+    } else if (result.status === 'warning') {
+      results.databaseHello.error = `Status 200 but isConnected: false - Database connection issue`;
+      console.log('⚠️ Database Hello: WARNING - Database disconnected (status 200 but isConnected: false)');
     } else {
       results.databaseHello.error = `Status 500: ${result.error?.message || 'Database connection issue'}`;
-      console.log('⚠️ Database Hello: WARNING - Database connection issue detected');
+      console.log('⚠️ Database Hello: WARNING - Database connection issue detected (status 500)');
     }
   } catch (error) {
     results.databaseHello.error = error.message;
@@ -122,7 +125,7 @@ export async function runIndividualSetupTests(request, expect) {
   // Summary
   const passedTests = Object.values(results).filter(test => test.success).length;
   const totalTests = Object.keys(results).length;
-  const warningTests = Object.values(results).filter(test => !test.success && test.error && test.error.includes('Status 500')).length;
+  const warningTests = Object.values(results).filter(test => !test.success && test.error && (test.error.includes('Status 500') || test.error.includes('Status 200 but isConnected: false'))).length;
   
   console.log(`\n📊 Production Setup Tests Summary:`);
   console.log(`   ✅ Passed: ${passedTests}/${totalTests}`);
