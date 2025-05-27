@@ -18,24 +18,24 @@ export async function runUserManagementWorkflow(request, expect, authToken, user
   console.log('👤 Starting User Management Workflow...');
   
   try {
-    // Step 1: Get all users
+    // Step 1: Get all users (request, token)
     const allUsers = await getAllUsers(request, authToken);
     console.log('✅ Retrieved all users');
     
-    // Step 2: Get specific user by ID
-    const userById = await getUserById(request, userId, authToken);
+    // Step 2: Get specific user by ID (request, token, userId)
+    const userById = await getUserById(request, authToken, userId);
     console.log('✅ Retrieved user by ID');
     
     // Step 3: Generate profile update data
     const profileUpdate = generateProfileUpdate();
     console.log('✅ Generated profile update data');
     
-    // Step 4: Update user profile
-    const updatedUser = await updateUserProfile(request, userId, profileUpdate, authToken);
+    // Step 4: Update user profile (request, token, userId, profileData)
+    const updatedUser = await updateUserProfile(request, authToken, userId, profileUpdate);
     console.log('✅ User profile updated successfully');
     
-    // Step 5: Verify the update by getting user again
-    const verifyUpdate = await getUserById(request, userId, authToken);
+    // Step 5: Verify the update by getting user again (request, token, userId)
+    const verifyUpdate = await getUserById(request, authToken, userId);
     console.log('✅ Verified profile update');
     
     console.log('🎉 User Management Workflow completed successfully!');
@@ -55,8 +55,8 @@ export async function runUserDeletionWorkflow(request, expect, userId, authToken
   console.log('🗑️ Starting User Deletion Workflow...');
   
   try {
-    // Delete the user
-    const deletionResult = await deleteUser(request, userId, authToken);
+    // Delete the user (request, token, userId)
+    const deletionResult = await deleteUser(request, authToken, userId);
     console.log('✅ User deleted successfully');
     
     console.log('🎉 User Deletion Workflow completed successfully!');

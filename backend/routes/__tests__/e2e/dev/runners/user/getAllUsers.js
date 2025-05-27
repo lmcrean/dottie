@@ -9,7 +9,7 @@
  * @returns {Promise<Array>} List of users
  */
 export async function getAllUsers(request, token) {
-  const response = await request.get("/api/auth/users", {
+  const response = await request.get("/api/user", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

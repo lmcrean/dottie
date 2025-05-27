@@ -11,7 +11,7 @@
  */
 export async function getUserById(request, token, userId) {
   // Use the /me endpoint which returns the current user based on the token
-  const response = await request.get(`/api/auth/users/me`, {
+  const response = await request.get(`/api/user/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

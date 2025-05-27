@@ -10,7 +10,7 @@
  * @returns {Promise<boolean>} True if deleted successfully
  */
 export async function deleteUser(request, token, userId) {
-  const response = await request.delete(`/api/auth/users/${userId}`, {
+  const response = await request.delete(`/api/user/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

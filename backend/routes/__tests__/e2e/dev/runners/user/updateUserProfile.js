@@ -12,7 +12,7 @@
  */
 export async function updateUserProfile(request, token, userId, profileData) {
   // Use the /me endpoint which updates the current user based on the token
-  const response = await request.put(`/api/auth/users/me`, {
+  const response = await request.put(`/api/user/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
