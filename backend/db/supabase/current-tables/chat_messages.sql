@@ -1,7 +1,6 @@
 create table public.chat_messages (
   id uuid not null default gen_random_uuid (),
   conversation_id uuid not null,
-  user_id uuid not null,
   role text not null,
   content text not null,
   parent_message_id uuid null,
@@ -12,7 +11,6 @@ create table public.chat_messages (
   constraint chat_messages_pkey primary key (id),
   constraint chat_messages_conversation_fkey foreign KEY (conversation_id) references conversations (id) on delete CASCADE,
   constraint chat_messages_parent_fkey foreign KEY (parent_message_id) references chat_messages (id) on delete set null,
-  constraint chat_messages_user_fkey foreign KEY (user_id) references users (id) on delete CASCADE,
   constraint chat_messages_role_check check (
     (
       role = any (
@@ -23,8 +21,6 @@ create table public.chat_messages (
 ) TABLESPACE pg_default;
 
 create index IF not exists idx_chat_messages_conversation_id on public.chat_messages using btree (conversation_id) TABLESPACE pg_default;
-
-create index IF not exists idx_chat_messages_user_id on public.chat_messages using btree (user_id) TABLESPACE pg_default;
 
 create index IF not exists idx_chat_messages_created_at on public.chat_messages using btree (created_at) TABLESPACE pg_default;
 
