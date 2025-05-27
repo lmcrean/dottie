@@ -5,7 +5,7 @@
 - [x] start new conversation: `npm test -- "models/chat/conversation/create-new-conversation/__tests__/createAssessmentConversation.test.js"` ✅ 20/20 tests passing
 - [x] add message to conversation: `npm test -- "models/chat/message/user-message/add-message/__tests__/messageFlowDialogue.test.js"` ✅ 21/21 tests passing 
 
-- [ ] get conversation by conversation_id:
+- [x] get conversation by conversation_id: `npm test -- "getConversationById.test.js"` ✅ 18/18 tests passing
 - [ ] conversation object updates when a new message is added:
 - [ ] delete conversation by conversation_id:
   
