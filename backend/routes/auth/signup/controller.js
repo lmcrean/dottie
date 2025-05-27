@@ -84,38 +84,26 @@ export const signup = async (req, res) => {
     const saltRounds = 10;
     const password_hash = await bcrypt.hash(password, saltRounds);
     
-    const user = await User.create({ username, email, password_hash, age });
+    const userResult = await User.create({ username, email, password_hash, age });
+    
+    // Handle the new structured response from User.create()
+    if (!userResult.success) {
+      return res.status(400).json({ 
+        error: userResult.errors?.join(', ') || 'Failed to create user' 
+      });
+    }
+    
+    const user = userResult.user;
     
     // For testing environments, handle null user case
     if (!user) {
-      // In test mode, create a mock user response
-      if (process.env.TEST_MODE === 'true') {
-        const mockUser = {
-          id: `test-${Date.now()}`,
-          username,
-          email,
-          password_hash,
-          created_at: new Date(),
-          updated_at: new Date()
-        };
-        
-        // Return mock response
-        const { password_hash: _, ...userWithoutPassword } = mockUser;
-        return res.status(201).json({
-          ...userWithoutPassword,
-          id: mockUser.id
-        });
-      } else {
-        throw new Error('Failed to create user');
-      }
+      throw new Error('Failed to create user - no user returned');
     }
     
-    // Remove password hash before sending response
-    const { password_hash: _, ...userWithoutPassword } = user;
-    
+    // The user is already sanitized by the User.create() method
     // Ensure user ID is included in the response
     res.status(201).json({
-      ...userWithoutPassword,
+      ...user,
       id: user.id
     });
   } catch (error) {

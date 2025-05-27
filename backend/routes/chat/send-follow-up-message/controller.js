@@ -1,5 +1,5 @@
 import logger from '../../../services/logger.js';
-import { getConversation, insertChatMessage } from '../../../models/chat/chat.js';
+import { getConversation, insertChatMessage } from '../../../models/chat/index.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Initialize Gemini AI
