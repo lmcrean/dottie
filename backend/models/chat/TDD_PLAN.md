@@ -6,7 +6,7 @@
 - [x] add message to conversation: `npm test -- "models/chat/message/user-message/add-message/__tests__/messageFlowDialogue.test.js"` ✅ 21/21 tests passing 
 
 - [x] get conversation by conversation_id: `npm test -- "getConversationById.test.js"` ✅ 18/18 tests passing
-- [ ] conversation object updates when a new message is added:
+- [x] conversation object updates when a new message is added: `npm test -- "__tests__/conversationUpdateOnMessage.test.js"` ✅ 27/27 tests passing
 - [ ] delete conversation by conversation_id:
   
 - [ ] list updates on new message, specifically the message count and message preview of conversation id in list:
