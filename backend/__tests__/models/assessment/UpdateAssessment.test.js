@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import UpdateAssessment from '../../../models/assessment/assessment-main/UpdateAssessment.js';
+import UpdateAssessment from '../../../models/assessment/services/UpdateAssessment.js';
 import DbService from '../../../services/dbService.js';
-import TransformApiToDb from '../../../models/assessment/assessment-main/TransformApiToDb.js';
+import TransformApiToDb from '../../../models/assessment/transformers/TransformApiToDb.js';
 
 // Mock dependencies
 vi.mock('../../../services/dbService.js');

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import TransformDbToApi from '../../../models/assessment/assessment-main/TransformDbToApi.js';
-import ParseAssessmentJson from '../../../models/assessment/assessment-main/ParseAssessmentJson.js';
+import TransformDbToApi from '../../../models/assessment/transformers/TransformDbToApi.js';
+import ParseAssessmentJson from '../../../models/assessment/transformers/ParseAssessmentJson.js';
 
 // Mock dependencies
-vi.mock('../../../models/assessment/assessment-main/ParseAssessmentJson.js');
+vi.mock('../../../models/assessment/transformers/ParseAssessmentJson.js');
 
 describe('TransformDbToApi', () => {
   beforeEach(() => {

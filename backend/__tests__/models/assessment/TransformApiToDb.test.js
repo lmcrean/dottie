@@ -3,7 +3,7 @@ import TransformApiToDb from '../../../models/assessment/transformers/TransformA
 import ParseAssessmentJson from '../../../models/assessment/transformers/ParseAssessmentJson.js';
 
 // Mock dependencies
-vi.mock('../../../models/assessment/assessment-main/ParseAssessmentJson.js');
+vi.mock('../../../models/assessment/transformers/ParseAssessmentJson.js');
 
 describe('TransformApiToDb', () => {
   beforeEach(() => {
