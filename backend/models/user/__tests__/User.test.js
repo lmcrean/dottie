@@ -1,9 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import User from '../User.js';
+import CreateUser from '../services/CreateUser.js';
+import ReadUser from '../services/ReadUser.js';
+import DeleteUser from '../services/DeleteUser.js';
 import DbService from '@/services/dbService.js';
 import { generateUser } from '@test-utils/testFixtures.js';
 
-// Mock DbService
+// Mock the service classes
+vi.mock('../services/CreateUser.js');
+vi.mock('../services/ReadUser.js');
+vi.mock('../services/DeleteUser.js');
 vi.mock('@/services/dbService.js');
 
 describe('User Model', () => {
@@ -18,43 +24,49 @@ describe('User Model', () => {
   describe('create', () => {
     it('should create a new user with generated UUID', async () => {
       const userData = generateUser({ id: undefined });
-      const expectedUser = { ...userData, id: 'generated-uuid' };
+      const expectedResult = { 
+        success: true,
+        user: { ...userData, id: 'generated-uuid' }
+      };
       
-      DbService.create.mockResolvedValue(expectedUser);
+      CreateUser.create.mockResolvedValue(expectedResult);
 
       const result = await User.create(userData);
 
-      expect(DbService.create).toHaveBeenCalledWith('users', expect.objectContaining({
-        ...userData,
-        id: expect.any(String)
-      }));
-      expect(result).toEqual(expectedUser);
-      expect(result.id).toBeDefined();
+      expect(CreateUser.create).toHaveBeenCalledWith(userData);
+      expect(result).toEqual(expectedResult);
+      expect(result.user.id).toBeDefined();
     });
 
     it('should handle creation errors', async () => {
       const userData = generateUser();
-      const error = new Error('Database error');
+      const expectedResult = {
+        success: false,
+        errors: ['Age must be a valid number between 0 and 150']
+      };
       
-      DbService.create.mockRejectedValue(error);
+      CreateUser.create.mockResolvedValue(expectedResult);
 
-      await expect(User.create(userData)).rejects.toThrow('Database error');
+      const result = await User.create(userData);
+      
+      expect(result.success).toBe(false);
+      expect(result.errors).toContain('Age must be a valid number between 0 and 150');
     });
   });
 
   describe('findById', () => {
     it('should find user by ID', async () => {
       const user = generateUser();
-      DbService.findById.mockResolvedValue(user);
+      ReadUser.findById.mockResolvedValue(user);
 
       const result = await User.findById(user.id);
 
-      expect(DbService.findById).toHaveBeenCalledWith('users', user.id);
+      expect(ReadUser.findById).toHaveBeenCalledWith(user.id, true);
       expect(result).toEqual(user);
     });
 
     it('should return null when user not found', async () => {
-      DbService.findById.mockResolvedValue(null);
+      ReadUser.findById.mockResolvedValue(null);
 
       const result = await User.findById('non-existent-id');
 
@@ -68,90 +80,70 @@ describe('User Model', () => {
       const updateData = { username: 'newusername', age: '35_44' };
       const updatedUser = { id: userId, ...updateData };
       
+      // User.update uses DbService directly for backward compatibility
       DbService.update.mockResolvedValue(updatedUser);
 
       const result = await User.update(userId, updateData);
 
       expect(DbService.update).toHaveBeenCalledWith('users', userId, updateData);
-      expect(result).toEqual(updatedUser);
+      expect(result).toEqual(expect.objectContaining(updateData));
     });
   });
 
   describe('delete', () => {
     it('should delete user and all related data in correct order', async () => {
       const userId = 'test-user-id';
-      const conversations = [
-        { id: 'conv-1', user_id: userId },
-        { id: 'conv-2', user_id: userId }
-      ];
+      const expectedResult = { success: true };
 
-      // Mock the cascade delete operations
-      DbService.findBy.mockResolvedValue(conversations);
-      DbService.delete.mockResolvedValue(true);
+      DeleteUser.deleteUser.mockResolvedValue(expectedResult);
 
       const result = await User.delete(userId);
 
-      // Verify the correct order of deletions
-      expect(DbService.findBy).toHaveBeenCalledWith('conversations', 'user_id', userId);
-      
-      // Chat messages for each conversation
-      expect(DbService.delete).toHaveBeenCalledWith('chat_messages', { conversation_id: 'conv-1' });
-      expect(DbService.delete).toHaveBeenCalledWith('chat_messages', { conversation_id: 'conv-2' });
-      
-      // Conversations
-      expect(DbService.delete).toHaveBeenCalledWith('conversations', { user_id: userId });
-      
-      // Other related data
-      expect(DbService.delete).toHaveBeenCalledWith('assessments', { user_id: userId });
-      expect(DbService.delete).toHaveBeenCalledWith('period_logs', { user_id: userId });
-      expect(DbService.delete).toHaveBeenCalledWith('symptoms', { user_id: userId });
-      
-      // Finally the user
-      expect(DbService.delete).toHaveBeenCalledWith('users', userId);
-      
-      expect(result).toBe(true);
+      expect(DeleteUser.deleteUser).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should handle errors gracefully and still attempt to delete user', async () => {
       const userId = 'test-user-id';
+      const expectedResult = {
+        success: false,
+        errors: ['User not found']
+      };
       
-      // Mock findBy to throw an error
-      DbService.findBy.mockRejectedValue(new Error('Database error'));
+      DeleteUser.deleteUser.mockResolvedValue(expectedResult);
 
-      await expect(User.delete(userId)).rejects.toThrow('Database error');
+      const result = await User.delete(userId);
+      
+      expect(result.success).toBe(false);
+      expect(result.errors).toContain('User not found');
     });
 
     it('should continue with deletion even if symptoms table does not exist', async () => {
       const userId = 'test-user-id';
+      const expectedResult = { success: true };
       
-      DbService.findBy.mockResolvedValue([]);
-      DbService.delete.mockImplementation((table, conditions) => {
-        if (table === 'symptoms') {
-          throw new Error('Table does not exist');
-        }
-        return Promise.resolve(true);
-      });
+      DeleteUser.deleteUser.mockResolvedValue(expectedResult);
 
       const result = await User.delete(userId);
 
-      expect(result).toBe(true);
-      expect(DbService.delete).toHaveBeenCalledWith('users', userId);
+      expect(result.success).toBe(true);
+      expect(DeleteUser.deleteUser).toHaveBeenCalledWith(userId);
     });
   });
 
   describe('getAll', () => {
     it('should return all users', async () => {
       const users = [generateUser(), generateUser()];
-      DbService.getAll.mockResolvedValue(users);
+      ReadUser.getAll.mockResolvedValue(users);
 
       const result = await User.getAll();
 
-      expect(DbService.getAll).toHaveBeenCalledWith('users');
+      expect(ReadUser.getAll).toHaveBeenCalledWith(true);
       expect(result).toEqual(users);
     });
 
     it('should return empty array when no users exist', async () => {
-      DbService.getAll.mockResolvedValue([]);
+      ReadUser.getAll.mockResolvedValue([]);
 
       const result = await User.getAll();
 

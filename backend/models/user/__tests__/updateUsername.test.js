@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import User from '../User.js';
 import UpdateUsername from '../services/UpdateUsername.js';
+import ReadUser from '../services/ReadUser.js';
 
-// Mock the UpdateUsername service
+// Mock the UpdateUsername and ReadUser services
 vi.mock('../services/UpdateUsername.js');
+vi.mock('../services/ReadUser.js');
 
 describe('Update Username Tests (TDD Plan)', () => {
   beforeEach(() => {
@@ -211,28 +213,22 @@ describe('Update Username Tests (TDD Plan)', () => {
     it('should check if username exists', async () => {
       const username = 'existingusername';
 
-      const expectedResult = true;
-
-      // Mock through ReadUser if needed
-      const ReadUser = await import('../services/ReadUser.js');
-      vi.mocked(ReadUser.default.usernameExists).mockResolvedValue(expectedResult);
+      ReadUser.usernameExists.mockResolvedValue(true);
 
       const result = await User.usernameExists(username);
 
+      expect(ReadUser.usernameExists).toHaveBeenCalledWith(username);
       expect(result).toBe(true);
     });
 
     it('should return false for non-existent username', async () => {
       const username = 'nonexistentusername';
 
-      const expectedResult = false;
-
-      // Mock through ReadUser if needed
-      const ReadUser = await import('../services/ReadUser.js');
-      vi.mocked(ReadUser.default.usernameExists).mockResolvedValue(expectedResult);
+      ReadUser.usernameExists.mockResolvedValue(false);
 
       const result = await User.usernameExists(username);
 
+      expect(ReadUser.usernameExists).toHaveBeenCalledWith(username);
       expect(result).toBe(false);
     });
   });

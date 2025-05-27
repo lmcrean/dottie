@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import User from '../User.js';
 import UpdateEmail from '../services/UpdateEmail.js';
+import ReadUser from '../services/ReadUser.js';
 
-// Mock the UpdateEmail service
+// Mock the UpdateEmail and ReadUser services
 vi.mock('../services/UpdateEmail.js');
+vi.mock('../services/ReadUser.js');
 
 describe('Update Email Tests (TDD Plan)', () => {
   beforeEach(() => {
@@ -250,28 +252,22 @@ describe('Update Email Tests (TDD Plan)', () => {
     it('should check if email exists', async () => {
       const email = 'existing@example.com';
 
-      const expectedResult = true;
-
-      // Mock through ReadUser if needed
-      const ReadUser = await import('../services/ReadUser.js');
-      vi.mocked(ReadUser.default.emailExists).mockResolvedValue(expectedResult);
+      ReadUser.emailExists.mockResolvedValue(true);
 
       const result = await User.emailExists(email);
 
+      expect(ReadUser.emailExists).toHaveBeenCalledWith(email);
       expect(result).toBe(true);
     });
 
     it('should return false for non-existent email', async () => {
       const email = 'nonexistent@example.com';
 
-      const expectedResult = false;
-
-      // Mock through ReadUser if needed
-      const ReadUser = await import('../services/ReadUser.js');
-      vi.mocked(ReadUser.default.emailExists).mockResolvedValue(expectedResult);
+      ReadUser.emailExists.mockResolvedValue(false);
 
       const result = await User.emailExists(email);
 
+      expect(ReadUser.emailExists).toHaveBeenCalledWith(email);
       expect(result).toBe(false);
     });
   });

@@ -1,5 +1,22 @@
 import { describe, it, expect } from 'vitest';
-import { User, UserAuth, UserPasswordReset } from '../index.js';
+import { 
+  User, 
+  CreateUser,
+  ReadUser,
+  UpdateEmail,
+  UpdateUsername,
+  UpdatePassword,
+  DeleteUser,
+  AuthenticateUser,
+  ResetPassword,
+  ValidateUserData,
+  ValidateEmail,
+  ValidateUsername,
+  ValidatePassword,
+  ValidateCredentials,
+  SanitizeUserData,
+  UserBase
+} from '../index.js';
 import defaultExport from '../index.js';
 
 describe('User Models Index', () => {
@@ -10,16 +27,28 @@ describe('User Models Index', () => {
       expect(User.tableName).toBe('users');
     });
 
-    it('should export UserAuth model', () => {
-      expect(UserAuth).toBeDefined();
-      expect(typeof UserAuth).toBe('function');
-      expect(UserAuth.tableName).toBe('users');
+    it('should export all user services', () => {
+      expect(CreateUser).toBeDefined();
+      expect(ReadUser).toBeDefined();
+      expect(UpdateEmail).toBeDefined();
+      expect(UpdateUsername).toBeDefined();
+      expect(UpdatePassword).toBeDefined();
+      expect(DeleteUser).toBeDefined();
+      expect(AuthenticateUser).toBeDefined();
+      expect(ResetPassword).toBeDefined();
     });
 
-    it('should export UserPasswordReset model', () => {
-      expect(UserPasswordReset).toBeDefined();
-      expect(typeof UserPasswordReset).toBe('function');
-      expect(UserPasswordReset.tableName).toBe('users');
+    it('should export all validators', () => {
+      expect(ValidateUserData).toBeDefined();
+      expect(ValidateEmail).toBeDefined();
+      expect(ValidateUsername).toBeDefined();
+      expect(ValidatePassword).toBeDefined();
+      expect(ValidateCredentials).toBeDefined();
+    });
+
+    it('should export transformers and base', () => {
+      expect(SanitizeUserData).toBeDefined();
+      expect(UserBase).toBeDefined();
     });
   });
 
@@ -39,21 +68,32 @@ describe('User Models Index', () => {
       expect(typeof User.getAll).toBe('function');
     });
 
-    it('should have UserAuth methods', () => {
-      expect(typeof UserAuth.findByEmail).toBe('function');
-      expect(typeof UserAuth.findByUsername).toBe('function');
-      expect(typeof UserAuth.updatePassword).toBe('function');
-      expect(typeof UserAuth.verifyCredentials).toBe('function');
-      expect(typeof UserAuth.emailExists).toBe('function');
-      expect(typeof UserAuth.usernameExists).toBe('function');
+    it('should have authentication methods', () => {
+      expect(typeof User.authenticate).toBe('function');
+      expect(typeof User.verifyCredentials).toBe('function');
+      expect(typeof User.checkUserStatus).toBe('function');
+      expect(typeof User.emailExists).toBe('function');
+      expect(typeof User.usernameExists).toBe('function');
     });
 
-    it('should have UserPasswordReset methods', () => {
-      expect(typeof UserPasswordReset.storeResetToken).toBe('function');
-      expect(typeof UserPasswordReset.findByResetToken).toBe('function');
-      expect(typeof UserPasswordReset.clearResetToken).toBe('function');
-      expect(typeof UserPasswordReset.resetPassword).toBe('function');
-      expect(typeof UserPasswordReset.isValidResetToken).toBe('function');
+    it('should have password reset methods', () => {
+      expect(typeof User.initiatePasswordReset).toBe('function');
+      expect(typeof User.resetPassword).toBe('function');
+      expect(typeof User.validateResetToken).toBe('function');
+      expect(typeof User.hasPendingReset).toBe('function');
+    });
+
+    it('should have update methods', () => {
+      expect(typeof User.updateEmail).toBe('function');
+      expect(typeof User.updateUsername).toBe('function');
+      expect(typeof User.updatePassword).toBe('function');
+    });
+
+    it('should have validation methods', () => {
+      expect(typeof User.validateEmail).toBe('function');
+      expect(typeof User.validateUsername).toBe('function');
+      expect(typeof User.validatePassword).toBe('function');
+      expect(typeof User.validateCredentials).toBe('function');
     });
   });
 }); 

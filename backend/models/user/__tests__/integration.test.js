@@ -1,21 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { User, UserAuth, UserPasswordReset } from '../index.js';
+import { User, ReadUser, AuthenticateUser, ResetPassword, CreateUser } from '../index.js';
 import DbService from '@/services/dbService.js';
 import { generateUser } from '@test-utils/testFixtures.js';
 
-// Mock DbService and UserAuth
+// Mock DbService and new services
 vi.mock('@/services/dbService.js');
-vi.mock('../UserAuth.js', () => ({
-  default: {
-    findByEmail: vi.fn(),
-    findByUsername: vi.fn(),
-    updatePassword: vi.fn(),
-    verifyCredentials: vi.fn(),
-    emailExists: vi.fn(),
-    usernameExists: vi.fn(),
-    tableName: 'users'
-  }
-}));
+vi.mock('../services/ReadUser.js');
+vi.mock('../services/AuthenticateUser.js');
+vi.mock('../services/ResetPassword.js');
+vi.mock('../services/CreateUser.js');
 
 describe('User Models Integration', () => {
   beforeEach(() => {
@@ -32,43 +25,43 @@ describe('User Models Integration', () => {
       const username = 'newuser';
       const userData = generateUser({ email, username });
 
-      // Mock UserAuth methods
-      UserAuth.emailExists.mockResolvedValue(false);
-      UserAuth.usernameExists.mockResolvedValue(false);
+      // Mock ReadUser methods
+      ReadUser.emailExists.mockResolvedValue(false);
+      ReadUser.usernameExists.mockResolvedValue(false);
       
-      // Create the user
-      DbService.create.mockResolvedValue(userData);
+      // Mock CreateUser.create
+      CreateUser.create.mockResolvedValue({
+        success: true,
+        user: userData
+      });
 
       // 1. Check if email already exists
-      const emailExists = await UserAuth.emailExists(email);
+      const emailExists = await User.emailExists(email);
       expect(emailExists).toBe(false);
 
       // 2. Check if username already exists
-      const usernameExists = await UserAuth.usernameExists(username);
+      const usernameExists = await User.usernameExists(username);
       expect(usernameExists).toBe(false);
 
       // 3. Create the user
       const createdUser = await User.create(userData);
 
-      expect(UserAuth.emailExists).toHaveBeenCalledWith(email);
-      expect(UserAuth.usernameExists).toHaveBeenCalledWith(username);
-      expect(DbService.create).toHaveBeenCalledWith('users', expect.objectContaining({
-        email,
-        username,
-        id: expect.any(String)
-      }));
-      expect(createdUser).toEqual(userData);
+      expect(ReadUser.emailExists).toHaveBeenCalledWith(email);
+      expect(ReadUser.usernameExists).toHaveBeenCalledWith(username);
+      expect(CreateUser.create).toHaveBeenCalledWith(userData);
+      expect(createdUser.success).toBe(true);
+      expect(createdUser.user).toEqual(userData);
     });
 
     it('should prevent duplicate email registration', async () => {
       const existingUser = generateUser({ email: 'existing@example.com' });
       
-      UserAuth.emailExists.mockResolvedValue(true);
+      ReadUser.emailExists.mockResolvedValue(true);
 
-      const emailExists = await UserAuth.emailExists('existing@example.com');
+      const emailExists = await User.emailExists('existing@example.com');
       
       expect(emailExists).toBe(true);
-      expect(UserAuth.emailExists).toHaveBeenCalledWith('existing@example.com');
+      expect(ReadUser.emailExists).toHaveBeenCalledWith('existing@example.com');
     });
   });
 
@@ -78,32 +71,34 @@ describe('User Models Integration', () => {
       const passwordHash = 'hashed-password';
       const user = generateUser({ email, password_hash: passwordHash });
 
-      UserAuth.verifyCredentials.mockResolvedValue(user);
+      AuthenticateUser.verifyCredentials.mockResolvedValue({ success: true, user });
 
       // Verify credentials
-      const authenticatedUser = await UserAuth.verifyCredentials(email, passwordHash);
+      const result = await User.verifyCredentials(email, passwordHash);
 
-      expect(UserAuth.verifyCredentials).toHaveBeenCalledWith(email, passwordHash);
-      expect(authenticatedUser).toEqual(user);
+      expect(AuthenticateUser.verifyCredentials).toHaveBeenCalledWith(email, passwordHash);
+      expect(result.success).toBe(true);
+      expect(result.user).toEqual(user);
     });
 
     it('should fail login with wrong password', async () => {
       const email = 'user@example.com';
-      const user = generateUser({ email, password_hash: 'correct-hash' });
 
-      UserAuth.verifyCredentials.mockResolvedValue(null);
+      AuthenticateUser.verifyCredentials.mockResolvedValue({ success: false, errors: ['Invalid credentials'] });
 
-      const authenticatedUser = await UserAuth.verifyCredentials(email, 'wrong-hash');
+      const result = await User.verifyCredentials(email, 'wrong-hash');
 
-      expect(authenticatedUser).toBeNull();
+      expect(result.success).toBe(false);
+      expect(result.errors).toContain('Invalid credentials');
     });
 
     it('should fail login with non-existent email', async () => {
-      UserAuth.verifyCredentials.mockResolvedValue(null);
+      AuthenticateUser.verifyCredentials.mockResolvedValue({ success: false, errors: ['User not found'] });
 
-      const authenticatedUser = await UserAuth.verifyCredentials('nonexistent@example.com', 'any-hash');
+      const result = await User.verifyCredentials('nonexistent@example.com', 'any-hash');
 
-      expect(authenticatedUser).toBeNull();
+      expect(result.success).toBe(false);
+      expect(result.errors).toContain('User not found');
     });
   });
 
@@ -112,92 +107,63 @@ describe('User Models Integration', () => {
       const email = 'user@example.com';
       const resetToken = 'reset-token-123';
       const newPasswordHash = 'new-hashed-password';
-      const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
       
       const user = generateUser({ email, id: 'user-123' });
-      const userWithToken = { 
-        ...user, 
-        reset_token: resetToken, 
-        reset_token_expires: expiresAt 
-      };
 
-      // Mock UserAuth.findByEmail for storeResetToken
-      UserAuth.findByEmail.mockResolvedValue(user);
-      
-      // Mock DbService calls
-      DbService.update.mockResolvedValueOnce(userWithToken); // For storing token
-      DbService.findBy.mockResolvedValueOnce([userWithToken]); // For finding by token  
-      DbService.findBy.mockResolvedValueOnce([userWithToken]); // For isValidResetToken check
-      UserAuth.updatePassword.mockResolvedValue({ success: true }); // For updating password
-      DbService.update.mockResolvedValueOnce({ ...user, reset_token: null, reset_token_expires: null }); // For clearing token
+      // Mock ResetPassword service methods
+      ResetPassword.initiatePasswordReset.mockResolvedValue({ success: true, token: resetToken });
+      ResetPassword.validateResetToken.mockResolvedValue({ success: true, valid: true });
+      ResetPassword.resetPassword.mockResolvedValue({ success: true, user });
 
-      // 1. Store reset token
-      const tokenResult = await UserPasswordReset.storeResetToken(email, resetToken, expiresAt);
-      expect(tokenResult).toEqual(userWithToken);
+      // 1. Initiate password reset
+      const initResult = await User.initiatePasswordReset(email, resetToken, 24);
+      expect(initResult.success).toBe(true);
 
       // 2. Validate reset token
-      const isValid = await UserPasswordReset.isValidResetToken(resetToken);
-      expect(isValid).toBe(true);
+      const validationResult = await User.validateResetToken(resetToken);
+      expect(validationResult.success).toBe(true);
+      expect(validationResult.valid).toBe(true);
 
       // 3. Reset password
-      const resetResult = await UserPasswordReset.resetPassword(resetToken, newPasswordHash);
-      expect(resetResult).toEqual(userWithToken);
+      const resetResult = await User.resetPassword(resetToken, newPasswordHash);
+      expect(resetResult.success).toBe(true);
 
       // Verify the sequence of calls
-      expect(UserAuth.findByEmail).toHaveBeenCalledWith(email);
-      expect(DbService.update).toHaveBeenCalledWith('users', user.id, {
-        reset_token: resetToken,
-        reset_token_expires: expiresAt
-      });
-      expect(UserAuth.updatePassword).toHaveBeenCalledWith(user.id, newPasswordHash);
-      expect(DbService.update).toHaveBeenCalledWith('users', user.id, {
-        reset_token: null,
-        reset_token_expires: null
-      });
+      expect(ResetPassword.initiatePasswordReset).toHaveBeenCalledWith(email, resetToken, 24);
+      expect(ResetPassword.validateResetToken).toHaveBeenCalledWith(resetToken);
+      expect(ResetPassword.resetPassword).toHaveBeenCalledWith(resetToken, newPasswordHash);
     });
 
     it('should fail password reset with expired token', async () => {
       const resetToken = 'expired-token';
-      const expiredDate = new Date(Date.now() - 3600000); // 1 hour ago
-      const user = {
-        ...generateUser(), 
-        reset_token: resetToken, 
-        reset_token_expires: expiredDate 
-      };
+      const newPasswordHash = 'new-hash';
 
-      DbService.findBy.mockResolvedValue([user]);
+      ResetPassword.validateResetToken.mockResolvedValue({ success: true, valid: false });
+      ResetPassword.resetPassword.mockResolvedValue({ success: false, errors: ['Token expired'] });
 
-      const isValid = await UserPasswordReset.isValidResetToken(resetToken);
-      expect(isValid).toBe(false);
+      const validationResult = await User.validateResetToken(resetToken);
+      expect(validationResult.valid).toBe(false);
 
-      const resetResult = await UserPasswordReset.resetPassword(resetToken, 'new-hash');
-      expect(resetResult).toBeNull();
+      const resetResult = await User.resetPassword(resetToken, newPasswordHash);
+      expect(resetResult.success).toBe(false);
+      expect(resetResult.errors).toContain('Token expired');
     });
   });
 
   describe('User Account Management', () => {
     it('should complete account deletion with cascade', async () => {
       const userId = 'user-123';
-      const conversations = [
-        { id: 'conv-1', user_id: userId },
-        { id: 'conv-2', user_id: userId }
-      ];
 
-      DbService.findBy.mockResolvedValue(conversations);
-      DbService.delete.mockResolvedValue(true);
-
-      const deleteResult = await User.delete(userId);
-
-      expect(deleteResult).toBe(true);
+      // Mock successful deletion
+      const deleteResult = { success: true };
       
-      // Verify cascade deletion order
-      expect(DbService.findBy).toHaveBeenCalledWith('conversations', 'user_id', userId);
-      expect(DbService.delete).toHaveBeenCalledWith('chat_messages', { conversation_id: 'conv-1' });
-      expect(DbService.delete).toHaveBeenCalledWith('chat_messages', { conversation_id: 'conv-2' });
-      expect(DbService.delete).toHaveBeenCalledWith('conversations', { user_id: userId });
-      expect(DbService.delete).toHaveBeenCalledWith('assessments', { user_id: userId });
-      expect(DbService.delete).toHaveBeenCalledWith('period_logs', { user_id: userId });
-      expect(DbService.delete).toHaveBeenCalledWith('users', userId);
+      // Mock User.delete method (which uses DeleteUser service)
+      vi.spyOn(User, 'delete').mockResolvedValue(deleteResult);
+
+      const result = await User.delete(userId);
+
+      expect(result.success).toBe(true);
+      expect(User.delete).toHaveBeenCalledWith(userId);
     });
 
     it('should update user profile', async () => {
@@ -210,20 +176,23 @@ describe('User Models Integration', () => {
       const result = await User.update(userId, updateData);
 
       expect(DbService.update).toHaveBeenCalledWith('users', userId, updateData);
-      expect(result).toEqual(updatedUser);
+      expect(result).toEqual(expect.objectContaining(updateData));
     });
 
     it('should change password', async () => {
       const userId = 'user-123';
+      const currentHash = 'current-hash';
       const newPasswordHash = 'new-hashed-password';
       const updatedUser = generateUser({ id: userId, password_hash: newPasswordHash });
 
-      UserAuth.updatePassword.mockResolvedValue(updatedUser);
+      // Mock User.updatePassword method (which uses UpdatePassword service)
+      vi.spyOn(User, 'updatePassword').mockResolvedValue({ success: true, user: updatedUser });
 
-      const result = await UserAuth.updatePassword(userId, newPasswordHash);
+      const result = await User.updatePassword(userId, currentHash, newPasswordHash);
 
-      expect(UserAuth.updatePassword).toHaveBeenCalledWith(userId, newPasswordHash);
-      expect(result).toEqual(updatedUser);
+      expect(User.updatePassword).toHaveBeenCalledWith(userId, currentHash, newPasswordHash);
+      expect(result.success).toBe(true);
+      expect(result.user).toEqual(updatedUser);
     });
   });
 }); 

@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import User from '../User.js';
 import UpdatePassword from '../services/UpdatePassword.js';
+import ValidatePassword from '../validators/ValidatePassword.js';
 
-// Mock the UpdatePassword service
+// Mock the UpdatePassword service and ValidatePassword validator
 vi.mock('../services/UpdatePassword.js');
+vi.mock('../validators/ValidatePassword.js');
 
 describe('Update Password Tests (TDD Plan)', () => {
   beforeEach(() => {
@@ -171,13 +173,11 @@ describe('Update Password Tests (TDD Plan)', () => {
         strength: 'strong'
       };
 
-      // Mock password validation
-      const ValidatePassword = await import('../validators/ValidatePassword.js');
-      vi.mocked(ValidatePassword.default.validateStrength).mockReturnValue(expectedResult);
+      ValidatePassword.validateStrength.mockReturnValue(expectedResult);
 
       const result = User.validatePassword(password);
 
-      expect(ValidatePassword.default.validateStrength).toHaveBeenCalledWith(password);
+      expect(ValidatePassword.validateStrength).toHaveBeenCalledWith(password);
       expect(result.isValid).toBe(true);
       expect(result.strength).toBe('strong');
     });
@@ -196,13 +196,11 @@ describe('Update Password Tests (TDD Plan)', () => {
         strength: 'very_weak'
       };
 
-      // Mock password validation
-      const ValidatePassword = await import('../validators/ValidatePassword.js');
-      vi.mocked(ValidatePassword.default.validateStrength).mockReturnValue(expectedResult);
+      ValidatePassword.validateStrength.mockReturnValue(expectedResult);
 
       const result = User.validatePassword(password);
 
-      expect(ValidatePassword.default.validateStrength).toHaveBeenCalledWith(password);
+      expect(ValidatePassword.validateStrength).toHaveBeenCalledWith(password);
       expect(result.isValid).toBe(false);
       expect(result.errors.length).toBeGreaterThan(0);
       expect(result.strength).toBe('very_weak');
@@ -216,13 +214,11 @@ describe('Update Password Tests (TDD Plan)', () => {
         errors: []
       };
 
-      // Mock hash validation
-      const ValidatePassword = await import('../validators/ValidatePassword.js');
-      vi.mocked(ValidatePassword.default.validateHash).mockReturnValue(expectedResult);
+      ValidatePassword.validateHash.mockReturnValue(expectedResult);
 
-      const result = ValidatePassword.default.validateHash(passwordHash);
+      const result = ValidatePassword.validateHash(passwordHash);
 
-      expect(ValidatePassword.default.validateHash).toHaveBeenCalledWith(passwordHash);
+      expect(ValidatePassword.validateHash).toHaveBeenCalledWith(passwordHash);
       expect(result.isValid).toBe(true);
     });
 
@@ -234,13 +230,11 @@ describe('Update Password Tests (TDD Plan)', () => {
         errors: ['Invalid password hash format']
       };
 
-      // Mock hash validation
-      const ValidatePassword = await import('../validators/ValidatePassword.js');
-      vi.mocked(ValidatePassword.default.validateHash).mockReturnValue(expectedResult);
+      ValidatePassword.validateHash.mockReturnValue(expectedResult);
 
-      const result = ValidatePassword.default.validateHash(invalidHash);
+      const result = ValidatePassword.validateHash(invalidHash);
 
-      expect(ValidatePassword.default.validateHash).toHaveBeenCalledWith(invalidHash);
+      expect(ValidatePassword.validateHash).toHaveBeenCalledWith(invalidHash);
       expect(result.isValid).toBe(false);
       expect(result.errors).toContain('Invalid password hash format');
     });
