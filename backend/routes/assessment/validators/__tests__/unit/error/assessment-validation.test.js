@@ -1,6 +1,6 @@
 // @ts-check
 import { describe, test, expect } from 'vitest';
-import { validateAssessmentData } from '../../../validators/index.js';
+import { validateAssessmentData } from '../../../index.js';
 
 describe('Assessment Validation - Error Cases', () => {
   test('should reject empty assessment object', () => {
