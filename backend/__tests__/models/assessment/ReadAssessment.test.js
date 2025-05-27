@@ -54,7 +54,7 @@ describe('ReadAssessment', () => {
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(dbAssessment);
+      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(dbAssessment);
       expect(TransformDbToApi.transform).toHaveBeenCalledWith(dbAssessment);
       expect(result).toEqual(transformedAssessment);
     });
