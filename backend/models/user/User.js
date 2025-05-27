@@ -7,6 +7,7 @@ import UpdatePassword from './services/UpdatePassword.js';
 import DeleteUser from './services/DeleteUser.js';
 import AuthenticateUser from './services/AuthenticateUser.js';
 import ResetPassword from './services/ResetPassword.js';
+import DbService from '@/services/dbService.js';
 
 // Validators
 import ValidateUserData from './validators/ValidateUserData.js';
@@ -159,7 +160,6 @@ class User {
   static async update(id, userData) {
     // For backward compatibility - delegates to DbService directly
     // This should ideally be replaced with specific update services
-    const DbService = (await import('../../services/db-service/dbService.js')).default;
     const updatedUser = await DbService.update(this.tableName, id, userData);
     return SanitizeUserData.sanitizeUser(updatedUser);
   }
