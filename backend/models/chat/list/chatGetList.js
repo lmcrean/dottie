@@ -8,14 +8,21 @@ import logger from '../../../services/logger.js';
  */
 export const getUserConversations = async (userId) => {
   try {
+    console.log(`[getUserConversations] Starting with userId: ${userId}, type: ${typeof userId}`);
+    
     const conversations = await DbService.getConversationsWithPreviews(userId);
+    
+    console.log(`[getUserConversations] DbService.getConversationsWithPreviews returned:`, conversations);
     
     // Handle null or undefined results
     if (!conversations) {
+      console.log(`[getUserConversations] No conversations returned, returning empty array`);
       return [];
     }
     
-    return conversations.map(conversation => ({
+    console.log(`[getUserConversations] Processing ${conversations.length} conversations`);
+    
+    const result = conversations.map(conversation => ({
       id: conversation.id,
       last_message_date: conversation.last_message_date,
       preview: conversation.preview 
@@ -27,8 +34,17 @@ export const getUserConversations = async (userId) => {
       user_id: conversation.user_id
     }));
 
+    console.log(`[getUserConversations] Final result:`, JSON.stringify(result, null, 2));
+    return result;
+
   } catch (error) {
-    logger.error('Error getting user conversations:', error);
+    logger.error('[getUserConversations] Error getting user conversations:', error);
+    console.error('[getUserConversations] Detailed error:', {
+      message: error.message,
+      stack: error.stack,
+      userId: userId,
+      userIdType: typeof userId
+    });
     throw error;
   }
 }; 

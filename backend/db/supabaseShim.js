@@ -16,6 +16,7 @@ const createQueryBuilder = (tableName) => {
     _offset: null,
     _inserts: null,
     _updates: null,
+    _count: null,
     
     // Methods
     where(field, value) {
@@ -36,6 +37,11 @@ const createQueryBuilder = (tableName) => {
     offset(offset) {
       this._offset = offset;
       return this;
+    },
+    
+    count(column = '*') {
+      this._count = column;
+      return this._runCount();
     },
     
     insert(data) {
@@ -89,6 +95,22 @@ const createQueryBuilder = (tableName) => {
       
       if (error) throw error;
       return data || [];
+    },
+    
+    async _runCount() {
+      let query = supabase.from(this._table).select('*', { count: 'exact', head: true });
+      
+      // Apply wheres
+      for (const where of this._wheres) {
+        query = query.eq(where.field, where.value);
+      }
+      
+      const { count, error } = await query;
+      
+      if (error) throw error;
+      
+      // Return in the format expected by Knex.js count queries
+      return { count: count || 0 };
     },
     
     async _runInsert() {
