@@ -10,9 +10,14 @@ import { runChatWorkflow, deleteAndVerifyConversation } from './chat-workflow.js
 import { runAuthWorkflow, runAuthErrorTest } from './auth-workflow.js';
 import { runAssessmentCreationWorkflow, runCleanupWorkflow } from './assessment-workflow.js';
 import { runUserManagementWorkflow, runUserDeletionWorkflow } from './user-workflow.js';
+import { runSetupWorkflow, runIndividualSetupTests } from './setup-workflow.js';
 
 // Export all scenarios
 export {
+  // Setup workflows
+  runSetupWorkflow,
+  runIndividualSetupTests,
+  
   // Auth workflows
   runAuthWorkflow,
   runAuthErrorTest,

@@ -24,19 +24,8 @@ const sharedTestState = {
 base.describe.configure({ mode: "serial" });
 
 base.describe("Master Integration Test", () => {
-  base("1. Health check endpoints", async ({ request }) => {
-    // Custom health check for dev (stricter database requirements)
-    const helloResponse = await request.get("/api/setup/health/hello");
-    expect(helloResponse.status()).toBe(200);
-    const helloData = await helloResponse.json();
-    expect(helloData).toHaveProperty('message');
-    expect(helloData.message).toBe('Hello World from Dottie API!');
-
-    // Dev environment requires database to be working
-    const dbStatusResponse = await request.get("/api/setup/database/status");
-    expect(dbStatusResponse.status()).toBe(200);
-    const dbStatusData = await dbStatusResponse.json();
-    expect(dbStatusData).toHaveProperty('status');
+  base("1. Complete setup workflow", async ({ request }) => {
+    await scenarios.runSetupWorkflow(request, expect);
   });
 
   base("2. Complete authentication workflow", async ({ request }) => {

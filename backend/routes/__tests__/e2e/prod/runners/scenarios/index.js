@@ -4,6 +4,7 @@
  * Exports all high-level test scenario workflows.
  */
 
+export { runSetupWorkflow, runIndividualSetupTests } from './setup-workflow.js';
 export { runAuthWorkflow, runHealthCheck } from './auth-workflow.js';
 export { runAssessmentCreationWorkflow, deleteAndVerifyAssessment } from './assessment-workflow.js';
 export { runUserManagementWorkflow } from './user-workflow.js';

@@ -24,8 +24,8 @@ const sharedTestState = {
 base.describe.configure({ mode: "serial" });
 
 base.describe("Master Integration Test", () => {
-  base("1. Health check endpoints", async ({ request }) => {
-    await scenarios.runHealthCheck(request, expect);
+  base("1. Complete setup workflow", async ({ request }) => {
+    await scenarios.runSetupWorkflow(request, expect);
   });
 
   base("2. Complete authentication workflow", async ({ request }) => {
