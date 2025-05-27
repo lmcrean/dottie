@@ -3,7 +3,7 @@ import { editMessage, editMessageWithRegeneration } from '../editMessageRegenera
 import { cleanupChildrenMessages } from '../cleanupChildrenMessages.js';
 import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.js';
 import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
-import Chat from '../../../../../../list/chat.js';
+import Chat from '../../../../../list/chat.js';
 import logger from '@/services/logger.js';
 
 // Mock dependencies
@@ -18,7 +18,7 @@ vi.mock('../../shared/database/chatOperations.js', () => ({
     updateMessage: vi.fn()
   }
 }));
-vi.mock('../../../../../../list/chat.js');
+vi.mock('../../../../../list/chat.js');
 vi.mock('@/services/logger.js');
 
 describe('Edit Message and Regeneration', () => {

@@ -111,7 +111,7 @@ describe('ReadAssessment', () => {
       const transformError = new Error('Transform failed');
 
       DbService.findById.mockResolvedValue(dbAssessment);
-      FormatDetector.isCurrentFormat.mockReturnValue(true);
+      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(true);
       TransformDbToApi.transform.mockImplementation(() => {
         throw transformError;
       });
@@ -158,18 +158,18 @@ describe('ReadAssessment', () => {
   });
 
   describe('canProcessRecord', () => {
-    it('should call FormatDetector.isCurrentFormat', () => {
+    it('should call DetectAssessmentFormat.isCurrentFormat', () => {
       const record = {
         id: 'test-123',
         age: 25,
         pattern: 'regular'
       };
 
-      FormatDetector.isCurrentFormat.mockReturnValue(true);
+      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(true);
 
       const result = ReadAssessment.canProcessRecord(record);
 
-      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(record);
+      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(record);
       expect(result).toBe(true);
     });
 
@@ -179,11 +179,11 @@ describe('ReadAssessment', () => {
         assessment_data: '{"legacy": "data"}'
       };
 
-      FormatDetector.isCurrentFormat.mockReturnValue(false);
+      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(false);
 
       const result = ReadAssessment.canProcessRecord(legacyRecord);
 
-      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(legacyRecord);
+      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(legacyRecord);
       expect(result).toBe(false);
     });
   });
