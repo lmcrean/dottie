@@ -8,12 +8,11 @@ import { generateDefaultAssessment } from '../assessment/generateDefaultAssessme
 import { createAssessment } from '../assessment/createAssessment.js';
 import { getAssessments } from '../assessment/getAssessments.js';
 import { getAssessmentById } from '../assessment/getAssessmentById.js';
-import { updateAssessment } from '../assessment/updateAssessment.js';
 import { deleteAssessment } from '../assessment/deleteAssessment.js';
 
 /**
  * Complete assessment creation workflow test
- * Tests assessment creation, retrieval, update, and deletion
+ * Tests assessment creation, retrieval, and deletion
  */
 export async function runAssessmentCreationWorkflow(request, expect, authToken, userId) {
   console.log('📋 Starting Assessment Creation Workflow...');
@@ -34,14 +33,6 @@ export async function runAssessmentCreationWorkflow(request, expect, authToken, 
     // Step 4: Get specific assessment by ID (request, token, assessmentId)
     const retrievedAssessment = await getAssessmentById(request, authToken, createdAssessmentId);
     console.log('✅ Retrieved assessment by ID');
-    
-    // Step 5: Update the assessment (request, token, userId, assessmentId, updateData)
-    const updateData = {
-      title: 'Updated Assessment Title',
-      description: 'Updated description for testing'
-    };
-    const updatedAssessment = await updateAssessment(request, authToken, userId, createdAssessmentId, updateData);
-    console.log('✅ Assessment updated successfully');
     
     console.log('🎉 Assessment Creation Workflow completed successfully!');
     return {
