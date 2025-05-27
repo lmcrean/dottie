@@ -7,7 +7,7 @@ import UpdatePassword from './services/UpdatePassword.js';
 import DeleteUser from './services/DeleteUser.js';
 import AuthenticateUser from './services/AuthenticateUser.js';
 import ResetPassword from './services/ResetPassword.js';
-import DbService from '@/services/dbService.js';
+import DbService from '../../services/dbService.js';
 
 // Validators
 import ValidateUserData from './validators/ValidateUserData.js';
