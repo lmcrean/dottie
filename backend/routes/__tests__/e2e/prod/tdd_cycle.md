@@ -1,10 +1,12 @@
 # test driven development cycle
 
-1. run n`pm run test:prod` from `cd backend`
-2. inspect output
-3. update test file if needed
-4. update codebase if needed
-5. redeploy with `vercel --prod` command
-6. inspect logs with `vercel logs --prod`
-7. run `npm run test:prod` again from `cd backend` and inspect logs
-   
+from `cd backend`:
+
+1. run `npm run test:dev`
+2. run `npm run test:prod`
+3. inspect output
+4. update test file if needed
+5. update codebase if needed
+6. redeploy with `vercel --prod` command
+7. inspect logs with `vercel logs --prod`
+8. run `npm run test:prod` again and inspect logs
