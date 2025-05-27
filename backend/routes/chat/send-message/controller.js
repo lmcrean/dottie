@@ -95,7 +95,6 @@ export const sendMessage = async (req, res) => {
     const userMessageTimestamp = new Date();
     const userMessage = {
       conversation_id: currentConversationId,
-      user_id: userId,
       role: 'user',
       content: message,
       created_at: userMessageTimestamp
@@ -163,7 +162,6 @@ export const sendMessage = async (req, res) => {
     const assistantMessageTimestamp = new Date(); 
     const assistantMessage = {
       conversation_id: currentConversationId,
-      user_id: userId,
       role: 'assistant',
       content: aiResponse,
       created_at: assistantMessageTimestamp

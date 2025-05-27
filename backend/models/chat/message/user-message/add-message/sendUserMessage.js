@@ -38,7 +38,6 @@ export const sendMessage = async (conversationId, userId, messageText, options =
       id: messageId,
       role: 'user',
       content: messageText,
-      user_id: userId,
       parent_message_id: parentMessageId,
       created_at: new Date().toISOString()
     };
@@ -51,7 +50,6 @@ export const sendMessage = async (conversationId, userId, messageText, options =
       conversationId,
       role: 'user',
       content: messageText,
-      user_id: userId,
       parent_message_id: parentMessageId,
       created_at: messageData.created_at,
       ...context

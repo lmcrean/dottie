@@ -1,5 +1,5 @@
 import logger from '../../../../../../services/logger.js';
-import DbService from '../../../../../../services/db-service/dbService.js';
+import DbService from '../../../../../../services/dbService.js';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -18,7 +18,6 @@ export async function createInitialMessage(conversationId, userId) {
     const userMessage = {
       id: userMessageId,
       conversation_id: conversationId,
-      user_id: userId,
       role: 'user',
       content: messageText,
       created_at: new Date().toISOString()
