@@ -30,20 +30,55 @@ vi.mock('../../../../../services/logger', () => ({
   }
 }));
 
-vi.mock('../../../../../models/chat/index.js', () => ({
-  createConversation: vi.fn().mockResolvedValue('new-conversation-id'),
-  getConversation: vi.fn().mockImplementation((conversationId) => {
+// Mock the conversation functions used by sendMessageFlow
+vi.mock('../../../../../models/chat/conversation/read-conversation/getConversation.js', () => ({
+  getConversationForUser: vi.fn().mockImplementation((conversationId, userId) => {
     if (conversationId === 'valid-conversation-id') {
       return Promise.resolve({
-        id: 'valid-conversation-id',
-        userId: 'user-123',
+        success: true,
         messages: [
           { role: 'user', content: 'Hello' },
           { role: 'assistant', content: 'Hi there, how can I help you?' }
         ]
       });
     }
-    return Promise.resolve(null);
+    return Promise.resolve({ success: false });
+  })
+}));
+
+vi.mock('../../../../../models/chat/conversation/create-new-conversation/database/conversationCreate.js', () => ({
+  createConversation: vi.fn().mockResolvedValue('new-conversation-id')
+}));
+
+// Mock Chat.isOwner used by addUserMessage
+vi.mock('../../../../../models/chat/list/chat.js', () => ({
+  default: {
+    isOwner: vi.fn().mockResolvedValue(true)
+  }
+}));
+
+// Mock the message functions
+vi.mock('../../../../../models/chat/message/1-user-message/add-message/sendUserMessage.js', () => ({
+  addUserMessage: vi.fn().mockResolvedValue({
+    userMessage: {
+      id: 'user-msg-123',
+      content: 'Test message',
+      role: 'user'
+    },
+    conversationId: 'new-conversation-id',
+    timestamp: new Date().toISOString()
+  })
+}));
+
+vi.mock('../../../../../models/chat/message/2-chatbot-message/generateResponse.js', () => ({
+  generateAndSaveResponse: vi.fn().mockResolvedValue({
+    chatbotMessage: {
+      id: 'assistant-msg-123',
+      content: 'This is a mock AI response',
+      role: 'assistant'
+    },
+    conversationId: 'new-conversation-id',
+    timestamp: new Date().toISOString()
   })
 }));
 

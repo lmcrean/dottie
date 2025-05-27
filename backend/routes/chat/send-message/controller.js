@@ -33,7 +33,7 @@ export const sendMessage = async (req, res) => {
 
     // Return clean response
     return res.status(200).json({
-      message: result.message,
+      message: result.assistantMessage.content,
       conversationId: result.conversationId,
     });
     

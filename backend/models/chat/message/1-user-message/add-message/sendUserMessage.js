@@ -2,29 +2,26 @@ import logger from '../../../../../services/logger.js';
 import { insertChatMessage } from './database/sendUserMessage.js';
 import { formatUserMessage } from './validation/formatters/formatUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
-import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
 import Chat from '../../../list/chat.js';
 
 /**
- * Send a message in a conversation
+ * Add a user message to a conversation
  * @param {string} conversationId - Conversation ID
  * @param {string} userId - User ID
  * @param {string} messageText - Message content
  * @param {Object} [options] - Options for message sending
- * @param {boolean} [options.autoResponse=true] - Auto-generate AI response
  * @param {string} [options.parentMessageId] - Parent message ID for threading
  * @param {Object} [options.context] - Additional context for the message
- * @returns {Promise<Object>} - Message result
+ * @returns {Promise<Object>} - User message result
  */
-export const sendMessage = async (conversationId, userId, messageText, options = {}) => {
+export const addUserMessage = async (conversationId, userId, messageText, options = {}) => {
   const { 
-    autoResponse = true, 
     parentMessageId = null, 
     context = {}
   } = options;
 
   try {
-    logger.info(`Sending message in conversation ${conversationId}`);
+    logger.info(`Adding user message to conversation ${conversationId}`);
 
     // Verify conversation ownership
     const isOwner = await Chat.isOwner(conversationId, userId);
@@ -55,23 +52,19 @@ export const sendMessage = async (conversationId, userId, messageText, options =
       ...context
     };
 
-    // Generate AI response if enabled
-    let assistantMessage = null;
-    if (autoResponse) {
-              assistantMessage = await generateResponseToMessage(conversationId, messageId, messageText);
-    }
-
-    logger.info(`Message sent successfully in conversation ${conversationId}`);
+    logger.info(`User message added successfully to conversation ${conversationId}`);
 
     return {
       userMessage,
-      assistantMessage,
       conversationId,
       timestamp: new Date().toISOString()
     };
 
   } catch (error) {
-    logger.error('Error sending message:', error);
+    logger.error('Error adding user message:', error);
     throw error;
   }
 };
+
+// Keep legacy function name for backward compatibility
+export const sendMessage = addUserMessage;

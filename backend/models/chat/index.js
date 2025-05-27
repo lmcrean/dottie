@@ -13,8 +13,11 @@ import { getUserConversations as originalGetUserConversations } from './list/cha
 import { deleteConversation as originalDeleteConversation } from './conversation/delete-conversation/chatDelete.js';
 import { createAssessmentConversation as originalCreateAssessmentConversation } from './conversation/create-new-conversation/createFlow.js';
 import { getConversation as originalGetConversation, getConversationForUser as originalGetConversationForUser, getConversationSummary as originalGetConversationSummary } from './conversation/read-conversation/getConversation.js';
-import { sendMessage as originalSendMessage } from './message/user-message/add-message/sendUserMessage.js';
-import { insertChatMessage as originalInsertChatMessage } from './message/user-message/add-message/database/sendUserMessage.js';
+import { addUserMessage as originalAddUserMessage, sendMessage as originalSendMessage } from './message/1-user-message/add-message/sendUserMessage.js';
+import { insertChatMessage as originalInsertChatMessage } from './message/1-user-message/add-message/database/sendUserMessage.js';
+import { generateAndSaveResponse as originalGenerateAndSaveResponse } from './message/2-chatbot-message/generateResponse.js';
+import { sendChatbotMessage as originalSendChatbotMessage } from './message/2-chatbot-message/database/sendChatbotMessage.js';
+import { sendMessageFlow as originalSendMessageFlow } from './message/send-message-flow/sendMessageFlow.js';
 import { updateConversationAssessmentLinks as originalUpdateConversationAssessmentLinks } from './conversation/update-conversation/updateAssessmentLinks.js';
 
 // ===================================
@@ -35,10 +38,18 @@ export const getConversationSummary = originalGetConversationSummary;
 export const updateConversationAssessmentLinks = originalUpdateConversationAssessmentLinks;
 
 // ===================================
-// MESSAGE OPERATIONS
+// MESSAGE OPERATIONS - NEW CLEAN STRUCTURE
 // ===================================
-export const sendMessage = originalSendMessage;
+// 1. User Message Operations
+export const addUserMessage = originalAddUserMessage;
 export const insertChatMessage = originalInsertChatMessage;
+
+// 2. Chatbot Message Operations  
+export const generateAndSaveResponse = originalGenerateAndSaveResponse;
+export const sendChatbotMessage = originalSendChatbotMessage;
+
+// 3. Complete Message Flow (orchestrator)
+export const sendMessageFlow = originalSendMessageFlow;
 
 // ===================================
 // CONVENIENCE FUNCTIONS
@@ -52,8 +63,7 @@ export const insertChatMessage = originalInsertChatMessage;
  * @returns {Promise<Object>} - Complete conversation with initial exchange
  */
 export const quickStart = async (userId, message, assessmentId = null) => {
-  // Using originalCreateAssessmentConversation directly as it's already imported
-  return await originalCreateAssessmentConversation(userId, assessmentId);
+  return await originalSendMessageFlow(userId, message, null, assessmentId);
 };
 
 /**
@@ -64,8 +74,7 @@ export const quickStart = async (userId, message, assessmentId = null) => {
  * @returns {Promise<Object>} - Message exchange result
  */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  // Using originalSendMessage directly as it's already imported
-  return await originalSendMessage(conversationId, userId, message);
+  return await originalSendMessageFlow(userId, message, conversationId);
 };
 
 // ===================================
@@ -77,7 +86,8 @@ export const getConversations = originalGetUserConversations;
 export const createConversation = originalCreateAssessmentConversation;
 export const newConversation = originalCreateAssessmentConversation;
 export const readConversation = originalGetConversation;
-export const sendMessageNew = originalSendMessage;
+export const sendMessage = originalSendMessage; // Legacy: only adds user message
+export const sendMessageNew = originalSendMessageFlow; // Legacy: complete flow
 
 // Legacy Chat class alias for backward compatibility
 export const Chat = OriginalConversation;
