@@ -5,7 +5,7 @@ import TransformApiToDb from '../../../models/assessment/transformers/TransformA
 
 // Mock dependencies
 vi.mock('../../../services/dbService.js');
-vi.mock('../../../models/assessment/assessment-main/TransformApiToDb.js');
+vi.mock('../../../models/assessment/transformers/TransformApiToDb.js');
 
 describe('UpdateAssessment', () => {
   beforeEach(() => {
