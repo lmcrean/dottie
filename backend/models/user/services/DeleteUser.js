@@ -150,6 +150,7 @@ class DeleteUser {
 
       return {
         success: true,
+        user: updatedUser,
         softDeletedUserId: userId
       };
 
