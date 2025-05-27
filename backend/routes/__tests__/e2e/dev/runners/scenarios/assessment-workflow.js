@@ -1,0 +1,85 @@
+/**
+ * Assessment Workflow Scenarios for Development Testing
+ * 
+ * Tests assessment flows using granular utility functions for sqlite localhost
+ */
+
+import { generateDefaultAssessment } from '../assessment/generateDefaultAssessment.js';
+import { createAssessment } from '../assessment/createAssessment.js';
+import { getAssessments } from '../assessment/getAssessments.js';
+import { getAssessmentById } from '../assessment/getAssessmentById.js';
+import { updateAssessment } from '../assessment/updateAssessment.js';
+import { deleteAssessment } from '../assessment/deleteAssessment.js';
+
+/**
+ * Complete assessment creation workflow test
+ * Tests assessment creation, retrieval, update, and deletion
+ */
+export async function runAssessmentCreationWorkflow(request, expect, authToken, userId) {
+  console.log('📋 Starting Assessment Creation Workflow...');
+  
+  try {
+    // Step 1: Generate default assessment data
+    const assessmentData = generateDefaultAssessment();
+    console.log('✅ Generated assessment data');
+    
+    // Step 2: Create the assessment
+    const createdAssessment = await createAssessment(request, assessmentData, authToken);
+    console.log('✅ Assessment created successfully');
+    
+    // Step 3: Get all assessments
+    const allAssessments = await getAssessments(request, authToken);
+    console.log('✅ Retrieved all assessments');
+    
+    // Step 4: Get specific assessment by ID
+    const retrievedAssessment = await getAssessmentById(request, createdAssessment.id, authToken);
+    console.log('✅ Retrieved assessment by ID');
+    
+    // Step 5: Update the assessment
+    const updateData = {
+      title: 'Updated Assessment Title',
+      description: 'Updated description for testing'
+    };
+    const updatedAssessment = await updateAssessment(request, createdAssessment.id, updateData, authToken);
+    console.log('✅ Assessment updated successfully');
+    
+    console.log('🎉 Assessment Creation Workflow completed successfully!');
+    return {
+      firstAssessmentId: createdAssessment.id,
+      secondAssessmentId: createdAssessment.id // For now using same ID, test can create multiple if needed
+    };
+    
+  } catch (error) {
+    console.error('❌ Assessment Creation Workflow failed:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Assessment cleanup workflow
+ * Deletes test assessments for cleanup
+ */
+export async function runCleanupWorkflow(request, expect, authToken, userId, firstAssessmentId, secondAssessmentId) {
+  console.log('🧹 Starting Cleanup Workflow...');
+  
+  try {
+    // Delete the first assessment
+    if (firstAssessmentId) {
+      const deletionResult1 = await deleteAssessment(request, firstAssessmentId, authToken);
+      console.log('✅ First assessment deleted successfully');
+    }
+    
+    // Delete the second assessment (if different)
+    if (secondAssessmentId && secondAssessmentId !== firstAssessmentId) {
+      const deletionResult2 = await deleteAssessment(request, secondAssessmentId, authToken);
+      console.log('✅ Second assessment deleted successfully');
+    }
+    
+    console.log('🎉 Cleanup Workflow completed successfully!');
+    return { success: true };
+    
+  } catch (error) {
+    console.error('❌ Cleanup Workflow failed:', error.message);
+    throw error;
+  }
+} 

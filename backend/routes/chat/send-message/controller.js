@@ -100,6 +100,11 @@ export const sendMessage = async (req, res) => {
       content: message,
       created_at: userMessageTimestamp
     };
+    logger.info('Creating user message:', { 
+      conversationId: currentConversationId, 
+      role: userMessage.role, 
+      timestamp: userMessageTimestamp.toISOString() 
+    });
     await DbService.create('chat_messages', userMessage);
     
     let aiResponse;
@@ -141,11 +146,6 @@ export const sendMessage = async (req, res) => {
             },
           ],
         });
-  
-        // Add system prompt if this is a new conversation
-        if (!conversationId) {
-          await chat.sendMessage(SYSTEM_PROMPT);
-        }
         
         // Get AI response
         const result = await chat.sendMessage(message);
@@ -157,8 +157,10 @@ export const sendMessage = async (req, res) => {
       }
     }
     
-    // Save AI response to database with timestamp slightly after user message
-    const assistantMessageTimestamp = new Date(userMessageTimestamp.getTime() + 1); // +1ms to ensure proper ordering
+    // Save AI response to database with timestamp that ensures proper ordering
+    // Wait a small amount to ensure timestamp difference and guarantee ordering
+    await new Promise(resolve => setTimeout(resolve, 10)); // 10ms delay
+    const assistantMessageTimestamp = new Date(); 
     const assistantMessage = {
       conversation_id: currentConversationId,
       user_id: userId,

@@ -1,7 +1,7 @@
 import { test as base, expect } from "@playwright/test";
 
-// Import high-level scenario workflows (reusing prod scenarios)
-import * as scenarios from "../prod/runners/scenarios/index.js";
+// Import high-level scenario workflows (using dev scenarios with granular functions)
+import * as scenarios from "./runners/scenarios/index.js";
 
 /**
  * Master Integration Test for Development
