@@ -1,5 +1,5 @@
 // @ts-check
-import { describe, test, expect, beforeAll, afterAll } from "vitest";
+import { describe, test, expect, beforeAll, afterAll, fail } from "vitest";
 import supertest from "supertest";
 import db from "../../../../../../db/index.js";
 import jwt from "jsonwebtoken";
@@ -33,7 +33,7 @@ beforeAll(async () => {
       created_at: new Date().toISOString(),
     };
 
-    await db("users").insert(userData);
+    await db("users").insert(userData).returning('id');
 
     // Create a proper JWT token
     const secret = process.env.JWT_SECRET || "dev-jwt-secret";
@@ -66,12 +66,12 @@ afterAll(async () => {
       if (assessmentIdColumn) {
         await db("symptoms")
           .where(assessmentIdColumn.name, testAssessmentId)
-          .delete();
+          .delete().returning('*');
       }
 
-      await db("assessments").where("id", testAssessmentId).delete();
+      await db("assessments").where("id", testAssessmentId).delete().returning('*');
     }
-    await db("users").where("id", testUserId).delete();
+    await db("users").where("id", testUserId).delete().returning('*');
     
     // Close test server
     await closeTestServer(server);
@@ -115,10 +115,6 @@ describe("Assessment Send Endpoint - Success Cases", () => {
       .send(assessmentData);
 
     // Debug response
-    console.log('Response status:', response.status);
-    console.log('Response body:', response.body);
-    console.log('Response text:', response.text);
-
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
 
