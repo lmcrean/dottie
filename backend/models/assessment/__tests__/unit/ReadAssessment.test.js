@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ReadAssessment from '../../../models/assessment/services/ReadAssessment.js';
-import DbService from '../../../services/dbService.js';
-import TransformDbToApi from '../../../models/assessment/transformers/TransformDbToApi.js';
-import DetectAssessmentFormat from '../../../models/assessment/detectors/DetectAssessmentFormat.js';
+import ReadAssessment from '../../services/ReadAssessment.js';
+import DbService from '../../../../services/dbService.js';
+import TransformDbToApi from '../../transformers/TransformDbToApi.js';
+import DetectAssessmentFormat from '../../detectors/DetectAssessmentFormat.js';
 
 // Mock dependencies
-vi.mock('../../../services/dbService.js');
-vi.mock('../../../models/assessment/transformers/TransformDbToApi.js');
-vi.mock('../../../models/assessment/detectors/DetectAssessmentFormat.js');
+vi.mock('../../../../services/dbService.js');
+vi.mock('../../transformers/TransformDbToApi.js');
+vi.mock('../../detectors/DetectAssessmentFormat.js');
 
 describe('ReadAssessment', () => {
   beforeEach(() => {

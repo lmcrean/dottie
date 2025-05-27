@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import Assessment from '../../../models/assessment/Assessment.js';
-import RouteAssessment from '../../../models/assessment/services/RouteAssessment.js';
+import Assessment from '../../Assessment.js';
+import RouteAssessment from '../../services/RouteAssessment.js';
 
 // Mock the operations class
-vi.mock('../../../models/assessment/services/RouteAssessment.js');
+vi.mock('../../services/RouteAssessment.js');
 
 describe('Assessment', () => {
   beforeEach(() => {
