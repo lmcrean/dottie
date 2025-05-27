@@ -4,7 +4,7 @@ import { createConversation, getConversation } from '../../../models/chat/index.
 import DbService from '../../../services/dbService.js';
 
 // Initialize Gemini API
-const API_KEY = process.env.VITE_GEMINI_API_KEY;
+const API_KEY = process.env.GEMINI_API_KEY;
 
 // Check if API key is available 
 const isMockMode = !API_KEY;
@@ -94,6 +94,7 @@ export const sendMessage = async (req, res) => {
     // Save user message to database
     const userMessage = {
       conversation_id: currentConversationId,
+      user_id: userId,
       role: 'user',
       content: message,
       created_at: new Date()
@@ -158,6 +159,7 @@ export const sendMessage = async (req, res) => {
     // Save AI response to database
     const assistantMessage = {
       conversation_id: currentConversationId,
+      user_id: userId,
       role: 'assistant',
       content: aiResponse,
       created_at: new Date()
