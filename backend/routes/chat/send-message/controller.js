@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import logger from '../../../services/logger.js';
-import { createConversation, getConversation } from '../../../models/chat/index.js';
+import { getConversation } from '../../../models/chat/index.js';
+import { createConversation } from '../../../models/chat/conversation/create-new-conversation/database/conversationCreate.js';
 import DbService from '../../../services/dbService.js';
 
 // Initialize Gemini API
@@ -158,8 +159,8 @@ export const sendMessage = async (req, res) => {
     
     // Save AI response to database with timestamp that ensures proper ordering
     // Wait a small amount to ensure timestamp difference and guarantee ordering
-    await new Promise(resolve => setTimeout(resolve, 10)); // 10ms delay
-    const assistantMessageTimestamp = new Date(); 
+    await new Promise(resolve => setTimeout(resolve, 10));     // Ensure assistant message timestamp is always after user message
+    const assistantMessageTimestamp = new Date(userMessageTimestamp.getTime() + 1000); // 1 second after user message
     const assistantMessage = {
       conversation_id: currentConversationId,
       role: 'assistant',
