@@ -1,7 +1,4 @@
-import { assessments } from "../store/index.js";
-import db from "../../../db/index.js";
 import Assessment from '../../../models/assessment/Assessment.js';
-
 
 /**
  * Delete a specific assessment by user ID / assessment ID
@@ -14,43 +11,26 @@ export const deleteAssessment = async (req, res) => {
     // Get userId from JWT token only to prevent unauthorized access
     const userId = req.user?.userId
 
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized: User ID is required' });
+    }
+
+    if (!assessmentId) {
+      return res.status(400).json({ error: 'Assessment ID is required' });
+    }
+
+    // Validate ownership
     const isOwner = await Assessment.validateOwnership(assessmentId, userId);
     if (!isOwner) {
       return res.status(403).json({ error: 'Unauthorized: You do not own this assessment' });
     }
     
-    // For test IDs, try to delete from the database // ! To be removed
-    if (assessmentId.startsWith('test-')) {
-      try {
-        // Check if assessment exists and belongs to the user
-        const existingAssessment = await db('assessments')
-          .where({
-            'id': assessmentId,
-            'user_id': userId
-          })
-          .first();
-        
-        if (!existingAssessment) {
-          return res.status(404).json({ error: 'Assessment not found' });
-        }
-        
-        // Delete associated symptoms first (foreign key constraint)
-        await db('symptoms').where('assessment_id', assessmentId).del();
-        
-        // Delete the assessment
-        await db('assessments').where('id', assessmentId).del();
-        
-        return res.status(200).json({ message: 'Assessment deleted successfully' });
-      } catch (dbError) {
-        console.error('Database error:', dbError);
-        // Continue to in-memory deletion if database fails
-      }
-    }
-    
-    const deleteAssessment = await Assessment.delete(assessmentId);
-    if (!deleteAssessment) {
+    // Delete the assessment using the model
+    const deleteResult = await Assessment.delete(assessmentId);
+    if (!deleteResult) {
       return res.status(404).json({ error: 'Assessment not found' });
     }
+    
     res.status(200).json({ message: 'Assessment deleted successfully' });
   } catch (error) {
     console.error('Error deleting assessment:', error);
