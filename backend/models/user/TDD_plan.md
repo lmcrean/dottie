@@ -19,11 +19,3 @@
 # runner tests (multi-file data flow)
 
 - [x] complete user workflow: `npm test -- "models/user/__tests__/runner/userWorkflow.test.js"` ✅ (ready for testing)
-
-# legacy tests (to be removed/updated)
-
-- [ ] update old User.test.js to new architecture
-- [ ] update old UserAuth.test.js (file needs to be removed - functionality moved to services)
-- [ ] update old UserPasswordReset.test.js (file needs to be removed - functionality moved to services)
-- [ ] update old integration.test.js to new architecture
-- [ ] update old index.test.js to new exports structure
