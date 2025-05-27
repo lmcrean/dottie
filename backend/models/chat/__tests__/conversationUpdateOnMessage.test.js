@@ -7,6 +7,7 @@ import { runConversationUpdateTests } from './runners/conversationUpdate.js';
 import { runMessageCountTests } from './runners/messageCount.js';
 import { runPreviewUpdateTests } from './runners/previewUpdate.js';
 import { runTimestampUpdateTests } from './runners/timestampUpdate.js';
+import { runMessageOrderingTests } from './runners/messageOrdering.js';
 
 // Mock all dependencies
 vi.mock('@/services/dbService.js');
@@ -15,10 +16,10 @@ vi.mock('../conversation/read-conversation/getConversation.js', () => ({
   getConversation: vi.fn(),
   getConversationSummary: vi.fn()
 }));
-vi.mock('../message/user-message/add-message/database/sendUserMessage.js', () => ({
-  insertUserMessage: vi.fn()
+vi.mock('../message/1-user-message/add-message/database/sendUserMessage.js', () => ({
+  insertChatMessage: vi.fn()
 }));
-vi.mock('../message/chatbot-message/database/sendChatbotMessage.js', () => ({
+vi.mock('../message/2-chatbot-message/database/sendChatbotMessage.js', () => ({
   sendChatbotMessage: vi.fn()
 }));
 
@@ -110,5 +111,6 @@ describe('Conversation Object Updates on Message Addition', () => {
     runMessageCountTests(mockData);
     runPreviewUpdateTests(mockData);
     runTimestampUpdateTests(mockData);
+    runMessageOrderingTests(mockData);
   });
 }); 

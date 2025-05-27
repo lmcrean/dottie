@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getConversation } from '../../conversation/read-conversation/getConversation.js';
-import { insertChatMessage } from '../../message/user-message/add-message/database/sendUserMessage.js';
+import { insertChatMessage } from '../../message/1-user-message/add-message/database/sendUserMessage.js';
 
 export function runConversationUpdateTests(mockData) {
   describe('Conversation Update Tests', () => {

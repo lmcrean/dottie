@@ -2,10 +2,10 @@ import logger from '../../../../services/logger.js';
 import { createConversation } from './database/conversationCreate.js';
 
 /**
- * Create conversation with assessment and initial message
+ * Create conversation with assessment
  * @param {string} userId - User ID
  * @param {string} assessmentId - Assessment ID (stored as FK)
- * @returns {Promise<Object>} - Created conversation with initial message
+ * @returns {Promise<Object>} - Created conversation
  */
 export const createAssessmentConversation = async (userId, assessmentId) => {
   try {

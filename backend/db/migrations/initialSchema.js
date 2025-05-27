@@ -117,14 +117,17 @@ export async function createTables(db) {
       table.uuid("conversation_id").notNullable();
       table.string("role").notNullable(); // 'user' or 'assistant'
       table.text("content").notNullable();
+      table.uuid("parent_message_id").nullable(); // For message threading
       table.timestamp("created_at").defaultTo(db.fn.now());
 
       // Foreign key handling based on database type
       if (!isSQLite) {
         table.foreign("conversation_id").references("conversations.id");
+        table.foreign("parent_message_id").references("chat_messages.id");
       } else {
         try {
           table.foreign("conversation_id").references("conversations.id");
+          table.foreign("parent_message_id").references("chat_messages.id");
         } catch (error) {
           console.warn(
             "Warning: Could not create foreign key - common with SQLite:",

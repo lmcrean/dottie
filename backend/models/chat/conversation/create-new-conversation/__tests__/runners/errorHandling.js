@@ -26,20 +26,7 @@ export const runErrorHandlingTests = (mockData) => {
       expect(logger.error).toHaveBeenCalledWith('Error creating assessment conversation:', error);
     });
 
-    it('should handle initial message creation failure', async () => {
-      const conversationError = new Error('Message creation failed');
-      
-      const { createConversation } = await import('../../database/conversationCreate.js');
-      createConversation.mockResolvedValue('test-conversation-id');
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockRejectedValue(conversationError);
-      
-      await expect(createAssessmentConversation(mockUserId, mockAssessmentId))
-        .rejects.toThrow('Message creation failed');
-      
-      expect(logger.error).toHaveBeenCalledWith('Error creating assessment conversation:', conversationError);
-    });
+
 
     it('should handle missing user ID', async () => {
       // Configure mock to reject for invalid user IDs
@@ -66,14 +53,6 @@ export const runErrorHandlingTests = (mockData) => {
       // But we test the behavior when it's explicitly null or undefined
       const { createConversation } = await import('../../database/conversationCreate.js');
       createConversation.mockResolvedValue('test-conversation-id');
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockResolvedValue({
-        id: 'msg-123',
-        role: 'user',
-        content: 'Test message',
-        created_at: new Date().toISOString()
-      });
       
       // These should work - assessment can be optional
       const result1 = await createAssessmentConversation(mockUserId, null);

@@ -18,11 +18,18 @@ const getMockResponse = (message) => {
     "It's completely normal to have questions about your reproductive health. I'm here to provide information, but medical concerns should always be addressed by a healthcare professional."
   ];
   
-  if (message.toLowerCase().includes('pain') || message.toLowerCase().includes('cramp')) {
+  // Guard against undefined or null message
+  if (!message || typeof message !== 'string') {
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  const lowerMessage = message.toLowerCase();
+  
+  if (lowerMessage.includes('pain') || lowerMessage.includes('cramp')) {
     return "For menstrual pain, some find relief with over-the-counter pain relievers, heating pads, or gentle yoga. If pain is severe or disruptive to daily life, it's important to consult with a healthcare provider.";
-  } else if (message.toLowerCase().includes('late') || message.toLowerCase().includes('missed')) {
+  } else if (lowerMessage.includes('late') || lowerMessage.includes('missed')) {
     return "Many factors can affect cycle length, including stress, exercise, weight changes, and more. If you're concerned about a missed period, a healthcare provider can help determine the cause.";
-  } else if (message.toLowerCase().includes('heavy') || message.toLowerCase().includes('flow')) {
+  } else if (lowerMessage.includes('heavy') || lowerMessage.includes('flow')) {
     return "Flow varies from person to person. Heavy flow that soaks through protection every hour or includes large clots should be discussed with a healthcare provider.";
   } else {
     return responses[Math.floor(Math.random() * responses.length)];

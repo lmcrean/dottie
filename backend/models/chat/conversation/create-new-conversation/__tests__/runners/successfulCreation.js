@@ -6,16 +6,13 @@ import logger from '@/services/logger.js';
  * Tests for successful conversation creation scenarios
  */
 export const runSuccessfulCreationTests = (mockData) => {
-  const { mockUserId, mockAssessmentId, mockConversationId, mockInitialMessage } = mockData;
+  const { mockUserId, mockAssessmentId, mockConversationId } = mockData;
 
   describe('Successful conversation creation', () => {
     beforeEach(async () => {
       // Setup mocks for successful scenarios
       const { createConversation } = await import('../../database/conversationCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockResolvedValue(mockInitialMessage);
     });
 
     it('should create empty conversation with user_id', async () => {
@@ -41,26 +38,23 @@ export const runSuccessfulCreationTests = (mockData) => {
       expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
     });
 
-    it('should trigger default user message creation', async () => {
+    it('should create conversation ready for messages', async () => {
       const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
       
-      // Verify initial message was created
-      expect(result.initialMessage).toBeDefined();
-      expect(result.initialMessage.role).toBe('user');
-      expect(result.initialMessage.content).toBeDefined();
-      expect(result.initialMessage.content.length).toBeGreaterThan(0);
+      // Verify conversation was created successfully
+      expect(result.conversationId).toBe(mockConversationId);
+      expect(result.assessmentId).toBe(mockAssessmentId);
       
-      // Verify message creation was called with correct parameters
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      expect(createInitialMessage).toHaveBeenCalledWith(mockConversationId, mockUserId);
+      // Verify conversation creation was called with correct parameters
+      const { createConversation } = await import('../../database/conversationCreate.js');
+      expect(createConversation).toHaveBeenCalledWith(mockUserId, mockAssessmentId);
     });
 
-    it('should trigger chatbot response setup', async () => {
+    it('should trigger conversation creation with logging', async () => {
       const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
       
-      // Verify the conversation creation completed with response capability
+      // Verify the conversation creation completed
       expect(result.conversationId).toBe(mockConversationId);
-      expect(result.initialMessage).toBeDefined();
       expect(result.assessmentId).toBe(mockAssessmentId);
       
       // Verify logging indicates successful creation
@@ -79,12 +73,6 @@ export const runSuccessfulCreationTests = (mockData) => {
       expect(result).toMatchObject({
         conversationId: mockConversationId,
         assessmentId: mockAssessmentId,
-        initialMessage: expect.objectContaining({
-          id: expect.any(String),
-          role: 'user',
-          content: expect.any(String),
-          created_at: expect.any(String)
-        }),
         created_at: expect.any(String)
       });
       

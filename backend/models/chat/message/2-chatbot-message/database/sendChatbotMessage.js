@@ -26,12 +26,11 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
       id: messageId,
       role: 'assistant',
       content: content,
-      parent_message_id: parentMessageId,
       created_at: new Date().toISOString(),
       ...metadata
     };
 
-    // Insert chatbot message into database
+    // Insert chatbot message into database (excluding parent_message_id since column doesn't exist)
     const messageToInsert = {
       ...messageData,
       conversation_id: conversationId
@@ -45,10 +44,14 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
       conversationId,
       role: 'assistant',
       content: content,
-      parent_message_id: parentMessageId,
       created_at: messageData.created_at,
       ...metadata
     };
+
+    // Add parent_message_id only if it exists (for API compatibility)
+    if (parentMessageId) {
+      chatbotMessage.parent_message_id = parentMessageId;
+    }
 
     logger.info(`Chatbot message sent successfully in conversation ${conversationId}`);
 

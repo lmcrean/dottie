@@ -10,7 +10,6 @@ export const runAssessmentIntegrationTests = (mockData) => {
     mockUserId, 
     mockAssessmentId, 
     mockConversationId, 
-    mockInitialMessage,
     mockAssessmentObject 
   } = mockData;
 
@@ -21,9 +20,6 @@ export const runAssessmentIntegrationTests = (mockData) => {
       
       const { createConversation } = await import('../../database/conversationCreate.js');
       createConversation.mockResolvedValue(mockConversationId);
-      
-      const { createInitialMessage } = await import('../../../../message/user-message/add-message/create-initial-message/createInitialMessage.js');
-      createInitialMessage.mockResolvedValue(mockInitialMessage);
     });
 
     it('should link conversation to assessment', async () => {
@@ -86,7 +82,6 @@ export const runAssessmentIntegrationTests = (mockData) => {
       // Verify conversation creation succeeds with complex data
       expect(result.conversationId).toBe(mockConversationId);
       expect(result.assessmentId).toBe(mockAssessmentId);
-      expect(result.initialMessage).toBeDefined();
     });
 
     it('should handle missing assessment gracefully', async () => {

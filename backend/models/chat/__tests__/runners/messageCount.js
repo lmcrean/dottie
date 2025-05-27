@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getConversation, getConversationSummary } from '../../conversation/read-conversation/getConversation.js';
-import { insertUserMessage } from '../../message/user-message/add-message/database/sendUserMessage.js';
-import { sendChatbotMessage } from '../../message/chatbot-message/database/sendChatbotMessage.js';
+import { insertChatMessage } from '../../message/1-user-message/add-message/database/sendUserMessage.js';
+import { sendChatbotMessage } from '../../message/2-chatbot-message/database/sendChatbotMessage.js';
 
 export function runMessageCountTests(mockData) {
   describe('Message Count Update Tests', () => {
@@ -29,8 +29,8 @@ export function runMessageCountTests(mockData) {
 
     it('should increment message count to 1 after adding first user message', async () => {
       // Add user message
-      insertUserMessage.mockResolvedValue(mockData.mockUserMessage);
-      await insertUserMessage(
+      insertChatMessage.mockResolvedValue(mockData.mockUserMessage);
+      await insertChatMessage(
         mockData.mockConversationId,
         mockData.mockUserMessage.content,
         mockData.mockUserId

@@ -14,9 +14,6 @@ vi.mock('@/services/logger.js');
 vi.mock('../database/conversationCreate.js', () => ({
   createConversation: vi.fn()
 }));
-vi.mock('../../../message/user-message/add-message/create-initial-message/createInitialMessage.js', () => ({
-  createInitialMessage: vi.fn()
-}));
 
 describe('createAssessmentConversation Integration Tests', () => {
   // Shared test data
@@ -46,12 +43,7 @@ describe('createAssessmentConversation Integration Tests', () => {
       updated_at: '2024-01-15T10:00:00.000Z'
     },
 
-    mockInitialMessage: {
-      id: 'msg-123',
-      role: 'user',
-      content: 'Hi, could you look at my assessment results and provide some guidance?',
-      created_at: '2024-01-15T10:05:00.000Z'
-    }
+
   };
 
   beforeEach(() => {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { editMessage, editMessageWithRegeneration } from '../editMessageRegeneration.js';
 import { cleanupChildrenMessages } from '../cleanupChildrenMessages.js';
-import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.js';
+import { generateResponseToMessage, generateAndSaveResponse } from '../../../2-chatbot-message/generateResponse.js';
 import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
 import Chat from '../../../../../list/chat.js';
 import logger from '@/services/logger.js';
@@ -10,8 +10,9 @@ import logger from '@/services/logger.js';
 vi.mock('../cleanupChildrenMessages.js', () => ({
   cleanupChildrenMessages: vi.fn()
 }));
-vi.mock('../../../../chatbot-message/generateResponse.js', () => ({
-  generateResponseToMessage: vi.fn()
+vi.mock('../../../2-chatbot-message/generateResponse.js', () => ({
+  generateResponseToMessage: vi.fn(),
+  generateAndSaveResponse: vi.fn()
 }));
 vi.mock('../../shared/database/chatOperations.js', () => ({
   ChatDatabaseOperations: {
@@ -20,6 +21,14 @@ vi.mock('../../shared/database/chatOperations.js', () => ({
 }));
 vi.mock('../../../../../list/chat.js');
 vi.mock('@/services/logger.js');
+vi.mock('@/services/dbService.js', () => ({
+  default: {
+    create: vi.fn().mockResolvedValue({}),
+    findById: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn()
+  }
+}));
 
 describe('Edit Message and Regeneration', () => {
   const mockUserId = 'test-user-123';
@@ -53,7 +62,8 @@ describe('Edit Message and Regeneration', () => {
     vi.mocked(Chat.isOwner).mockResolvedValue(true);
     ChatDatabaseOperations.updateMessage.mockResolvedValue(mockUpdatedMessage);
     cleanupChildrenMessages.mockResolvedValue(['msg-old-1', 'msg-old-2']);
-    generateResponseToMessage.mockResolvedValue(mockNewResponse);
+    vi.mocked(generateResponseToMessage).mockResolvedValue(mockNewResponse);
+    vi.mocked(generateAndSaveResponse).mockResolvedValue(mockNewResponse);
   });
 
   afterEach(() => {

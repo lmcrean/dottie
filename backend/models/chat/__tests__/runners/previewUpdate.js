@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getConversation } from '../../conversation/read-conversation/getConversation.js';
-import { insertUserMessage } from '../../message/user-message/add-message/database/sendUserMessage.js';
-import { sendChatbotMessage } from '../../message/chatbot-message/database/sendChatbotMessage.js';
+import { insertChatMessage } from '../../message/1-user-message/add-message/database/sendUserMessage.js';
+import { sendChatbotMessage } from '../../message/2-chatbot-message/database/sendChatbotMessage.js';
 
 export function runPreviewUpdateTests(mockData) {
   describe('Preview Update Tests', () => {
@@ -21,8 +21,8 @@ export function runPreviewUpdateTests(mockData) {
 
     it('should update preview to truncated user message content', async () => {
       // Add user message
-      insertUserMessage.mockResolvedValue(mockData.mockUserMessage);
-      await insertUserMessage(
+      insertChatMessage.mockResolvedValue(mockData.mockUserMessage);
+      await insertChatMessage(
         mockData.mockConversationId,
         mockData.mockUserMessage.content,
         mockData.mockUserId
@@ -108,8 +108,8 @@ export function runPreviewUpdateTests(mockData) {
         created_at: '2024-01-15T10:07:00.000Z'
       };
 
-      insertUserMessage.mockResolvedValue(longMessage);
-      await insertUserMessage(
+      insertChatMessage.mockResolvedValue(longMessage);
+      await insertChatMessage(
         mockData.mockConversationId,
         longMessage.content,
         mockData.mockUserId
@@ -171,8 +171,8 @@ export function runPreviewUpdateTests(mockData) {
         created_at: '2024-01-15T10:08:00.000Z'
       };
 
-      insertUserMessage.mockResolvedValue(emptyMessage);
-      await insertUserMessage(
+      insertChatMessage.mockResolvedValue(emptyMessage);
+      await insertChatMessage(
         mockData.mockConversationId,
         emptyMessage.content,
         mockData.mockUserId
