@@ -67,7 +67,7 @@ describe('ReadAssessment', () => {
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(FormatDetector.isCurrentFormat).not.toHaveBeenCalled();
+      expect(DetectAssessmentFormat.isCurrentFormat).not.toHaveBeenCalled();
       expect(TransformDbToApi.transform).not.toHaveBeenCalled();
       expect(result).toBeNull();
     });
@@ -80,12 +80,12 @@ describe('ReadAssessment', () => {
       };
 
       DbService.findById.mockResolvedValue(legacyAssessment);
-      FormatDetector.isCurrentFormat.mockReturnValue(false);
+      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(false);
 
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(FormatDetector.isCurrentFormat).toHaveBeenCalledWith(legacyAssessment);
+      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(legacyAssessment);
       expect(TransformDbToApi.transform).not.toHaveBeenCalled();
       expect(result).toBeNull();
     });
