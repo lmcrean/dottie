@@ -3,7 +3,7 @@ import { editMessage, editMessageWithRegeneration } from '../editMessageRegenera
 import { cleanupChildrenMessages } from '../cleanupChildrenMessages.js';
 import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.js';
 import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
-import Chat from '../../../../list/chat.js';
+import Chat from '../../../../../../list/chat.js';
 import logger from '@/services/logger.js';
 
 // Mock dependencies
@@ -18,7 +18,7 @@ vi.mock('../../shared/database/chatOperations.js', () => ({
     updateMessage: vi.fn()
   }
 }));
-vi.mock('../../../../list/chat.js');
+vi.mock('../../../../../../list/chat.js');
 vi.mock('@/services/logger.js');
 
 describe('Edit Message and Regeneration', () => {
@@ -50,7 +50,7 @@ describe('Edit Message and Regeneration', () => {
     logger.error = vi.fn();
     
     // Setup default successful mocks
-    Chat.isOwner.mockResolvedValue(true);
+    vi.mocked(Chat.isOwner).mockResolvedValue(true);
     ChatDatabaseOperations.updateMessage.mockResolvedValue(mockUpdatedMessage);
     cleanupChildrenMessages.mockResolvedValue(['msg-old-1', 'msg-old-2']);
     generateResponseToMessage.mockResolvedValue(mockNewResponse);
@@ -64,7 +64,7 @@ describe('Edit Message and Regeneration', () => {
     it('should successfully edit a message when user owns conversation', async () => {
       const result = await editMessage(mockConversationId, mockMessageId, mockUserId, mockNewContent);
       
-      expect(Chat.isOwner).toHaveBeenCalledWith(mockConversationId, mockUserId);
+      expect(vi.mocked(Chat.isOwner)).toHaveBeenCalledWith(mockConversationId, mockUserId);
       expect(ChatDatabaseOperations.updateMessage).toHaveBeenCalledWith(
         mockConversationId, 
         mockMessageId, 
@@ -78,7 +78,7 @@ describe('Edit Message and Regeneration', () => {
     });
 
     it('should throw error when user does not own conversation', async () => {
-      Chat.isOwner.mockResolvedValue(false);
+      vi.mocked(Chat.isOwner).mockResolvedValue(false);
       
       await expect(editMessage(mockConversationId, mockMessageId, mockUserId, mockNewContent))
         .rejects.toThrow('User does not own this conversation');
@@ -182,7 +182,7 @@ describe('Edit Message and Regeneration', () => {
     });
 
     it('should handle authorization failures during edit flow', async () => {
-      Chat.isOwner.mockResolvedValue(false);
+      vi.mocked(Chat.isOwner).mockResolvedValue(false);
       
       await expect(editMessageWithRegeneration(
         mockConversationId, 

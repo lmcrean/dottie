@@ -30,8 +30,7 @@ vi.mock('../../../../../services/logger', () => ({
   }
 }));
 
-vi.mock('../../../../../models/chat/chat.js', () => ({
-  insertChatMessage: vi.fn().mockResolvedValue(true),
+vi.mock('../../../../../models/chat/index.js', () => ({
   createConversation: vi.fn().mockResolvedValue('new-conversation-id'),
   getConversation: vi.fn().mockImplementation((conversationId) => {
     if (conversationId === 'valid-conversation-id') {
@@ -46,6 +45,12 @@ vi.mock('../../../../../models/chat/chat.js', () => ({
     }
     return Promise.resolve(null);
   })
+}));
+
+vi.mock('../../../../../services/dbService.js', () => ({
+  default: {
+    create: vi.fn().mockResolvedValue({ id: 'message-id' })
+  }
 }));
 
 // Import the controller after all mocks are set up
