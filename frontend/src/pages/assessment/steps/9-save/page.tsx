@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAssessmentContext } from '@/src/pages/assessment/steps/context/hooks/use-assessment-context';
 import postSend from '@/src/pages/assessment/steps/9-save/post-id/Request';
@@ -9,14 +9,23 @@ import PageTransition from '../../animations/page-transitions';
 export default function SaveAssessmentPage() {
   const navigate = useNavigate();
   const { state } = useAssessmentContext();
+  const hasSaved = useRef(false);
 
   useEffect(() => {
     const saveAssessment = async () => {
+      // Prevent duplicate saves
+      if (hasSaved.current) {
+        return;
+      }
+
       if (!state.result) {
         console.warn('SaveAssessmentPage: Missing assessment data, redirecting.');
         navigate('/assessment/age');
         return;
       }
+
+      // Mark as saving to prevent duplicate attempts
+      hasSaved.current = true;
 
       try {
         const savedAssessment = await postSend(state.result);
@@ -25,6 +34,8 @@ export default function SaveAssessmentPage() {
         navigate(`/assessment/results/${savedAssessment.id}`);
       } catch (error) {
         console.error('Failed to save assessment:', error);
+        // Reset the flag on error so user can retry if needed
+        hasSaved.current = false;
         // Even on error, redirect to results page using context data
         // Consider if navigating to results without a saved ID is desired on error,
         // or if an error page/toast is more appropriate.
@@ -35,7 +46,7 @@ export default function SaveAssessmentPage() {
 
     // Start the save process immediately
     saveAssessment();
-  }, [state.result, navigate]);
+  }, []); // Remove dependencies to only run once on mount
 
   return (
     <PageTransition>
