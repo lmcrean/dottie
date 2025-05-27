@@ -7,7 +7,7 @@ vi.mock('../../../../../services/logger', () => ({
   }
 }));
 
-vi.mock('../../../../../models/chat/chat.js', () => ({
+vi.mock('../../../../../models/chat/index.js', () => ({
   getConversation: vi.fn().mockImplementation((conversationId, userId) => {
     if (conversationId === 'valid-conversation-id' && userId === 'user-123') {
       return Promise.resolve({
