@@ -18,11 +18,7 @@ vi.mock('../../shared/database/chatOperations.js', () => ({
     updateMessage: vi.fn()
   }
 }));
-vi.mock('../../../../list/chat.js', () => ({
-  default: {
-    isOwner: vi.fn()
-  }
-}));
+vi.mock('../../../../list/chat.js');
 vi.mock('@/services/logger.js');
 
 describe('Edit Message and Regeneration', () => {
@@ -82,7 +78,7 @@ describe('Edit Message and Regeneration', () => {
     });
 
     it('should throw error when user does not own conversation', async () => {
-      Chat.default.isOwner.mockResolvedValue(false);
+      Chat.isOwner.mockResolvedValue(false);
       
       await expect(editMessage(mockConversationId, mockMessageId, mockUserId, mockNewContent))
         .rejects.toThrow('User does not own this conversation');
@@ -186,7 +182,7 @@ describe('Edit Message and Regeneration', () => {
     });
 
     it('should handle authorization failures during edit flow', async () => {
-      Chat.default.isOwner.mockResolvedValue(false);
+      Chat.isOwner.mockResolvedValue(false);
       
       await expect(editMessageWithRegeneration(
         mockConversationId, 
