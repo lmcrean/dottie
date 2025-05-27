@@ -1,7 +1,7 @@
 import logger from '../../../../../../services/logger.js';
 import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
-import { generateResponseToMessage } from '../../chatbot-message/generateResponse.js';
-import Chat from '../../../read-chat-list/chat.js';
+import { generateResponseToMessage } from '../../../chatbot-message/generateResponse.js';
+import Chat from '../../../../list/chat.js';
 import { cleanupChildrenMessages } from './cleanupChildrenMessages.js';
 
 /**

@@ -7,19 +7,19 @@
 
 - [x] get conversation by conversation_id: `npm test -- "getConversationById.test.js"` ✅ 18/18 tests passing
 - [x] conversation object updates when a new message is added: `npm test -- "__tests__/conversationUpdateOnMessage.test.js"` ✅ 27/27 tests passing
-- [ ] delete conversation by conversation_id:
+- [x] delete conversation by conversation_id: `npm test -- "models/chat/conversation/delete-conversation/__tests__/chatDelete.test.js"` ✅ 11/11 tests passing
   
-- [ ] list updates on new message, specifically the message count and message preview of conversation id in list:
-- [ ] assessment object is located in the conversation object as a foreign key including age, physical_symptoms, emotional_symptoms, and assessment_id etc.:
+- [ ] list updates on new message, specifically the message count and message preview of conversation id in list: `npm test -- "models/chat/list/__tests__/listUpdatesOnMessage.test.js"`
+- [ ] assessment object is located in the conversation object as a foreign key including age, physical_symptoms, emotional_symptoms, and assessment_id etc.: `npm test -- "models/chat/list/__tests__/assessmentIntegration.test.js"`
   
-- [ ] get list of conversations by user_id:
-- [ ] assessment pattern is located for each conversation in the lists:
+- [x] get list of conversations by user_id: `npm test -- "models/chat/list/__tests__/getUserConversations.test.js"` ✅ 9/9 tests passing
+- [ ] assessment pattern is located for each conversation in the lists: (covered in assessment integration test)
 
 
 # checklist edge cases
 
-- [ ] edit message by id and regenerate response:
-- [ ] list updates on message edit:
+- [ ] edit message by id and regenerate response: `npm test -- "models/chat/message/user-message/add-message/edit-message.js/__tests__/editMessageRegeneration.test.js"`
+- [ ] list updates on message edit: `npm test -- "models/chat/list/__tests__/listUpdatesOnEdit.test.js"`
 
 # test structure
 

@@ -15,7 +15,7 @@ export { Conversation as default } from './conversation/conversation.js';
 // CONVERSATION OPERATIONS
 // ===================================
 export { getUserConversations } from './list/chatGetList.js';
-export { deleteConversation } from './conversation/delete-chat-detail/chatDelete.js';
+export { deleteConversation } from './conversation/delete-conversation/chatDelete.js';
 
 export { 
   createCompleteConversation,
@@ -28,20 +28,14 @@ export {
   getConversation,
   getConversationForUser,
   getConversationSummary
-} from './conversation/read-chat-detail/getConversation.js';
+} from './conversation/read-conversation/getConversation.js';
 
 // ===================================
 // MESSAGE OPERATIONS
 // ===================================
 export { 
-  sendMessage,
-  editMessage,
-  sendMessageOnly,
-  sendQuickReply,
-  continueWithContext,
-  editMessageWithRegeneration,
-  continueConversationWithContext
-} from './message/user-message/add-message/sendMessage.js';
+  sendMessage
+} from './message/user-message/add-message/sendUserMessage.js';
 
 // ===================================
 // CONVENIENCE FUNCTIONS
@@ -67,7 +61,7 @@ export const quickStart = async (userId, message, assessmentId = null) => {
  * @returns {Promise<Object>} - Message exchange result
  */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  const { sendMessage } = await import('./message/user-message/add-message/sendMessage.js');
+  const { sendMessage } = await import('./message/user-message/add-message/sendUserMessage.js');
   return await sendMessage(conversationId, userId, message);
 };
 
