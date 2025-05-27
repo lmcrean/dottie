@@ -18,6 +18,7 @@ export async function createInitialMessage(conversationId, userId) {
     const userMessage = {
       id: userMessageId,
       conversation_id: conversationId,
+      user_id: userId,
       role: 'user',
       content: messageText,
       created_at: new Date().toISOString()
