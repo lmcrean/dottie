@@ -1,5 +1,5 @@
 import logger from '../../../services/logger.js';
-import { createConversation } from '../../../models/chat/chat.js';
+import { createConversation } from '../../../models/chat/index.js';
 
 /**
  * Create a new chat conversation

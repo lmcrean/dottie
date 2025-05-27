@@ -1,5 +1,5 @@
 import logger from '../../../services/logger.js';
-import { getUserConversations } from '../../../models/chat/chat.js';
+import { getUserConversations } from '../../../models/chat/index.js';
 
 /**
  * Get all conversations for the authenticated user

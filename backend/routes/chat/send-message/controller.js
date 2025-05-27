@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import logger from '../../../services/logger.js';
-import { insertChatMessage, createConversation, getConversation } from '../../../models/chat/chat.js';
+import { createConversation, getConversation } from '../../../models/chat/index.js';
+import DbService from '../../../services/dbService.js';
 
 // Initialize Gemini API
 const API_KEY = process.env.VITE_GEMINI_API_KEY;
@@ -86,12 +87,18 @@ export const sendMessage = async (req, res) => {
       }));
     } else {
       // Create a new conversation with optional assessment linking
-      currentConversationId = await createConversation(userId, assessment_id);
+      const result = await createConversation(userId, assessment_id);
+      currentConversationId = result.id || result.conversationId || result;
     }
 
     // Save user message to database
-    const userMessage = { role: 'user', content: message };
-    await insertChatMessage(currentConversationId, userMessage);
+    const userMessage = {
+      conversation_id: currentConversationId,
+      role: 'user',
+      content: message,
+      created_at: new Date()
+    };
+    await DbService.create('chat_messages', userMessage);
     
     let aiResponse;
     
@@ -149,8 +156,13 @@ export const sendMessage = async (req, res) => {
     }
     
     // Save AI response to database
-    const assistantMessage = { role: 'assistant', content: aiResponse };
-    await insertChatMessage(currentConversationId, assistantMessage);
+    const assistantMessage = {
+      conversation_id: currentConversationId,
+      role: 'assistant',
+      content: aiResponse,
+      created_at: new Date()
+    };
+    await DbService.create('chat_messages', assistantMessage);
 
     // Return the response
     return res.status(200).json({

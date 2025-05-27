@@ -1,5 +1,5 @@
 import logger from '../../../services/logger.js';
-import { getConversation as getConversationModel } from '../../../models/chat/chat.js';
+import { getConversation as getConversationModel } from '../../../models/chat/index.js';
 
 /**
  * Get a specific conversation and its messages
