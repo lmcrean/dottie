@@ -46,9 +46,15 @@ export function validateAlternatingPattern(messages) {
 export function validateConversationStructure(conversation, expectedMessageCount = 4) {
     const messages = conversation.messages || [];
     
+    console.log('🔍 Validating conversation structure...');
+    console.log(`   Expected message count: ${expectedMessageCount}`);
+    console.log(`   Actual message count: ${messages.length}`);
+    console.log(`   Messages: ${JSON.stringify(messages.map(m => ({ role: m.role, content: m.content?.substring(0, 50) + '...' })), null, 2)}`);
+    
     // Check message count
     const countValidation = validateMessageCount(messages, expectedMessageCount);
     if (!countValidation.success) {
+        console.log('❌ Message count validation failed:', countValidation.error);
         return {
             success: false,
             error: countValidation.error,
@@ -56,20 +62,27 @@ export function validateConversationStructure(conversation, expectedMessageCount
             details: countValidation
         };
     }
+    console.log('✅ Message count validation passed');
 
     // Check alternating pattern
     const alternatingValid = validateAlternatingPattern(messages);
     if (!alternatingValid) {
+        const actualPattern = messages.map(m => m.role);
+        console.log('❌ Alternating pattern validation failed');
+        console.log(`   Actual pattern: ${actualPattern.join(' → ')}`);
         return {
             success: false,
             error: 'Messages do not follow alternating user/assistant pattern',
             type: 'alternating_pattern',
-            actual_pattern: messages.map(m => m.role)
+            actual_pattern: actualPattern
         };
     }
+    console.log('✅ Alternating pattern validation passed');
 
     // Check first message is user
     if (messages.length > 0 && messages[0].role !== 'user') {
+        console.log('❌ First message role validation failed');
+        console.log(`   First message role: ${messages[0].role}`);
         return {
             success: false,
             error: 'First message must be from user',
@@ -77,7 +90,9 @@ export function validateConversationStructure(conversation, expectedMessageCount
             first_message_role: messages[0].role
         };
     }
+    console.log('✅ First message role validation passed');
 
+    console.log('✅ All conversation structure validations passed');
     return {
         success: true,
         message_count: messages.length,
