@@ -1,31 +1,23 @@
 import DbService from '../../../services/dbService.js';
-import DetectAssessmentFormat from '../detectors/DetectAssessmentFormat.js';
+import TransformDbToApi from '../transformers/TransformDbToApi.js';
+import CreateAssessment from './CreateAssessment.js';
+import UpdateAssessment from './UpdateAssessment.js';
 
 class RouteAssessment {
   /**
-   * Find an assessment by ID, routing to appropriate handler
+   * Find an assessment by ID
    * @param {string} id - Assessment ID
    * @returns {Promise<Object|null>} Assessment object or null if not found
    */
   static async findById(id) {
     try {
-      // Get the raw record to determine format
       const rawRecord = await DbService.findById('assessments', id);
       
       if (!rawRecord) {
         return null;
       }
       
-      // Route to appropriate transformer
-      if (DetectAssessmentFormat.isLegacyFormat(rawRecord)) {
-        const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
-        return LegacyAssessment._transformDbRecordToApiResponse(rawRecord);
-      } else if (DetectAssessmentFormat.isCurrentFormat(rawRecord)) {
-        const TransformDbToApi = (await import('../transformers/TransformDbToApi.js')).default;
-        return TransformDbToApi.transform(rawRecord);
-      }
-      
-      return null;
+      return TransformDbToApi.transform(rawRecord);
     } catch (error) {
       console.error(`Error finding assessment by ID ${id}:`, error);
       throw error;
@@ -41,18 +33,8 @@ class RouteAssessment {
     try {
       const rawAssessments = await DbService.findBy('assessments', 'user_id', userId);
       
-      // Transform each assessment based on its format
-      const transformedAssessments = await Promise.all(
-        rawAssessments.map(async (assessment) => {
-          if (DetectAssessmentFormat.isLegacyFormat(assessment)) {
-            const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
-            return LegacyAssessment._transformDbRecordToApiResponse(assessment);
-          } else if (DetectAssessmentFormat.isCurrentFormat(assessment)) {
-            const TransformDbToApi = (await import('../transformers/TransformDbToApi.js')).default;
-            return TransformDbToApi.transform(assessment);
-          }
-          return null;
-        })
+      const transformedAssessments = rawAssessments.map(assessment => 
+        TransformDbToApi.transform(assessment)
       );
 
       return transformedAssessments.filter(Boolean);
@@ -98,39 +80,23 @@ class RouteAssessment {
   }
 
   /**
-   * Create assessment using appropriate format handler
+   * Create assessment
    * @param {Object} assessmentData - Assessment data
    * @param {string} userId - User ID
    * @returns {Promise<Object>} Created assessment object
    */
   static async create(assessmentData, userId) {
-    const format = DetectAssessmentFormat.detectDataFormat(assessmentData);
-    
-    if (format === 'legacy') {
-      const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
-      return await LegacyAssessment.create(assessmentData, userId);
-    } else {
-      const CreateAssessment = (await import('./CreateAssessment.js')).default;
-      return await CreateAssessment.execute(assessmentData, userId);
-    }
+    return await CreateAssessment.execute(assessmentData, userId);
   }
 
   /**
-   * Update assessment using appropriate format handler
+   * Update assessment
    * @param {string} id - Assessment ID
    * @param {Object} assessmentData - Updated assessment data
    * @returns {Promise<Object>} Updated assessment object
    */
   static async update(id, assessmentData) {
-    const format = DetectAssessmentFormat.detectDataFormat(assessmentData);
-    
-    if (format === 'legacy') {
-      const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
-      return await LegacyAssessment.update(id, assessmentData);
-    } else {
-      const UpdateAssessment = (await import('./UpdateAssessment.js')).default;
-      return await UpdateAssessment.execute(id, assessmentData);
-    }
+    return await UpdateAssessment.execute(id, assessmentData);
   }
 }
 

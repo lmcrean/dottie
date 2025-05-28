@@ -1,4 +1,5 @@
 import DbService from '../../../services/dbService.js';
+import TransformDbToApi from '../transformers/TransformDbToApi.js';
 
 class FindAssessment {
   /**
@@ -37,19 +38,9 @@ class FindAssessment {
       // Get all assessments for user
       const rawAssessments = await DbService.findBy('assessments', 'user_id', userId);
 
-      
-      // Dynamically import models once
-      const LegacyAssessment = (await import('../archive/LegacyAssessment.js')).default;
-      const TransformDbToApi = (await import('../transformers/TransformDbToApi.js')).default;
-
-      const transformedAssessments = rawAssessments.map(assessment => {
-        // We need to decide which _transformDbRecordToApiResponse to call.
-        if (assessment.assessment_data) { // If legacy
-          return LegacyAssessment._transformDbRecordToApiResponse(assessment);
-        } else { // If current format
-          return TransformDbToApi.transform(assessment);
-        }
-      });
+      const transformedAssessments = rawAssessments.map(assessment => 
+        TransformDbToApi.transform(assessment)
+      );
 
       return transformedAssessments;
     } catch (error) {
