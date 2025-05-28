@@ -16,7 +16,7 @@ async function getConversation(conversationId, options = {}) {
         const mergedOptions = { ...defaultOptions, ...options };
         
         // Get the conversation by ID
-        const conversation = await DbService.findByIdWithJson('conversations', conversationId, ['assessment_pattern']);
+        const conversation = await DbService.findByIdWithJson('conversations', conversationId, ['assessment_object']);
         
         if (!conversation) {
             return {
@@ -119,7 +119,7 @@ async function getConversationForUser(conversationId, userId) {
 
 async function getConversationSummary(conversationId) {
     try {
-        const conversation = await DbService.findByIdWithJson('conversations', conversationId, ['assessment_pattern']);
+        const conversation = await DbService.findByIdWithJson('conversations', conversationId, ['assessment_object']);
         
         if (!conversation) {
             return {
