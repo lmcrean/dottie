@@ -2,6 +2,7 @@ import logger from '../../../../../services/logger.js';
 import DbService from '../../../../../services/dbService.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { verifyParentMessageId } from '../../1-user-message/add-message/database/linkParentMessageId.js';
+import { updateConversationPreview } from '../../../conversation/read-conversation/getPreviewHook.js';
 
 /**
  * Send a chatbot message and store it in the database
@@ -44,6 +45,10 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
 
     await DbService.create('chat_messages', messageToInsert);
     logger.info(`Chatbot message ${messageId} inserted into conversation ${conversationId}`);
+
+    // Update conversation preview with this assistant message
+    await updateConversationPreview(DbService, conversationId, content);
+    logger.info(`Conversation preview updated for ${conversationId}`);
 
     const chatbotMessage = {
       id: messageId,

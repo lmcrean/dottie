@@ -1,4 +1,4 @@
-import logger from '../../../../../../services/logger.js';
+import logger from '../../../../../services/logger.js';
 import { ConfigHelper } from './configHelper.js';
 import { insertChatMessage } from '../../1-user-message/add-message/database/sendUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
@@ -7,6 +7,8 @@ import { generateInitialResponse as generateInitialMock } from '../services/mock
 import { generateFollowUpResponse as generateFollowUpAI } from '../services/ai/generators/followUpAI.js';
 import { generateFollowUpResponse as generateFollowUpMock } from '../services/mock/generators/followUpMock.js';
 import { getConversationHistory } from '../../../read-chat-detail/getWithContext.js';
+import { updateConversationPreview } from '../../../conversation/read-conversation/getPreviewHook.js';
+import DbService from '../../../../../services/dbService.js';
 
 /**
  * Generate and store assistant response for conversations
@@ -51,6 +53,10 @@ export async function generateAndStoreAssistantResponse(conversationId, messageT
     }
 
     await insertChatMessage(conversationId, assistantMessage);
+
+    // Update conversation preview with this assistant message
+    await updateConversationPreview(DbService, conversationId, response.content);
+    logger.info(`Conversation preview updated from assistantMessageHelper for ${conversationId}`);
 
     logger.info(`Assistant response generated for conversation ${conversationId}`);
     

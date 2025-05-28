@@ -1,5 +1,6 @@
 import logger from '../../../../../../services/logger.js';
 import DbService from '../../../../../../services/dbService.js';
+import { updateConversationPreview } from '../../../../conversation/read-conversation/getPreviewHook.js';
 
 /**
  * Insert a chat message into the database
@@ -16,38 +17,32 @@ export const insertChatMessage = async (conversationId, messageData) => {
     };
 
     await DbService.create('chat_messages', messageToInsert);
+    
     // Use messageData.id if available, otherwise log general message
     const messageId = messageData.id ? messageData.id : 'new message';
-    logger.info(`[insertChatMessage] Message ${messageId} inserted into conversation ${conversationId}`);
+    console.log(`[insertChatMessage] Message ${messageId} inserted into conversation ${conversationId}`);
+    console.log(`[insertChatMessage] Message role: ${messageData.role}`);
     
     // Only update the conversation preview for assistant messages
-    if (messageData.role === 'assistant' && messageData.content) {
-      logger.info(`[insertChatMessage] Updating conversation preview for conversation ${conversationId} with assistant message`);
-      logger.info(`[insertChatMessage] Preview content: "${messageData.content.substring(0, 50)}..."`);
-      
-      // Make sure there's no content check that could cause empty strings to be ignored
-      const preview = messageData.content.substring(0, 100); // Limit preview to 100 chars
-      
-      // Update the conversation with the preview
+    if (messageData.role === 'assistant') {
       try {
-        const updateResult = await DbService.updateWhere(
-          'conversations',
-          { id: conversationId },
-          { preview, updated_at: new Date() }
-        );
+        console.log(`[insertChatMessage] Found assistant message, updating conversation preview...`);
         
-        logger.info(`[insertChatMessage] Conversation preview update complete, result: ${JSON.stringify(updateResult)}`);
+        // Use our dedicated hook for updating previews
+        await updateConversationPreview(DbService, conversationId, messageData.content);
+        
+        console.log(`[insertChatMessage] Preview updated using getPreviewHook`);
       } catch (previewError) {
-        logger.error(`[insertChatMessage] Failed to update conversation preview: ${previewError.message}`);
-        // Don't throw here, we still want to return the message even if preview update fails
+        console.error(`[insertChatMessage] Error updating preview:`, previewError);
+        // Continue execution even if preview update fails
       }
     } else {
-      logger.info(`[insertChatMessage] Skipping preview update for non-assistant message or empty content`);
+      console.log(`[insertChatMessage] Not an assistant message, skipping preview update`);
     }
 
     return messageToInsert;
   } catch (error) {
-    logger.error(`[insertChatMessage] Error inserting message: ${error.message}`);
+    console.error(`[insertChatMessage] Error:`, error);
     throw error;
   }
 };
