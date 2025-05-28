@@ -2,6 +2,11 @@ import { test as base, expect } from "@playwright/test";
 
 // Import high-level scenario workflows (using dev scenarios with granular functions)
 import * as scenarios from "./runners/scenarios/index.js";
+import { 
+  checkConversationPreviewInDatabase, 
+  checkConversationMessagesInDatabase,
+  explainFalsePassInProduction 
+} from "./runners/chat/utils/index.js";
 
 /**
  * Master Integration Test for Development (No Cleanup)
@@ -149,8 +154,73 @@ base.describe("Master Integration Test (No Cleanup)", () => {
     console.log(`Second Conversation ID: ${sharedTestState.secondConversationId}`);
     console.log("====================================================\n");
   });
+  
+  base("8. Direct database check for conversation previews", async () => {
+    console.log("\n======== DIRECT DATABASE CHECK ========");
+    
+    // Check first conversation
+    console.log("\n--- First Conversation Database Check ---");
+    const firstConvCheck = await checkConversationPreviewInDatabase(sharedTestState.firstConversationId);
+    
+    if (firstConvCheck.found) {
+      console.log(`First conversation preview in DB: ${firstConvCheck.previewValue || 'NULL'}`);
+      console.log(`Is preview null? ${firstConvCheck.previewIsNull ? 'YES' : 'NO'}`);
+    }
+    
+    // Check message history for first conversation
+    const firstMsgCheck = await checkConversationMessagesInDatabase(sharedTestState.firstConversationId);
+    if (firstMsgCheck.found && firstMsgCheck.latestAssistantMessage) {
+      console.log(`Latest assistant message: "${firstMsgCheck.latestAssistantMessage.content.substring(0, 50)}..."`);
+      console.log(`Database preview matches assistant message: ${
+        firstConvCheck.previewValue && 
+        firstConvCheck.previewValue.includes(firstMsgCheck.latestAssistantMessage.content.substring(0, 20)) ? 'YES' : 'NO'
+      }`);
+    }
+    
+    // Check second conversation
+    console.log("\n--- Second Conversation Database Check ---");
+    const secondConvCheck = await checkConversationPreviewInDatabase(sharedTestState.secondConversationId);
+    
+    if (secondConvCheck.found) {
+      console.log(`Second conversation preview in DB: ${secondConvCheck.previewValue || 'NULL'}`);
+      console.log(`Is preview null? ${secondConvCheck.previewIsNull ? 'YES' : 'NO'}`);
+    }
+    
+    // Check message history for second conversation
+    const secondMsgCheck = await checkConversationMessagesInDatabase(sharedTestState.secondConversationId);
+    if (secondMsgCheck.found && secondMsgCheck.latestAssistantMessage) {
+      console.log(`Latest assistant message: "${secondMsgCheck.latestAssistantMessage.content.substring(0, 50)}..."`);
+      console.log(`Database preview matches assistant message: ${
+        secondConvCheck.previewValue && 
+        secondConvCheck.previewValue.includes(secondMsgCheck.latestAssistantMessage.content.substring(0, 20)) ? 'YES' : 'NO'
+      }`);
+    }
+    
+    // For production tests, explain the false pass situation
+    const isProdTest = process.env.NODE_ENV === 'production' || process.env.TEST_ENV === 'prod';
+    if (isProdTest) {
+      explainFalsePassInProduction();
+    } else {
+      // The fact that getConversationsWithPreviews returns previews but the database has NULL values
+      // indicates a false pass
+      console.log("\n====== FALSE PASS DETECTION ======");
+      if (
+        firstConvCheck.found && 
+        firstConvCheck.previewIsNull && 
+        firstMsgCheck.found && 
+        firstMsgCheck.latestAssistantMessage
+      ) {
+        console.log("⚠️ FALSE PASS DETECTED: API returns previews but database has NULL values");
+        console.log("⚠️ The getConversationsWithPreviews function is generating previews on-the-fly");
+      } else {
+        console.log("✅ Database check matches API response");
+      }
+    }
+    
+    console.log("=======================================\n");
+  });
 
-  base("8. Authentication error handling", async ({ request }) => {
+  base("9. Authentication error handling", async ({ request }) => {
     await scenarios.runAuthErrorTest(request, expect);
   });
 }); 

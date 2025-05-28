@@ -7,6 +7,7 @@ import { db } from '../../../../../db/index.js';
 
 /**
  * Directly check the database to verify if a conversation's preview is actually saved
+ * This only works for local testing, as we can't directly access the production database
  * @param {string} conversationId - The conversation ID to check
  * @returns {Promise<Object>} - The raw database record
  */
@@ -23,6 +24,15 @@ export async function checkConversationPreviewInDatabase(conversationId) {
     
     if (!record) {
       console.log(`[DB-CHECK] No record found for conversation: ${conversationId}`);
+      
+      // For remote testing, we need to explain why this is happening
+      const isProdTest = process.env.NODE_ENV === 'production' || process.env.TEST_ENV === 'prod';
+      if (isProdTest) {
+        console.log(`[DB-CHECK] NOTE: This is expected in production tests. We're testing against a remote API but using a local database.`);
+        console.log(`[DB-CHECK] The API returned a preview, but our local DB query can't access the remote production database.`);
+        console.log(`[DB-CHECK] This suggests the preview is being generated dynamically by getConversationsWithPreviews.js.`);
+      }
+      
       return { found: false };
     }
     
@@ -46,6 +56,7 @@ export async function checkConversationPreviewInDatabase(conversationId) {
 
 /**
  * Check if the latest messages for a conversation are stored properly
+ * This only works for local testing, as we can't directly access the production database
  * @param {string} conversationId - The conversation ID to check
  * @returns {Promise<Object>} - The messages query result
  */
@@ -62,6 +73,13 @@ export async function checkConversationMessagesInDatabase(conversationId) {
       
     if (!messages || messages.length === 0) {
       console.log(`[DB-CHECK] No messages found for conversation: ${conversationId}`);
+      
+      // For remote testing, we need to explain why this is happening
+      const isProdTest = process.env.NODE_ENV === 'production' || process.env.TEST_ENV === 'prod';
+      if (isProdTest) {
+        console.log(`[DB-CHECK] NOTE: This is expected in production tests. We're testing against a remote API but using a local database.`);
+      }
+      
       return { found: false };
     }
     
@@ -87,4 +105,19 @@ export async function checkConversationMessagesInDatabase(conversationId) {
     console.error(`[DB-CHECK] Error querying messages:`, error);
     return { found: false, error: error.message };
   }
+}
+
+/**
+ * Explain the false pass situation - this function doesn't query the database
+ * It just logs the explanation of what's happening
+ */
+export function explainFalsePassInProduction() {
+  console.log(`\n====== FALSE PASS EXPLANATION ======`);
+  console.log(`⚠️ FALSE PASS LIKELY DETECTED IN PRODUCTION`);
+  console.log(`The preview field in the database is NULL (as seen in the screenshot),`);
+  console.log(`but the API is returning preview text for conversations.`);
+  console.log(`This indicates that getConversationsWithPreviews.js is generating`);
+  console.log(`the preview dynamically from the assistant message when the API is called.`);
+  console.log(`This is why the tests pass even though the database updates are failing.`);
+  console.log(`=======================================\n`);
 } 

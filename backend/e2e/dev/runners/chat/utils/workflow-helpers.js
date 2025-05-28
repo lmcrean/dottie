@@ -67,5 +67,28 @@ export function validateConversationInHistory(expect, conversations, conversatio
     const foundConversation = conversations.find(conv => conv.id === conversationId);
     expect(foundConversation).toBeTruthy();
     expect(foundConversation.assessment_id).toBe(assessmentId);
+    
+    // Validate preview field exists and is from assistant message
+    console.log(`Conversation preview: "${foundConversation.preview || 'null'}"`);
+    
+    // Preview should not be null in production tests
+    const isProdTest = process.env.NODE_ENV === 'production' || process.env.TEST_ENV === 'prod';
+    if (isProdTest) {
+        // In production, preview should never be null after our fix
+        expect(foundConversation.preview).not.toBeNull();
+        expect(typeof foundConversation.preview).toBe('string');
+        expect(foundConversation.preview.length).toBeGreaterThan(0);
+        
+        // Preview should be from assistant (likely contains terms like "relief", "pain", etc.)
+        // This is just a simple heuristic check, not comprehensive
+        const containsLikelyAssistantTerms = 
+            foundConversation.preview.includes('pain') || 
+            foundConversation.preview.includes('relief') ||
+            foundConversation.preview.includes('period') ||
+            foundConversation.preview.includes('self-care');
+            
+        expect(containsLikelyAssistantTerms).toBe(true);
+    }
+    
     return foundConversation;
 } 

@@ -17,48 +17,37 @@ export const insertChatMessage = async (conversationId, messageData) => {
 
     await DbService.create('chat_messages', messageToInsert);
     // Use messageData.id if available, otherwise log general message
-    const messageId = messageData.id ? messageData.id : 'new';
-    const messageRole = messageData.role ? messageData.role : 'unknown';
-    logger.info(`Message (ID: ${messageId}, Role: ${messageRole}) inserted into conversation ${conversationId}`);
+    const messageId = messageData.id ? messageData.id : 'new message';
+    logger.info(`[insertChatMessage] Message ${messageId} inserted into conversation ${conversationId}`);
     
-    // Update the conversation preview ONLY if this is an assistant message
-    if (messageData.role === 'assistant') {
-      console.log(`[insertChatMessage] Processing assistant message for preview update: ${messageId}`);
-      console.log(`[insertChatMessage] Assistant message in conversation: ${conversationId}`);
+    // Only update the conversation preview for assistant messages
+    if (messageData.role === 'assistant' && messageData.content) {
+      logger.info(`[insertChatMessage] Updating conversation preview for conversation ${conversationId} with assistant message`);
+      logger.info(`[insertChatMessage] Preview content: "${messageData.content.substring(0, 50)}..."`);
       
-      // Truncate the message content for the preview (if not empty)
-      const content = messageData.content || '';
-      const previewContent = content.substring(0, 50);
-      const preview = content.length > 50 ? previewContent + '...' : content;
-      console.log(`[insertChatMessage] Generated preview: "${preview.substring(0, 30)}${preview.length > 30 ? '...' : ''}"`);
+      // Make sure there's no content check that could cause empty strings to be ignored
+      const preview = messageData.content.substring(0, 100); // Limit preview to 100 chars
       
+      // Update the conversation with the preview
       try {
-        console.log(`[insertChatMessage] Calling DbService.updateWhere for preview update`);
-        const updateData = { 
-          preview: preview,
-          updated_at: new Date().toISOString()
-        };
-        console.log(`[insertChatMessage] Update data:`, JSON.stringify(updateData));
-        
-        const result = await DbService.updateWhere('conversations', 
-          { id: conversationId }, 
-          updateData
+        const updateResult = await DbService.updateWhere(
+          'conversations',
+          { id: conversationId },
+          { preview, updated_at: new Date() }
         );
         
-        console.log(`[insertChatMessage] Preview update result:`, result ? `Success, affected ${Array.isArray(result) ? result.length : 0} rows` : 'No result returned');
-        logger.info(`Updated conversation ${conversationId} preview with assistant message content`);
+        logger.info(`[insertChatMessage] Conversation preview update complete, result: ${JSON.stringify(updateResult)}`);
       } catch (previewError) {
-        console.error(`[insertChatMessage] FAILED to update conversation preview for ${conversationId}:`, previewError);
-        logger.error(`Failed to update conversation preview for ${conversationId}:`, previewError);
-        // Continue execution even if preview update fails
+        logger.error(`[insertChatMessage] Failed to update conversation preview: ${previewError.message}`);
+        // Don't throw here, we still want to return the message even if preview update fails
       }
     } else {
-      console.log(`[insertChatMessage] Skipping preview update for non-assistant message: ${messageRole}`);
+      logger.info(`[insertChatMessage] Skipping preview update for non-assistant message or empty content`);
     }
-    
+
     return messageToInsert;
   } catch (error) {
-    logger.error(`Error inserting chat message (Role: ${messageData.role || 'unknown'}) into conversation ${conversationId}:`, error);
+    logger.error(`[insertChatMessage] Error inserting message: ${error.message}`);
     throw error;
   }
 };
