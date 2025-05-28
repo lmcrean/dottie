@@ -1,12 +1,17 @@
 /**
  * CRITICAL BUG TEST: Validates message sequence is correct
  * Expected order: user → assistant → user → assistant
- * Addresses known production bug with message ordering
+ * Uses centralized utility functions for validation
  */
+
+import { 
+    validateMessageCount, 
+    validateAlternatingPattern, 
+    getExpectedPattern 
+} from './utils/expectedMessageCount.js';
 
 /**
  * Validate that messages are in correct chronological order
- * This is critical for conversation coherence and addresses a known production bug
  * @param {Object} request - Playwright request object
  * @param {string} token - Authentication token
  * @param {string} conversationId - Conversation ID to validate
@@ -17,9 +22,7 @@ export async function validateMessageOrder(request, token, conversationId, expec
   try {
     // Get conversation details
     const response = await request.get(`/api/chat/history/${conversationId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
     
     if (response.status() !== 200) {
@@ -30,32 +33,31 @@ export async function validateMessageOrder(request, token, conversationId, expec
     const conversation = await response.json();
     const messages = conversation.messages || [];
 
-    // Validate message count
-    if (messages.length !== expectedMessageCount) {
+    // Use utility for message count validation
+    const countValidation = validateMessageCount(messages, expectedMessageCount);
+    if (!countValidation.success) {
       return {
         success: false,
-        error: `Expected ${expectedMessageCount} messages, got ${messages.length}`,
-        message_count: messages.length,
-        expected_count: expectedMessageCount,
+        error: countValidation.error,
+        message_count: countValidation.actual,
+        expected_count: countValidation.expected,
         conversation_id: conversationId
       };
     }
 
-    // Expected pattern for 4 messages: user, assistant, user, assistant
-    const expectedPattern = ['user', 'assistant', 'user', 'assistant'];
+    // Use utility for pattern validation
+    const expectedPattern = getExpectedPattern(expectedMessageCount);
     const actualPattern = messages.map(msg => msg.role);
-    
-    // Check if pattern matches exactly
     const patternMatches = JSON.stringify(actualPattern) === JSON.stringify(expectedPattern);
     
-    // Additional validation: check timestamps are in chronological order
+    // Check chronological order
     const timestamps = messages.map(msg => new Date(msg.created_at || msg.timestamp));
     const isChronological = timestamps.every((timestamp, index) => {
       if (index === 0) return true;
       return timestamp >= timestamps[index - 1];
     });
 
-    // Detailed analysis for debugging
+    // Create message analysis
     const messageAnalysis = messages.map((msg, index) => ({
       index: index,
       role: msg.role,
@@ -68,7 +70,6 @@ export async function validateMessageOrder(request, token, conversationId, expec
       console.error(`❌ Message order is incorrect!`);
       console.error(`Expected: ${expectedPattern.join(' → ')}`);
       console.error(`Actual:   ${actualPattern.join(' → ')}`);
-      console.error(`Message analysis:`, messageAnalysis);
       
       return {
         success: false,
@@ -84,7 +85,6 @@ export async function validateMessageOrder(request, token, conversationId, expec
 
     if (!isChronological) {
       console.error(`❌ Messages are not in chronological order!`);
-      console.error(`Timestamp analysis:`, messageAnalysis);
       
       return {
         success: false,
@@ -100,8 +100,6 @@ export async function validateMessageOrder(request, token, conversationId, expec
 
     console.log(`✓ Message order validation PASSED`);
     console.log(`✓ Pattern: ${actualPattern.join(' → ')}`);
-    console.log(`✓ Chronological order: ${isChronological}`);
-    console.log(`✓ Total messages: ${messages.length}`);
 
     return {
       success: true,
@@ -125,22 +123,8 @@ export async function validateMessageOrder(request, token, conversationId, expec
   }
 }
 
-/**
- * Quick check for alternating user/assistant pattern
- * @param {Array} messages - Array of message objects
- * @returns {boolean} True if messages alternate between user and assistant
- */
-export function validateAlternatingPattern(messages) {
-  if (messages.length === 0) return true;
-  
-  for (let i = 1; i < messages.length; i++) {
-    if (messages[i].role === messages[i-1].role) {
-      return false; // Found consecutive messages with same role
-    }
-  }
-  
-  return true;
-}
+// Re-export utility function for backward compatibility  
+export { validateAlternatingPattern };
 
 /**
  * Advanced message order validation with detailed error reporting

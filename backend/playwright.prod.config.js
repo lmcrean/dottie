@@ -2,7 +2,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './e2e/prod',
+  testDir: './e2e/dev',
   timeout: 30000,
   expect: {
     timeout: 5000,
@@ -16,6 +16,8 @@ export default defineConfig({
     baseURL: 'http://dottie-backend.vercel.app',
     trace: 'on-first-retry',
   },
+  
+  testMatch: '**/*.api.pw.spec.js',
   
   projects: [
     {
