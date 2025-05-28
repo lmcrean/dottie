@@ -19,8 +19,27 @@ const createQueryBuilder = (tableName) => {
     _count: null,
     
     // Methods
-    where(field, value) {
-      this._wheres.push({ field, value });
+    where(field, operator, value) {
+      // Handle different ways where() can be called:
+      // 1. where('id', 123) - field and value
+      // 2. where('id', '=', 123) - field, operator, value
+      // 3. where({ id: 123 }) - object with field:value pairs
+      
+      if (arguments.length === 1 && typeof field === 'object') {
+        // Handle object syntax: where({ id: 123 })
+        const whereObj = field;
+        Object.entries(whereObj).forEach(([key, val]) => {
+          this._wheres.push({ field: key, value: val });
+        });
+      } else if (arguments.length === 2) {
+        // Handle where('id', 123)
+        this._wheres.push({ field, value: operator });
+      } else if (arguments.length === 3) {
+        // Handle where('id', '=', 123)
+        // For now, we ignore the operator and just use eq()
+        this._wheres.push({ field, value });
+      }
+      
       return this;
     },
     
@@ -132,8 +151,18 @@ const createQueryBuilder = (tableName) => {
       
       // Apply wheres
       for (const where of this._wheres) {
-        console.log(`[Supabase] Adding where condition: ${where.field} = ${where.value}`);
-        query = query.eq(where.field, where.value);
+        // Fix: Make sure we're using the correct property access
+        const fieldName = typeof where.field === 'string' ? where.field : Object.keys(where.field)[0];
+        const fieldValue = typeof where.field === 'string' ? where.value : where.field[fieldName];
+        
+        console.log(`[Supabase] Adding where condition: ${fieldName} = ${fieldValue}`);
+        
+        // Make sure both field and value are properly defined
+        if (fieldName && fieldValue !== undefined) {
+          query = query.eq(fieldName, fieldValue);
+        } else {
+          console.warn(`[Supabase] Skipping invalid where condition: ${JSON.stringify(where)}`);
+        }
       }
       
       // Add select() to return the updated data

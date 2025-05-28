@@ -35,22 +35,53 @@ export async function updateWhere(table, whereCondition, updateData) {
     
     // Perform the update
     let result;
+    let updatedRecords;
+    
     if (isSupabase) {
-      // For Supabase, add a .select() call to get the updated data
-      let query = db(table).where(whereCondition).update(processedUpdateData);
-      result = await query;
-      console.log(`[updateWhere] Supabase update complete, result:`, JSON.stringify(result));
+      try {
+        console.log(`[updateWhere] Using Supabase-specific update approach`);
+        
+        // Start with the table
+        let query = db(table);
+        
+        // Apply each where condition separately instead of passing the whole object
+        if (whereCondition && typeof whereCondition === 'object') {
+          Object.entries(whereCondition).forEach(([key, value]) => {
+            console.log(`[updateWhere] Adding Supabase where condition: ${key} = ${value}`);
+            // Add each condition separately
+            query = query.where(key, value);
+          });
+        }
+        
+        // Apply the update
+        query = query.update(processedUpdateData);
+        
+        // Execute the query
+        result = await query;
+        console.log(`[updateWhere] Supabase update complete, result:`, result ? JSON.stringify(result) : 'No result data');
+        
+        // Fetch the updated records using the same where conditions
+        let selectQuery = db(table);
+        Object.entries(whereCondition).forEach(([key, value]) => {
+          selectQuery = selectQuery.where(key, value);
+        });
+        updatedRecords = await selectQuery;
+      } catch (supabaseError) {
+        console.error(`[updateWhere] Supabase update error:`, supabaseError);
+        throw supabaseError;
+      }
     } else {
       // For SQLite and other database systems
       result = await db(table).where(whereCondition).update(processedUpdateData);
       console.log(`[updateWhere] Standard update complete, affected rows: ${result}`);
+      
+      // Fetch the updated data to return
+      updatedRecords = await db(table).where(whereCondition).select('*');
     }
     
-    // Fetch the updated data to return (important for the calling function)
-    const updatedRecords = await db(table).where(whereCondition).select('*');
-    console.log(`[updateWhere] Successfully fetched ${updatedRecords.length} updated records`);
+    console.log(`[updateWhere] Successfully fetched ${updatedRecords?.length || 0} updated records`);
     
-    return updatedRecords;
+    return updatedRecords || [];
   } catch (error) {
     console.error(`[updateWhere] Error updating ${table}:`, error);
     logger.error(`Error updating ${table}:`, error);
