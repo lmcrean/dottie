@@ -26,6 +26,9 @@ export default defineConfig({
     url: 'http://localhost:5000/api/setup/health/hello',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
+    // Enable stdout/stderr to capture backend console logs
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 
   // Create a project for API testing
