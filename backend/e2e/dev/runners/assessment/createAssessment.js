@@ -35,6 +35,7 @@ export async function createAssessment(
       pain_level: data.painLevel,
       physical_symptoms: data.symptoms?.physical || [],
       emotional_symptoms: data.symptoms?.emotional || [],
+      recommendations: data.recommendations || [], // Include recommendations
       pattern: data.pattern // Include the calculated pattern
     }
   };

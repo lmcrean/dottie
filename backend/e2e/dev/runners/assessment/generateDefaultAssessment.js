@@ -49,6 +49,10 @@ export function generateDefaultAssessment() {
       physical: ["Bloating", "Headaches"],
       emotional: ["Mood swings", "Irritability"],
     },
+    recommendations: [
+      { title: "Regular Exercise", description: "Try light exercise like walking or yoga" },
+      { title: "Hydration", description: "Increase water intake during your cycle" }
+    ]
   };
 
   // Convert to snake_case for pattern calculation
@@ -85,6 +89,11 @@ export function generateSevereAssessment() {
       physical: ["Severe Cramps", "Nausea", "Vomiting", "Dizziness"],
       emotional: ["Depression", "Anxiety", "Mood swings", "Irritability"],
     },
+    recommendations: [
+      { title: "Pain Management", description: "Consider over-the-counter pain relievers" },
+      { title: "Medical Consultation", description: "Schedule an appointment with your healthcare provider" },
+      { title: "Stress Reduction", description: "Try relaxation techniques such as meditation" }
+    ]
   };
 
   // Convert to snake_case for pattern calculation
