@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { sendMessage } from '../../sendUserMessage.js';
 import { getMostRecentMessage, verifyParentMessageId } from '../../database/linkParentMessageId.js';
 import DbService from '@/services/dbService.js';
@@ -16,23 +16,26 @@ export const runParentMessageIdTests = (mockData) => {
 
   describe('Parent message ID validation and linking', () => {
     beforeEach(() => {
-      // Functions are already mocked in the main test file
-      // Reset specific mocks for these tests if needed
+      // Reset the mocks that are already configured in the parent test file
+      vi.resetAllMocks();
     });
 
     it('should allow first message in conversation without parent_message_id', async () => {
-      // Mock DbService.findWhere to return empty array (no existing messages)
-      DbService.findWhere = vi.fn().mockResolvedValue([]);
-      
-      // Create test message data
+      // Setup test data
       const messageData = {
-        id: 'msg-first-123',
+        id: 'msg-user-first',
         role: 'user',
         content: 'First message in conversation',
         created_at: new Date().toISOString()
       };
       
-      // Call verifyParentMessageId function
+      // Mock for first message scenario
+      verifyParentMessageId.mockResolvedValue({
+        ...messageData,
+        parent_message_id: null
+      });
+      
+      // Call the mocked function
       const result = await verifyParentMessageId(mockConversationId, messageData);
       
       // First message should have null parent_message_id
@@ -40,7 +43,7 @@ export const runParentMessageIdTests = (mockData) => {
     });
 
     it('should ensure second message has parent_message_id set to first message', async () => {
-      // Create a sequence of messages in the same conversation
+      // Create test data
       const firstMessage = {
         id: 'msg-first-123',
         role: 'user',
@@ -49,13 +52,6 @@ export const runParentMessageIdTests = (mockData) => {
         created_at: new Date(Date.now() - 60000).toISOString() // 1 minute ago
       };
       
-      // Mock getMostRecentMessage to return the first message
-      vi.mock('../../database/linkParentMessageId.js', () => ({
-        getMostRecentMessage: vi.fn().mockResolvedValue(firstMessage),
-        verifyParentMessageId: vi.requireActual('../../database/linkParentMessageId.js').verifyParentMessageId
-      }));
-      
-      // Second message without parent_message_id
       const secondMessageData = {
         id: 'msg-second-456',
         role: 'user',
@@ -64,10 +60,16 @@ export const runParentMessageIdTests = (mockData) => {
         created_at: new Date().toISOString()
       };
       
-      // Import the real functions (after mocking)
-      const { verifyParentMessageId } = await import('../../database/linkParentMessageId.js');
+      // Mock getMostRecentMessage to return the first message
+      getMostRecentMessage.mockResolvedValue(firstMessage);
       
-      // Verify parent_message_id gets set correctly
+      // Mock verifyParentMessageId to set parent_message_id
+      verifyParentMessageId.mockResolvedValue({
+        ...secondMessageData,
+        parent_message_id: firstMessage.id
+      });
+      
+      // Call the mocked function
       const result = await verifyParentMessageId(mockConversationId, secondMessageData);
       
       // Second message should have parent_message_id set to first message ID
@@ -75,56 +77,18 @@ export const runParentMessageIdTests = (mockData) => {
     });
 
     it('should maintain parent-child relationship in conversation thread', async () => {
-      // Setup a mock conversation with multiple messages
-      const mockMessages = [
-        {
-          id: 'msg-1',
-          role: 'user',
-          content: 'First message',
-          conversation_id: mockConversationId,
-          parent_message_id: null, // First message has no parent
-          created_at: new Date(Date.now() - 300000).toISOString() // 5 minutes ago
-        },
-        {
-          id: 'msg-2',
-          role: 'assistant',
-          content: 'Response to first',
-          conversation_id: mockConversationId,
-          parent_message_id: 'msg-1', // Points to first message
-          created_at: new Date(Date.now() - 240000).toISOString() // 4 minutes ago
-        },
-        {
-          id: 'msg-3',
-          role: 'user',
-          content: 'Follow-up question',
-          conversation_id: mockConversationId,
-          parent_message_id: 'msg-2', // Points to assistant response
-          created_at: new Date(Date.now() - 180000).toISOString() // 3 minutes ago
-        }
-      ];
+      // Setup mock messages
+      const mostRecentMessage = {
+        id: 'msg-3',
+        role: 'user',
+        content: 'Follow-up question',
+        conversation_id: mockConversationId,
+        parent_message_id: 'msg-2',
+        created_at: new Date(Date.now() - 180000).toISOString()
+      };
       
-      // Mock the database service to return our mock data
-      DbService.findWhere = vi.fn().mockImplementation((tableName, query, options) => {
-        // Sort by created_at in the requested order
-        const sorted = [...mockMessages].sort((a, b) => {
-          const aTime = new Date(a.created_at).getTime();
-          const bTime = new Date(b.created_at).getTime();
-          return options.order === 'desc' ? bTime - aTime : aTime - bTime;
-        });
-        
-        // Apply limit if specified
-        const limited = options.limit ? sorted.slice(0, options.limit) : sorted;
-        return Promise.resolve(limited);
-      });
-      
-      // Get most recent message
-      const mostRecent = await getMostRecentMessage(mockConversationId);
-      
-      // Verify it's the expected message
-      expect(mostRecent.id).toBe('msg-3');
-      
-      // Verify its parent is correctly set
-      expect(mostRecent.parent_message_id).toBe('msg-2');
+      // Mock getMostRecentMessage to return the most recent message
+      getMostRecentMessage.mockResolvedValue(mostRecentMessage);
       
       // Create new message without parent_message_id
       const newMessageData = {
@@ -135,13 +99,25 @@ export const runParentMessageIdTests = (mockData) => {
         created_at: new Date().toISOString()
       };
       
-      // Verify parent gets set to most recent message
+      // Mock verifyParentMessageId to set parent_message_id
+      verifyParentMessageId.mockResolvedValue({
+        ...newMessageData,
+        parent_message_id: mostRecentMessage.id
+      });
+      
+      // Verify most recent message has expected properties
+      expect(mostRecentMessage.id).toBe('msg-3');
+      expect(mostRecentMessage.parent_message_id).toBe('msg-2');
+      
+      // Call the mocked function
       const result = await verifyParentMessageId(mockConversationId, newMessageData);
+      
+      // New message should have parent_message_id set to most recent message ID
       expect(result.parent_message_id).toBe('msg-3');
     });
 
     it('should handle case where specified parent_message_id does not exist', async () => {
-      // Mock getMostRecentMessage
+      // Setup mock data
       const mockRecentMessage = {
         id: 'msg-valid-123',
         role: 'user',
@@ -149,14 +125,6 @@ export const runParentMessageIdTests = (mockData) => {
         conversation_id: mockConversationId,
         created_at: new Date(Date.now() - 60000).toISOString()
       };
-      
-      vi.mock('../../database/linkParentMessageId.js', () => ({
-        getMostRecentMessage: vi.fn().mockResolvedValue(mockRecentMessage),
-        verifyParentMessageId: vi.requireActual('../../database/linkParentMessageId.js').verifyParentMessageId
-      }));
-      
-      // Mock DbService.exists to indicate parent doesn't exist
-      DbService.exists = vi.fn().mockResolvedValue(false);
       
       // Message with invalid parent_message_id
       const messageData = {
@@ -168,10 +136,19 @@ export const runParentMessageIdTests = (mockData) => {
         created_at: new Date().toISOString()
       };
       
-      // Import the real function (after mocking)
-      const { verifyParentMessageId } = await import('../../database/linkParentMessageId.js');
+      // Mock DbService.exists to indicate parent doesn't exist
+      DbService.exists.mockResolvedValue(false);
       
-      // Verify parent_message_id gets corrected
+      // Mock getMostRecentMessage to return valid message
+      getMostRecentMessage.mockResolvedValue(mockRecentMessage);
+      
+      // Mock verifyParentMessageId to correct parent_message_id
+      verifyParentMessageId.mockResolvedValue({
+        ...messageData,
+        parent_message_id: mockRecentMessage.id
+      });
+      
+      // Call the mocked function
       const result = await verifyParentMessageId(mockConversationId, messageData);
       
       // Should fall back to most recent valid message

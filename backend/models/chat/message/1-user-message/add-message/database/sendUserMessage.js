@@ -23,24 +23,37 @@ export const insertChatMessage = async (conversationId, messageData) => {
     
     // Update the conversation preview ONLY if this is an assistant message
     if (messageData.role === 'assistant') {
+      console.log(`[insertChatMessage] Processing assistant message for preview update: ${messageId}`);
+      console.log(`[insertChatMessage] Assistant message in conversation: ${conversationId}`);
+      
       // Truncate the message content for the preview (if not empty)
       const content = messageData.content || '';
       const previewContent = content.substring(0, 50);
       const preview = content.length > 50 ? previewContent + '...' : content;
+      console.log(`[insertChatMessage] Generated preview: "${preview.substring(0, 30)}${preview.length > 30 ? '...' : ''}"`);
       
       try {
-        await DbService.updateWhere('conversations', 
+        console.log(`[insertChatMessage] Calling DbService.updateWhere for preview update`);
+        const updateData = { 
+          preview: preview,
+          updated_at: new Date().toISOString()
+        };
+        console.log(`[insertChatMessage] Update data:`, JSON.stringify(updateData));
+        
+        const result = await DbService.updateWhere('conversations', 
           { id: conversationId }, 
-          { 
-            preview: preview,
-            updated_at: new Date().toISOString()
-          }
+          updateData
         );
+        
+        console.log(`[insertChatMessage] Preview update result:`, result ? `Success, affected ${Array.isArray(result) ? result.length : 0} rows` : 'No result returned');
         logger.info(`Updated conversation ${conversationId} preview with assistant message content`);
       } catch (previewError) {
+        console.error(`[insertChatMessage] FAILED to update conversation preview for ${conversationId}:`, previewError);
         logger.error(`Failed to update conversation preview for ${conversationId}:`, previewError);
         // Continue execution even if preview update fails
       }
+    } else {
+      console.log(`[insertChatMessage] Skipping preview update for non-assistant message: ${messageRole}`);
     }
     
     return messageToInsert;

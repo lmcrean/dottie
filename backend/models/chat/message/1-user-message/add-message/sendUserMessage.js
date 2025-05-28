@@ -2,6 +2,7 @@ import logger from '../../../../../services/logger.js';
 import { insertChatMessage } from './database/sendUserMessage.js';
 import { formatUserMessage } from './validation/formatters/formatUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
+import { verifyParentMessageId } from './database/linkParentMessageId.js';
 import Chat from '../../../list/chat.js';
 
 /**
@@ -31,13 +32,17 @@ export const addUserMessage = async (conversationId, userId, messageText, option
 
     // Generate message ID and create message data
     const messageId = generateMessageId();
-    const messageData = {
+    let messageData = {
       id: messageId,
       role: 'user',
       content: messageText,
       parent_message_id: parentMessageId,
       created_at: new Date().toISOString()
     };
+
+    // Verify parent_message_id is properly set
+    // This will ensure messages other than the first have a parent_message_id
+    messageData = await verifyParentMessageId(conversationId, messageData);
 
     // Insert user message into database
     await insertChatMessage(conversationId, messageData);
@@ -47,7 +52,7 @@ export const addUserMessage = async (conversationId, userId, messageText, option
       conversationId,
       role: 'user',
       content: messageText,
-      parent_message_id: parentMessageId,
+      parent_message_id: messageData.parent_message_id,
       created_at: messageData.created_at,
       ...context
     };
