@@ -104,7 +104,7 @@ describe('getConversation - Read Conversation by ID', () => {
       expect(DbService.findByIdWithJson).toHaveBeenCalledWith(
         'conversations',
         mockData.conversationId,
-        ['assessment_pattern']
+        ['assessment_object']
       );
       
       expect(DbService.findByFieldWithJson).toHaveBeenCalledWith(
@@ -112,7 +112,10 @@ describe('getConversation - Read Conversation by ID', () => {
         'conversation_id',
         mockData.conversationId,
         [],
-        { field: 'created_at', direction: 'ASC' }
+        [
+          { field: 'created_at', direction: 'ASC' },
+          { field: 'id', direction: 'ASC' }
+        ]
       );
     });
   });

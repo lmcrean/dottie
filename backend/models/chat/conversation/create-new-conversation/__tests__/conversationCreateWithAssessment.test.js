@@ -204,7 +204,7 @@ describe('conversationCreate with assessment linking', () => {
 
       await createConversation(mockUserId, mockAssessmentId);
 
-      expect(logger.info).toHaveBeenCalledTimes(2);
+      expect(logger.info).toHaveBeenCalledTimes(3);
       expect(logger.info).toHaveBeenCalledWith(
         `Linked assessment ${mockAssessmentId} to conversation`,
         { pattern: 'irregular', hasAssessmentObject: true }
