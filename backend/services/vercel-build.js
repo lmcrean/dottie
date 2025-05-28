@@ -1,8 +1,7 @@
 // Set VERCEL flag for database module
 process.env.VERCEL = "1";
 process.env.NODE_ENV = "production";
-
-
+process.env.DB_TYPE = "supabase"; // Explicitly set DB_TYPE for deployment
 
 // Import required modules 
 import { createClient } from "@supabase/supabase-js";
@@ -11,16 +10,23 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 
+// Log important environment configurations
+console.log("Environment configuration:");
+console.log(`  NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`  DB_TYPE: ${process.env.DB_TYPE}`);
+console.log(`  SUPABASE_URL set: ${!!process.env.SUPABASE_URL}`);
+console.log(`  SUPABASE_SERVICE_ROLE_KEY set: ${!!process.env.SUPABASE_SERVICE_ROLE_KEY}`);
+
 // Attempt to fix the schema in Supabase if credentials are available
 async function fixProductionDatabaseSchema() {
   try {
     // Check if Supabase credentials are available
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-
+      console.error("Missing Supabase credentials. Cannot fix schema.");
       return;
     }
 
-
+    console.log("Starting schema verification...");
 
     // Create Supabase client with admin role key
     const supabase = createClient(
@@ -28,8 +34,45 @@ async function fixProductionDatabaseSchema() {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    // Fix schema for assessments table
+    // Check for preview column in conversations table
+    try {
+      console.log("Checking for preview column in conversations table...");
+      
+      // First check if the conversations table exists
+      const { error: checkConversationsError } = await supabase
+        .from("conversations")
+        .select("count")
+        .limit(1);
+        
+      if (checkConversationsError && checkConversationsError.message.includes("does not exist")) {
+        console.log("Conversations table does not exist, skipping preview column check");
+      } else {
+        // Check for preview column
+        const { data: previewColumn, error: previewError } = await supabase
+          .from('information_schema.columns')
+          .select('column_name')
+          .eq('table_schema', 'public')
+          .eq('table_name', 'conversations')
+          .eq('column_name', 'preview')
+          .single();
+          
+        if (previewError || !previewColumn) {
+          console.log("Adding preview column to conversations table...");
+          
+          await supabase.rpc('exec_sql', {
+            sql_query: 'ALTER TABLE public.conversations ADD COLUMN IF NOT EXISTS preview TEXT;'
+          });
+          
+          console.log("✅ Added preview column to conversations table");
+        } else {
+          console.log("✅ Preview column already exists in conversations table");
+        }
+      }
+    } catch (error) {
+      console.error("Error checking preview column:", error);
+    }
 
+    // Fix schema for assessments table
 
     // First check if the assessments table exists
     const { error: checkError } = await supabase
@@ -236,5 +279,7 @@ async function fixProductionDatabaseSchema() {
 
 // Run the schema fix during build
 await fixProductionDatabaseSchema();
+
+console.log("✅ Vercel build script completed");
 
 

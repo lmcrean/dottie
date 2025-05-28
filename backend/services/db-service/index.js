@@ -10,6 +10,7 @@ import { createWithJson } from './createWithJson.js';
 import { findByIdWithJson } from './findByIdWithJson.js';
 import { findByFieldWithJson } from './findByFieldWithJson.js';
 import { updateWithJson } from './updateWithJson.js';
+import { updateWhere } from './updateWhere.js';
 
 /**
  * Database service for common operations
@@ -59,6 +60,10 @@ class DbService {
   static async updateWithJson(table, id, data, jsonFields = []) {
     return updateWithJson(table, id, data, jsonFields);
   }
+
+  static async updateWhere(table, whereCondition, updateData) {
+    return updateWhere(table, whereCondition, updateData);
+  }
 }
 
 // Export both the class and individual functions
@@ -74,5 +79,6 @@ export {
   createWithJson,
   findByIdWithJson,
   findByFieldWithJson,
-  updateWithJson
+  updateWithJson,
+  updateWhere
 }; 

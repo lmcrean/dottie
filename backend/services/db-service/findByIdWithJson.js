@@ -15,9 +15,24 @@ export async function findByIdWithJson(table, id, jsonFields = []) {
   for (const field of jsonFields) {
     if (record[field]) {
       try {
+        // Skip parsing if it's already an object (PostgreSQL jsonb column)
+        if (typeof record[field] === 'object') {
+          continue;
+        }
+        
+        // Skip parsing if it's the literal string "[object Object]"
+        if (record[field] === '[object Object]') {
+          console.warn(`Field ${field} in ${table} contains "[object Object]" string, setting to empty object`);
+          record[field] = {};
+          continue;
+        }
+        
+        // Try to parse the JSON string
         record[field] = JSON.parse(record[field]);
       } catch (err) {
         console.warn(`Failed to parse field ${field} in ${table}:`, err);
+        // Set to empty object instead of leaving invalid JSON
+        record[field] = {};
       }
     }
   }

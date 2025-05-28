@@ -34,8 +34,32 @@ export const createConversation = async (userId, assessmentId = null) => {
         const assessmentObject = await fetchAssessmentObject(assessmentId);
         
         if (assessmentObject) {
-          // Store the entire assessment object
-          conversationData.assessment_object = assessmentObject;
+          // Ensure the assessment object is properly serialized as JSON string
+          // This fixes the "[object Object]" issue in production
+          if (typeof assessmentObject === 'object') {
+            try {
+              // For Supabase/PostgreSQL, we can use raw JSON objects with jsonb type
+              // For SQLite, we need to serialize to string
+              // Check database type to determine approach
+              const dbType = process.env.DB_TYPE || 'sqlite';
+              
+              if (dbType.toLowerCase() === 'supabase') {
+                // For Supabase, use the object directly (PostgreSQL handles JSON objects)
+                conversationData.assessment_object = assessmentObject;
+              } else {
+                // For SQLite and others, stringify the object
+                conversationData.assessment_object = JSON.stringify(assessmentObject);
+              }
+              
+              logger.info('Successfully serialized assessment object');
+            } catch (serializeError) {
+              logger.error('Error serializing assessment object:', serializeError);
+              // Fallback to basic string serialization
+              conversationData.assessment_object = JSON.stringify(assessmentObject);
+            }
+          } else {
+            logger.warn('Assessment object is not an object, skipping serialization');
+          }
           
           // Extract and store pattern at root level for easy access
           const pattern = extractAssessmentPattern(assessmentObject);

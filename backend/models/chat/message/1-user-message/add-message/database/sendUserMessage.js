@@ -21,6 +21,27 @@ export const insertChatMessage = async (conversationId, messageData) => {
     const messageRole = messageData.role ? messageData.role : 'unknown';
     logger.info(`Message (ID: ${messageId}, Role: ${messageRole}) inserted into conversation ${conversationId}`);
     
+    // Update the conversation preview with the content of this message
+    if (messageData.content) {
+      // Truncate the message content for the preview
+      const previewContent = messageData.content.substring(0, 50);
+      const preview = previewContent + (messageData.content.length > 50 ? '...' : '');
+      
+      try {
+        await DbService.updateWhere('conversations', 
+          { id: conversationId }, 
+          { 
+            preview: preview,
+            updated_at: new Date().toISOString()
+          }
+        );
+        logger.info(`Updated conversation ${conversationId} preview with message content`);
+      } catch (previewError) {
+        logger.error(`Failed to update conversation preview for ${conversationId}:`, previewError);
+        // Continue execution even if preview update fails
+      }
+    }
+    
     return messageToInsert;
   } catch (error) {
     logger.error(`Error inserting chat message (Role: ${messageData.role || 'unknown'}) into conversation ${conversationId}:`, error);
