@@ -24,26 +24,25 @@ export async function runChatWithAssessmentWorkflow(request, expect, authToken, 
   console.log('💬🩺 Starting Chat with Assessment Workflow (DEV)...');
   
   // Generate a test message that references assessment data
-  const message = chat.generateAssessmentAwareMessage();
+  const message = chat.getTestUserMessage(0); // Use first test message
   
-  // Create new conversation and send initial message with assessment context
-  const result = await chat.createConversationAndSendInitialMessage(request, authToken, message, assessmentId);
+  // Create new conversation by sending initial message with assessment context
+  const conversationResult = await chat.createConversation(request, authToken, assessmentId);
   
-  expect(result).toHaveProperty('message');
-  expect(result).toHaveProperty('conversationId');
-  expect(result.conversationId).toBeTruthy();
-  expect(result.assessment_id).toBe(assessmentId);
+  expect(conversationResult).toHaveProperty('conversationId');
+  expect(conversationResult.conversationId).toBeTruthy();
+  expect(conversationResult.assessment_id).toBe(assessmentId);
   
-  const conversationId = result.conversationId;
+  const conversationId = conversationResult.conversationId;
   console.log('✅ Created conversation with assessment context (DEV)');
   
   // Verify the conversation was properly linked to the assessment
-  const isLinked = await chat.verifyConversationAssessmentLink(request, authToken, conversationId, assessmentId);
-  expect(isLinked).toBe(true);
+  const linkValidation = await chat.validateAssessmentIdWasLinked(request, authToken, conversationId, assessmentId);
+  expect(linkValidation.success).toBe(true);
   console.log('✅ Verified assessment-conversation link (DEV)');
   
-  // Get conversation details to verify assessment data is included
-  const conversationDetails = await chat.getConversation(request, authToken, conversationId);
+  // Get conversation details without strict validation (since we just have initial messages)
+  const conversationDetails = await chat.getConversationRaw(request, authToken, conversationId);
   expect(conversationDetails).toHaveProperty('id', conversationId);
   expect(conversationDetails).toHaveProperty('assessment_id', assessmentId);
   expect(conversationDetails).toHaveProperty('messages');
@@ -54,21 +53,27 @@ export async function runChatWithAssessmentWorkflow(request, expect, authToken, 
   // Verify correct message ordering: user should ALWAYS message first
   expect(conversationDetails.messages[0].role).toBe("user");
   
-  // Validate the initial chatbot response
-  chat.validateChatbotResponseAfterUserMessage(conversationDetails, expect);
-  console.log('✅ Initial chatbot response validated (DEV)');
+  // Validate alternating pattern for initial messages (more flexible than fixed 4-message validation)
+  const alternatingPatternValid = chat.validateAlternatingPattern(conversationDetails.messages);
+  expect(alternatingPatternValid).toBe(true);
+  console.log('✅ Initial message alternating pattern validated (DEV)');
   
   // Send a follow-up message to the same conversation (should maintain assessment context)
-  const followUpMessage = chat.generateAssessmentFollowUpMessage();
-  const followUpResult = await chat.sendFollowUpMessage(request, authToken, followUpMessage, conversationId);
+  const followUpMessage = chat.getTestUserMessage(1); // Use second test message
+  const followUpResult = await chat.sendUserMessageFollowup(request, authToken, conversationId, 1);
   
-  expect(followUpResult).toHaveProperty('conversationId', conversationId);
+  expect(followUpResult.success).toBe(true);
+  expect(followUpResult.conversationId).toBe(conversationId);
   expect(followUpResult).toHaveProperty('message');
   console.log('✅ Follow-up message sent successfully (DEV)');
   
-  // Get updated conversation details and validate the follow-up chatbot response
-  const updatedConversationDetails = await chat.getConversation(request, authToken, conversationId);
-  chat.validateChatbotResponseAfterUserMessage(updatedConversationDetails, expect);
+  // Now we should have 4 messages (2 user + 2 assistant), so we can use full validation
+  const updatedConversationResponse = await chat.getConversation(request, authToken, conversationId, 4);
+  expect(updatedConversationResponse.success).toBe(true);
+  const updatedConversationDetails = updatedConversationResponse.conversation;
+  
+  const updatedMessageOrderValidation = await chat.validateMessageOrder(request, authToken, conversationId, updatedConversationDetails.messages.length);
+  expect(updatedMessageOrderValidation.success).toBe(true);
   console.log('✅ Follow-up chatbot response validated (DEV)');
   
   // Verify conversation history shows the assessment-linked conversation
