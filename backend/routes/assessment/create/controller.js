@@ -15,13 +15,13 @@ export const createAssessment = async (req, res) => {
     const userId = req.user.userId;
     const { assessmentData } = req.body;
 
-
-
-
     // Validate assessment data
     if (!assessmentData) {
       return res.status(400).json({ error: "Assessment data is required" });
     }
+
+    // Pattern should be calculated in frontend and passed as part of assessmentData
+    console.log(`[WebServer] Assessment received with pattern: ${assessmentData.pattern}`);
     
     // Legacy direct database insertion for test users
     // This will be removed once migration is complete
@@ -40,7 +40,7 @@ export const createAssessment = async (req, res) => {
             user_id: userId,
             created_at: new Date().toISOString(),
             
-            // Flattened fields
+            // Flattened fields - pattern should be included from frontend
             age: assessmentData.age,
             pattern: assessmentData.pattern,
             cycle_length: assessmentData.cycle_length || assessmentData.cycleLength,
@@ -75,7 +75,7 @@ export const createAssessment = async (req, res) => {
             
             // Also extract and store as flattened fields for compatibility
             age: nestedData.age,
-            pattern: nestedData.pattern,
+            pattern: assessmentData.pattern, // Pattern from frontend
             cycle_length: nestedData.cycleLength,
             period_duration: nestedData.periodDuration,
             flow_heaviness: nestedData.flowHeaviness,
@@ -112,17 +112,15 @@ export const createAssessment = async (req, res) => {
     // Validate assessment data using our shared validator
     const validationError = validateAssessmentData(assessmentData);
     if (!validationError.isValid) {
-
       return res.status(400).json({ error: validationError });
     }
     
     // Create assessment using the model layer
     // This will automatically handle both flattened and nested formats
-
     
     // Ensure arrays are properly initialized
     const processedData = {
-      ...assessmentData,
+      ...assessmentData, // Use assessment data with pattern from frontend
       physical_symptoms: Array.isArray(assessmentData.physical_symptoms) 
         ? assessmentData.physical_symptoms 
         : (assessmentData.physical_symptoms ? [assessmentData.physical_symptoms] : []),
@@ -131,12 +129,8 @@ export const createAssessment = async (req, res) => {
         : (assessmentData.emotional_symptoms ? [assessmentData.emotional_symptoms] : []),
     };
     
-
-
-    
     try {
       const newAssessment = await Assessment.create(processedData, userId);
-
       res.status(201).json(newAssessment);
     } catch (modelError) {
       console.error("Error in Assessment.create:", modelError);
