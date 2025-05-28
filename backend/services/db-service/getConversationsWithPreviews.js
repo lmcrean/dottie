@@ -24,13 +24,25 @@ export async function getConversationsWithPreviews(userId) {
         console.log(`[getConversationsWithPreviews] Processing conversation ${index + 1}/${conversations.length}: ${conv.id}`);
         
         try {
-          console.log(`[getConversationsWithPreviews] Querying latest message for conversation ${conv.id}...`);
-          const latestMessage = await db('chat_messages')
+          console.log(`[getConversationsWithPreviews] Querying latest assistant message for conversation ${conv.id}...`);
+          const latestAssistantMessage = await db('chat_messages')
             .where('conversation_id', conv.id)
+            .where('role', 'assistant')
             .orderBy('created_at', 'desc')
             .first();
 
-          console.log(`[getConversationsWithPreviews] Latest message for ${conv.id}:`, latestMessage ? 'found' : 'none');
+          console.log(`[getConversationsWithPreviews] Latest assistant message for ${conv.id}:`, latestAssistantMessage ? 'found' : 'none');
+
+          // If no assistant message found, try to get the latest message of any type
+          let latestMessage = latestAssistantMessage;
+          if (!latestMessage) {
+            console.log(`[getConversationsWithPreviews] No assistant message found, querying any latest message for ${conv.id}...`);
+            latestMessage = await db('chat_messages')
+              .where('conversation_id', conv.id)
+              .orderBy('created_at', 'desc')
+              .first();
+            console.log(`[getConversationsWithPreviews] Any latest message for ${conv.id}:`, latestMessage ? 'found' : 'none');
+          }
 
           console.log(`[getConversationsWithPreviews] Counting messages for conversation ${conv.id}...`);
           const messageCountResult = await db('chat_messages')

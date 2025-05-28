@@ -21,11 +21,12 @@ export const insertChatMessage = async (conversationId, messageData) => {
     const messageRole = messageData.role ? messageData.role : 'unknown';
     logger.info(`Message (ID: ${messageId}, Role: ${messageRole}) inserted into conversation ${conversationId}`);
     
-    // Update the conversation preview with the content of this message
-    if (messageData.content) {
-      // Truncate the message content for the preview
-      const previewContent = messageData.content.substring(0, 50);
-      const preview = previewContent + (messageData.content.length > 50 ? '...' : '');
+    // Update the conversation preview ONLY if this is an assistant message
+    if (messageData.role === 'assistant') {
+      // Truncate the message content for the preview (if not empty)
+      const content = messageData.content || '';
+      const previewContent = content.substring(0, 50);
+      const preview = content.length > 50 ? previewContent + '...' : content;
       
       try {
         await DbService.updateWhere('conversations', 
@@ -35,7 +36,7 @@ export const insertChatMessage = async (conversationId, messageData) => {
             updated_at: new Date().toISOString()
           }
         );
-        logger.info(`Updated conversation ${conversationId} preview with message content`);
+        logger.info(`Updated conversation ${conversationId} preview with assistant message content`);
       } catch (previewError) {
         logger.error(`Failed to update conversation preview for ${conversationId}:`, previewError);
         // Continue execution even if preview update fails

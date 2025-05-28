@@ -43,6 +43,7 @@
     "test:dev:with-logs": "node scripts/run-dev-tests-with-logs.js",
     "test:prod": "npx playwright test e2e/dev/master-integration.api.pw.spec.js -c playwright.prod.config.js",
     "test:prod:verbose": "npx playwright test e2e/dev/master-integration.api.pw.spec.js -c playwright.prod.config.js --reporter=list --headed",
+    "test:prod:keep": "npx playwright test e2e/dev/master-integration-no-cleanup.api.pw.spec.js -c playwright.prod.config.js",
     "test:prod:deployed": "vercel --prod; npx playwright test e2e/dev/master-integration.api.pw.spec.js -c playwright.prod.config.js",
     "deploy:vercel": "vercel deploy --prod",
     "supabase:init": "node db/supabase/scripts/init-supabase.js",

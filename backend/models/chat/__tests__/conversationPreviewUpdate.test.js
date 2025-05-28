@@ -21,7 +21,7 @@ describe('Conversation Preview Update', () => {
     vi.resetAllMocks();
   });
 
-  it('should update conversation preview when inserting a user message', async () => {
+  it('should not update conversation preview when inserting a user message', async () => {
     // Mock message data
     const mockUserMessage = {
       id: 'msg-123',
@@ -32,7 +32,6 @@ describe('Conversation Preview Update', () => {
 
     // Mock successful message insertion
     DbService.create.mockResolvedValue(mockUserMessage);
-    DbService.updateWhere.mockResolvedValue([{ id: mockConversationId, preview: 'This is a test message from the user' }]);
 
     // Call the function
     await insertChatMessage(mockConversationId, mockUserMessage);
@@ -43,12 +42,38 @@ describe('Conversation Preview Update', () => {
       conversation_id: mockConversationId
     });
 
-    // Assert updateWhere was called to update the preview
+    // Assert updateWhere was NOT called for user messages
+    expect(DbService.updateWhere).not.toHaveBeenCalled();
+  });
+
+  it('should update conversation preview when inserting an assistant message', async () => {
+    // Mock assistant message data
+    const mockAssistantMessage = {
+      id: 'msg-456',
+      role: 'assistant',
+      content: 'This is a response from the assistant',
+      created_at: new Date().toISOString()
+    };
+
+    // Mock successful message insertion
+    DbService.create.mockResolvedValue(mockAssistantMessage);
+    DbService.updateWhere.mockResolvedValue([{ id: mockConversationId, preview: 'This is a response from the assistant' }]);
+
+    // Call the function
+    await insertChatMessage(mockConversationId, mockAssistantMessage);
+
+    // Assert create was called correctly
+    expect(DbService.create).toHaveBeenCalledWith('chat_messages', {
+      ...mockAssistantMessage,
+      conversation_id: mockConversationId
+    });
+
+    // Assert updateWhere was called to update the preview for assistant messages
     expect(DbService.updateWhere).toHaveBeenCalledWith(
       'conversations',
       { id: mockConversationId },
       expect.objectContaining({
-        preview: 'This is a test message from the user',
+        preview: 'This is a response from the assistant',
         updated_at: expect.any(String)
       })
     );
@@ -94,24 +119,32 @@ describe('Conversation Preview Update', () => {
     // Mock message with empty content
     const mockEmptyMessage = {
       id: 'msg-789',
-      role: 'user',
+      role: 'assistant', // Must be assistant to update preview
       content: '',
       created_at: new Date().toISOString()
     };
 
-    // Mock successful message insertion
+    // Mock successful operations
     DbService.create.mockResolvedValue(mockEmptyMessage);
+    DbService.updateWhere.mockResolvedValue([{ id: mockConversationId, preview: '' }]);
 
     // Call the function
     await insertChatMessage(mockConversationId, mockEmptyMessage);
 
-    // Assert create was called correctly
+    // Assert create was called
     expect(DbService.create).toHaveBeenCalledWith('chat_messages', {
       ...mockEmptyMessage,
       conversation_id: mockConversationId
     });
 
-    // updateWhere should not be called for empty content
-    expect(DbService.updateWhere).not.toHaveBeenCalled();
+    // For empty content assistant messages, still update the preview to empty
+    expect(DbService.updateWhere).toHaveBeenCalledWith(
+      'conversations',
+      { id: mockConversationId },
+      expect.objectContaining({
+        preview: '',
+        updated_at: expect.any(String)
+      })
+    );
   });
 }); 
