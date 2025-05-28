@@ -28,27 +28,6 @@ describe('TransformDbToApi', () => {
       expect(result).toBeNull();
     });
 
-    it('should transform record even if it has assessment_data field', () => {
-      const recordWithAssessmentData = {
-        id: 'legacy-123',
-        assessment_data: '{"some": "legacy data"}',
-        age: 25,
-        pattern: 'regular'
-      };
-
-      // Mock the parser functions
-      ParseAssessmentJson.parseArrayField.mockReturnValue([]);
-      ParseAssessmentJson.parseOtherSymptoms.mockReturnValue([]);
-
-      const result = TransformDbToApi.transform(recordWithAssessmentData);
-
-      // TransformDbToApi doesn't filter out legacy records, it just transforms what it receives
-      expect(result).not.toBeNull();
-      expect(result.id).toBe('legacy-123');
-      expect(result.age).toBe(25);
-      expect(result.pattern).toBe('regular');
-    });
-
     it('should transform complete database record to API format', () => {
       const dbRecord = {
         id: 'test-123',

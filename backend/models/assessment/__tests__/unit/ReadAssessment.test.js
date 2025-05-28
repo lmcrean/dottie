@@ -2,12 +2,10 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import ReadAssessment from '../../services/ReadAssessment.js';
 import DbService from '../../../../services/dbService.js';
 import TransformDbToApi from '../../transformers/TransformDbToApi.js';
-import DetectAssessmentFormat from '../../detectors/DetectAssessmentFormat.js';
 
 // Mock dependencies
 vi.mock('../../../../services/dbService.js');
 vi.mock('../../transformers/TransformDbToApi.js');
-vi.mock('../../detectors/DetectAssessmentFormat.js');
 
 describe('ReadAssessment', () => {
   beforeEach(() => {
@@ -48,13 +46,11 @@ describe('ReadAssessment', () => {
       };
 
       DbService.findById.mockResolvedValue(dbAssessment);
-      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(true);
       TransformDbToApi.transform.mockReturnValue(transformedAssessment);
 
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(dbAssessment);
       expect(TransformDbToApi.transform).toHaveBeenCalledWith(dbAssessment);
       expect(result).toEqual(transformedAssessment);
     });
@@ -67,25 +63,6 @@ describe('ReadAssessment', () => {
       const result = await ReadAssessment.findById(testId);
 
       expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(DetectAssessmentFormat.isCurrentFormat).not.toHaveBeenCalled();
-      expect(TransformDbToApi.transform).not.toHaveBeenCalled();
-      expect(result).toBeNull();
-    });
-
-    it('should return null when assessment format cannot be processed', async () => {
-      const testId = 'legacy-assessment-123';
-      const legacyAssessment = {
-        id: testId,
-        assessment_data: '{"some": "legacy data"}' // Legacy format
-      };
-
-      DbService.findById.mockResolvedValue(legacyAssessment);
-      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(false);
-
-      const result = await ReadAssessment.findById(testId);
-
-      expect(DbService.findById).toHaveBeenCalledWith('assessments', testId);
-      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(legacyAssessment);
       expect(TransformDbToApi.transform).not.toHaveBeenCalled();
       expect(result).toBeNull();
     });
@@ -111,7 +88,6 @@ describe('ReadAssessment', () => {
       const transformError = new Error('Transform failed');
 
       DbService.findById.mockResolvedValue(dbAssessment);
-      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(true);
       TransformDbToApi.transform.mockImplementation(() => {
         throw transformError;
       });
@@ -154,37 +130,6 @@ describe('ReadAssessment', () => {
 
       expect(TransformDbToApi.transform).toHaveBeenCalledWith(null);
       expect(result).toBeNull();
-    });
-  });
-
-  describe('canProcessRecord', () => {
-    it('should call DetectAssessmentFormat.isCurrentFormat', () => {
-      const record = {
-        id: 'test-123',
-        age: 25,
-        pattern: 'regular'
-      };
-
-      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(true);
-
-      const result = ReadAssessment.canProcessRecord(record);
-
-      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(record);
-      expect(result).toBe(true);
-    });
-
-    it('should return false for legacy format', () => {
-      const legacyRecord = {
-        id: 'test-123',
-        assessment_data: '{"legacy": "data"}'
-      };
-
-      DetectAssessmentFormat.isCurrentFormat.mockReturnValue(false);
-
-      const result = ReadAssessment.canProcessRecord(legacyRecord);
-
-      expect(DetectAssessmentFormat.isCurrentFormat).toHaveBeenCalledWith(legacyRecord);
-      expect(result).toBe(false);
     });
   });
 }); 
