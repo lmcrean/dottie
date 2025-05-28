@@ -136,8 +136,9 @@ const createQueryBuilder = (tableName) => {
         query = query.eq(where.field, where.value);
       }
       
-      console.log(`[Supabase] Executing update query on table: ${this._table}`);
-      const { data, error } = await query;
+      // Add select() to return the updated data
+      console.log(`[Supabase] Executing update query on table: ${this._table} with select`);
+      const { data, error } = await query.select();
       
       if (error) {
         console.error(`[Supabase] Error updating table ${this._table}:`, error);
@@ -145,7 +146,8 @@ const createQueryBuilder = (tableName) => {
       }
       
       console.log(`[Supabase] Update result:`, data ? `Success, affected ${data.length} rows` : 'No data returned');
-      return data ? 1 : 0; // Return count affected (simplified)
+      console.log(`[Supabase] Updated data:`, JSON.stringify(data));
+      return data || []; // Return the updated data or empty array
     },
     
     async _runDelete() {
