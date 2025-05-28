@@ -1,14 +1,27 @@
-this is the final production test file for the backend
+# Production E2E Tests
 
-it is run on playwright
+This directory contains the production configuration for E2E tests.
 
-uses the url `http://dottie-backend.vercel.app`
+## DRY Approach
+Following DRY (Don't Repeat Yourself) principles, production tests now use the same test runners as development tests (`e2e/dev/runners`) but with production-specific configuration.
 
-runs through all the endpoints outlined in `endpoints-backend-master.md`
+## Configuration
+- **Test Files**: Uses `e2e/dev/master-integration.api.pw.spec.js` (shared with dev)
+- **Runners**: Uses `e2e/dev/runners/*` (shared with dev)  
+- **Config**: Uses `playwright.prod.config.js` with production URL
+- **Base URL**: `https://dottie-backend-piqudv2ms-lmcreans-projects.vercel.app`
 
-When running tests, it's important to follow this order:
-1. Setup endpoints tests
-2. Basic API endpoints tests 
-3. Authentication endpoints tests
-4. Assessment endpoints tests
-5. User endpoints tests
+## Running Tests
+```bash
+npm run test:prod           # Run production tests
+npm run test:prod:verbose   # Run with detailed output
+npm run test:prod:deployed  # Deploy first, then test
+```
+
+## Test Order
+Tests follow the same order as development:
+1. Setup endpoints
+2. Authentication endpoints  
+3. Assessment endpoints
+4. User endpoints
+5. Chat endpoints
