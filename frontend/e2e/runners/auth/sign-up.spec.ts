@@ -15,62 +15,75 @@ export const signUpTestUser = async (page: Page) => {
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(1000); // Give the page time to fully load
 
-  // Debug form elements (for troubleshooting if needed)
-  // const nameInput = await page.locator('input[name="name"]').count();
-  // const usernameInput = await page.locator('input[name="username"]').count();
-  // const emailInput = await page.locator('input[type="email"]').count();
-  // const passwordInputs = await page.locator('input[type="password"]').count();
-
-  // Fill in registration form
-
   try {
-    await page.getByLabel(/full name/i).fill('Test User');
-    await page.getByLabel(/username/i).fill(username);
-    await page.getByLabel(/email/i).fill(email);
+    // Wait for form to be visible
+    await page.waitForSelector('form', { timeout: 10000 });
 
-    // Find password fields
-    const passwordFields = await page.locator('input[type="password"]').all();
-    if (passwordFields.length >= 2) {
-      await passwordFields[0].fill(password);
-      await passwordFields[1].fill(password);
-    } else {
-      // Try with label
-      await page.getByLabel(/password/i).fill(password);
-      await page.getByLabel(/confirm password/i).fill(password);
-    }
+    // Fill in registration form using more specific selectors
+    await page.locator('input#name').fill('Test User');
+    await page.locator('input#username').fill(username);
+    await page.locator('input#email').fill(email);
+    await page.locator('input#password').fill(password);
+    await page.locator('input#confirmPassword').fill(password);
 
     // Wait a moment for form validation
     await page.waitForTimeout(500);
 
-    // Click create account button
-    const createAccountButton = await page.getByRole('button', { name: /create account/i });
+    // Take screenshot before submission for debugging
+    await page.screenshot({ path: 'test_screenshots/before-signup-submit.png' });
 
-    await createAccountButton.waitFor({ state: 'visible' });
+    // Click create account button - try multiple selectors
+    let createAccountButton = page.getByRole('button', { name: /create account/i });
+    
+    // If not found, try by button text
+    if (await createAccountButton.count() === 0) {
+      createAccountButton = page.locator('button:has-text("Create account")');
+    }
+    
+    // If still not found, try any submit button
+    if (await createAccountButton.count() === 0) {
+      createAccountButton = page.locator('button[type="submit"]');
+    }
+
+    await createAccountButton.waitFor({ state: 'visible', timeout: 5000 });
     await createAccountButton.click();
 
     // Wait for navigation and async operations to complete
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000); // Additional wait to ensure account creation is fully processed
+    await page.waitForTimeout(3000); // Additional wait to ensure account creation is fully processed
+
+    // Take screenshot after submission for debugging
+    await page.screenshot({ path: 'test_screenshots/after-signup-submit.png' });
 
     // Verify outcome - we should no longer be on the sign-up page
     const currentUrl = page.url();
+    console.log(`After signup, current URL: ${currentUrl}`);
 
     if (currentUrl.includes('/sign-up')) {
       console.error('Registration might have failed - still on sign-up page');
 
       // Check for error messages
-      const errorMessages = await page.locator('.error-message, [role="alert"]').all();
+      const errorMessages = await page.locator('[role="alert"], .text-red-500').all();
       for (const error of errorMessages) {
-        console.error(`Error message found: "${await error.textContent()}"`);
+        const errorText = await error.textContent();
+        console.error(`Error message found: "${errorText}"`);
+      }
+
+      // Check if there are form validation errors
+      const formErrors = await page.locator('input:invalid').all();
+      if (formErrors.length > 0) {
+        console.error(`Found ${formErrors.length} invalid form fields`);
       }
     } else {
-      // Registration successful
+      console.log('Registration appears successful - redirected to:', currentUrl);
     }
 
     // Return created user credentials for sign-in
     return { email, password, username };
   } catch (error) {
     console.error('Error during registration:', error);
+    // Take error screenshot
+    await page.screenshot({ path: 'test_screenshots/signup-error.png' });
     // Still return credentials so sign-in can be attempted
     return { email, password, username };
   }
