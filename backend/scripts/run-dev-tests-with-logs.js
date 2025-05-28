@@ -34,7 +34,7 @@ setTimeout(() => {
   // Run the tests
   const testProcess = spawn('npx', [
     'playwright', 'test', 
-    'routes/__tests__/e2e/dev/master-integration.api.pw.spec.js',
+    'e2e/dev/master-integration.api.pw.spec.js',
     '-c', 'playwright.dev.config.js',
     '--reporter=list'
   ], {

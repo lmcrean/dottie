@@ -5,20 +5,20 @@
  * Simulates frontend context where assessment_id is stored
  */
 
-import { query } from '../../../../../../services/db-service/index.js';
+import { db } from '../../../../db/index.js';
 
 export async function prepareAssessmentId() {
     try {
         // Find the most recent assessment for testing
-        const result = await query(
+        const result = await db.raw(
             'SELECT id, assessment_object FROM assessments ORDER BY created_at DESC LIMIT 1'
         );
 
-        if (result.rows.length === 0) {
+        if (result.length === 0) {
             throw new Error('No assessments found for testing. Run assessment creation tests first.');
         }
 
-        const assessment = result.rows[0];
+        const assessment = result[0];
         const assessmentId = assessment.id;
         const assessmentObject = assessment.assessment_object;
 
@@ -49,19 +49,19 @@ export async function prepareAssessmentId() {
 
 export async function validateAssessmentExists(assessmentId) {
     try {
-        const result = await query(
-            'SELECT id, assessment_object FROM assessments WHERE id = $1',
+        const result = await db.raw(
+            'SELECT id, assessment_object FROM assessments WHERE id = ?',
             [assessmentId]
         );
 
-        if (result.rows.length === 0) {
+        if (result.length === 0) {
             return {
                 exists: false,
                 error: `Assessment with id ${assessmentId} not found`
             };
         }
 
-        const assessment = result.rows[0];
+        const assessment = result[0];
         return {
             exists: true,
             assessment_id: assessment.id,

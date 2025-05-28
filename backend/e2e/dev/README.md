@@ -44,19 +44,11 @@ To run the playwright test:
 
 ```bash
 # From the backend directory
-cd backend; npx playwright test routes/__tests__/e2e/dev/master-integration/master-integration.api.pw.spec.js --config=playwright.config.js
+cd backend; npx playwright test e2e/dev/master-integration/master-integration.api.pw.spec.js --config=playwright.config.js
 ```
 
 To run the vitest test:
 
 ```bash
-cd backend;     npm test -- "routes/__tests__/e2e/dev/master-integration/master-integration.api.vitest.test.js"
+cd backend;     npm test -- "e2e/dev/master-integration/master-integration.api.vitest.test.js"
 ```
-
-## Adding More Tests
-
-To add more functionality:
-
-1. Add new utility functions to the appropriate file in the `runners/` directory
-2. Update the master integration test to use these new functions
-3. Maintain the logical order: authentication → assessment → user actions

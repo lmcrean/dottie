@@ -1,5 +1,5 @@
 ```bash
-npx playwright test routes/__tests__/e2e/dev/master-integration.api.pw.spec.js -c playwright.dev.config.js
+npx playwright test e2e/dev/master-integration.api.pw.spec.js -c playwright.dev.config.js
 ```
 
 This command runs the master integration test for the development environment using the development-specific Playwright configuration.
