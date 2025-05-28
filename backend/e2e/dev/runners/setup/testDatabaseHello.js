@@ -3,6 +3,8 @@
  * Tests the database connection with hello message
  */
 
+import { getExpectedDbType } from '../utils/environment-config.js';
+
 /**
  * Test the database hello endpoint
  * @param {Object} request - Playwright request object
@@ -28,8 +30,11 @@ export async function testDatabaseHello(request, expect) {
     // Verify database connection status
     expect(responseData.isConnected).toBe(true);
     
-    // Verify database type (should be SQLite for dev)
-    expect(responseData.dbType).toBe('SQLite');
+    // Get expected database type for current environment
+    const expectedDbType = getExpectedDbType();
+    
+    // Verify database type (environment-specific)
+    expect(responseData.dbType).toBe(expectedDbType);
     
     // Verify message format (should include database type)
     expect(responseData.message).toContain('Hello World from');

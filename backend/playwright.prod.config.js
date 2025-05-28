@@ -1,5 +1,10 @@
 // @ts-check
 import { defineConfig } from '@playwright/test';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig({
   testDir: './e2e/dev',
@@ -13,11 +18,16 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['list']],
   use: {
-    baseURL: 'http://dottie-backend.vercel.app',
+    baseURL: 'https://dottie-backend.vercel.app',
     trace: 'on-first-retry',
+    extraHTTPHeaders: {
+      'x-test-env': 'prod'
+    }
   },
   
   testMatch: '**/*.api.pw.spec.js',
+  
+  globalSetup: join(__dirname, 'e2e/setup/global-setup-prod.js'),
   
   projects: [
     {
