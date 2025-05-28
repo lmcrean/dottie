@@ -6,30 +6,42 @@
 export function validateAssessmentData(assessmentData) {
   const errors = [];
   
-  if (!assessmentData.age) {
+  // Handle both nested (assessment_data) and flattened formats
+  let dataToValidate = assessmentData;
+  if (assessmentData.assessment_data) {
+    dataToValidate = assessmentData.assessment_data;
+  }
+  
+  // Check age - handle both camelCase and snake_case
+  const age = dataToValidate.age;
+  if (!age) {
     errors.push('age is required');
-  } else if (!isValidAge(assessmentData.age)) {
+  } else if (!isValidAge(age)) {
     errors.push('Invalid age value');
   }
   
-  const cycleLength = assessmentData.cycleLength || assessmentData.cycle_length;
+  // Check cycle length - handle both camelCase and snake_case
+  const cycleLength = dataToValidate.cycleLength || dataToValidate.cycle_length;
   if (!cycleLength) {
     errors.push('cycle length is required');
   } else if (!isValidCycleLength(cycleLength)) {
     errors.push('Invalid cycle length value');
   }
   
-  const periodDuration = assessmentData.periodDuration || assessmentData.period_duration;
+  // Check period duration - handle both camelCase and snake_case
+  const periodDuration = dataToValidate.periodDuration || dataToValidate.period_duration;
   if (periodDuration && !isValidPeriodDuration(periodDuration)) {
     errors.push('Invalid period duration value');
   }
   
-  const flowHeaviness = assessmentData.flowHeaviness || assessmentData.flow_heaviness;
+  // Check flow heaviness - handle both camelCase and snake_case
+  const flowHeaviness = dataToValidate.flowHeaviness || dataToValidate.flow_heaviness;
   if (flowHeaviness && !isValidFlowHeaviness(flowHeaviness)) {
     errors.push('Invalid flow heaviness value');
   }
   
-  const painLevel = assessmentData.painLevel || assessmentData.pain_level;
+  // Check pain level - handle both camelCase and snake_case
+  const painLevel = dataToValidate.painLevel || dataToValidate.pain_level;
   if (painLevel && !isValidPainLevel(painLevel)) {
     errors.push('Invalid pain level value');
   }
