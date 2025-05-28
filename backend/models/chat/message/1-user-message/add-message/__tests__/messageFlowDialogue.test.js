@@ -7,6 +7,7 @@ import { runMessageCreationTests } from './runners/messageCreation.js';
 import { runChatbotResponseTests } from './runners/chatbotResponse.js';
 import { runDialogueSequenceTests } from './runners/dialogueSequence.js';
 import { runDatabaseIntegrationTests } from './runners/databaseIntegration.js';
+import { runParentMessageIdTests } from './runners/parentMessageIdValidation.js';
 
 // Import mock data
 import { messageFlowTestData } from './mock-data/messageFlowTestData.js';
@@ -34,6 +35,11 @@ vi.mock('../../../../chatbot-message/database/sendChatbotMessage.js', () => ({
   getMessage: vi.fn(),
   getConversationMessages: vi.fn()
 }));
+vi.mock('../database/linkParentMessageId.js', () => ({
+  getMostRecentMessage: vi.fn(),
+  verifyParentMessageId: vi.fn(),
+  updateMessageWithParentId: vi.fn()
+}));
 vi.mock('uuid', () => ({
   v4: vi.fn()
 }));
@@ -50,6 +56,8 @@ describe('Message Flow Dialogue Integration Tests', () => {
     // Mock DbService operations
     DbService.create = vi.fn();
     DbService.findById = vi.fn();
+    DbService.findWhere = vi.fn();
+    DbService.exists = vi.fn().mockResolvedValue(true);
     
     // Mock UUID generation for consistent testing
     uuidv4
@@ -76,6 +84,28 @@ describe('Message Flow Dialogue Integration Tests', () => {
 
     const { sendChatbotMessage } = await import('../../../../chatbot-message/database/sendChatbotMessage.js');
     sendChatbotMessage.mockResolvedValue(messageFlowTestData.mockAssistantMessage);
+    
+    // Setup linkParentMessageId mocks
+    const { getMostRecentMessage, verifyParentMessageId, updateMessageWithParentId } = await import('../database/linkParentMessageId.js');
+    getMostRecentMessage.mockResolvedValue(messageFlowTestData.mockUserMessage);
+    verifyParentMessageId.mockImplementation(async (conversationId, messageData) => {
+      // For the first message in test data, return null parent_message_id
+      if (messageData.id === 'msg-user-first') {
+        return { ...messageData, parent_message_id: null };
+      }
+      // For other messages, ensure parent_message_id is set
+      return { 
+        ...messageData, 
+        parent_message_id: messageData.parent_message_id || messageFlowTestData.mockUserMessageId 
+      };
+    });
+    updateMessageWithParentId.mockImplementation(async (conversationId, messageId) => {
+      return { 
+        id: messageId,
+        parent_message_id: messageFlowTestData.mockUserMessageId,
+        conversation_id: conversationId
+      };
+    });
   });
 
   afterEach(() => {
@@ -88,5 +118,6 @@ describe('Message Flow Dialogue Integration Tests', () => {
     runChatbotResponseTests(messageFlowTestData);
     runDialogueSequenceTests(messageFlowTestData);
     runDatabaseIntegrationTests(messageFlowTestData);
+    runParentMessageIdTests(messageFlowTestData);
   });
 }); 
