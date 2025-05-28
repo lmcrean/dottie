@@ -7,27 +7,28 @@ when a conversation is created it MUST have the following:
 
 example:
 
-assessment_id: 3243-234234-234234-234234
-
-assessment_object: {
-    id: "3243-234234-234234-234234",
-    user_id: "user_abc_123",
-    created_at: "2023-10-26T10:00:00.000Z",
-    age: 25,
-    pattern: "pattern_1234567890",
-    cycle_length: 28,
-    period_duration: 5,
-    flow_heaviness: "medium",
-    pain_level: 3,
-    physical_symptoms: ["bloating", "headache"],
-    emotional_symptoms: ["mood swings"],
-    other_symptoms: "fatigue",
-    recommendations: [
-        { title: "Drink more water", description: "Stay hydrated throughout the day." },
-        { title: "Gentle exercise", description: "Yoga or light walking can help." }
-    ]
-}
-
+```json
+{
+    "assessment_id": "3243-234234-234234-234234",
+    "assessment_object": {
+          id: "3243-234234-234234-234234",
+          user_id: "user_abc_123",
+          created_at: "2023-10-26T10:00:00.000Z",
+          age: 25,
+          pattern: "pattern_1234567890",
+          cycle_length: 28,
+          period_duration: 5,
+          flow_heaviness: "medium",
+          pain_level: 3,
+          physical_symptoms: ["bloating", "headache"],
+          emotional_symptoms: ["mood swings"],
+          other_symptoms: "fatigue",
+          recommendations: [
+              { title: "Drink more water", description: "Stay hydrated throughout the day." },
+              { title: "Gentle exercise", description: "Yoga or light walking can help." }
+          ]
+      }
+```
 
 
 
