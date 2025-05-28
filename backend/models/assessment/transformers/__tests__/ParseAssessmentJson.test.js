@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import ParseAssessmentJson from '../../transformers/ParseAssessmentJson.js';
+import ParseAssessmentJson from '../ParseAssessmentJson.js';
 
 describe('ParseAssessmentJson', () => {
   beforeEach(() => {
