@@ -27,3 +27,4 @@ playwright-report/
 
 dev.sqlite3
 .env*.local
+.env.production
