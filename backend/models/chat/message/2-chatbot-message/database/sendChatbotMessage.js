@@ -1,6 +1,7 @@
 import logger from '../../../../../services/logger.js';
 import DbService from '../../../../../services/dbService.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
+import { verifyParentMessageId } from '../../1-user-message/add-message/database/linkParentMessageId.js';
 
 /**
  * Send a chatbot message and store it in the database
@@ -22,15 +23,20 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
 
     // Generate message ID and create message data
     const messageId = generateMessageId();
-    const messageData = {
+    let messageData = {
       id: messageId,
       role: 'assistant',
       content: content,
+      parent_message_id: parentMessageId,
       created_at: new Date().toISOString(),
       ...metadata
     };
 
-    // Insert chatbot message into database (excluding parent_message_id since column doesn't exist)
+    // Verify parent_message_id is properly set
+    // This ensures that assistant messages have valid parent_message_id
+    messageData = await verifyParentMessageId(conversationId, messageData);
+
+    // Insert chatbot message into database
     const messageToInsert = {
       ...messageData,
       conversation_id: conversationId
@@ -44,14 +50,10 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
       conversationId,
       role: 'assistant',
       content: content,
+      parent_message_id: messageData.parent_message_id,
       created_at: messageData.created_at,
       ...metadata
     };
-
-    // Add parent_message_id only if it exists (for API compatibility)
-    if (parentMessageId) {
-      chatbotMessage.parent_message_id = parentMessageId;
-    }
 
     logger.info(`Chatbot message sent successfully in conversation ${conversationId}`);
 

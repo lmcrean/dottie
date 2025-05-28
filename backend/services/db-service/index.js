@@ -1,6 +1,8 @@
 // Import all individual functions
 import { findById } from './findById.js';
 import { findBy } from './findBy.js';
+import { findWhere } from './findWhere.js';
+import { exists } from './exists.js';
 import { create } from './create.js';
 import { update } from './update.js';
 import { deleteRecord } from './delete.js';
@@ -23,6 +25,14 @@ class DbService {
 
   static async findBy(table, field, value) {
     return findBy(table, field, value);
+  }
+
+  static async findWhere(table, whereCondition, options = {}) {
+    return findWhere(table, whereCondition, options);
+  }
+
+  static async exists(table, id) {
+    return exists(table, id);
   }
 
   static async create(table, data) {
@@ -71,6 +81,8 @@ export default DbService;
 export {
   findById,
   findBy,
+  findWhere,
+  exists,
   create,
   update,
   deleteRecord as delete,

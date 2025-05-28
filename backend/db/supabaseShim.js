@@ -124,16 +124,27 @@ const createQueryBuilder = (tableName) => {
     },
     
     async _runUpdate() {
+      console.log(`[Supabase] Update operation starting for table: ${this._table}`);
+      console.log(`[Supabase] Update data:`, JSON.stringify(this._updates));
+      console.log(`[Supabase] Where conditions:`, JSON.stringify(this._wheres));
+      
       let query = supabase.from(this._table).update(this._updates);
       
       // Apply wheres
       for (const where of this._wheres) {
+        console.log(`[Supabase] Adding where condition: ${where.field} = ${where.value}`);
         query = query.eq(where.field, where.value);
       }
       
+      console.log(`[Supabase] Executing update query on table: ${this._table}`);
       const { data, error } = await query;
       
-      if (error) throw error;
+      if (error) {
+        console.error(`[Supabase] Error updating table ${this._table}:`, error);
+        throw error;
+      }
+      
+      console.log(`[Supabase] Update result:`, data ? `Success, affected ${data.length} rows` : 'No data returned');
       return data ? 1 : 0; // Return count affected (simplified)
     },
     
