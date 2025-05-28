@@ -36,7 +36,7 @@ async function getConversation(conversationId, options = {}) {
                 'conversation_id', 
                 conversationId, 
                 [], // content is plain text, not JSON
-                [ // Order by creation time, then by ID as a tie-breaker
+                [ // Order by creation time, then by ID as a tie-breaker, should always be 1. user message, 2. assistant message, 3. user message, etc.
                   { field: 'created_at', direction: 'ASC' },
                   { field: 'id', direction: 'ASC' }
                 ]
