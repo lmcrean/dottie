@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import DbService from '../../../../../services/db-service/dbService.js';
 import logger from '../../../../../services/logger.js';
+import { fetchAssessmentObject, extractAssessmentPattern } from './assessmentObjectLink.js';
 
 /**
  * Create a new conversation in the database
@@ -28,21 +29,38 @@ export const createConversation = async (userId, assessmentId = null) => {
     if (assessmentId) {
       conversationData.assessment_id = assessmentId;
       
-      // Get assessment pattern if assessment exists
+      // Fetch the full assessment object
       try {
-        const assessment = await DbService.findById('assessments', assessmentId);
-        if (assessment && assessment.pattern) {
-          conversationData.assessment_pattern = assessment.pattern;
+        const assessmentObject = await fetchAssessmentObject(assessmentId);
+        
+        if (assessmentObject) {
+          // Store the entire assessment object
+          conversationData.assessment_object = assessmentObject;
+          
+          // Extract and store pattern at root level for easy access
+          const pattern = extractAssessmentPattern(assessmentObject);
+          if (pattern) {
+            conversationData.assessment_pattern = pattern;
+          }
+          
+          logger.info(`Linked assessment ${assessmentId} to conversation`, {
+            pattern,
+            hasAssessmentObject: true
+          });
         }
       } catch (error) {
-        logger.warn(`Could not fetch assessment pattern for ${assessmentId}:`, error);
+        logger.warn(`Could not fetch assessment data for ${assessmentId}:`, error);
+        // Continue with conversation creation even if assessment fetch fails
       }
     }
 
     // Create the conversation
     await DbService.create('conversations', conversationData);
     
-    logger.info(`Created conversation ${conversationId} for user ${userId}`);
+    logger.info(`Created conversation ${conversationId} for user ${userId}`, {
+      hasAssessment: !!assessmentId,
+      assessmentPattern: conversationData.assessment_pattern || null
+    });
     
     return conversationId;
   } catch (error) {

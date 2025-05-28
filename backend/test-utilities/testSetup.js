@@ -1,7 +1,6 @@
 import { setupTestClient, closeTestServer } from './setup.js';
 import jwt from 'jsonwebtoken';
-import { updateAssessmentSchema } from '../db/migrations/assessmentSchema.js';
-import db from '../db/index.js';
+import { runAllMigrations } from '../db/runAllMigrations.js';
 
 /**
  * Setup a test server for e2e tests
@@ -9,14 +8,13 @@ import db from '../db/index.js';
  * @returns {Promise<Object>} Object containing server, app, and request
  */
 export const setupTestServer = async (port = 5001) => {
-  // First, update the assessment schema in the test database
+  // First, run all migrations in the test database
   try {
     if (process.env.TEST_MODE === 'true') {
-      await updateAssessmentSchema(db);
-
+      await runAllMigrations();
     }
   } catch (error) {
-    console.warn('Warning: Failed to update assessment schema:', error.message);
+    console.warn('Warning: Failed to run migrations:', error.message);
   }
   
   const setup = await setupTestClient({ port });
