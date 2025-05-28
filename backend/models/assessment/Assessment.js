@@ -2,7 +2,6 @@ import RouteAssessment from './services/RouteAssessment.js';
 
 /**
  * Assessment - Unified entry point for all assessment operations
- * Automatically handles both legacy and current format assessments
  */
 class Assessment {
   /**
