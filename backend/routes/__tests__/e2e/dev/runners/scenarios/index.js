@@ -6,7 +6,7 @@
  */
 
 // Import dev-specific workflows
-import { runChatWorkflow, runChatWithAssessmentWorkflow, deleteAndVerifyConversation } from './chat-workflow.js';
+import { runChatWithAssessmentWorkflow, deleteAndVerifyConversation } from './chat-workflow.js';
 import { runAuthWorkflow, runAuthErrorTest } from './auth-workflow.js';
 import { runAssessmentCreationWorkflow, runCleanupWorkflow } from './assessment-workflow.js';
 import { runUserManagementWorkflow, runUserDeletionWorkflow } from './user-workflow.js';
@@ -31,7 +31,7 @@ export {
   runUserDeletionWorkflow,
   
   // Chat workflows
-  runChatWorkflow,
+  // Note: ALL conversations require assessment_id - there is only one valid chat workflow
   runChatWithAssessmentWorkflow,
   deleteAndVerifyConversation
 }; 

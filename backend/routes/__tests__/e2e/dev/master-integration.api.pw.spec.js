@@ -8,6 +8,8 @@ import * as scenarios from "./runners/scenarios/index.js";
  *
  * This test suite runs complete workflow scenarios to ensure
  * all endpoints work together in real-world usage patterns.
+ * Note: ALL conversations require an assessment_id - there is no distinction
+ * between conversations with and without assessments.
  */
 
 // Create a shared test state object
@@ -17,8 +19,8 @@ const sharedTestState = {
   firstAssessmentId: null,
   secondAssessmentId: null,
   testUser: null,
-  conversationId: null,
-  assessmentLinkedConversationId: null,
+  firstConversationId: null,
+  secondConversationId: null,
 };
 
 // Configure tests to run in sequence, not in parallel
@@ -46,7 +48,7 @@ base.describe("Master Integration Test", () => {
       sharedTestState.userId
     );
     
-    // Store assessment IDs for cleanup
+    // Store assessment IDs for subsequent chat tests and cleanup
     sharedTestState.firstAssessmentId = firstAssessmentId;
     sharedTestState.secondAssessmentId = secondAssessmentId;
   });
@@ -64,44 +66,59 @@ base.describe("Master Integration Test", () => {
     sharedTestState.testUser = updatedUser;
   });
 
-  base("5. Chat conversation workflow (without assessment)", async ({ request }) => {
-    const conversationId = await scenarios.runChatWorkflow(
-      request,
-      expect,
-      sharedTestState.authToken
-    );
-    
-    // Store conversation ID for cleanup
-    sharedTestState.conversationId = conversationId;
-  });
-
-  base("6. Chat conversation with assessment context workflow", async ({ request }) => {
-    const assessmentLinkedConversationId = await scenarios.runChatWithAssessmentWorkflow(
+  base("5. First chat conversation workflow with assessment", async ({ request }) => {
+    const conversationId = await scenarios.runChatWithAssessmentWorkflow(
       request,
       expect,
       sharedTestState.authToken,
       sharedTestState.firstAssessmentId
     );
     
-    // Store assessment-linked conversation ID for cleanup
-    sharedTestState.assessmentLinkedConversationId = assessmentLinkedConversationId;
+    // Store conversation ID for cleanup
+    sharedTestState.firstConversationId = conversationId;
   });
 
-  base("7. Delete regular chat conversation", async ({ request }) => {
+  base("6. Second chat conversation workflow with different assessment", async ({ request }) => {
+    // Create second assessment if it's the same as the first (for testing multiple conversations)
+    let assessmentIdToUse = sharedTestState.secondAssessmentId;
+    if (sharedTestState.firstAssessmentId === sharedTestState.secondAssessmentId) {
+      // Create a new assessment for the second conversation
+      const { firstAssessmentId: newAssessmentId } = await scenarios.runAssessmentCreationWorkflow(
+        request, 
+        expect, 
+        sharedTestState.authToken, 
+        sharedTestState.userId
+      );
+      assessmentIdToUse = newAssessmentId;
+      sharedTestState.secondAssessmentId = newAssessmentId;
+    }
+    
+    const conversationId = await scenarios.runChatWithAssessmentWorkflow(
+      request,
+      expect,
+      sharedTestState.authToken,
+      assessmentIdToUse
+    );
+    
+    // Store conversation ID for cleanup
+    sharedTestState.secondConversationId = conversationId;
+  });
+
+  base("7. Delete first chat conversation", async ({ request }) => {
     await scenarios.deleteAndVerifyConversation(
       request,
       expect,
       sharedTestState.authToken,
-      sharedTestState.conversationId
+      sharedTestState.firstConversationId
     );
   });
 
-  base("8. Delete assessment-linked chat conversation", async ({ request }) => {
+  base("8. Delete second chat conversation", async ({ request }) => {
     await scenarios.deleteAndVerifyConversation(
       request,
       expect,
       sharedTestState.authToken,
-      sharedTestState.assessmentLinkedConversationId
+      sharedTestState.secondConversationId
     );
   });
 
