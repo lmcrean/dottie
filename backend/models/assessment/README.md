@@ -1,52 +1,45 @@
 # Assessment Models
 
-This directory contains the implementations for the Assessment model, which has been refactored to handle both legacy nested and new flattened data structures.
+This directory contains the implementations for the Assessment model using a flattened data structure.
 
 ## File Structure
 
-- **Assessment.js**: Main entry point that routes to the appropriate implementation (legacy or flattened)
-- **AssessmentBase.js**: Base class with shared functionality (find, list, delete, ownership validation) 
-- **LegacyAssessment.js**: Handles the nested JSON schema (`assessment_data` field)
-- **FlattenedAssessment.js**: Handles the new flattened schema with top-level fields
+- **Assessment.js**: Main entry point for all assessment operations
+- **services/**: Directory containing service implementations
+  - **RouteAssessment.js**: Routes assessment operations to appropriate handlers
+  - **CreateAssessment.js**: Handles assessment creation
+  - **UpdateAssessment.js**: Handles assessment updates
+  - **FindAssessment.js**: Handles assessment retrieval
+- **transformers/**: Data transformation utilities
+  - **TransformApiToDb.js**: Transforms API data to database format
+  - **TransformDbToApi.js**: Transforms database records to API format
+- **validators/**: Validation logic
+- **base/**: Base utilities
 
-## Architecture Explanation
+## Architecture
 
-### Why Split into Multiple Files?
-
-1. **Separation of Concerns**: Each file has a clear, specific responsibility
-2. **Maintainability**: Smaller, focused files are easier to understand and modify
-3. **Testability**: Each implementation can be tested independently
-4. **Transition Support**: Allows supporting both schemas simultaneously during migration
-
-### Data Flow
+The assessment model uses a clean, simple architecture:
 
 1. API calls `Assessment.js` methods
-2. `Assessment.js` determines schema format and delegates to the appropriate implementation
-3. Either `LegacyAssessment.js` or `FlattenedAssessment.js` handles the operation
-4. Both implementations inherit common functionality from `AssessmentBase.js`
+2. `Assessment.js` delegates to `RouteAssessment.js`
+3. `RouteAssessment.js` routes to appropriate service (`CreateAssessment`, `UpdateAssessment`, etc.)
+4. Services use transformers to convert between API and database formats
 
-### Schema Differences
+## Data Schema
 
-**Legacy (Nested) Schema**:
-```json
-{
-  "assessment_data": {
-    "age": "25-34",
-    "symptoms": {
-      "physical": ["Bloating"],
-      "emotional": ["Mood swings"]
-    }
-  }
-}
-```
-
-**New (Flattened) Schema**:
+**Current Schema**:
 ```json
 {
   "age": "25-34",
+  "pattern": "regular",
+  "cycle_length": "26-30",
+  "period_duration": "4-5",
+  "flow_heaviness": "moderate",
+  "pain_level": "mild",
   "physical_symptoms": ["Bloating"],
-  "emotional_symptoms": ["Mood swings"]
+  "emotional_symptoms": ["Mood swings"],
+  "recommendations": [...]
 }
 ```
 
-Both implementations convert database records to the same API response format for consistency.
+All database records use flattened fields for optimal performance and simplicity.
