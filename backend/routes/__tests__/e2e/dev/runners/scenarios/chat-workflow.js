@@ -6,13 +6,7 @@
  * There is no distinction between conversations with and without assessments.
  */
 
-import { sendMessage } from '../chat/sendMessage.js';
-import { sendMessageWithAssessment, verifyConversationAssessmentLink } from '../chat/sendMessageWithAssessment.js';
-import { getConversationHistory } from '../chat/getConversationHistory.js';
-import { getConversation } from '../chat/getConversation.js';
-import { deleteConversation } from '../chat/deleteConversation.js';
-import { generateTestMessage } from '../chat/generateTestMessage.js';
-import { generateAssessmentAwareMessage, generateAssessmentFollowUpMessage } from '../chat/generateAssessmentAwareMessage.js';
+import * as chat from '../chat/index.js';
 
 /**
  * Run complete chat conversation workflow with assessment context
@@ -27,13 +21,13 @@ import { generateAssessmentAwareMessage, generateAssessmentFollowUpMessage } fro
  * @returns {Promise<string>} Conversation ID
  */
 export async function runChatWithAssessmentWorkflow(request, expect, authToken, assessmentId) {
-  console.log('💬🩺 Starting Chat with Assessment Workflow...');
+  console.log('💬🩺 Starting Chat with Assessment Workflow (DEV)...');
   
   // Generate a test message that references assessment data
-  const message = generateAssessmentAwareMessage();
+  const message = chat.generateAssessmentAwareMessage();
   
-  // Send initial message with assessment context (creates new conversation)
-  const result = await sendMessageWithAssessment(request, authToken, message, assessmentId);
+  // Create new conversation and send initial message with assessment context
+  const result = await chat.createConversationAndSendInitialMessage(request, authToken, message, assessmentId);
   
   expect(result).toHaveProperty('message');
   expect(result).toHaveProperty('conversationId');
@@ -41,41 +35,50 @@ export async function runChatWithAssessmentWorkflow(request, expect, authToken, 
   expect(result.assessment_id).toBe(assessmentId);
   
   const conversationId = result.conversationId;
-  console.log('✅ Created conversation with assessment context');
+  console.log('✅ Created conversation with assessment context (DEV)');
   
   // Verify the conversation was properly linked to the assessment
-  const isLinked = await verifyConversationAssessmentLink(request, authToken, conversationId, assessmentId);
+  const isLinked = await chat.verifyConversationAssessmentLink(request, authToken, conversationId, assessmentId);
   expect(isLinked).toBe(true);
-  console.log('✅ Verified assessment-conversation link');
+  console.log('✅ Verified assessment-conversation link (DEV)');
   
   // Get conversation details to verify assessment data is included
-  const conversationDetails = await getConversation(request, authToken, conversationId);
+  const conversationDetails = await chat.getConversation(request, authToken, conversationId);
   expect(conversationDetails).toHaveProperty('id', conversationId);
   expect(conversationDetails).toHaveProperty('assessment_id', assessmentId);
   expect(conversationDetails).toHaveProperty('messages');
   expect(Array.isArray(conversationDetails.messages)).toBe(true);
   expect(conversationDetails.messages.length).toBeGreaterThan(0);
-  console.log('✅ Verified conversation includes assessment data');
+  console.log('✅ Verified conversation includes assessment data (DEV)');
   
   // Verify correct message ordering: user should ALWAYS message first
   expect(conversationDetails.messages[0].role).toBe("user");
   
+  // Validate the initial chatbot response
+  chat.validateChatbotResponseAfterUserMessage(conversationDetails, expect);
+  console.log('✅ Initial chatbot response validated (DEV)');
+  
   // Send a follow-up message to the same conversation (should maintain assessment context)
-  const followUpMessage = generateAssessmentFollowUpMessage();
-  const followUpResult = await sendMessage(request, authToken, followUpMessage, conversationId);
+  const followUpMessage = chat.generateAssessmentFollowUpMessage();
+  const followUpResult = await chat.sendFollowUpMessage(request, authToken, followUpMessage, conversationId);
   
   expect(followUpResult).toHaveProperty('conversationId', conversationId);
   expect(followUpResult).toHaveProperty('message');
-  console.log('✅ Follow-up message sent successfully');
+  console.log('✅ Follow-up message sent successfully (DEV)');
+  
+  // Get updated conversation details and validate the follow-up chatbot response
+  const updatedConversationDetails = await chat.getConversation(request, authToken, conversationId);
+  chat.validateChatbotResponseAfterUserMessage(updatedConversationDetails, expect);
+  console.log('✅ Follow-up chatbot response validated (DEV)');
   
   // Verify conversation history shows the assessment-linked conversation
-  const conversations = await getConversationHistory(request, authToken);
+  const conversations = await chat.getConversationHistory(request, authToken);
   const ourConversation = conversations.find(conv => conv.id === conversationId);
   expect(ourConversation).toBeTruthy();
   expect(ourConversation.assessment_id).toBe(assessmentId);
-  console.log('✅ Conversation appears in history with assessment link');
+  console.log('✅ Conversation appears in history with assessment link (DEV)');
   
-  console.log('🎉 Chat with Assessment Workflow completed successfully!');
+  console.log('🎉 Chat with Assessment Workflow completed successfully (DEV)!');
   return conversationId;
 }
 
@@ -88,11 +91,11 @@ export async function runChatWithAssessmentWorkflow(request, expect, authToken, 
  */
 export async function deleteAndVerifyConversation(request, expect, authToken, conversationId) {
   // Delete the conversation
-  const deleteResult = await deleteConversation(request, authToken, conversationId);
+  const deleteResult = await chat.deleteConversation(request, authToken, conversationId);
   expect(deleteResult).toBe(true);
   
   // Verify conversation is no longer in history
-  const conversationsAfterDelete = await getConversationHistory(request, authToken);
+  const conversationsAfterDelete = await chat.getConversationHistory(request, authToken);
   const deletedConversation = conversationsAfterDelete.find(conv => conv.id === conversationId);
   expect(deletedConversation).toBeFalsy();
 } 
