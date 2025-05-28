@@ -1,30 +1,17 @@
 /**
  * Validates assessment data
- * @param {Object} assessment - The assessment data to validate
+ * @param {Object} assessmentData - The assessment data to validate
  * @returns {Object} - Object with isValid flag and errors array
  */
-export function validateAssessmentData(assessment) {
+export function validateAssessmentData(assessmentData) {
   const errors = [];
   
-  // Handle both flattened and nested formats
-  let assessmentData;
-  
-  if (assessment.assessment_data) {
-    // Legacy nested format
-    assessmentData = assessment.assessment_data;
-  } else {
-    // New flattened format - use the assessment object directly
-    assessmentData = assessment;
-  }
-  
-  // Validate required assessment fields
   if (!assessmentData.age) {
     errors.push('age is required');
   } else if (!isValidAge(assessmentData.age)) {
     errors.push('Invalid age value');
   }
   
-  // Check for camelCase or snake_case for cycle length
   const cycleLength = assessmentData.cycleLength || assessmentData.cycle_length;
   if (!cycleLength) {
     errors.push('cycle length is required');
@@ -32,7 +19,6 @@ export function validateAssessmentData(assessment) {
     errors.push('Invalid cycle length value');
   }
   
-  // Validate optional fields if they exist (handling both naming conventions)
   const periodDuration = assessmentData.periodDuration || assessmentData.period_duration;
   if (periodDuration && !isValidPeriodDuration(periodDuration)) {
     errors.push('Invalid period duration value');
