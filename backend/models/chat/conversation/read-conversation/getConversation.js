@@ -36,7 +36,10 @@ async function getConversation(conversationId, options = {}) {
                 'conversation_id', 
                 conversationId, 
                 [], // content is plain text, not JSON
-                { field: 'created_at', direction: 'ASC' }
+                [ // Order by creation time, then by ID as a tie-breaker
+                  { field: 'created_at', direction: 'ASC' },
+                  { field: 'id', direction: 'ASC' }
+                ]
             );
             
             messageCount = allMessages.length;
