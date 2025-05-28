@@ -17,8 +17,10 @@ import { addUserMessage as originalAddUserMessage, sendMessage as originalSendMe
 import { insertChatMessage as originalInsertChatMessage } from './message/1-user-message/add-message/database/sendUserMessage.js';
 import { generateAndSaveResponse as originalGenerateAndSaveResponse } from './message/2-chatbot-message/generateResponse.js';
 import { sendChatbotMessage as originalSendChatbotMessage } from './message/2-chatbot-message/database/sendChatbotMessage.js';
-import { sendMessageFlow as originalSendMessageFlow } from './message/send-message-flow/sendMessageFlow.js';
 import { updateConversationAssessmentLinks as originalUpdateConversationAssessmentLinks } from './conversation/update-conversation/updateAssessmentLinks.js';
+
+// TEMPORARY: Comment out sendMessageFlow import to fix initialization issue
+// import { sendMessageFlow as importedSendMessageFlow } from './message/send-message-flow/sendMessageFlow.js';
 
 // ===================================
 // ENTITY MODELS
@@ -48,34 +50,22 @@ export const insertChatMessage = originalInsertChatMessage;
 export const generateAndSaveResponse = originalGenerateAndSaveResponse;
 export const sendChatbotMessage = originalSendChatbotMessage;
 
-// 3. Complete Message Flow (orchestrator)
-export const sendMessageFlow = originalSendMessageFlow;
+// 3. Complete Message Flow (orchestrator) - TEMPORARILY DISABLED
+// export const sendMessageFlow = importedSendMessageFlow;
 
 // ===================================
-// CONVENIENCE FUNCTIONS
+// CONVENIENCE FUNCTIONS - TEMPORARILY DISABLED
 // ===================================
 
-/**
- * Quick conversation starter - creates conversation and sends first message
- * @param {string} userId - User ID
- * @param {string} message - First message
- * @param {string} [assessmentId] - Optional assessment ID
- * @returns {Promise<Object>} - Complete conversation with initial exchange
- */
+/*
 export const quickStart = async (userId, message, assessmentId = null) => {
-  return await originalSendMessageFlow(userId, message, null, assessmentId);
+  return await importedSendMessageFlow(userId, message, null, assessmentId);
 };
 
-/**
- * Send message and get response in one call
- * @param {string} conversationId - Conversation ID
- * @param {string} userId - User ID
- * @param {string} message - Message to send
- * @returns {Promise<Object>} - Message exchange result
- */
 export const sendAndRespond = async (conversationId, userId, message) => {
-  return await originalSendMessageFlow(userId, message, conversationId);
+  return await importedSendMessageFlow(userId, message, conversationId);
 };
+*/
 
 // ===================================
 // BACKWARD COMPATIBILITY
@@ -87,7 +77,7 @@ export const createConversation = originalCreateAssessmentConversation;
 export const newConversation = originalCreateAssessmentConversation;
 export const readConversation = originalGetConversation;
 export const sendMessage = originalSendMessage; // Legacy: only adds user message
-export const sendMessageNew = originalSendMessageFlow; // Legacy: complete flow
+// export const sendMessageNew = importedSendMessageFlow; // Legacy: complete flow - TEMPORARILY DISABLED
 
 // Legacy Chat class alias for backward compatibility
 export const Chat = OriginalConversation;
