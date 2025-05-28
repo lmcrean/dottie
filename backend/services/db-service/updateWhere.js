@@ -1,5 +1,5 @@
 import { db } from '../../db/index.js';
-import logger from '../../logger.js';
+import logger from '../logger.js';
 
 /**
  * Update records in a table based on a where condition
