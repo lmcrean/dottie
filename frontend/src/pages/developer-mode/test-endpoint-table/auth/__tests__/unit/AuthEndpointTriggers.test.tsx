@@ -3,16 +3,22 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import AuthEndpoints from '../../AuthEndpoints';
 
-// Create a mock apiClient directly instead of importing
-const apiClient = {
-  post: vi.fn(),
-  interceptors: {
-    request: { use: vi.fn() },
-    response: { use: vi.fn() }
+// Mock the entire API module that the components actually import
+vi.mock('../../../../../api', () => ({
+  apiClient: {
+    post: vi.fn(),
+    get: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() }
+    }
   }
-};
+}));
 
-// No need to import the mocked module
+// Import the mocked apiClient for assertions
+import { apiClient } from '../../../../../api';
 
 describe('AuthEndpoint Trigger Tests', () => {
   beforeEach(() => {
@@ -20,7 +26,7 @@ describe('AuthEndpoint Trigger Tests', () => {
     // Mock localStorage
     Object.defineProperty(window, 'localStorage', {
       value: {
-        getItem: vi.fn(),
+        getItem: vi.fn(() => null),
         setItem: vi.fn(),
         removeItem: vi.fn()
       },
@@ -38,7 +44,7 @@ describe('AuthEndpoint Trigger Tests', () => {
     // Check if input fields are rendered
     expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Username/i)).toBeInTheDocument();
     
     // Check for submit button
     expect(screen.getByText('Send POST Request')).toBeInTheDocument();
@@ -46,7 +52,7 @@ describe('AuthEndpoint Trigger Tests', () => {
 
   it('submits signup form data to the API', async () => {
     // Mock apiClient post to return a successful response
-    (apiClient.post as vi.Mock).mockResolvedValueOnce({
+    (apiClient.post as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       data: {
         user: { 
           id: 'user-123', 
@@ -66,11 +72,14 @@ describe('AuthEndpoint Trigger Tests', () => {
     // Fill in the form fields
     const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
-    const nameInput = screen.getByLabelText(/Name/i);
+    const usernameInput = screen.getByLabelText(/Username/i);
     
+    await userEvent.clear(emailInput);
     await userEvent.type(emailInput, 'test@example.com');
+    await userEvent.clear(passwordInput);
     await userEvent.type(passwordInput, 'password123');
-    await userEvent.type(nameInput, 'Test User');
+    await userEvent.clear(usernameInput);
+    await userEvent.type(usernameInput, 'Test User');
     
     // Submit the form
     const submitButton = screen.getByText('Send POST Request');
@@ -81,14 +90,14 @@ describe('AuthEndpoint Trigger Tests', () => {
       expect(apiClient.post).toHaveBeenCalledWith('/api/auth/signup', {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User'
+        username: 'Test User'
       });
     });
   });
 
   it('submits login form data to the API', async () => {
     // Mock apiClient post to return a successful response
-    (apiClient.post as vi.Mock).mockResolvedValueOnce({
+    (apiClient.post as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       data: {
         token: 'jwt-token-123',
         user: { 
@@ -109,7 +118,9 @@ describe('AuthEndpoint Trigger Tests', () => {
     const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
     
+    await userEvent.clear(emailInput);
     await userEvent.type(emailInput, 'test@example.com');
+    await userEvent.clear(passwordInput);
     await userEvent.type(passwordInput, 'password123');
     
     // Submit the form
@@ -127,18 +138,16 @@ describe('AuthEndpoint Trigger Tests', () => {
 
   it('displays response data after successful form submission', async () => {
     // Mock apiClient post to return a successful response
-    (apiClient.post as vi.Mock).mockImplementation(() => 
-      Promise.resolve({
-        data: {
-          user: { 
-            id: 'user-123', 
-            email: 'test@example.com' 
-          },
-          token: 'jwt-token-123'
+    (apiClient.post as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      data: {
+        user: { 
+          id: 'user-123', 
+          email: 'test@example.com' 
         },
-        status: 200
-      })
-    );
+        token: 'jwt-token-123'
+      },
+      status: 200
+    });
 
     render(<AuthEndpoints />);
     
@@ -152,17 +161,22 @@ describe('AuthEndpoint Trigger Tests', () => {
     // Fill in the form fields
     const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
-    const nameInput = screen.getByLabelText(/Name/i);
+    const usernameInput = screen.getByLabelText(/Username/i);
     
+    await userEvent.clear(emailInput);
     await userEvent.type(emailInput, 'test@example.com');
+    await userEvent.clear(passwordInput);
     await userEvent.type(passwordInput, 'password123');
-    await userEvent.type(nameInput, 'Test User');
+    await userEvent.clear(usernameInput);
+    await userEvent.type(usernameInput, 'Test User');
     
     // Submit the form
     const submitButton = screen.getByText('Send POST Request');
     fireEvent.click(submitButton);
     
-    // Mock that the apiClient.post was called
-    expect(apiClient.post).toHaveBeenCalled();
+    // Wait for the request to be made
+    await waitFor(() => {
+      expect(apiClient.post).toHaveBeenCalled();
+    });
   });
 }); 
