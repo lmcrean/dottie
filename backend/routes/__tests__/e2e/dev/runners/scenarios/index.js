@@ -6,7 +6,7 @@
  */
 
 // Import dev-specific workflows
-import { runChatWorkflow, deleteAndVerifyConversation } from './chat-workflow.js';
+import { runChatWorkflow, runChatWithAssessmentWorkflow, deleteAndVerifyConversation } from './chat-workflow.js';
 import { runAuthWorkflow, runAuthErrorTest } from './auth-workflow.js';
 import { runAssessmentCreationWorkflow, runCleanupWorkflow } from './assessment-workflow.js';
 import { runUserManagementWorkflow, runUserDeletionWorkflow } from './user-workflow.js';
@@ -32,5 +32,6 @@ export {
   
   // Chat workflows
   runChatWorkflow,
+  runChatWithAssessmentWorkflow,
   deleteAndVerifyConversation
 }; 

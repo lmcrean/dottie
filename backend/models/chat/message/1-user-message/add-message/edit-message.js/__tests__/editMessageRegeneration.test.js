@@ -1,24 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { editMessage, editMessageWithRegeneration } from '../editMessageRegeneration.js';
-import { cleanupChildrenMessages } from '../cleanupChildrenMessages.js';
-import { generateResponseToMessage, generateAndSaveResponse } from '../../../2-chatbot-message/generateResponse.js';
-import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
-import Chat from '../../../../../list/chat.js';
-import logger from '@/services/logger.js';
 
-// Mock dependencies
-vi.mock('../cleanupChildrenMessages.js', () => ({
-  cleanupChildrenMessages: vi.fn()
-}));
-vi.mock('../../../2-chatbot-message/generateResponse.js', () => ({
-  generateResponseToMessage: vi.fn(),
-  generateAndSaveResponse: vi.fn()
-}));
-vi.mock('../../shared/database/chatOperations.js', () => ({
-  ChatDatabaseOperations: {
-    updateMessage: vi.fn()
-  }
-}));
+// Mock dependencies first
+vi.mock('../cleanupChildrenMessages.js');
+vi.mock('../../../../2-chatbot-message/generateResponse.js');
+vi.mock('../../database/sendUserMessage.js');
 vi.mock('../../../../../list/chat.js');
 vi.mock('@/services/logger.js');
 vi.mock('@/services/dbService.js', () => ({
@@ -29,6 +14,13 @@ vi.mock('@/services/dbService.js', () => ({
     delete: vi.fn()
   }
 }));
+
+import { editMessage, editMessageWithRegeneration } from '../editMessageRegeneration.js';
+import { cleanupChildrenMessages } from '../cleanupChildrenMessages.js';
+import { generateResponseToMessage, generateAndSaveResponse } from '../../../../2-chatbot-message/generateResponse.js';
+import { updateChatMessage } from '../../database/sendUserMessage.js';
+import Chat from '../../../../../list/chat.js';
+import logger from '@/services/logger.js';
 
 describe('Edit Message and Regeneration', () => {
   const mockUserId = 'test-user-123';
@@ -59,11 +51,15 @@ describe('Edit Message and Regeneration', () => {
     logger.error = vi.fn();
     
     // Setup default successful mocks
-    vi.mocked(Chat.isOwner).mockResolvedValue(true);
-    ChatDatabaseOperations.updateMessage.mockResolvedValue(mockUpdatedMessage);
+    Chat.isOwner.mockResolvedValue(true);
+    updateChatMessage.mockResolvedValue(mockUpdatedMessage);
     cleanupChildrenMessages.mockResolvedValue(['msg-old-1', 'msg-old-2']);
-    vi.mocked(generateResponseToMessage).mockResolvedValue(mockNewResponse);
-    vi.mocked(generateAndSaveResponse).mockResolvedValue(mockNewResponse);
+    
+    // Explicitly set up the generateResponseToMessage mock
+    generateResponseToMessage.mockClear();
+    generateResponseToMessage.mockResolvedValue(mockNewResponse);
+    
+    generateAndSaveResponse.mockResolvedValue(mockNewResponse);
   });
 
   afterEach(() => {
@@ -74,8 +70,8 @@ describe('Edit Message and Regeneration', () => {
     it('should successfully edit a message when user owns conversation', async () => {
       const result = await editMessage(mockConversationId, mockMessageId, mockUserId, mockNewContent);
       
-      expect(vi.mocked(Chat.isOwner)).toHaveBeenCalledWith(mockConversationId, mockUserId);
-      expect(ChatDatabaseOperations.updateMessage).toHaveBeenCalledWith(
+      expect(Chat.isOwner).toHaveBeenCalledWith(mockConversationId, mockUserId);
+      expect(updateChatMessage).toHaveBeenCalledWith(
         mockConversationId, 
         mockMessageId, 
         expect.objectContaining({
@@ -88,17 +84,17 @@ describe('Edit Message and Regeneration', () => {
     });
 
     it('should throw error when user does not own conversation', async () => {
-      vi.mocked(Chat.isOwner).mockResolvedValue(false);
+      Chat.isOwner.mockResolvedValue(false);
       
       await expect(editMessage(mockConversationId, mockMessageId, mockUserId, mockNewContent))
         .rejects.toThrow('User does not own this conversation');
       
-      expect(ChatDatabaseOperations.updateMessage).not.toHaveBeenCalled();
+      expect(updateChatMessage).not.toHaveBeenCalled();
     });
 
     it('should handle database update errors', async () => {
       const dbError = new Error('Database update failed');
-      ChatDatabaseOperations.updateMessage.mockRejectedValue(dbError);
+      updateChatMessage.mockRejectedValue(dbError);
       
       await expect(editMessage(mockConversationId, mockMessageId, mockUserId, mockNewContent))
         .rejects.toThrow('Database update failed');
@@ -120,7 +116,7 @@ describe('Edit Message and Regeneration', () => {
       expect(cleanupChildrenMessages).toHaveBeenCalledWith(mockConversationId, mockMessageId);
       
       // Verify message was edited
-      expect(ChatDatabaseOperations.updateMessage).toHaveBeenCalledWith(
+      expect(updateChatMessage).toHaveBeenCalledWith(
         mockConversationId, 
         mockMessageId, 
         expect.objectContaining({
@@ -131,8 +127,9 @@ describe('Edit Message and Regeneration', () => {
       
       // Verify response was regenerated
       expect(generateResponseToMessage).toHaveBeenCalledWith(
-        mockConversationId, 
-        mockMessageId, 
+        mockConversationId,
+        mockUserId,
+        mockMessageId,
         mockNewContent
       );
       
@@ -155,7 +152,7 @@ describe('Edit Message and Regeneration', () => {
       );
       
       expect(cleanupChildrenMessages).toHaveBeenCalled();
-      expect(ChatDatabaseOperations.updateMessage).toHaveBeenCalled();
+      expect(updateChatMessage).toHaveBeenCalled();
       expect(generateResponseToMessage).not.toHaveBeenCalled();
       
       expect(result.newResponse).toBeNull();
@@ -178,6 +175,7 @@ describe('Edit Message and Regeneration', () => {
 
     it('should handle regeneration errors gracefully', async () => {
       const regenerationError = new Error('Response generation failed');
+      generateResponseToMessage.mockClear();
       generateResponseToMessage.mockRejectedValue(regenerationError);
       
       await expect(editMessageWithRegeneration(
@@ -188,11 +186,11 @@ describe('Edit Message and Regeneration', () => {
       )).rejects.toThrow('Response generation failed');
       
       expect(cleanupChildrenMessages).toHaveBeenCalled();
-      expect(ChatDatabaseOperations.updateMessage).toHaveBeenCalled();
+      expect(updateChatMessage).toHaveBeenCalled();
     });
 
     it('should handle authorization failures during edit flow', async () => {
-      vi.mocked(Chat.isOwner).mockResolvedValue(false);
+      Chat.isOwner.mockResolvedValue(false);
       
       await expect(editMessageWithRegeneration(
         mockConversationId, 
@@ -224,7 +222,7 @@ describe('Edit Message and Regeneration', () => {
       
       await editMessage(mockConversationId, mockMessageId, mockUserId, emptyContent);
       
-      expect(ChatDatabaseOperations.updateMessage).toHaveBeenCalledWith(
+      expect(updateChatMessage).toHaveBeenCalledWith(
         mockConversationId, 
         mockMessageId, 
         expect.objectContaining({

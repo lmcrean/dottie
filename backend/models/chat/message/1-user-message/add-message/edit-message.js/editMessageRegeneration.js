@@ -1,5 +1,5 @@
 import logger from '../../../../../../services/logger.js';
-import { ChatDatabaseOperations } from '../../shared/database/chatOperations.js';
+import { updateChatMessage } from '../database/sendUserMessage.js';
 import { generateResponseToMessage } from '../../../2-chatbot-message/generateResponse.js';
 import Chat from '../../../../list/chat.js';
 import { cleanupChildrenMessages } from './cleanupChildrenMessages.js';
@@ -21,7 +21,7 @@ export const editMessage = async (conversationId, messageId, userId, newContent)
     }
 
     // Update the message and handle thread cleanup using consolidated operations
-    const updatedMessage = await ChatDatabaseOperations.updateMessage(conversationId, messageId, {
+    const updatedMessage = await updateChatMessage(conversationId, messageId, {
       content: newContent,
       edited_at: new Date().toISOString()
     });
@@ -60,7 +60,7 @@ export const editMessageWithRegeneration = async (conversationId, messageId, use
     // Step 3: Generate new response to the edited message
     let newResponse = null;
     if (regenerateResponse) {
-      newResponse = await generateResponseToMessage(conversationId, messageId, newContent);
+      newResponse = await generateResponseToMessage(conversationId, userId, messageId, newContent);
     }
 
     logger.info(`Message edit flow completed for message ${messageId}`);

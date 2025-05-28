@@ -1,5 +1,5 @@
 import logger from '../../../../../../services/logger.js';
-import { ChatDatabaseOperations } from '../../../shared/database/chatOperations.js';
+import { getChatMessage, getChatMessagesAfterTimestamp, deleteChatMessage } from '../database/sendUserMessage.js';
 
 /**
  * Clean up all messages that came after the edited message
@@ -13,13 +13,13 @@ export const cleanupChildrenMessages = async (conversationId, messageId) => {
     logger.info(`Starting cleanup of children messages after ${messageId} in conversation ${conversationId}`);
 
     // Get the timestamp of the edited message
-    const editedMessage = await ChatDatabaseOperations.getMessage(conversationId, messageId);
+    const editedMessage = await getChatMessage(conversationId, messageId);
     if (!editedMessage) {
       throw new Error('Edited message not found');
     }
 
     // Find all messages that came after the edited message
-    const subsequentMessages = await ChatDatabaseOperations.getMessagesAfterTimestamp(
+    const subsequentMessages = await getChatMessagesAfterTimestamp(
       conversationId, 
       editedMessage.created_at
     );
@@ -30,7 +30,7 @@ export const cleanupChildrenMessages = async (conversationId, messageId) => {
     for (const message of subsequentMessages) {
       // Skip the edited message itself
       if (message.id !== messageId) {
-        await ChatDatabaseOperations.deleteMessage(conversationId, message.id);
+        await deleteChatMessage(conversationId, message.id);
         deletedMessageIds.push(message.id);
         logger.info(`Deleted message ${message.id} from conversation ${conversationId}`);
       }

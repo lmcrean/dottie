@@ -1,6 +1,6 @@
 import logger from '../../../../../../services/logger.js';
 import { ConfigHelper } from './configHelper.js';
-import { ChatDatabaseOperations } from '../../../shared/database/chatOperations.js';
+import { insertChatMessage } from '../../1-user-message/add-message/database/sendUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { generateInitialResponse as generateInitialAI } from '../services/ai/generators/initialAI.js';
 import { generateInitialResponse as generateInitialMock } from '../services/mock/generators/initialMock.js';
@@ -50,7 +50,7 @@ export async function generateAndStoreAssistantResponse(conversationId, messageT
       assistantMessage.parent_message_id = parentMessageId;
     }
 
-    await ChatDatabaseOperations.insertMessage(conversationId, assistantMessage);
+    await insertChatMessage(conversationId, assistantMessage);
 
     logger.info(`Assistant response generated for conversation ${conversationId}`);
     

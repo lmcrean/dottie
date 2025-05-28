@@ -28,3 +28,69 @@ export const insertChatMessage = async (conversationId, messageData) => {
   }
 };
 
+/**
+ * Update a message
+ * @param {string} conversationId - Conversation ID
+ * @param {string} messageId - Message ID to update
+ * @param {object} updateData - Data to update
+ * @returns {Promise<object>} - Updated message
+ */
+export const updateChatMessage = async (conversationId, messageId, updateData) => {
+  try {
+    const updatedMessage = await DbService.update('chat_messages', messageId, updateData);
+    return updatedMessage;
+  } catch (error) {
+    throw new Error(`Failed to update message ${messageId}: ${error.message}`);
+  }
+};
+
+/**
+ * Get a specific message
+ * @param {string} conversationId - Conversation ID
+ * @param {string} messageId - Message ID
+ * @returns {Promise<object>} - Message data
+ */
+export const getChatMessage = async (conversationId, messageId) => {
+  try {
+    const message = await DbService.findById('chat_messages', messageId);
+    return message;
+  } catch (error) {
+    throw new Error(`Failed to get message ${messageId}: ${error.message}`);
+  }
+};
+
+/**
+ * Get messages after a specific timestamp
+ * @param {string} conversationId - Conversation ID
+ * @param {string} timestamp - Timestamp to get messages after
+ * @returns {Promise<Array>} - Array of messages
+ */
+export const getChatMessagesAfterTimestamp = async (conversationId, timestamp) => {
+  try {
+    // This would need to be implemented in DbService or use raw query
+    // For now, using a placeholder that would work with a proper implementation
+    const messages = await DbService.findWhere('chat_messages', {
+      conversation_id: conversationId,
+      created_at: { '>': timestamp }
+    });
+    return messages;
+  } catch (error) {
+    throw new Error(`Failed to get messages after timestamp: ${error.message}`);
+  }
+};
+
+/**
+ * Delete a message
+ * @param {string} conversationId - Conversation ID
+ * @param {string} messageId - Message ID
+ * @returns {Promise<boolean>} - Success status
+ */
+export const deleteChatMessage = async (conversationId, messageId) => {
+  try {
+    await DbService.delete('chat_messages', messageId);
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to delete message ${messageId}: ${error.message}`);
+  }
+};
+

@@ -18,6 +18,7 @@ const sharedTestState = {
   secondAssessmentId: null,
   testUser: null,
   conversationId: null,
+  assessmentLinkedConversationId: null,
 };
 
 // Configure tests to run in sequence, not in parallel
@@ -63,7 +64,7 @@ base.describe("Master Integration Test", () => {
     sharedTestState.testUser = updatedUser;
   });
 
-  base("5. Chat conversation workflow", async ({ request }) => {
+  base("5. Chat conversation workflow (without assessment)", async ({ request }) => {
     const conversationId = await scenarios.runChatWorkflow(
       request,
       expect,
@@ -74,7 +75,19 @@ base.describe("Master Integration Test", () => {
     sharedTestState.conversationId = conversationId;
   });
 
-  base("6. Delete chat conversation", async ({ request }) => {
+  base("6. Chat conversation with assessment context workflow", async ({ request }) => {
+    const assessmentLinkedConversationId = await scenarios.runChatWithAssessmentWorkflow(
+      request,
+      expect,
+      sharedTestState.authToken,
+      sharedTestState.firstAssessmentId
+    );
+    
+    // Store assessment-linked conversation ID for cleanup
+    sharedTestState.assessmentLinkedConversationId = assessmentLinkedConversationId;
+  });
+
+  base("7. Delete regular chat conversation", async ({ request }) => {
     await scenarios.deleteAndVerifyConversation(
       request,
       expect,
@@ -83,7 +96,16 @@ base.describe("Master Integration Test", () => {
     );
   });
 
-  base("7. Cleanup assessments", async ({ request }) => {
+  base("8. Delete assessment-linked chat conversation", async ({ request }) => {
+    await scenarios.deleteAndVerifyConversation(
+      request,
+      expect,
+      sharedTestState.authToken,
+      sharedTestState.assessmentLinkedConversationId
+    );
+  });
+
+  base("9. Cleanup assessments", async ({ request }) => {
     await scenarios.runCleanupWorkflow(
       request,
       expect,
@@ -94,7 +116,7 @@ base.describe("Master Integration Test", () => {
     );
   });
 
-  base("8. Authentication error handling", async ({ request }) => {
+  base("10. Authentication error handling", async ({ request }) => {
     await scenarios.runAuthErrorTest(request, expect);
   });
 });

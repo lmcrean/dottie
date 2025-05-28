@@ -4,6 +4,7 @@ import { updateAssessmentSchema } from "./migrations/assessmentSchema.js";
 import { addAssessmentFieldsToConversations } from "./migrations/addAssessmentFieldsToConversations.js";
 import { addAssessmentObjectToConversations } from "./migrations/addAssessmentObjectToConversations.js";
 import { addOtherSymptomsColumn } from "./migrations/add-other-symptoms.js";
+import { addDeletedAtToUsers } from "./migrations/addDeletedAtToUsers.js";
 import logger from "../services/logger.js";
 
 /**
@@ -32,6 +33,10 @@ export async function runAllMigrations() {
     // 5. Add other symptoms column
     logger.info("Adding other symptoms column...");
     await addOtherSymptomsColumn(db);
+    
+    // 6. Add deleted_at column to users table
+    logger.info("Adding deleted_at column to users table...");
+    await addDeletedAtToUsers(db);
     
     logger.info("All migrations completed successfully");
   } catch (error) {
