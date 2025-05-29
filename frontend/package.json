@@ -13,6 +13,7 @@
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,md,json}\" --ignore-path .prettierignore",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",
+    "test:dev:auth": "npx playwright test e2e/AuthRandomUser.spec.ts",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
