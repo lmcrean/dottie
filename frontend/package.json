@@ -13,7 +13,10 @@
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,md,json}\" --ignore-path .prettierignore",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",
+    "test:api": "vitest src/api/__tests__/unit/integration --testTimeout=30000",
     "test:dev:auth": "npx playwright test e2e/AuthRandomUser.spec.ts",
+    "test:debug:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --debug",
+    "test:headed:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --headed --timeout=120000",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
