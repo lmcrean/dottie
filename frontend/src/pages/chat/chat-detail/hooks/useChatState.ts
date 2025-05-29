@@ -36,8 +36,11 @@ const fetchConversation = async (
   conversationId: string
 ): Promise<{ id: string; messages: ApiMessage[]; assessment_id?: string } | null> => {
   try {
+    // Ensure conversationId is a string
+    const conversationIdString = String(conversationId);
+    
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/chat/get-conversation/${conversationId}`, {
+    const response = await fetch(`${API_BASE_URL}/chat/get-conversation/${conversationIdString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -64,7 +67,11 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(chatId || null);
+  
+  // Ensure chatId is a string if it exists, otherwise null
+  const initialChatId = chatId ? String(chatId) : null;
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(initialChatId);
+  
   const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const hasSentInitialMessage = useRef(false);
 
@@ -74,7 +81,11 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
       const loadExistingConversation = async () => {
         try {
           setIsLoading(true);
-          const fullConversation = await fetchConversation(chatId);
+          // Ensure chatId is a string
+          const chatIdString = String(chatId);
+          console.log(`Loading conversation with ID: ${chatIdString}`);
+          
+          const fullConversation = await fetchConversation(chatIdString);
 
           if (fullConversation) {
             const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
@@ -82,11 +93,17 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
               content: msg.content
             }));
             setMessages(convertedMessages);
-            setCurrentConversationId(chatId);
-            setAssessmentId(fullConversation.assessment_id || null);
+            setCurrentConversationId(chatIdString);
+            
+            // Ensure assessment_id is a string if it exists
+            const assessmentIdString = fullConversation.assessment_id 
+              ? String(fullConversation.assessment_id) 
+              : null;
+              
+            setAssessmentId(assessmentIdString);
           } else {
             // Conversation not found
-            console.warn(`Conversation ${chatId} not found`);
+            console.warn(`Conversation ${chatIdString} not found`);
             setCurrentConversationId(null);
             setMessages([]);
           }
@@ -124,6 +141,9 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
       return;
     }
 
+    // Ensure currentConversationId is a string
+    const conversationIdString = String(currentConversationId);
+    
     const userMessage = textToSend;
     setInput('');
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
@@ -131,9 +151,9 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
 
     try {
       const response = await sendMessage({
-        chat_id: currentConversationId,
+        chat_id: conversationIdString,
         message: userMessage,
-        conversationId: currentConversationId
+        conversationId: conversationIdString
       });
 
       setMessages((prev) => [...prev, { role: 'assistant', content: response.content }]);
@@ -156,7 +176,11 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const handleConversationSelect = async (conversation: ConversationListItem) => {
     try {
       setIsLoading(true);
-      const fullConversation = await fetchConversation(conversation.id);
+      
+      // Ensure conversation.id is a string
+      const conversationIdString = String(conversation.id);
+      
+      const fullConversation = await fetchConversation(conversationIdString);
 
       if (fullConversation) {
         const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
@@ -165,11 +189,17 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
         }));
 
         setMessages(convertedMessages);
-        setCurrentConversationId(conversation.id);
-        setAssessmentId(fullConversation.assessment_id || null);
+        setCurrentConversationId(conversationIdString);
+        
+        // Ensure assessment_id is a string if it exists
+        const assessmentIdString = fullConversation.assessment_id 
+          ? String(fullConversation.assessment_id) 
+          : null;
+          
+        setAssessmentId(assessmentIdString);
 
         // Navigate to the chat detail page
-        navigate(`/chat/${conversation.id}`);
+        navigate(`/chat/${conversationIdString}`);
       } else {
         toast.error('Failed to load conversation');
       }

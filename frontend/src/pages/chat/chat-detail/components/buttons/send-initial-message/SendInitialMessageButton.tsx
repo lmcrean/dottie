@@ -36,19 +36,26 @@ export function SendInitialMessageButton({
         ? `Hi! I've just completed my menstrual health assessment (ID: ${assessmentId}). My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means and provide personalized recommendations?`
         : `Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means?`;
 
+      // Ensure assessmentId is a string if it exists
+      const assessmentIdString = assessmentId ? String(assessmentId) : undefined;
+      
       // Create new chat
       const newChat = await createNewChat({
-        assessment_id: assessmentId,
+        assessment_id: assessmentIdString,
         initial_message: initialMessage
       });
 
-      setCurrentChatId(newChat.id);
+      // Ensure newChat.id is a string
+      const chatIdString = String(newChat.id);
+      setCurrentChatId(chatIdString);
+      console.log(`Chat created with ID: ${chatIdString}, type: ${typeof chatIdString}`);
 
       // Send initial message if we have an assessment ID
-      if (assessmentId) {
+      if (assessmentIdString) {
+        console.log(`Sending initial message to chat ${chatIdString} with assessment ${assessmentIdString}`);
         await sendInitialMessage({
-          chat_id: newChat.id,
-          assessment_id: assessmentId,
+          chat_id: chatIdString,
+          assessment_id: assessmentIdString,
           message: initialMessage
         });
       }

@@ -16,6 +16,9 @@ export function FullscreenChat({
 }: FullscreenChatProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  // Ensure chatId is a string if it exists
+  const chatIdString = chatId ? String(chatId) : undefined;
+
   const {
     messages,
     input,
@@ -27,7 +30,7 @@ export function FullscreenChat({
     handleNewChat,
     handleKeyDown,
     assessmentId
-  } = useChatState({ chatId, initialMessage });
+  } = useChatState({ chatId: chatIdString, initialMessage });
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

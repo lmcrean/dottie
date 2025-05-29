@@ -35,6 +35,9 @@ export const sendInitialMessage = async (
       throw new Error('User ID not found. Please login again.');
     }
 
+    // Ensure chat_id is a string
+    const chatIdString = String(params.chat_id);
+
     const requestBody = {
       message: params.message,
       assessment_id: params.assessment_id,
@@ -42,7 +45,7 @@ export const sendInitialMessage = async (
     };
 
     const response = await apiClient.post<SendInitialMessageResponse>(
-      `/api/chat/${params.chat_id}/message/initial`,
+      `/api/chat/${chatIdString}/message/initial`,
       requestBody
     );
 
