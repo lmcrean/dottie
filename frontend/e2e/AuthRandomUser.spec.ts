@@ -106,10 +106,15 @@ test.describe('User Authentication Flow', () => {
       // Verify that sign-in was successful
       expect(signInSuccess).toBe(true);
 
-      // Additional verification: ensure we're not on auth pages
-      const currentUrl = page.url();
-      expect(currentUrl).not.toContain('/sign-up');
-      expect(currentUrl).not.toContain('/sign-in');
+      // Verify auth tokens are present in localStorage
+      const authToken = await page.evaluate(() => localStorage.getItem('authToken'));
+      const refreshToken = await page.evaluate(() => localStorage.getItem('refresh_token'));
+      
+      // Auth token should exist
+      expect(authToken).not.toBeNull();
+      expect(refreshToken).not.toBeNull();
+      
+      console.log('Authentication successful - tokens were properly set');
     } catch (error) {
       console.error('Test failed with error:', error);
       await page.screenshot({ path: 'test_screenshots/test-failure.png' });
