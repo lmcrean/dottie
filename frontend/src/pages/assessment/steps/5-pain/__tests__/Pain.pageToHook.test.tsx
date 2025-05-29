@@ -1,13 +1,11 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PainPage from '../page'
 import * as PainLevelHook from '../hooks/use-pain-level'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-pain-level', () => ({
-  usePainLevel: vi.fn()
-}));
+vi.mock('../hooks/use-pain-level');
 
 // Wrap component with BrowserRouter for React Router compatibility
 const renderWithRouter = (component: React.ReactNode) => {
@@ -23,10 +21,12 @@ describe('Pain Page to Hook Connection', () => {
   
   beforeEach(() => {
     vi.resetAllMocks();
-    (PainLevelHook.usePainLevel as any).mockReturnValue({
+    
+    // Use vi.spyOn to mock the implementation
+    vi.spyOn(PainLevelHook, 'usePainLevel').mockImplementation(() => ({
       painLevel: undefined,
       setPainLevel: mockSetPainLevel
-    });
+    }));
   });
   
   it('should call hook with correct value when option is selected', () => {
@@ -43,11 +43,11 @@ describe('Pain Page to Hook Connection', () => {
   })
   
   it('should preselect option when hook returns a value', () => {
-    // Mock hook to return a selected value
-    (PainLevelHook.usePainLevel as any).mockReturnValue({
+    // Mock hook to return a selected value using spyOn
+    vi.spyOn(PainLevelHook, 'usePainLevel').mockImplementation(() => ({
       painLevel: 'severe',
       setPainLevel: mockSetPainLevel
-    });
+    }));
     
     renderWithRouter(<PainPage />)
     

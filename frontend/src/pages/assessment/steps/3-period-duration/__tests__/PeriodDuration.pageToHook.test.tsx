@@ -1,13 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PeriodDurationPage from '../page'
 import * as PeriodDurationHook from '../hooks/use-period-duration'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-period-duration', () => ({
-  usePeriodDuration: vi.fn()
-}));
+vi.mock('../hooks/use-period-duration');
 
 // Helper function to render with router
 function renderWithRouter(ui: React.ReactElement) {
@@ -23,10 +21,12 @@ describe('Period Duration Page to Hook Connection', () => {
   
   beforeEach(() => {
     vi.resetAllMocks();
-    (PeriodDurationHook.usePeriodDuration as any).mockReturnValue({
+    
+    // Use vi.spyOn to mock the implementation
+    vi.spyOn(PeriodDurationHook, 'usePeriodDuration').mockImplementation(() => ({
       periodDuration: undefined,
       setPeriodDuration: mockSetPeriodDuration
-    });
+    }));
   });
   
   it('should call hook with correct value when option is selected', () => {
@@ -43,11 +43,11 @@ describe('Period Duration Page to Hook Connection', () => {
   })
   
   it('should preselect option when hook returns a value', () => {
-    // Mock hook to return a selected value
-    (PeriodDurationHook.usePeriodDuration as any).mockReturnValue({
+    // Mock hook to return a selected value using spyOn
+    vi.spyOn(PeriodDurationHook, 'usePeriodDuration').mockImplementation(() => ({
       periodDuration: '6-7',
       setPeriodDuration: mockSetPeriodDuration
-    });
+    }));
     
     renderWithRouter(<PeriodDurationPage />)
     

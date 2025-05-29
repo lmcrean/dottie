@@ -5,19 +5,19 @@ import * as AssessmentContextModule from '../../context/hooks/use-assessment-con
 import { PainLevel } from '../../../../context/types';
 
 // Mock the context hook
-vi.mock('../../use-assessment-context', () => ({
-  useAssessmentContext: vi.fn()
-}));
+vi.mock('../../context/hooks/use-assessment-context');
 
 describe('usePainLevel hook', () => {
   const mockUpdateResult = vi.fn();
   
   beforeEach(() => {
     vi.resetAllMocks();
-    (AssessmentContextModule.useAssessmentContext as any).mockReturnValue({
+    
+    // Use vi.spyOn to mock the implementation
+    vi.spyOn(AssessmentContextModule, 'useAssessmentContext').mockImplementation(() => ({
       state: { result: { pain_level: 'moderate' as PainLevel } },
       updateResult: mockUpdateResult
-    });
+    }));
   });
 
   it('should return painLevel from context state', () => {
@@ -38,10 +38,11 @@ describe('usePainLevel hook', () => {
   });
 
   it('should handle undefined painLevel in context', () => {
-    (AssessmentContextModule.useAssessmentContext as any).mockReturnValue({
+    // Override the mock for this specific test
+    vi.spyOn(AssessmentContextModule, 'useAssessmentContext').mockImplementation(() => ({
       state: { result: {} },
       updateResult: mockUpdateResult
-    });
+    }));
     
     const { result } = renderHook(() => usePainLevel());
     

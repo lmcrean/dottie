@@ -265,22 +265,32 @@ export const renderResults = (sessionData: Record<string, any>) => {
   const MockResultsPage = () => {
     // Determine which pattern text to show based on session data
     let patternDescription = 'Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.';
+    let patternTitle = '';
     
     // If heavy flow or 8+ days period, show heavy flow pattern
     if (sessionData.flowLevel === 'Heavy' || sessionData.flowLevel === 'Very Heavy' || 
         sessionData.periodDuration === '8+ days') {
       patternDescription = 'Your flow is heavier or longer than typical, which could impact your daily activities.';
+      patternTitle = 'Heavy Flow Pattern';
     }
     
     // If irregular cycle length, show irregular pattern
     if (sessionData.cycleLength === 'Irregular' || sessionData.cycleLength === 'Less than 21 days' || 
         sessionData.cycleLength === '36-40 days') {
       patternDescription = 'Your cycle length is outside the typical range, which may indicate hormonal fluctuations.';
+      patternTitle = 'Irregular Timing Pattern';
+    }
+    
+    // If adolescent age group, show developing pattern
+    if (sessionData.age === 'Under 13 years' || sessionData.age === '13-17 years') {
+      patternDescription = 'Your cycles are still establishing a regular pattern, which is normal during adolescence.';
+      patternTitle = 'Developing Pattern';
     }
     
     return (
       <div>
         <h1>Your Assessment Results</h1>
+        {patternTitle && <h2>{patternTitle}</h2>}
         <p>{patternDescription}</p>
         <div>{sessionData.cycleLength || "26-30 days"}</div>
         <div>{sessionData.periodDuration || "4-5 days"}</div>

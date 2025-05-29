@@ -1,39 +1,45 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import SymptomsPage from '../page'
 import * as SymptomsHook from '../hooks/use-symptoms'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
 
 // Mock the hook
-vi.mock('../hooks/use-symptoms', () => ({
-  useSymptoms: vi.fn()
-}));
+vi.mock('../hooks/use-symptoms');
 
-// Wrap component with BrowserRouter for React Router compatibility
-const renderWithRouter = (component: React.ReactNode) => {
+// Wrap component with BrowserRouter and AssessmentResultProvider for React Router compatibility
+const renderWithProviders = (component: React.ReactNode) => {
   return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
+    <AssessmentResultProvider>
+      <BrowserRouter>
+        {component}
+      </BrowserRouter>
+    </AssessmentResultProvider>
   )
 }
 
 describe('Symptoms Page to Hook Connection', () => {
   const mockSetPhysicalSymptoms = vi.fn();
   const mockSetEmotionalSymptoms = vi.fn();
+  const mockSetOtherSymptoms = vi.fn();
   
   beforeEach(() => {
     vi.resetAllMocks();
-    (SymptomsHook.useSymptoms as any).mockReturnValue({
+    
+    // Use vi.spyOn to mock the implementation
+    vi.spyOn(SymptomsHook, 'useSymptoms').mockImplementation(() => ({
       physicalSymptoms: [],
       emotionalSymptoms: [],
+      otherSymptoms: '',
       setPhysicalSymptoms: mockSetPhysicalSymptoms,
-      setEmotionalSymptoms: mockSetEmotionalSymptoms
-    });
+      setEmotionalSymptoms: mockSetEmotionalSymptoms,
+      setOtherSymptoms: mockSetOtherSymptoms
+    }));
   });
   
   it('should call hook with correct value when physical symptom is selected', () => {
-    renderWithRouter(<SymptomsPage />)
+    renderWithProviders(<SymptomsPage />)
     
     // Find the Bloating option and click it
     const symptomOption = screen.getByText('Bloating').closest('div')
@@ -46,7 +52,7 @@ describe('Symptoms Page to Hook Connection', () => {
   })
   
   it('should call hook with correct value when emotional symptom is selected', () => {
-    renderWithRouter(<SymptomsPage />)
+    renderWithProviders(<SymptomsPage />)
     
     // Find the Anxiety option and click it
     const symptomOption = screen.getByText('Anxiety').closest('div')
@@ -60,14 +66,16 @@ describe('Symptoms Page to Hook Connection', () => {
   
   it('should preselect symptoms when hook returns values', () => {
     // Mock hook to return selected values
-    (SymptomsHook.useSymptoms as any).mockReturnValue({
+    vi.spyOn(SymptomsHook, 'useSymptoms').mockImplementation(() => ({
       physicalSymptoms: ['bloating', 'headaches'],
       emotionalSymptoms: ['anxiety', 'mood-swings'],
+      otherSymptoms: '',
       setPhysicalSymptoms: mockSetPhysicalSymptoms,
-      setEmotionalSymptoms: mockSetEmotionalSymptoms
-    });
+      setEmotionalSymptoms: mockSetEmotionalSymptoms,
+      setOtherSymptoms: mockSetOtherSymptoms
+    }));
     
-    renderWithRouter(<SymptomsPage />)
+    renderWithProviders(<SymptomsPage />)
     
     // Check that physical symptoms are selected
     const bloatingOption = screen.getByText('Bloating').closest('div')
