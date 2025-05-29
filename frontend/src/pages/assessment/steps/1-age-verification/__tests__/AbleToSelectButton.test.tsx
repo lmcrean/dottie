@@ -5,13 +5,11 @@ import { ReactElement } from 'react';
 import { AgeRange } from '@/src/pages/assessment/steps/context/types';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 
+// Import the hook before mocking it
+import * as AgeVerificationHook from '@/src/pages/assessment/steps/1-age-verification/hooks/use-age-verification';
+
 // Mock modules before importing components
-vi.mock('@/src/pages/assessment/steps/age-verification/hooks/use-age-verification', () => ({
-  useAgeVerification: vi.fn().mockReturnValue({
-    age: undefined,
-    setAge: vi.fn()
-  })
-}));
+vi.mock('@/src/pages/assessment/steps/1-age-verification/hooks/use-age-verification');
 
 // Explicitly mock the useQuickNavigate hook
 vi.mock('@/src/hooks/useQuickNavigate', () => {
@@ -22,7 +20,6 @@ vi.mock('@/src/hooks/useQuickNavigate', () => {
 
 // Now we can import the component after all mocks are set up
 import AgeVerificationPage from '../page';
-import * as AgeVerificationHook from '@/src/pages/assessment/steps/1-age-verification/hooks/use-age-verification';
 
 // Helper function to simplify rendering with all necessary providers
 function renderWithProviders(ui: ReactElement) {
@@ -40,7 +37,7 @@ describe('AgeVerification Button Selection', () => {
   
   beforeEach(() => {
     vi.clearAllMocks();
-    (AgeVerificationHook.useAgeVerification as any).mockReturnValue({
+    vi.mocked(AgeVerificationHook.useAgeVerification).mockReturnValue({
       age: undefined,
       setAge: mockSetAge
     });
@@ -63,7 +60,7 @@ describe('AgeVerification Button Selection', () => {
 
   it('should show selected state when option is clicked', async () => {
     // Mock hook to return a specific age value
-    (AgeVerificationHook.useAgeVerification as any).mockReturnValue({
+    vi.mocked(AgeVerificationHook.useAgeVerification).mockReturnValue({
       age: '25-plus',
       setAge: mockSetAge
     });
@@ -78,7 +75,7 @@ describe('AgeVerification Button Selection', () => {
 
   it('should enable continue button when an option is selected', async () => {
     // Mock hook to return a specific age value
-    (AgeVerificationHook.useAgeVerification as any).mockReturnValue({
+    vi.mocked(AgeVerificationHook.useAgeVerification).mockReturnValue({
       age: '13-17', 
       setAge: mockSetAge
     });
@@ -92,7 +89,7 @@ describe('AgeVerification Button Selection', () => {
 
   it('should handle direct div clicks on option container', async () => {
     // Prepare mock
-    (AgeVerificationHook.useAgeVerification as any).mockReturnValue({
+    vi.mocked(AgeVerificationHook.useAgeVerification).mockReturnValue({
       age: undefined,
       setAge: mockSetAge
     });
@@ -121,7 +118,7 @@ describe('AgeVerification Button Selection', () => {
     };
 
     // Prepare mock with real implementation
-    (AgeVerificationHook.useAgeVerification as any).mockReturnValue({
+    vi.mocked(AgeVerificationHook.useAgeVerification).mockReturnValue({
       age: undefined,
       setAge: realSetAge
     });

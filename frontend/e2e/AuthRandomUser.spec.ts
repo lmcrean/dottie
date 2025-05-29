@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { signUpTestUser } from './runners/auth/sign-up.spec';
-import { signInUser } from './runners/auth/sign-in.spec';
+import { signUpTestUser } from './runners/auth/signup-helper';
+import { signInUser } from './runners/auth/signin-helper';
+import { checkAssessmentPageRender } from './runners/assessment/RenderCheck';
 
 interface NetworkRequest {
   url: string;
@@ -115,6 +116,26 @@ test.describe('User Authentication Flow', () => {
       expect(refreshToken).not.toBeNull();
       
       console.log('Authentication successful - tokens were properly set');
+      
+      // Check if we can navigate to assessment page after sign-in
+      console.log('Checking navigation to assessment page...');
+      const assessmentPageLoaded = await checkAssessmentPageRender(page);
+      
+      // Take screenshot of assessment page navigation result
+      await page.screenshot({ path: 'test_screenshots/assessment/final-state.png' });
+      
+      console.log(`Assessment page navigation result: ${assessmentPageLoaded}`);
+      
+      // Verify that we can actually navigate to the assessment page
+      // This is important to ensure users can access protected routes after login
+      expect(assessmentPageLoaded).toBe(true);
+      
+      // Verify we're on the assessment page URL
+      const finalUrl = page.url();
+      expect(finalUrl).toContain('/assessment');
+      
+      console.log('Test successful - user authenticated and navigation to assessment page verified');
+      
     } catch (error) {
       console.error('Test failed with error:', error);
       await page.screenshot({ path: 'test_screenshots/test-failure.png' });
