@@ -1,7 +1,7 @@
 import { apiClient, isSuccess, isClientError, isServerError } from './core/apiClient';
 import { checkDbConnection, fetchUserData } from './core/db';
 
-import { authApi, login, signup, logout, refreshToken } from './auth';
+import { authApi, postLogin, postSignup, postLogout, postRefreshToken } from './auth';
 import { type User, type LoginInput, type SignupInput, type AuthResponse } from './auth/types';
 
 import { assessmentApi, type Assessment } from '../pages/assessment/api';
@@ -30,10 +30,10 @@ export {
 
   // Auth exports
   authApi,
-  login,
-  signup,
-  logout,
-  refreshToken,
+  postLogin,
+  postSignup,
+  postLogout,
+  postRefreshToken,
   User,
   LoginInput,
   SignupInput,
