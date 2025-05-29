@@ -6,12 +6,12 @@ import {
   getTokenVerification
 } from './requests';
 import { LoginInput, SignupInput, AuthResponse } from './types';
+import { apiClient } from '../core/apiClient';
 
 // Common function to set the Authorization header
 export const setAuthHeader = (token: string) => {
   if (token) {
     // Set the Authorization header for API requests
-    const apiClient = require('../core/apiClient').apiClient;
     apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 };
