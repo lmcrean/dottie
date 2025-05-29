@@ -11,40 +11,45 @@ import logger from '../../../../services/logger.js';
  */
 export const updateConversationAssessmentLinks = async (conversationId, userId, assessmentId) => {
   try {
+    // Ensure conversationId is a string
+    const conversationIdString = String(conversationId);
+    const userIdString = String(userId);
+    const assessmentIdString = String(assessmentId);
+    
     // Validate input
-    if (!conversationId || !userId || !assessmentId) {
+    if (!conversationIdString || !userIdString || !assessmentIdString) {
       logger.warn('[updateConversationAssessmentLinks] Missing required parameters.');
       return false;
     }
 
     // Verify conversation ownership
-    const conversation = await DbService.findById('conversations', conversationId);
+    const conversation = await DbService.findById('conversations', conversationIdString);
     if (!conversation) {
-      logger.warn(`[updateConversationAssessmentLinks] Conversation ${conversationId} not found.`);
+      logger.warn(`[updateConversationAssessmentLinks] Conversation ${conversationIdString} not found.`);
       return false;
     }
-    if (conversation.user_id !== userId) {
-      logger.warn(`[updateConversationAssessmentLinks] User ${userId} does not own conversation ${conversationId}.`);
+    if (conversation.user_id !== userIdString) {
+      logger.warn(`[updateConversationAssessmentLinks] User ${userIdString} does not own conversation ${conversationIdString}.`);
       return false; // Or throw an error
     }
 
     // Fetch assessment pattern
     let assessmentPattern = null;
     try {
-      const assessment = await DbService.findById('assessments', assessmentId);
+      const assessment = await DbService.findById('assessments', assessmentIdString);
       if (assessment && assessment.pattern) {
         assessmentPattern = assessment.pattern;
       } else {
-        logger.warn(`[updateConversationAssessmentLinks] Assessment ${assessmentId} not found or has no pattern.`);
+        logger.warn(`[updateConversationAssessmentLinks] Assessment ${assessmentIdString} not found or has no pattern.`);
       }
     } catch (error) {
-      logger.error(`[updateConversationAssessmentLinks] Error fetching assessment ${assessmentId}:`, error);
+      logger.error(`[updateConversationAssessmentLinks] Error fetching assessment ${assessmentIdString}:`, error);
       // Continue without pattern if assessment fetch fails, or handle as critical error
     }
 
     // Prepare update data
     const updateData = {
-      assessment_id: assessmentId,
+      assessment_id: assessmentIdString,
       updated_at: new Date().toISOString()
     };
     if (assessmentPattern) {
@@ -52,12 +57,12 @@ export const updateConversationAssessmentLinks = async (conversationId, userId, 
     }
 
     // Update the conversation
-    const success = await DbService.update('conversations', conversationId, updateData);
+    const success = await DbService.update('conversations', conversationIdString, updateData);
     
     if (success) {
-      logger.info(`[updateConversationAssessmentLinks] Conversation ${conversationId} updated with assessment ${assessmentId}.`);
+      logger.info(`[updateConversationAssessmentLinks] Conversation ${conversationIdString} updated with assessment ${assessmentIdString}.`);
     } else {
-      logger.error(`[updateConversationAssessmentLinks] Failed to update conversation ${conversationId}.`);
+      logger.error(`[updateConversationAssessmentLinks] Failed to update conversation ${conversationIdString}.`);
     }
     return success;
 

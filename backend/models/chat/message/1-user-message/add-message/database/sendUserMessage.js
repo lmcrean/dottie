@@ -10,17 +10,20 @@ import { updateConversationPreview } from '../../../../conversation/read-convers
  */
 export const insertChatMessage = async (conversationId, messageData) => {
   try {
+    // Ensure conversationId is a string
+    const conversationIdString = String(conversationId);
+    
     // Ensure conversation_id is set
     const messageToInsert = {
       ...messageData,
-      conversation_id: conversationId
+      conversation_id: conversationIdString
     };
 
     await DbService.create('chat_messages', messageToInsert);
     
     // Use messageData.id if available, otherwise log general message
     const messageId = messageData.id ? messageData.id : 'new message';
-    console.log(`[insertChatMessage] Message ${messageId} inserted into conversation ${conversationId}`);
+    console.log(`[insertChatMessage] Message ${messageId} inserted into conversation ${conversationIdString}`);
     console.log(`[insertChatMessage] Message role: ${messageData.role}`);
     
     // Only update the conversation preview for assistant messages
@@ -29,7 +32,7 @@ export const insertChatMessage = async (conversationId, messageData) => {
         console.log(`[insertChatMessage] Found assistant message, updating conversation preview...`);
         
         // Use our dedicated hook for updating previews
-        await updateConversationPreview(DbService, conversationId, messageData.content);
+        await updateConversationPreview(DbService, conversationIdString, messageData.content);
         
         console.log(`[insertChatMessage] Preview updated using getPreviewHook`);
       } catch (previewError) {
@@ -86,10 +89,13 @@ export const getChatMessage = async (conversationId, messageId) => {
  */
 export const getChatMessagesAfterTimestamp = async (conversationId, timestamp) => {
   try {
+    // Ensure conversationId is a string
+    const conversationIdString = String(conversationId);
+    
     // This would need to be implemented in DbService or use raw query
     // For now, using a placeholder that would work with a proper implementation
     const messages = await DbService.findWhere('chat_messages', {
-      conversation_id: conversationId,
+      conversation_id: conversationIdString,
       created_at: { '>': timestamp }
     });
     return messages;

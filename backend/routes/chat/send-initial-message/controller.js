@@ -53,8 +53,11 @@ export const sendInitialMessage = async (req, res) => {
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
     
+    // Ensure chatId is a string
+    const chatIdString = String(chatId);
+    
     logger.info(`[sendInitialMessage] Processing initial message for user: ${userId}`, { 
-      chatId, 
+      chatId: chatIdString, 
       assessment_id, 
       is_initial,
       hasMessage: !!message 
@@ -69,26 +72,26 @@ export const sendInitialMessage = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    if (!chatId) {
+    if (!chatIdString) {
       return res.status(400).json({ error: 'Chat ID is required' });
     }
 
     // Verify the conversation exists and belongs to this user
-    const conversation = await getConversation(chatId, userId);
+    const conversation = await getConversation(chatIdString, userId);
     if (!conversation) {
-      logger.error(`[sendInitialMessage] Conversation ${chatId} not found for user ${userId}`);
+      logger.error(`[sendInitialMessage] Conversation ${chatIdString} not found for user ${userId}`);
       return res.status(404).json({ error: 'Chat conversation not found' });
     }
 
     // If assessment_id is provided, link it to the conversation
     if (assessment_id) {
-      await updateConversationAssessmentLinks(chatId, userId, assessment_id);
-      logger.info(`[sendInitialMessage] Linked assessment ${assessment_id} to conversation ${chatId}`);
+      await updateConversationAssessmentLinks(chatIdString, userId, assessment_id);
+      logger.info(`[sendInitialMessage] Linked assessment ${assessment_id} to conversation ${chatIdString}`);
     }
 
     // Save user message to database
     const userMessage = { role: 'user', content: message };
-    await insertChatMessage(chatId, userMessage);
+    await insertChatMessage(chatIdString, userMessage);
     
     let aiResponse;
     
@@ -150,12 +153,12 @@ export const sendInitialMessage = async (req, res) => {
     
     // Save AI response to database
     const assistantMessage = { role: 'assistant', content: aiResponse };
-    await insertChatMessage(chatId, assistantMessage);
+    await insertChatMessage(chatIdString, assistantMessage);
 
     // Return the response in the format frontend expects
     const response = {
       id: `msg_${Date.now()}`, // Simple message ID
-      chat_id: chatId,
+      chat_id: chatIdString,
       role: 'assistant',
       content: aiResponse,
       created_at: new Date().toISOString(),
@@ -166,7 +169,7 @@ export const sendInitialMessage = async (req, res) => {
       } : undefined
     };
 
-    logger.info(`[sendInitialMessage] Successfully sent initial message response for chat ${chatId}`);
+    logger.info(`[sendInitialMessage] Successfully sent initial message response for chat ${chatIdString}`);
 
     return res.status(200).json(response);
   } catch (error) {

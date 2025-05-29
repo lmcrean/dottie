@@ -12,25 +12,35 @@ export const createChat = async (req, res) => {
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
     
-    logger.info(`[createChat] Creating new chat for user: ${userId}`, { assessment_id, initial_message: !!initial_message });
+    // Ensure IDs are strings
+    const userIdString = String(userId);
+    const assessmentIdString = assessment_id ? String(assessment_id) : null;
+    
+    logger.info(`[createChat] Creating new chat for user: ${userIdString}`, { 
+      assessment_id: assessmentIdString, 
+      initial_message: !!initial_message 
+    });
 
-    if (!userId) {
+    if (!userIdString) {
       logger.error('[createChat] User ID is missing in the request');
       return res.status(400).json({ error: 'User identification is required' });
     }
 
     // Create new conversation with assessment linking
-    const conversationId = await createConversation(userId, assessment_id);
+    const conversationId = await createConversation(userIdString, assessmentIdString);
     
-    logger.info(`[createChat] Successfully created chat: ${conversationId}`, { assessment_id });
+    // Ensure conversationId is a string
+    const conversationIdString = String(conversationId);
+    
+    logger.info(`[createChat] Successfully created chat: ${conversationIdString}`, { assessment_id: assessmentIdString });
 
     // Return the chat object that frontend expects
     const chatResponse = {
-      id: conversationId,
-      user_id: userId,
+      id: conversationIdString,
+      user_id: userIdString,
       created_at: new Date().toISOString(),
-      assessment_context: assessment_id ? {
-        assessment_id,
+      assessment_context: assessmentIdString ? {
+        assessment_id: assessmentIdString,
         initial_message
       } : undefined
     };

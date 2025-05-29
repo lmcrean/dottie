@@ -9,16 +9,23 @@ import { createConversation } from './database/conversationCreate.js';
  */
 export const createAssessmentConversation = async (userId, assessmentId) => {
   try {
-    logger.info(`Creating conversation for user ${userId} with assessment ${assessmentId}`);
+    // Ensure IDs are strings
+    const userIdString = String(userId);
+    const assessmentIdString = assessmentId ? String(assessmentId) : null;
+    
+    logger.info(`Creating conversation for user ${userIdString} with assessment ${assessmentIdString}`);
 
     // Create conversation with assessment FK
-    const conversationId = await createConversation(userId, assessmentId);
+    const conversationId = await createConversation(userIdString, assessmentIdString);
+    
+    // Ensure conversationId is a string
+    const conversationIdString = String(conversationId);
 
-    logger.info(`Conversation ${conversationId} created successfully`);
+    logger.info(`Conversation ${conversationIdString} created successfully`);
 
     return {
-      conversationId,
-      assessmentId,
+      conversationId: conversationIdString,
+      assessmentId: assessmentIdString,
       created_at: new Date().toISOString()
     };
 
