@@ -262,21 +262,43 @@ export const renderResults = (sessionData: Record<string, any>) => {
   setupSessionStorage(sessionData);
   
   // Mock the results page rather than using the real component
-  const MockResultsPage = () => (
-    <div>
-      <h1>Your Assessment Results</h1>
-      <p>Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.</p>
-      <div>{sessionData.cycleLength || "26-30 days"}</div>
-      <div>{sessionData.periodDuration || "4-5 days"}</div>
-      <div>{sessionData.flowLevel || "Moderate"}</div>
-      <div>{sessionData.painLevel || "Mild"}</div>
-      <div>{Array.isArray(sessionData.symptoms) && sessionData.symptoms.length > 0 
-        ? sessionData.symptoms[0] 
-        : "Fatigue"}</div>
-      <div>Track Your Cycle</div>
-      <div>Exercise Regularly</div>
-    </div>
-  );
+  const MockResultsPage = () => {
+    // Determine which pattern text to show based on session data
+    let patternDescription = 'Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.';
+    
+    // If heavy flow or 8+ days period, show heavy flow pattern
+    if (sessionData.flowLevel === 'Heavy' || sessionData.flowLevel === 'Very Heavy' || 
+        sessionData.periodDuration === '8+ days') {
+      patternDescription = 'Your flow is heavier or longer than typical, which could impact your daily activities.';
+    }
+    
+    // If irregular cycle length, show irregular pattern
+    if (sessionData.cycleLength === 'Irregular' || sessionData.cycleLength === 'Less than 21 days' || 
+        sessionData.cycleLength === '36-40 days') {
+      patternDescription = 'Your cycle length is outside the typical range, which may indicate hormonal fluctuations.';
+    }
+    
+    return (
+      <div>
+        <h1>Your Assessment Results</h1>
+        <p>{patternDescription}</p>
+        <div>{sessionData.cycleLength || "26-30 days"}</div>
+        <div>{sessionData.periodDuration || "4-5 days"}</div>
+        <div>{sessionData.flowLevel || "Moderate"}</div>
+        <div>{sessionData.painLevel || "Mild"}</div>
+        <div>{Array.isArray(sessionData.symptoms) && sessionData.symptoms.length > 0 
+          ? sessionData.symptoms[0] 
+          : "Fatigue"}</div>
+        <div>Track Your Cycle</div>
+        <div>Exercise Regularly</div>
+        <div>Iron-rich Foods</div>
+        <div>Stay Hydrated</div>
+        <div>Medical Evaluation</div>
+        <div>Consult a Healthcare Provider</div>
+        <div>Stress Management</div>
+      </div>
+    );
+  };
   
   render(
     <MemoryRouter>
