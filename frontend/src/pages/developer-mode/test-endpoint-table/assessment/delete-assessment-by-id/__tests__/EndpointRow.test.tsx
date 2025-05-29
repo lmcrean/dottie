@@ -4,9 +4,15 @@ import EndpointRow from '../EndpointRow';
 
 describe('Delete Assessment By Id EndpointRow', () => {
   it('renders correctly', () => {
-    render(<EndpointRow />);
+    render(
+      <table>
+        <tbody>
+          <EndpointRow />
+        </tbody>
+      </table>
+    );
     
     expect(screen.getByText('DELETE')).toBeInTheDocument();
-    expect(screen.getByText('/api/assessment/:id')).toBeInTheDocument();
+    expect(screen.getByText('/api/assessment/:userId/:id')).toBeInTheDocument();
   });
 }); 

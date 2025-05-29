@@ -1,25 +1,46 @@
 import {
-  postLogin,
+  postLogin as originalPostLogin,
   postSignup,
   postLogout,
   postRefreshToken,
   getTokenVerification
 } from './requests';
+import { LoginInput, SignupInput, AuthResponse } from './types';
+
+// Common function to set the Authorization header
+export const setAuthHeader = (token: string) => {
+  if (token) {
+    // Set the Authorization header for API requests
+    const apiClient = require('../core/apiClient').apiClient;
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+};
+
+// Ensure the Authorization header is set when the login succeeds
+export const postLogin = async (credentials: LoginInput): Promise<AuthResponse> => {
+  const response = await originalPostLogin(credentials);
+  
+  // Set the Authorization header
+  if (response.token) {
+    setAuthHeader(response.token);
+  }
+  
+  return response;
+};
+
+// Export all auth-related functions
+export {
+  postSignup,
+  postLogout,
+  postRefreshToken,
+  getTokenVerification
+};
 
 // Export types
 export * from './types';
 
 // Export schemas
 export * from './schemas';
-
-// Export individual endpoints
-export {
-  postLogin as login,
-  postSignup as signup,
-  postLogout as logout,
-  postRefreshToken as refreshToken,
-  getTokenVerification as verifyToken
-};
 
 // Auth API object for backward compatibility
 export const authApi = {

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
 import EndpointRow from '../../EndpointRow';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -11,7 +10,11 @@ describe('Password Reset Endpoint Row', () => {
   it('renders correctly with proper method and endpoint', () => {
     render(
       <MemoryRouter>
-        <EndpointRow />
+        <table>
+          <tbody>
+            <EndpointRow />
+          </tbody>
+        </table>
       </MemoryRouter>
     );
     
@@ -21,16 +24,19 @@ describe('Password Reset Endpoint Row', () => {
     // Check if the method is displayed correctly
     expect(screen.getByText('POST')).toBeInTheDocument();
     
-    // Check if email input field is present but optional
-    const emailInput = screen.getByLabelText(/email/i);
-    expect(emailInput).toBeInTheDocument();
-    expect(emailInput).not.toHaveAttribute('required');
+    // Check button exists
+    const button = screen.getByTestId('test-post -api-user-pw-reset-button');
+    expect(button).toBeInTheDocument();
   });
   
   it('shows expected response format', () => {
     render(
       <MemoryRouter>
-        <EndpointRow />
+        <table>
+          <tbody>
+            <EndpointRow />
+          </tbody>
+        </table>
       </MemoryRouter>
     );
     

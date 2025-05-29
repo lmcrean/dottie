@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import EndpointButton from './EndpointButton';
 import JsonDisplay from './JsonDisplay';
 import ApiResponse from './ApiResponse';
@@ -226,56 +226,71 @@ export default function EndpointRow({
   };
 
   return (
-    <tr className="border-t border-gray-700">
-      <td className="p-4 align-top">
-        <div className="space-y-3">
-          <EndpointButton
-            label={`${method} ${endpoint}`}
-            method={method}
-            onClick={handleButtonClick}
-            status={status}
-            isLoading={isLoading}
-          />
-
-          {requiresAuth && !isAuthenticated && (
-            <div className={`text-xs ${authError ? 'text-red-400' : 'text-yellow-400'} mt-1`}>
-              {authError
-                ? 'Authentication required. Please login first.'
-                : 'Requires authentication'}
-            </div>
-          )}
-
-          {/* Show path parameter form if needed */}
-          {showInputForm && pathParams.length > 0 && (
-            <InputForm
-              fields={pathParamFields}
-              onSubmit={handlePathParamSubmit}
-              submitLabel="Set Path Parameters"
+    <Fragment>
+      <tr className="border-t border-gray-700">
+        <td className="p-4 align-top">
+          <div className="space-y-3">
+            <EndpointButton
+              label={`${method} ${endpoint}`}
+              method={method}
+              onClick={handleButtonClick}
+              status={status}
               isLoading={isLoading}
             />
-          )}
 
-          {/* Show input form for request body if needed */}
-          {showInputForm && requiresParams && inputFields.length > 0 && (
-            <div className="mt-3">
-              <InputForm
-                fields={inputFields}
-                onSubmit={handleFormSubmit}
-                submitLabel={`Send ${method} Request`}
-                isLoading={isLoading}
-              />
+            {requiresAuth && !isAuthenticated && (
+              <div className={`text-xs ${authError ? 'text-red-400' : 'text-yellow-400'} mt-1`}>
+                {authError
+                  ? 'Authentication required. Please login first.'
+                  : 'Requires authentication'}
+              </div>
+            )}
+          </div>
+        </td>
+
+        <td className="p-4 align-top">
+          <JsonDisplay data={expectedOutput} isExpected={true} />
+        </td>
+
+        <td className="p-4 align-top">
+          <ApiResponse data={response} status={status} />
+        </td>
+      </tr>
+
+      {/* Show forms in a separate row */}
+      {showInputForm && (pathParams.length > 0 || (requiresParams && inputFields.length > 0)) && (
+        <tr>
+          <td colSpan={3} className="p-4">
+            <div className="space-y-4">
+              {/* Show path parameter form if needed */}
+              {pathParams.length > 0 && (
+                <div className="mt-2">
+                  <h3 className="mb-2 text-sm font-medium text-gray-300">Path Parameters</h3>
+                  <InputForm
+                    fields={pathParamFields}
+                    onSubmit={handlePathParamSubmit}
+                    submitLabel="Set Path Parameters"
+                    isLoading={isLoading}
+                  />
+                </div>
+              )}
+
+              {/* Show input form for request body if needed */}
+              {requiresParams && inputFields.length > 0 && (
+                <div className="mt-2">
+                  <h3 className="mb-2 text-sm font-medium text-gray-300">Request Body</h3>
+                  <InputForm
+                    fields={inputFields}
+                    onSubmit={handleFormSubmit}
+                    submitLabel={`Send ${method} Request`}
+                    isLoading={isLoading}
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </td>
-
-      <td className="p-4 align-top">
-        <JsonDisplay data={expectedOutput} isExpected={true} />
-      </td>
-
-      <td className="p-4 align-top">
-        <ApiResponse data={response} status={status} />
-      </td>
-    </tr>
+          </td>
+        </tr>
+      )}
+    </Fragment>
   );
 }
