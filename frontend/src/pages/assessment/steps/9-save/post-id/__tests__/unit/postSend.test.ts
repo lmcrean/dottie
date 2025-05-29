@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { postSend } from '../../Request';
-import { apiClient } from '../../../../../../../../../api/core/apiClient';
+import { apiClient } from '@/src/api/core/apiClient';
 
 // Mock the apiClient
-vi.mock('../../../../../core/apiClient', () => ({
+vi.mock('@/src/api/core/apiClient', () => ({
   apiClient: {
     post: vi.fn(),
   },
@@ -12,7 +12,7 @@ vi.mock('../../../../../core/apiClient', () => ({
 describe('postSend request', () => {
   const mockAssessmentData = {
     age: '25-plus',
-    pattern: 'Regular',
+    pattern: 'regular',
     cycle_length: '28',
     period_duration: '5',
     flow_heaviness: 'Medium',
@@ -25,6 +25,7 @@ describe('postSend request', () => {
         description: 'Regular exercise can help reduce period pain',
       },
     ],
+    other_symptoms: '',
   };
 
   const mockAssessmentResponse = {
@@ -37,10 +38,14 @@ describe('postSend request', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock Date.now to return a consistent date for testing
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2023-04-15T12:00:00Z'));
   });
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.useRealTimers();
   });
 
   it('should send assessment data successfully', async () => {
@@ -54,7 +59,12 @@ describe('postSend request', () => {
     // Assert
     expect(apiClient.post).toHaveBeenCalledTimes(1);
     expect(apiClient.post).toHaveBeenCalledWith('/api/assessment/send', {
-      assessmentData: mockAssessmentData
+      assessmentData: {
+        ...mockAssessmentData,
+        user_id: '',
+        created_at: expect.any(String),
+        updated_at: expect.any(String)
+      }
     });
     expect(result).toEqual(mockAssessmentResponse);
     expect(result.id).toBe('123');
@@ -69,7 +79,12 @@ describe('postSend request', () => {
     await expect(postSend(mockAssessmentData)).rejects.toThrow('Network error');
     expect(apiClient.post).toHaveBeenCalledTimes(1);
     expect(apiClient.post).toHaveBeenCalledWith('/api/assessment/send', {
-      assessmentData: mockAssessmentData
+      assessmentData: {
+        ...mockAssessmentData,
+        user_id: '',
+        created_at: expect.any(String),
+        updated_at: expect.any(String)
+      }
     });
   });
 

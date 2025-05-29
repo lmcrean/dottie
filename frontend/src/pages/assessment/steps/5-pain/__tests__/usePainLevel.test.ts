@@ -4,7 +4,7 @@ import { usePainLevel } from '../hooks/use-pain-level';
 import { useAssessmentContext } from '../../context/hooks/use-assessment-context';
 
 // Mock the assessment context
-vi.mock('../../use-assessment-context', () => ({
+vi.mock('../../context/hooks/use-assessment-context', () => ({
   useAssessmentContext: vi.fn()
 }));
 
