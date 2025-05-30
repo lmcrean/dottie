@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { MessageCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { FullscreenChat } from '../../../FullScreenChat';
 import { createNewChat } from '../../../../sidebar/api/create-new/api/createNewChat';
 import { sendInitialMessage } from './api/sendInitialMessage';
 import { PATTERN_DATA } from '../../../../../assessment/steps/context/types/recommendations';
@@ -22,9 +22,7 @@ export function SendInitialMessageButton({
   disabled = false
 }: SendInitialMessageButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const [initialMessage, setInitialMessage] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleStartChat = async () => {
     if (isLoading || disabled) return;
@@ -36,8 +34,6 @@ export function SendInitialMessageButton({
       const initialMessageText = assessmentId
         ? `Hi! I've just completed my menstrual health assessment (ID: ${assessmentId}). My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means and provide personalized recommendations?`
         : `Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means?`;
-
-      setInitialMessage(initialMessageText);
 
       // Log button click
       console.log(
@@ -62,7 +58,7 @@ export function SendInitialMessageButton({
       // Carefully extract the ID, handling both string and object formats
       let chatIdString: string;
 
-      // Debug what we received from the server
+      // Log the raw response for debugging
       console.log(`[SendInitialMessageButton] Received chat ID response:`, {
         value: newChat.id,
         type: typeof newChat.id,
@@ -70,36 +66,34 @@ export function SendInitialMessageButton({
         stringRepresentation: String(newChat.id)
       });
 
-      // Safely handle different ID formats with proper type checking
-      if (typeof newChat.id === 'object' && newChat.id !== null) {
-        // Type assertion to help TypeScript understand the structure
-        const idObj = newChat.id as { id?: string; toString?: () => string };
-
+      if (typeof newChat.id === 'string') {
+        chatIdString = newChat.id;
+      } else if (typeof newChat.id === 'object' && newChat.id !== null) {
+        // Handle object format responses
+        const idObj = newChat.id as {
+          id?: string | number;
+          conversationId?: string | number;
+          toString?: () => string;
+        };
         if (idObj.id) {
           chatIdString = String(idObj.id);
-          console.log(
-            `[SendInitialMessageButton] Extracted ID from object property: ${chatIdString}`
-          );
-        } else if (typeof idObj.toString === 'function' && idObj.toString() !== '[object Object]') {
+        } else if (idObj.conversationId) {
+          chatIdString = String(idObj.conversationId);
+        } else if (idObj.toString && typeof idObj.toString === 'function') {
           chatIdString = idObj.toString();
-          console.log(`[SendInitialMessageButton] Used object's toString(): ${chatIdString}`);
         } else {
-          console.error(
-            '[SendInitialMessageButton] Cannot extract valid ID from response:',
-            newChat.id
-          );
-          throw new Error('Received invalid chat ID format from server');
+          chatIdString = String(newChat.id);
         }
       } else {
-        // Just use normal string conversion for primitive values
         chatIdString = String(newChat.id);
       }
 
-      setCurrentChatId(chatIdString);
+      // Ensure we have a valid string ID
+      chatIdString = String(chatIdString);
 
-      // Log after API response
+      // Log successful chat creation
       console.log(
-        `[SendInitialMessageButton] Chat created successfully, received ID: ${newChat.id}, type: ${typeof newChat.id}`
+        `[SendInitialMessageButton] Chat created successfully, received ID: ${chatIdString}, type: ${typeof chatIdString}`
       );
       console.log(
         `[SendInitialMessageButton] Converted chat ID: ${chatIdString}, type: ${typeof chatIdString}`
@@ -124,8 +118,9 @@ export function SendInitialMessageButton({
         });
       }
 
-      // Open fullscreen chat
-      setIsFullscreenChatOpen(true);
+      // Navigate to the new chat route
+      console.log(`[SendInitialMessageButton] Navigating to /chat/${chatIdString}`);
+      navigate(`/chat/${chatIdString}`);
     } catch (error) {
       console.error('[SendInitialMessageButton] Error starting chat:', error);
       toast.error('Failed to start chat. Please try again.');
@@ -134,36 +129,20 @@ export function SendInitialMessageButton({
     }
   };
 
-  const handleCloseChat = () => {
-    setIsFullscreenChatOpen(false);
-    setCurrentChatId(null);
-  };
-
   return (
-    <>
-      <Button
-        onClick={handleStartChat}
-        className={`${className} w-full`}
-        variant="default"
-        disabled={disabled || isLoading}
-      >
-        {isLoading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <MessageCircle className="mr-2 h-4 w-4" />
-        )}
-        Chat with Dottie
-      </Button>
-
-      {isFullscreenChatOpen && currentChatId && (
-        <FullscreenChat
-          chatId={currentChatId}
-          onClose={handleCloseChat}
-          setIsFullscreen={setIsFullscreenChatOpen}
-          initialMessage={initialMessage}
-        />
+    <Button
+      onClick={handleStartChat}
+      className={`${className} w-full`}
+      variant="default"
+      disabled={disabled || isLoading}
+    >
+      {isLoading ? (
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      ) : (
+        <MessageCircle className="mr-2 h-4 w-4" />
       )}
-    </>
+      Chat with Dottie
+    </Button>
   );
 }
 

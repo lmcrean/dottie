@@ -24,6 +24,10 @@ import ResourcesPage from './pages/assessment/components/resources/page';
 import HistoryPage from './pages/assessment/list/page';
 import DetailsPage from './pages/assessment/detail/page';
 
+// Import chat components
+import ChatPage from './pages/chat/page';
+import ChatDetailPage from './pages/chat/chat-detail/page';
+
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';
 import ScrollToTop from './pages/developer-mode/page-components/scroll-to-top';
@@ -171,6 +175,12 @@ function AppContent(): ReactElement {
                     </AssessmentResultProvider>
                   }
                 />
+              </Route>
+
+              {/* Chat routes */}
+              <Route path="/chat">
+                <Route index element={<ChatPage />} />
+                <Route path=":conversationId" element={<ChatDetailPage />} />
               </Route>
             </Route>
 
