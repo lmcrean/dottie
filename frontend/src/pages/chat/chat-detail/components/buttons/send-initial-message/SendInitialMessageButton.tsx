@@ -24,6 +24,7 @@ export function SendInitialMessageButton({
   const [isLoading, setIsLoading] = useState(false);
   const [isFullscreenChatOpen, setIsFullscreenChatOpen] = useState(false);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [initialMessage, setInitialMessage] = useState<string>('');
 
   const handleStartChat = async () => {
     if (isLoading || disabled) return;
@@ -32,15 +33,17 @@ export function SendInitialMessageButton({
 
     try {
       // Generate initial message based on assessment
-      const initialMessage = assessmentId
+      const initialMessageText = assessmentId
         ? `Hi! I've just completed my menstrual health assessment (ID: ${assessmentId}). My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means and provide personalized recommendations?`
         : `Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means?`;
+
+      setInitialMessage(initialMessageText);
 
       // Log button click
       console.log(
         `[SendInitialMessageButton] Start chat clicked with assessmentId: ${assessmentId}, type: ${typeof assessmentId}`
       );
-      console.log(`[SendInitialMessageButton] Initial message: "${initialMessage}"`);
+      console.log(`[SendInitialMessageButton] Initial message: "${initialMessageText}"`);
 
       // Ensure assessmentId is a string if it exists
       const assessmentIdString = assessmentId ? String(assessmentId) : undefined;
@@ -53,11 +56,45 @@ export function SendInitialMessageButton({
       // Create new chat
       const newChat = await createNewChat({
         assessment_id: assessmentIdString,
-        initial_message: initialMessage
+        initial_message: initialMessageText
       });
 
-      // Ensure newChat.id is a string
-      const chatIdString = String(newChat.id);
+      // Carefully extract the ID, handling both string and object formats
+      let chatIdString: string;
+
+      // Debug what we received from the server
+      console.log(`[SendInitialMessageButton] Received chat ID response:`, {
+        value: newChat.id,
+        type: typeof newChat.id,
+        isObject: typeof newChat.id === 'object',
+        stringRepresentation: String(newChat.id)
+      });
+
+      // Safely handle different ID formats with proper type checking
+      if (typeof newChat.id === 'object' && newChat.id !== null) {
+        // Type assertion to help TypeScript understand the structure
+        const idObj = newChat.id as { id?: string; toString?: () => string };
+
+        if (idObj.id) {
+          chatIdString = String(idObj.id);
+          console.log(
+            `[SendInitialMessageButton] Extracted ID from object property: ${chatIdString}`
+          );
+        } else if (typeof idObj.toString === 'function' && idObj.toString() !== '[object Object]') {
+          chatIdString = idObj.toString();
+          console.log(`[SendInitialMessageButton] Used object's toString(): ${chatIdString}`);
+        } else {
+          console.error(
+            '[SendInitialMessageButton] Cannot extract valid ID from response:',
+            newChat.id
+          );
+          throw new Error('Received invalid chat ID format from server');
+        }
+      } else {
+        // Just use normal string conversion for primitive values
+        chatIdString = String(newChat.id);
+      }
+
       setCurrentChatId(chatIdString);
 
       // Log after API response
@@ -77,13 +114,13 @@ export function SendInitialMessageButton({
         console.log(`[SendInitialMessageButton] Request payload:`, {
           chat_id: chatIdString,
           assessment_id: assessmentIdString,
-          message: initialMessage
+          message: initialMessageText
         });
 
         await sendInitialMessage({
           chat_id: chatIdString,
           assessment_id: assessmentIdString,
-          message: initialMessage
+          message: initialMessageText
         });
       }
 
@@ -105,28 +142,25 @@ export function SendInitialMessageButton({
   return (
     <>
       <Button
-        className={`flex items-center justify-center gap-2 bg-pink-600 px-6 py-6 text-lg text-white hover:bg-pink-700 ${className}`}
         onClick={handleStartChat}
-        disabled={isLoading || disabled}
+        className={`${className} w-full`}
+        variant="default"
+        disabled={disabled || isLoading}
       >
         {isLoading ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <MessageCircle className="h-5 w-5" />
+          <MessageCircle className="mr-2 h-4 w-4" />
         )}
-        {isLoading ? 'Starting Chat...' : 'Chat with Dottie'}
+        Chat with Dottie
       </Button>
 
       {isFullscreenChatOpen && currentChatId && (
         <FullscreenChat
+          chatId={currentChatId}
           onClose={handleCloseChat}
           setIsFullscreen={setIsFullscreenChatOpen}
-          chatId={currentChatId}
-          initialMessage={
-            assessmentId
-              ? `Hi! I've just completed my menstrual health assessment (ID: ${assessmentId}). My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means and provide personalized recommendations?`
-              : `Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means?`
-          }
+          initialMessage={initialMessage}
         />
       )}
     </>
