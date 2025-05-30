@@ -82,7 +82,8 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
           if (fullConversation) {
             const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
               role: msg.role,
-              content: msg.content
+              content: msg.content,
+              created_at: msg.created_at
             }));
             setMessages(convertedMessages);
             setCurrentConversationId(chatIdString);
@@ -138,7 +139,14 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
 
     const userMessage = textToSend;
     setInput('');
-    setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        content: userMessage,
+        created_at: new Date().toISOString()
+      }
+    ]);
     setIsLoading(true);
 
     try {
@@ -148,7 +156,14 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
         conversationId: conversationIdString
       });
 
-      setMessages((prev) => [...prev, { role: 'assistant', content: response.content }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: response.content,
+          created_at: new Date().toISOString()
+        }
+      ]);
     } catch (error) {
       console.error('Error sending message:', error);
       setMessages((prev) => [
@@ -156,7 +171,8 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
         {
           role: 'assistant',
           content:
-            "I apologize, but I'm having trouble processing your request right now. Please try again later."
+            "I apologize, but I'm having trouble processing your request right now. Please try again later.",
+          created_at: new Date().toISOString()
         }
       ]);
       toast.error('Failed to send message');
@@ -177,7 +193,8 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
       if (fullConversation) {
         const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
           role: msg.role,
-          content: msg.content
+          content: msg.content,
+          created_at: msg.created_at
         }));
 
         setMessages(convertedMessages);

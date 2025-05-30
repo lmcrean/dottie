@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Loader2 } from 'lucide-react';
 import { Message } from '../types/chat';
+import { formatMessageTimestamp } from '../utils/formatTimestamp';
 
 interface MessageListProps {
   messages: Message[];
@@ -27,21 +28,33 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
               message.role === 'user' ? 'justify-end' : 'justify-start'
             } animate-fadeIn`}
           >
-            <div
-              className={`max-w-[80%] rounded-xl p-3 ${
-                message.role === 'user'
-                  ? 'bg-pink-600 text-white'
-                  : 'border border-gray-100 bg-gray-50 text-gray-900'
-              }`}
-            >
-              {message.content}
+            <div className={`max-w-[80%] ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+              <div
+                className={`rounded-xl p-3 ${
+                  message.role === 'user'
+                    ? 'bg-pink-600 text-white'
+                    : 'border border-gray-100 bg-gray-50 text-gray-900'
+                }`}
+              >
+                {message.content}
+              </div>
+              <div
+                className={`mt-1 text-xs text-gray-500 ${
+                  message.role === 'user' ? 'text-right' : 'text-left'
+                }`}
+              >
+                {formatMessageTimestamp(message.created_at)}
+              </div>
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex animate-fadeIn justify-start">
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
-              <Loader2 className="h-4 w-4 animate-spin text-pink-600" />
+            <div className="max-w-[80%] text-left">
+              <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                <Loader2 className="h-4 w-4 animate-spin text-pink-600" />
+              </div>
+              <div className="mt-1 text-left text-xs text-gray-500">Typing...</div>
             </div>
           </div>
         )}
