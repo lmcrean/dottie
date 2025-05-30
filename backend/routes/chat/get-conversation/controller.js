@@ -36,6 +36,7 @@ export const getConversation = async (req, res) => {
       id: result.conversation.id,
       user_id: result.conversation.user_id,
       assessment_id: result.conversation.assessment_id,
+      assessment_object: result.conversation.assessment_object,
       assessment_pattern: result.conversation.assessment_pattern,
       title: result.conversation.title,
       created_at: result.conversation.created_at,
