@@ -73,7 +73,37 @@ export const sendAndRespond = async (conversationId, userId, message) => {
 // Re-export legacy function names for backward compatibility
 
 export const getConversations = originalGetUserConversations;
-export const createConversation = originalCreateAssessmentConversation;
+
+// Fixed wrapper for createConversation that returns just the ID string
+/**
+ * Create a conversation and return just the ID as a string
+ * @param {string} userId - User ID
+ * @param {string} assessmentId - Assessment ID
+ * @returns {Promise<string>} Conversation ID as a string
+ */
+export const createConversation = async (userId, assessmentId) => {
+  // Call the original function
+  const result = await originalCreateAssessmentConversation(userId, assessmentId);
+  
+  // Log what we're receiving from createAssessmentConversation
+  console.log(`[createConversation-wrapper] Received result from createAssessmentConversation:`, {
+    resultType: typeof result,
+    hasConversationId: result && result.conversationId ? 'yes' : 'no',
+    conversationIdType: result && result.conversationId ? typeof result.conversationId : 'n/a'
+  });
+  
+  // Extract and return just the ID as a string
+  if (result && result.conversationId) {
+    const idString = String(result.conversationId);
+    console.log(`[createConversation-wrapper] Returning ID string: ${idString}`);
+    return idString;
+  } 
+  
+  // Handle error case
+  console.error(`[createConversation-wrapper] Invalid result format:`, result);
+  throw new Error('Failed to get valid conversation ID from createAssessmentConversation');
+};
+
 export const newConversation = originalCreateAssessmentConversation;
 export const readConversation = originalGetConversation;
 export const sendMessage = originalSendMessage; // Legacy: only adds user message
