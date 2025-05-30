@@ -7,7 +7,7 @@ export interface CreateChatRequest {
 }
 
 export interface CreateChatResponse {
-  id: string;
+  id: string | { id?: string; conversationId?: string; toString?: () => string };
   user_id: string;
   assessment_id?: string;
   created_at: string;
@@ -52,10 +52,12 @@ export const createNewChat = async (params?: CreateChatRequest): Promise<CreateC
 
     const response = await apiClient.post<CreateChatResponse>('/api/chat', requestBody);
 
-    // Log response
+    // Log response with more details
     console.log(`[createNewChat] Received response:`, {
       id: response.data.id,
       id_type: typeof response.data.id,
+      id_is_object: typeof response.data.id === 'object',
+      id_string_representation: String(response.data.id),
       user_id: response.data.user_id,
       assessment_id: response.data.assessment_id
     });
