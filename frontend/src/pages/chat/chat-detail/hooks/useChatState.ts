@@ -38,9 +38,9 @@ const fetchConversation = async (
   try {
     // Ensure conversationId is a string
     const conversationIdString = String(conversationId);
-    
+
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/chat/get-conversation/${conversationIdString}`, {
+    const response = await fetch(`${API_BASE_URL}/api/chat/history/${conversationIdString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -67,11 +67,11 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Ensure chatId is a string if it exists, otherwise null
   const initialChatId = chatId ? String(chatId) : null;
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(initialChatId);
-  
+
   const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const hasSentInitialMessage = useRef(false);
 
@@ -84,7 +84,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
           // Ensure chatId is a string
           const chatIdString = String(chatId);
           console.log(`Loading conversation with ID: ${chatIdString}`);
-          
+
           const fullConversation = await fetchConversation(chatIdString);
 
           if (fullConversation) {
@@ -94,12 +94,12 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
             }));
             setMessages(convertedMessages);
             setCurrentConversationId(chatIdString);
-            
+
             // Ensure assessment_id is a string if it exists
-            const assessmentIdString = fullConversation.assessment_id 
-              ? String(fullConversation.assessment_id) 
+            const assessmentIdString = fullConversation.assessment_id
+              ? String(fullConversation.assessment_id)
               : null;
-              
+
             setAssessmentId(assessmentIdString);
           } else {
             // Conversation not found
@@ -143,7 +143,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
 
     // Ensure currentConversationId is a string
     const conversationIdString = String(currentConversationId);
-    
+
     const userMessage = textToSend;
     setInput('');
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
@@ -176,10 +176,10 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const handleConversationSelect = async (conversation: ConversationListItem) => {
     try {
       setIsLoading(true);
-      
+
       // Ensure conversation.id is a string
       const conversationIdString = String(conversation.id);
-      
+
       const fullConversation = await fetchConversation(conversationIdString);
 
       if (fullConversation) {
@@ -190,12 +190,12 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
 
         setMessages(convertedMessages);
         setCurrentConversationId(conversationIdString);
-        
+
         // Ensure assessment_id is a string if it exists
-        const assessmentIdString = fullConversation.assessment_id 
-          ? String(fullConversation.assessment_id) 
+        const assessmentIdString = fullConversation.assessment_id
+          ? String(fullConversation.assessment_id)
           : null;
-          
+
         setAssessmentId(assessmentIdString);
 
         // Navigate to the chat detail page
