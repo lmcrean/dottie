@@ -60,6 +60,7 @@ async function getConversation(conversationId, options = {}) {
                 id: conversation.id,
                 user_id: conversation.user_id,
                 assessment_id: conversation.assessment_id,
+                assessment_object: conversation.assessment_object,
                 assessment_pattern: conversation.assessment_pattern,
                 title: conversation.title || 'Assessment Conversation',
                 created_at: conversation.created_at,
