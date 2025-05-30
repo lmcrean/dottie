@@ -9,6 +9,13 @@ import { findById } from './findById.js';
  */
 export async function create(table, data) {
   try {
+    // Log entry point
+    console.log(`[DbService.create] Creating record in ${table} with data:`, {
+      ...data,
+      id_type: data.id ? typeof data.id : 'undefined',
+      conversation_id_type: data.conversation_id ? typeof data.conversation_id : 'undefined'
+    });
+
     // Create a sanitized copy of the data to avoid modifying the original
     const sanitizedData = { ...data };
     
@@ -43,8 +50,17 @@ export async function create(table, data) {
       table
     });
 
+    // Prepare parameters for SQL execution
+    const parameters = Object.values(sanitizedData);
+    
+    // Log SQL parameters
+    console.log(`[DbService.create] Executing SQL with parameters:`, parameters);
+
     const [id] = await db(table)
       .insert(sanitizedData);
+
+    // Log successful insertion
+    console.log(`[DbService.create] Successfully inserted record in ${table} with ID: ${sanitizedData.id || id}`);
 
     // For SQLite compatibility, fetch the record after insertion
     const insertedRecord = await findById(table, sanitizedData.id || id);

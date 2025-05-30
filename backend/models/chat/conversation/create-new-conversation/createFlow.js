@@ -9,9 +9,25 @@ import { createConversation } from './database/conversationCreate.js';
  */
 export const createAssessmentConversation = async (userId, assessmentId) => {
   try {
+    // Log received IDs
+    console.log(`[createAssessmentConversation] Received IDs:`, {
+      userId,
+      userIdType: typeof userId,
+      assessmentId,
+      assessmentIdType: assessmentId ? typeof assessmentId : 'null'
+    });
+
     // Ensure IDs are strings
     const userIdString = String(userId);
     const assessmentIdString = assessmentId ? String(assessmentId) : null;
+    
+    // Log after type conversion
+    console.log(`[createAssessmentConversation] Converted IDs:`, {
+      userIdString,
+      userIdStringType: typeof userIdString,
+      assessmentIdString,
+      assessmentIdStringType: assessmentIdString ? typeof assessmentIdString : 'null'
+    });
     
     logger.info(`Creating conversation for user ${userIdString} with assessment ${assessmentIdString}`);
 

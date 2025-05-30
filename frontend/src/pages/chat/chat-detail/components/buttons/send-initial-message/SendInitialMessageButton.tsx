@@ -36,9 +36,20 @@ export function SendInitialMessageButton({
         ? `Hi! I've just completed my menstrual health assessment (ID: ${assessmentId}). My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means and provide personalized recommendations?`
         : `Hi! I've just completed my menstrual health assessment. My results show: ${PATTERN_DATA[pattern].title}. Can you tell me more about what this means?`;
 
+      // Log button click
+      console.log(
+        `[SendInitialMessageButton] Start chat clicked with assessmentId: ${assessmentId}, type: ${typeof assessmentId}`
+      );
+      console.log(`[SendInitialMessageButton] Initial message: "${initialMessage}"`);
+
       // Ensure assessmentId is a string if it exists
       const assessmentIdString = assessmentId ? String(assessmentId) : undefined;
-      
+
+      // Log before API call
+      console.log(
+        `[SendInitialMessageButton] Creating new chat with assessment_id: ${assessmentIdString}, type: ${typeof assessmentIdString}`
+      );
+
       // Create new chat
       const newChat = await createNewChat({
         assessment_id: assessmentIdString,
@@ -48,11 +59,27 @@ export function SendInitialMessageButton({
       // Ensure newChat.id is a string
       const chatIdString = String(newChat.id);
       setCurrentChatId(chatIdString);
-      console.log(`Chat created with ID: ${chatIdString}, type: ${typeof chatIdString}`);
+
+      // Log after API response
+      console.log(
+        `[SendInitialMessageButton] Chat created successfully, received ID: ${newChat.id}, type: ${typeof newChat.id}`
+      );
+      console.log(
+        `[SendInitialMessageButton] Converted chat ID: ${chatIdString}, type: ${typeof chatIdString}`
+      );
 
       // Send initial message if we have an assessment ID
       if (assessmentIdString) {
-        console.log(`Sending initial message to chat ${chatIdString} with assessment ${assessmentIdString}`);
+        // Log before sending initial message
+        console.log(
+          `[SendInitialMessageButton] Sending initial message to chat ${chatIdString}, with assessment ${assessmentIdString}`
+        );
+        console.log(`[SendInitialMessageButton] Request payload:`, {
+          chat_id: chatIdString,
+          assessment_id: assessmentIdString,
+          message: initialMessage
+        });
+
         await sendInitialMessage({
           chat_id: chatIdString,
           assessment_id: assessmentIdString,

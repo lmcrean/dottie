@@ -27,12 +27,38 @@ export const createNewChat = async (params?: CreateChatRequest): Promise<CreateC
       throw new Error('User ID not found. Please login again.');
     }
 
-    const requestBody = {
+    // Log before API call
+    console.log(`[createNewChat] Preparing to create chat with params:`, {
       assessment_id: params?.assessment_id,
+      assessment_id_type: params?.assessment_id ? typeof params.assessment_id : 'undefined',
+      has_initial_message: !!params?.initial_message
+    });
+
+    // Ensure assessment_id is a string if it exists
+    const assessmentIdString = params?.assessment_id ? String(params.assessment_id) : undefined;
+
+    // Log converted ID
+    console.log(
+      `[createNewChat] Converted assessment_id: ${assessmentIdString}, type: ${assessmentIdString ? typeof assessmentIdString : 'undefined'}`
+    );
+
+    const requestBody = {
+      assessment_id: assessmentIdString,
       initial_message: params?.initial_message
     };
 
+    // Log request payload
+    console.log(`[createNewChat] Request payload:`, requestBody);
+
     const response = await apiClient.post<CreateChatResponse>('/api/chat', requestBody);
+
+    // Log response
+    console.log(`[createNewChat] Received response:`, {
+      id: response.data.id,
+      id_type: typeof response.data.id,
+      user_id: response.data.user_id,
+      assessment_id: response.data.assessment_id
+    });
 
     return response.data;
   } catch (error) {

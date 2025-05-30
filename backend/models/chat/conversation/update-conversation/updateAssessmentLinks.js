@@ -11,10 +11,30 @@ import logger from '../../../../services/logger.js';
  */
 export const updateConversationAssessmentLinks = async (conversationId, userId, assessmentId) => {
   try {
+    // Log function entry
+    console.log(`[updateConversationAssessmentLinks] Called with:`, {
+      conversationId,
+      conversationIdType: typeof conversationId,
+      userId,
+      userIdType: typeof userId,
+      assessmentId,
+      assessmentIdType: typeof assessmentId
+    });
+
     // Ensure conversationId is a string
     const conversationIdString = String(conversationId);
     const userIdString = String(userId);
     const assessmentIdString = String(assessmentId);
+    
+    // Log after type conversion
+    console.log(`[updateConversationAssessmentLinks] Converted IDs:`, {
+      conversationIdString,
+      conversationIdStringType: typeof conversationIdString,
+      userIdString,
+      userIdStringType: typeof userIdString,
+      assessmentIdString,
+      assessmentIdStringType: typeof assessmentIdString
+    });
     
     // Validate input
     if (!conversationIdString || !userIdString || !assessmentIdString) {
@@ -24,6 +44,15 @@ export const updateConversationAssessmentLinks = async (conversationId, userId, 
 
     // Verify conversation ownership
     const conversation = await DbService.findById('conversations', conversationIdString);
+    
+    // Log after finding conversation
+    console.log(`[updateConversationAssessmentLinks] Conversation lookup result:`, {
+      found: !!conversation,
+      conversationId: conversation?.id,
+      userId: conversation?.user_id,
+      ownershipMatch: conversation?.user_id === userIdString
+    });
+    
     if (!conversation) {
       logger.warn(`[updateConversationAssessmentLinks] Conversation ${conversationIdString} not found.`);
       return false;
@@ -55,9 +84,15 @@ export const updateConversationAssessmentLinks = async (conversationId, userId, 
     if (assessmentPattern) {
       updateData.assessment_pattern = assessmentPattern;
     }
+    
+    // Log update data
+    console.log(`[updateConversationAssessmentLinks] Update data:`, updateData);
 
     // Update the conversation
     const success = await DbService.update('conversations', conversationIdString, updateData);
+    
+    // Log after update
+    console.log(`[updateConversationAssessmentLinks] Update result: ${success}`);
     
     if (success) {
       logger.info(`[updateConversationAssessmentLinks] Conversation ${conversationIdString} updated with assessment ${assessmentIdString}.`);

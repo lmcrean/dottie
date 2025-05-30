@@ -35,8 +35,25 @@ export const sendInitialMessage = async (
       throw new Error('User ID not found. Please login again.');
     }
 
+    // Log before API call
+    console.log(
+      `[sendInitialMessage] Preparing request with chat_id: ${params.chat_id}, type: ${typeof params.chat_id}`
+    );
+
     // Ensure chat_id is a string
     const chatIdString = String(params.chat_id);
+
+    // Log converted ID
+    console.log(
+      `[sendInitialMessage] Converted chat_id: ${chatIdString}, type: ${typeof chatIdString}`
+    );
+
+    // Log full request parameters
+    console.log(`[sendInitialMessage] Full request params:`, {
+      chat_id: chatIdString,
+      assessment_id: params.assessment_id,
+      message: params.message
+    });
 
     const requestBody = {
       message: params.message,
@@ -48,6 +65,9 @@ export const sendInitialMessage = async (
       `/api/chat/${chatIdString}/message/initial`,
       requestBody
     );
+
+    // Log response
+    console.log(`[sendInitialMessage] Received response:`, response.data);
 
     return response.data;
   } catch (error) {

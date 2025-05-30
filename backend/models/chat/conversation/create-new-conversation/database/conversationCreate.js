@@ -11,6 +11,14 @@ import { fetchAssessmentObject, extractAssessmentPattern } from './assessmentObj
  */
 export const createConversation = async (userId, assessmentId = null) => {
   try {
+    // Log conversation function entry
+    console.log(`[createConversation] Received IDs:`, {
+      userId,
+      userIdType: typeof userId,
+      assessmentId,
+      assessmentIdType: assessmentId ? typeof assessmentId : 'null'
+    });
+
     // Ensure userId is a string
     const userIdString = String(userId);
     
@@ -22,12 +30,18 @@ export const createConversation = async (userId, assessmentId = null) => {
     // Generate a UUID and ensure it's a string
     const conversationId = String(uuidv4());
     
+    // Log after UUID generation
+    console.log(`[createConversation] Generated conversation ID: ${conversationId}, type: ${typeof conversationId}`);
+    
     const conversationData = {
       id: conversationId,
       user_id: userIdString,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
+
+    // Log conversation data object
+    console.log(`[createConversation] Conversation data object:`, conversationData);
 
     // Add assessment fields if provided
     if (assessmentId) {
@@ -84,6 +98,9 @@ export const createConversation = async (userId, assessmentId = null) => {
       }
     }
 
+    // Log before database insert
+    console.log(`[createConversation] Inserting conversation with ID: ${conversationId}, type: ${typeof conversationId}`);
+
     // Create the conversation
     await DbService.create('conversations', conversationData);
     
@@ -91,6 +108,9 @@ export const createConversation = async (userId, assessmentId = null) => {
       hasAssessment: !!assessmentId,
       assessmentPattern: conversationData.assessment_pattern || null
     });
+    
+    // Log return value
+    console.log(`[createConversation] Returning conversation ID: ${conversationId}, type: ${typeof conversationId}`);
     
     // Double-check that we're returning a string
     return String(conversationId);

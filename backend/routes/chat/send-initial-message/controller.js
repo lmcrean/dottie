@@ -53,8 +53,28 @@ export const sendInitialMessage = async (req, res) => {
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
     
+    // Log request received
+    console.log(`[sendInitialMessage] Request received:`, {
+      chatId: req.params.chatId,
+      chatIdType: typeof req.params.chatId,
+      message: req.body.message?.substring(0, 50) + '...',
+      assessment_id: req.body.assessment_id,
+      is_initial: req.body.is_initial,
+      userId: req.user.userId || req.user.id
+    });
+    
     // Ensure chatId is a string
     const chatIdString = String(chatId);
+    
+    // Log after type conversion
+    console.log(`[sendInitialMessage] Converted data:`, {
+      chatIdString,
+      chatIdStringType: typeof chatIdString,
+      userIdString: userId,
+      userIdStringType: typeof userId,
+      assessmentIdString: req.body.assessment_id,
+      assessmentIdStringType: req.body.assessment_id ? typeof req.body.assessment_id : 'null'
+    });
     
     logger.info(`[sendInitialMessage] Processing initial message for user: ${userId}`, { 
       chatId: chatIdString, 
@@ -76,8 +96,19 @@ export const sendInitialMessage = async (req, res) => {
       return res.status(400).json({ error: 'Chat ID is required' });
     }
 
+    // Log before getConversation call
+    console.log(`[sendInitialMessage] Looking up conversation with ID: ${chatIdString}, user: ${userId}`);
+
     // Verify the conversation exists and belongs to this user
     const conversation = await getConversation(chatIdString, userId);
+    
+    // Log after getConversation
+    console.log(`[sendInitialMessage] Conversation found:`, {
+      conversationExists: !!conversation,
+      conversationId: conversation?.id,
+      belongsToUser: conversation?.user_id === userId
+    });
+    
     if (!conversation) {
       logger.error(`[sendInitialMessage] Conversation ${chatIdString} not found for user ${userId}`);
       return res.status(404).json({ error: 'Chat conversation not found' });
@@ -85,10 +116,16 @@ export const sendInitialMessage = async (req, res) => {
 
     // If assessment_id is provided, link it to the conversation
     if (assessment_id) {
+      // Log before updateConversationAssessmentLinks
+      console.log(`[sendInitialMessage] Linking assessment ${assessment_id} to conversation ${chatIdString}`);
+      
       await updateConversationAssessmentLinks(chatIdString, userId, assessment_id);
       logger.info(`[sendInitialMessage] Linked assessment ${assessment_id} to conversation ${chatIdString}`);
     }
 
+    // Log before insertChatMessage (User Message)
+    console.log(`[sendInitialMessage] Inserting user message to chat ${chatIdString}, message length: ${message.length}`);
+    
     // Save user message to database
     const userMessage = { role: 'user', content: message };
     await insertChatMessage(chatIdString, userMessage);
@@ -151,6 +188,9 @@ export const sendInitialMessage = async (req, res) => {
       }
     }
     
+    // Log before insertChatMessage (Assistant Message)
+    console.log(`[sendInitialMessage] Inserting assistant message to chat ${chatIdString}, message length: ${aiResponse.length}`);
+    
     // Save AI response to database
     const assistantMessage = { role: 'assistant', content: aiResponse };
     await insertChatMessage(chatIdString, assistantMessage);
@@ -168,6 +208,9 @@ export const sendInitialMessage = async (req, res) => {
         key_findings: [] // Could be enhanced to extract findings from assessment
       } : undefined
     };
+
+    // Log response payload
+    console.log(`[sendInitialMessage] Sending response:`, response);
 
     logger.info(`[sendInitialMessage] Successfully sent initial message response for chat ${chatIdString}`);
 

@@ -10,8 +10,19 @@ import { updateConversationPreview } from '../../../../conversation/read-convers
  */
 export const insertChatMessage = async (conversationId, messageData) => {
   try {
+    // Log function entry
+    console.log(`[insertChatMessage] Called with:`, {
+      conversationId,
+      conversationIdType: typeof conversationId,
+      messageRole: messageData.role,
+      messageLength: messageData.content.length
+    });
+
     // Ensure conversationId is a string
     const conversationIdString = String(conversationId);
+    
+    // Log after type conversion
+    console.log(`[insertChatMessage] Converted ID: ${conversationIdString}, type: ${typeof conversationIdString}`);
     
     // Ensure conversation_id is set
     const messageToInsert = {
@@ -19,7 +30,17 @@ export const insertChatMessage = async (conversationId, messageData) => {
       conversation_id: conversationIdString
     };
 
+    // Log before database insert
+    console.log(`[insertChatMessage] Prepared data:`, {
+      conversation_id: messageToInsert.conversation_id,
+      conversation_id_type: typeof messageToInsert.conversation_id,
+      role: messageToInsert.role
+    });
+
     await DbService.create('chat_messages', messageToInsert);
+    
+    // Log after database insert
+    console.log(`[insertChatMessage] Message inserted successfully for conversation ${conversationIdString}`);
     
     // Use messageData.id if available, otherwise log general message
     const messageId = messageData.id ? messageData.id : 'new message';

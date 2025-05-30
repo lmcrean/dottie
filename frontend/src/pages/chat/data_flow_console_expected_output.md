@@ -4,6 +4,15 @@ This document shows the expected console output when the chat creation and messa
 
 From assessment page, user clicks "Start Chat" button (passing assessmentId, userId, and initialMessage as a prop), which triggers a flow of events that ends with the user seeing the initial message from the assistant in a new conversation.
 
+## summary of files
+
+1. SendInitialMessageButton.tsx
+2. create-chat/controller.js
+3. createFlow.js and conversationCreate.js
+4. send-initial-message/controller.js
+5. updateAssessmentLinks.js
+6. insertChatMessage (sendUserMessage.js)
+
 ## Initial Chat Creation Flow
 
 ### Frontend: SendInitialMessageButton.tsx
