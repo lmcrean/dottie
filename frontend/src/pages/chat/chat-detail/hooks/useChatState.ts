@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 import { sendMessage } from '../components/buttons/send-message';
 import { ConversationListItem, ApiMessage } from '../../types';
 import { Message } from '../types/chat';
+import { apiClient } from '../../../../api/core/apiClient';
+import axios from 'axios';
 
 interface UseChatStateProps {
   chatId?: string;
@@ -29,8 +31,6 @@ export interface UseChatStateReturn {
   assessmentId: string | null;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
 // Helper function to fetch conversation from backend
 const fetchConversation = async (
   conversationId: string
@@ -39,23 +39,15 @@ const fetchConversation = async (
     // Ensure conversationId is a string
     const conversationIdString = String(conversationId);
 
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/api/chat/history/${conversationIdString}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    const response = await apiClient.get(`/api/chat/history/${conversationIdString}`);
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        return null;
-      }
-      throw new Error('Failed to fetch conversation');
+    return response.data;
+  } catch (error) {
+    // Handle 404 errors specifically - conversation not found
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
     }
 
-    return await response.json();
-  } catch (error) {
     console.error('Error fetching conversation:', error);
     throw error;
   }
