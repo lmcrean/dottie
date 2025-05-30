@@ -2,7 +2,7 @@ import { apiClient } from '../../../../../../../api/core/apiClient';
 import { getUserData } from '../../../../../../../api/core/tokenManager';
 
 export interface SendInitialMessageRequest {
-  chat_id: string;
+  chat_id: string | { id?: string; conversationId?: string; toString?: () => string };
   assessment_id: string;
   message: string;
 }
@@ -40,8 +40,35 @@ export const sendInitialMessage = async (
       `[sendInitialMessage] Preparing request with chat_id: ${params.chat_id}, type: ${typeof params.chat_id}`
     );
 
-    // Ensure chat_id is a string
-    const chatIdString = String(params.chat_id);
+    // Handle possible object as chat_id
+    let chatIdString: string;
+
+    if (typeof params.chat_id === 'object' && params.chat_id !== null) {
+      // If it's an object, try to extract the ID
+      console.log(`[sendInitialMessage] Received object as chat_id:`, params.chat_id);
+
+      if (params.chat_id.id) {
+        chatIdString = String(params.chat_id.id);
+        console.log(`[sendInitialMessage] Extracted ID from object property: ${chatIdString}`);
+      } else if (params.chat_id.conversationId) {
+        chatIdString = String(params.chat_id.conversationId);
+        console.log(
+          `[sendInitialMessage] Extracted conversationId from object property: ${chatIdString}`
+        );
+      } else if (
+        typeof params.chat_id.toString === 'function' &&
+        params.chat_id.toString() !== '[object Object]'
+      ) {
+        chatIdString = params.chat_id.toString();
+        console.log(`[sendInitialMessage] Used object's toString(): ${chatIdString}`);
+      } else {
+        console.error('[sendInitialMessage] Cannot extract valid ID from object:', params.chat_id);
+        throw new Error('Invalid chat ID format. Please try again.');
+      }
+    } else {
+      // Normal string handling
+      chatIdString = String(params.chat_id);
+    }
 
     // Log converted ID
     console.log(
