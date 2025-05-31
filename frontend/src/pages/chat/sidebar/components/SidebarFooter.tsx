@@ -14,9 +14,6 @@ export function SidebarFooter({ conversations }: SidebarFooterProps) {
       <div className="text-center text-xs text-gray-500">
         {totalConversations} conversation{totalConversations !== 1 ? 's' : ''} total
       </div>
-      <div className="mt-1 text-center text-xs text-gray-400">
-        {conversationsWithPatterns} with assessment patterns
-      </div>
     </div>
   );
 }
