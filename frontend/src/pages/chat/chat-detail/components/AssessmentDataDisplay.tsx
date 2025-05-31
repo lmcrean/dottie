@@ -22,7 +22,7 @@ export function AssessmentDataDisplay({
   useEffect(() => {
     // Priority 1: Use assessmentObject if provided
     if (assessmentObject) {
-      setAssessmentData(assessmentObject);
+      setAssessmentData(parseAssessmentData(assessmentObject));
       return;
     }
 
@@ -50,13 +50,50 @@ export function AssessmentDataDisplay({
       }
 
       const data = await response.json();
-      setAssessmentData(data);
+      setAssessmentData(parseAssessmentData(data));
     } catch (error) {
       console.error('Error fetching assessment data:', error);
       onError?.('Failed to load assessment data');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to ensure assessment data has proper array types
+  const parseAssessmentData = (data: any): AssessmentData => {
+    const parseArrayField = (field: any): string[] => {
+      if (Array.isArray(field)) return field;
+      if (typeof field === 'string') {
+        try {
+          const parsed = JSON.parse(field);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+      return [];
+    };
+
+    const parseRecommendations = (field: any): Array<{title: string; description: string}> => {
+      if (Array.isArray(field)) return field;
+      if (typeof field === 'string') {
+        try {
+          const parsed = JSON.parse(field);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+      return [];
+    };
+
+    return {
+      ...data,
+      physical_symptoms: parseArrayField(data.physical_symptoms),
+      emotional_symptoms: parseArrayField(data.emotional_symptoms),
+      other_symptoms: parseArrayField(data.other_symptoms),
+      recommendations: parseRecommendations(data.recommendations)
+    };
   };
 
   if (!assessmentId && !assessmentObject) {
@@ -149,7 +186,7 @@ export function AssessmentDataDisplay({
                   <span
                     className={`ml-1 font-semibold ${getPainLevelColor(assessmentData.pain_level)}`}
                   >
-                    {assessmentData.pain_level}/10
+                    {assessmentData.pain_level}
                   </span>
                 </div>
                 {assessmentData.physical_symptoms.length > 0 && (

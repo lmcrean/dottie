@@ -1,5 +1,6 @@
 import DbService from '../../../../services/dbService.js';
 import logger from '../../../../services/logger.js';
+import ParseAssessmentJson from '../../../assessment/transformers/ParseAssessmentJson.js';
 
 /**
  * Retrieves conversation data for read operations
@@ -24,6 +25,47 @@ async function getConversation(conversationId, options = {}) {
                 error: 'Conversation not found',
                 conversationId
             };
+        }
+        
+        // Parse assessment object fields if it exists
+        if (conversation.assessment_object && typeof conversation.assessment_object === 'object') {
+            try {
+                const assessmentId = conversation.assessment_object.id || 'unknown';
+                
+                // Parse array fields that are stored as JSON strings
+                if (conversation.assessment_object.physical_symptoms) {
+                    conversation.assessment_object.physical_symptoms = ParseAssessmentJson.parseArrayField(
+                        conversation.assessment_object.physical_symptoms,
+                        'physical_symptoms',
+                        assessmentId
+                    );
+                }
+                
+                if (conversation.assessment_object.emotional_symptoms) {
+                    conversation.assessment_object.emotional_symptoms = ParseAssessmentJson.parseArrayField(
+                        conversation.assessment_object.emotional_symptoms,
+                        'emotional_symptoms',
+                        assessmentId
+                    );
+                }
+                
+                if (conversation.assessment_object.other_symptoms) {
+                    conversation.assessment_object.other_symptoms = ParseAssessmentJson.parseOtherSymptoms(
+                        conversation.assessment_object.other_symptoms
+                    );
+                }
+                
+                if (conversation.assessment_object.recommendations) {
+                    conversation.assessment_object.recommendations = ParseAssessmentJson.parseArrayField(
+                        conversation.assessment_object.recommendations,
+                        'recommendations',
+                        assessmentId
+                    );
+                }
+            } catch (parseError) {
+                logger.warn('Failed to parse assessment object fields:', parseError);
+                // Continue with unparsed data rather than failing
+            }
         }
         
         let messages = [];
@@ -131,6 +173,47 @@ async function getConversationSummary(conversationId) {
                 error: 'Conversation not found',
                 conversationId
             };
+        }
+        
+        // Parse assessment object fields if it exists
+        if (conversation.assessment_object && typeof conversation.assessment_object === 'object') {
+            try {
+                const assessmentId = conversation.assessment_object.id || 'unknown';
+                
+                // Parse array fields that are stored as JSON strings
+                if (conversation.assessment_object.physical_symptoms) {
+                    conversation.assessment_object.physical_symptoms = ParseAssessmentJson.parseArrayField(
+                        conversation.assessment_object.physical_symptoms,
+                        'physical_symptoms',
+                        assessmentId
+                    );
+                }
+                
+                if (conversation.assessment_object.emotional_symptoms) {
+                    conversation.assessment_object.emotional_symptoms = ParseAssessmentJson.parseArrayField(
+                        conversation.assessment_object.emotional_symptoms,
+                        'emotional_symptoms',
+                        assessmentId
+                    );
+                }
+                
+                if (conversation.assessment_object.other_symptoms) {
+                    conversation.assessment_object.other_symptoms = ParseAssessmentJson.parseOtherSymptoms(
+                        conversation.assessment_object.other_symptoms
+                    );
+                }
+                
+                if (conversation.assessment_object.recommendations) {
+                    conversation.assessment_object.recommendations = ParseAssessmentJson.parseArrayField(
+                        conversation.assessment_object.recommendations,
+                        'recommendations',
+                        assessmentId
+                    );
+                }
+            } catch (parseError) {
+                logger.warn('Failed to parse assessment object fields in summary:', parseError);
+                // Continue with unparsed data rather than failing
+            }
         }
         
         // Get message count
