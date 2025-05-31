@@ -10,6 +10,7 @@ import axios from 'axios';
 interface UseChatStateProps {
   chatId?: string;
   initialMessage?: string;
+  onSidebarRefresh?: () => Promise<void>;
 }
 
 export interface ChatState {
@@ -59,7 +60,7 @@ const fetchConversation = async (
   }
 };
 
-export function useChatState({ chatId, initialMessage }: UseChatStateProps): UseChatStateReturn {
+export function useChatState({ chatId, initialMessage, onSidebarRefresh }: UseChatStateProps): UseChatStateReturn {
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -188,6 +189,16 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
           created_at: new Date().toISOString()
         }
       ]);
+
+      // Refresh sidebar to show updated message count and preview
+      if (onSidebarRefresh) {
+        try {
+          await onSidebarRefresh();
+        } catch (error) {
+          console.warn('Failed to refresh sidebar:', error);
+          // Don't throw error as message was sent successfully
+        }
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       setMessages((prev) => [

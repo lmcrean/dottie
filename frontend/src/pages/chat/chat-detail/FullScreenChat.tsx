@@ -10,9 +10,10 @@ import { toast } from 'sonner';
 interface ChatInterfaceProps {
   chatId?: string;
   initialMessage?: string;
+  onSidebarRefresh?: () => Promise<void>;
 }
 
-export function FullscreenChat({ chatId, initialMessage }: ChatInterfaceProps) {
+export function FullscreenChat({ chatId, initialMessage, onSidebarRefresh }: ChatInterfaceProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default closed since sidebar is handled by page
 
   // Ensure chatId is a string if it exists
@@ -30,7 +31,7 @@ export function FullscreenChat({ chatId, initialMessage }: ChatInterfaceProps) {
     handleKeyDown,
     assessmentId,
     assessmentObject
-  } = useChatState({ chatId: chatIdString, initialMessage });
+  } = useChatState({ chatId: chatIdString, initialMessage, onSidebarRefresh });
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

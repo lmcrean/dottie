@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConversationListItem } from '../types';
 import { useConversations } from './hooks/useConversations';
@@ -8,12 +8,14 @@ interface ChatSidebarProps {
   selectedConversationId?: string;
   onConversationSelect?: (conversation: ConversationListItem) => void;
   onNewChat?: () => void;
+  onSidebarUpdate?: (refreshFunction: () => Promise<void>) => void;
 }
 
 export function ChatSidebar({
   selectedConversationId,
   onConversationSelect,
-  onNewChat
+  onNewChat,
+  onSidebarUpdate
 }: ChatSidebarProps) {
   const navigate = useNavigate();
 
@@ -37,10 +39,17 @@ export function ChatSidebar({
     }
   };
 
-  const { conversations, loading, deletingId, handleDeleteConversation } = useConversations(
+  const { conversations, loading, deletingId, loadConversations, handleDeleteConversation } = useConversations(
     selectedConversationId,
     handleNewChat
   );
+
+  // Expose loadConversations function to parent components
+  useEffect(() => {
+    if (onSidebarUpdate) {
+      onSidebarUpdate(loadConversations);
+    }
+  }, [onSidebarUpdate, loadConversations]);
 
   return (
     <div className="flex h-full w-80 flex-col border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
