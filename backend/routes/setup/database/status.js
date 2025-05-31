@@ -1,10 +1,9 @@
 import express from 'express';
 import db, { dbType } from '../../../db/database.js';
 
-
 const router = express.Router();
 
-router.get('/status', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const result = await db('healthcheck').limit(1);
 
@@ -31,6 +30,5 @@ router.get('/status', async (req, res) => {
     });
   }
 });
-
 
 export default router;

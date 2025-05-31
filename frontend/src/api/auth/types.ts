@@ -4,9 +4,13 @@ export interface LoginInput {
   password: string;
 }
 
-export interface SignupInput extends LoginInput {
-  name: string;
+export interface SignupInput {
+  username: string;
+  email: string;
+  password: string;
   confirmPassword: string;
+  name: string;
+  age?: string; // Optional for backward compatibility
 }
 
 export interface User {

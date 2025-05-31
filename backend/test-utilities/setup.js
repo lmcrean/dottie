@@ -44,7 +44,7 @@ export const setupTestClient = async (options = {}) => {
   
   if (isProd) {
     // Production: use remote API via fetch
-    console.log(`Setting up remote test client for ${apiUrl}${shouldUseMocks ? ' (with mocks)' : ''}`);
+
     
     const request = {
       get: (path) => makeRemoteRequest('GET', apiUrl + path, shouldUseMocks),
@@ -56,7 +56,7 @@ export const setupTestClient = async (options = {}) => {
     return { request, apiUrl, isRemote: true, useMocks: shouldUseMocks };
   } else {
     // Local: start a test server
-    console.log(`Setting up local test server on port ${port}`);
+
     
     const app = await getApp(false);
     const request = supertest(app);
@@ -64,7 +64,7 @@ export const setupTestClient = async (options = {}) => {
     
     await new Promise(resolve => {
       server.listen(port, () => {
-        console.log(`Test server started on port ${port}`);
+
         resolve(true);
       });
     });
@@ -92,16 +92,16 @@ export const registerTestUser = async (userData = null, useMocks = false) => {
     const response = await makeRemoteRequest('POST', `${apiUrl}/api/auth/signup`, useMocks)
       .send(user);
     
-    console.log(`Registration endpoint status: ${response.status}`);
+
     if (response.status === 201) {
-      console.log(`User registered with ID: ${response.body.id || 'unknown'}`);
+
       return { ...response, user };
     } else {
-      console.log(`Registration failed: ${response.body.error || 'Unknown error'}`);
+
       return response;
     }
   } catch (error) {
-    console.log(`Error in registerTestUser: ${error.message}`);
+
     throw error;
   }
 };
@@ -114,16 +114,16 @@ export const loginTestUser = async (credentials, useMocks = false) => {
     const response = await makeRemoteRequest('POST', `${apiUrl}/api/auth/login`, useMocks)
       .send(credentials);
     
-    console.log(`Login endpoint status: ${response.status}`);
+
     if (response.status === 200) {
-      console.log('Authentication tokens received and validated');
+
       return response;
     } else {
-      console.log(`Login failed: ${response.body.error || 'Unknown error'}`);
+
       return response;
     }
   } catch (error) {
-    console.log(`Error in loginTestUser: ${error.message}`);
+
     throw error;
   }
 };
@@ -136,15 +136,15 @@ export const requestPasswordReset = async (email, useMocks = false) => {
     const response = await makeRemoteRequest('POST', `${apiUrl}/api/auth/reset-password`, useMocks)
       .send({ email });
     
-    console.log(`Password reset endpoint status: ${response.status}`);
+
     if (response.status === 200) {
-      console.log('Password reset request sent successfully');
+
     } else {
-      console.log(`Password reset request failed: ${response.body.error || 'Unknown error'}`);
+
     }
     return response;
   } catch (error) {
-    console.log(`Error in requestPasswordReset: ${error.message}`);
+
     throw error;
   }
 };
@@ -183,7 +183,7 @@ const generateMockResponse = (method, url, requestObj) => {
     body = {};
   }
   
-  console.log(`Using ${shouldGenerateError ? 'ERROR' : 'SUCCESS'} mock for ${method} ${url}`);
+
   
   // Auth endpoint mocks
   if (path?.startsWith('auth/')) {
@@ -595,7 +595,7 @@ const makeRemoteRequest = (method, url, useMocks = false) => {
     try {
       // If using mocks, return mock response without making real request
       if (useMocks || process.env.USE_MOCKS === 'true') {
-        console.log(`Using mock response for ${method} ${url}`);
+
         const mockResponse = generateMockResponse(method, url, requestObj);
         return mockResponse;
       }
@@ -619,11 +619,11 @@ const makeRemoteRequest = (method, url, useMocks = false) => {
         headers: Object.fromEntries(response.headers.entries())
       };
     } catch (error) {
-      console.log(`Error executing remote request to ${url}:`, error.message);
+
       
       // If the request failed, return a mock response
       if (error.name === 'AbortError') {
-        console.log('Request timed out, using mock response');
+
       }
       
       return generateMockResponse(method, url, requestObj);
@@ -657,7 +657,7 @@ export const closeTestServer = async (server) => {
   
   return new Promise(resolve => {
     server.close(() => {
-      console.log('Test server closed');
+
       resolve(true);
     });
   });

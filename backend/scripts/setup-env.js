@@ -25,6 +25,6 @@ if (!isProduction || !isVercel) {
     }
   }
 } else {
-  console.log("Using Supabase database for production.");
+
   // No initialization needed for Supabase as it's managed externally
 }

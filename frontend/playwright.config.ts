@@ -25,10 +25,10 @@ const componentTests = ['api-connection', 'database-connection', 'both-connectio
 const testModes = ['mock', 'real'];
 
 // Create the full directory structure
-envs.forEach(env => {
-  testTypes.forEach(testType => {
-    componentTests.forEach(component => {
-      testModes.forEach(mode => {
+envs.forEach((env) => {
+  testTypes.forEach((testType) => {
+    componentTests.forEach((component) => {
+      testModes.forEach((mode) => {
         const dir = path.join(screenshotsBaseDir, env, testType, component, mode);
         createDirIfNotExists(dir);
       });
@@ -46,48 +46,51 @@ createDirIfNotExists(assessmentDir);
 // Reference: https://playwright.dev/docs/test-configuration
 export default defineConfig({
   // Directory where tests are located - include both paths
-  testDir: './src',
-  testMatch: '**/__tests__/**/*.spec.ts',
-  
+  testDir: './',
+  testMatch: ['**/__tests__/**/*.spec.ts', 'e2e/**/*.spec.ts'],
+
   // Run tests in files in parallel
   fullyParallel: true,
-  
+
+  // Limit to a single worker for sequential test execution
+  workers: 1,
+
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
-  
-  // Retry on CI only
-  retries: process.env.CI ? 2 : 0,
-  
+
+  // No retries at all
+  retries: 0,
+
   // Reporter to use
   reporter: 'html',
-  
+
   // Shared settings for all projects
   use: {
     // Base URL to use in all tests
-    baseURL: 'http://localhost:3000',
-    
+    baseURL: 'http://localhost:3005',
+
     // Collect trace when retrying a test
     trace: 'on-first-retry',
-    
+
     // Screenshot on test completion
-    screenshot: 'on',
+    screenshot: 'on'
   },
-  
+
   // Configure projects for different browsers - ONLY SAFARI
   projects: [
     {
       name: 'safari',
-      use: { ...devices['Desktop Safari'] },
-    },
+      use: { ...devices['Desktop Safari'] }
+    }
   ],
-  
+
   // Setup and teardown for the tests
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: 'npm run dev:e2e',
+    url: 'http://localhost:3005',
     reuseExistingServer: true,
     stdout: 'pipe',
     stderr: 'pipe',
-    timeout: 120000, // Increase timeout to 2 minutes to ensure API is fully ready
-  },
-}); 
+    timeout: 120000 // Increase timeout to 2 minutes to ensure API is fully ready
+  }
+});

@@ -72,14 +72,14 @@ export const setupMockDatabase = () => {
     }
   };
   
-  console.log('Test database environment ready');
+
 };
 
 /**
  * Main database setup function for Vitest
  */
 export default async () => {
-  console.log('Setting up test database environment...');
+
   
   // Different setup based on environment
   const env = getEnvironment();
@@ -89,7 +89,7 @@ export default async () => {
   
   return () => {
     // Cleanup when tests are done
-    console.log('Cleaning up test database environment');
+
     delete global.testDb;
     delete global.testDbUtils;
   };

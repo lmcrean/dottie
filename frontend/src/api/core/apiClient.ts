@@ -7,7 +7,10 @@ import { getAuthToken, setAuthToken, setRefreshToken } from './tokenManager';
  */
 // Determine API base URL with fallbacks
 const getBaseUrl = () => {
-  // First priority: Use environment variable if available
+  // First priority: Vercel deployment URL if we're connecting to the deployed backend
+  const vercelUrl = 'https://dottie-backend.vercel.app';
+
+  // Second priority: Use environment variable if available
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
@@ -18,8 +21,17 @@ const getBaseUrl = () => {
     return savedApiUrl;
   }
 
+  // Detect E2E mode - if frontend is running on port 3005, use backend port 5005
+  const isE2EMode = window.location.port === '3005';
   const isMac = window.navigator.userAgent.includes('Mac');
-  const API_PORT = isMac ? 5001 : 5000;
+
+  let API_PORT;
+  if (isE2EMode) {
+    API_PORT = 5005; // E2E mode uses port 5005 for backend
+  } else {
+    API_PORT = isMac ? 5001 : 5000; // Normal development mode
+  }
+
   const hostNameUrl = `http://${window.location.hostname}:${API_PORT}`;
 
   // Default fallback for local development
@@ -27,8 +39,8 @@ const getBaseUrl = () => {
     return hostNameUrl;
   }
 
-  // Production fallback: assume API is at the same origin
-  return window.location.origin;
+  // Production fallback: use Vercel deployment
+  return vercelUrl;
 };
 
 // Expose a function to update the API URL at runtime
@@ -82,8 +94,14 @@ apiClient.interceptors.response.use(
   (error) => {
     // Handle common errors here
     if (error.response) {
-      // Server responded with an error status
-      console.error(`API Error: ${error.response.status}`, error.response.data);
+      // Don't log 404 errors from assessment list endpoint as they're expected when no assessments exist
+      const isAssessmentListNotFound =
+        error.response.status === 404 && error.config.url?.includes('/api/assessment/list');
+
+      // Only log errors that aren't expected "not found" cases
+      if (!isAssessmentListNotFound) {
+        console.error(`API Error: ${error.response.status}`, error.response.data);
+      }
 
       // Handle 401 Unauthorized - redirect to login
       if (error.response.status === 401) {

@@ -1,5 +1,5 @@
 import { apiClient } from '../../../core/apiClient';
-import { clearAllTokens, getRefreshToken } from '../../../core/tokenManager';
+import { clearAllTokens, getRefreshToken, getAuthToken } from '../../../core/tokenManager';
 
 /**
  * Logout user and clear all tokens
@@ -7,8 +7,14 @@ import { clearAllTokens, getRefreshToken } from '../../../core/tokenManager';
  */
 export const postLogout = async (): Promise<{ success: boolean }> => {
   const refreshToken = getRefreshToken();
+  const authToken = getAuthToken();
+  
   try {
-    await apiClient.post('/api/auth/logout', { refreshToken });
+    await apiClient.post('/api/auth/logout', {}, {
+      headers: {
+        Authorization: authToken ? `Bearer ${authToken}` : ''
+      }
+    });
 
     // Clear all tokens using the token manager
     clearAllTokens();
@@ -23,7 +29,13 @@ export const postLogout = async (): Promise<{ success: boolean }> => {
     console.error('Logout failed:', error);
     // Still clear tokens even if API call fails
     clearAllTokens();
-    return { success: false };
+    
+    // Clear Authorization header
+    if (apiClient.defaults.headers.common['Authorization']) {
+      delete apiClient.defaults.headers.common['Authorization'];
+    }
+    
+    throw error;
   }
 };
 

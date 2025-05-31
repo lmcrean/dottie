@@ -39,7 +39,7 @@ filesToDelete.forEach((file) => {
   try {
     if (fs.existsSync(file)) {
       fs.unlinkSync(file);
-      console.log(`Deleted file: ${file}`);
+
     }
   } catch (error) {
     console.error(`Error deleting file ${file}:`, error);

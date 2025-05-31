@@ -26,7 +26,7 @@ beforeAll(async () => {
       username: "e2etestuser",
       email: `e2e-test-${Date.now()}@example.com`,
       password: "TestPass123!",
-      age: "25_34",
+      age: 25,
     };
 
     // Start server
@@ -71,16 +71,6 @@ describe("User Authentication Flow (E2E)", () => {
 
   it("2. should register a new user", async () => {
     const response = await request.post("/api/auth/signup").send(testUser);
-
-    if (response.status !== 201) {
-      console.log("Registration response:", response.body);
-    } else {
-      console.log("Created user:", {
-        id: response.body.id,
-        username: response.body.username,
-        email: response.body.email,
-      });
-    }
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
