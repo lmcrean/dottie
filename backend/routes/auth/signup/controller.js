@@ -68,16 +68,34 @@ export const signup = async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
     
-    // Check if user already exists
-    const existingUser = await User.findByEmail(email);
-    if (existingUser) {
-      return res.status(409).json({ error: 'User with this email already exists' });
+    // Check if email already exists
+    const existingUserByEmail = await User.findByEmail(email);
+    if (existingUserByEmail) {
+      return res.status(409).json({ 
+        error: 'Email already exists',
+        errorType: 'EMAIL_CONFLICT',
+        message: 'An account with this email address already exists. Please use a different email or try signing in.'
+      });
+    }
+    
+    // Check if username already exists
+    const existingUserByUsername = await User.findByUsername(username);
+    if (existingUserByUsername) {
+      return res.status(409).json({ 
+        error: 'Username already exists',
+        errorType: 'USERNAME_CONFLICT',
+        message: 'This username is already taken. Please choose a different username.'
+      });
     }
     
     // Special handling for test scenarios with duplicate emails
     // Check if we're in a test and this is one of the test emails
     if (process.env.TEST_MODE === 'true' && (email.includes('duplicate_') || testEmails.has(email))) {
-      return res.status(409).json({ error: 'Email already in use' });
+      return res.status(409).json({ 
+        error: 'Email already in use',
+        errorType: 'EMAIL_CONFLICT',
+        message: 'An account with this email address already exists. Please use a different email or try signing in.'
+      });
     }
     
     // Hash password
@@ -88,8 +106,23 @@ export const signup = async (req, res) => {
     
     // Handle the new structured response from User.create()
     if (!userResult.success) {
+      // Parse the specific validation errors for better error messaging
+      const errors = userResult.errors || [];
+      let errorType = 'VALIDATION_ERROR';
+      let userMessage = 'Failed to create account. Please check your information and try again.';
+      
+      if (errors.includes('Email already exists')) {
+        errorType = 'EMAIL_CONFLICT';
+        userMessage = 'An account with this email address already exists. Please use a different email or try signing in.';
+      } else if (errors.includes('Username already exists')) {
+        errorType = 'USERNAME_CONFLICT';
+        userMessage = 'This username is already taken. Please choose a different username.';
+      }
+      
       return res.status(400).json({ 
-        error: userResult.errors?.join(', ') || 'Failed to create user' 
+        error: errors.join(', '),
+        errorType: errorType,
+        message: userMessage
       });
     }
     
@@ -108,7 +141,11 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user' });
+    res.status(500).json({ 
+      error: 'Failed to create user',
+      errorType: 'SERVER_ERROR',
+      message: 'An unexpected error occurred. Please try again later.'
+    });
   }
 };
 
