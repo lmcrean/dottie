@@ -38,11 +38,36 @@ export default function SignUpPage() {
 
       toast.success('Account created successfully!');
       navigate('/auth/sign-in');
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(
-          error.message === 'Failed to create user' ? 'Username Already Taken' : error.message
-        );
+    } catch (error: any) {
+      // Handle structured error responses from the backend
+      if (error?.response?.data) {
+        const errorData = error.response.data;
+        const errorType = errorData.errorType;
+        const userMessage = errorData.message;
+        
+        // Use specific error messages based on error type
+        switch (errorType) {
+          case 'EMAIL_CONFLICT':
+            toast.error(userMessage || 'An account with this email already exists. Please use a different email or try signing in.');
+            break;
+          case 'USERNAME_CONFLICT':
+            toast.error(userMessage || 'This username is already taken. Please choose a different username.');
+            break;
+          case 'VALIDATION_ERROR':
+            toast.error(userMessage || 'Please check your information and try again.');
+            break;
+          case 'SERVER_ERROR':
+            toast.error(userMessage || 'An unexpected error occurred. Please try again later.');
+            break;
+          default:
+            // Fallback to the error message if no specific type
+            toast.error(errorData.error || userMessage || 'Failed to create account');
+        }
+      } else if (error instanceof Error) {
+        // Handle cases where error doesn't have the structured response
+        toast.error(error.message || 'Failed to create account');
+      } else {
+        toast.error('Failed to create account. Please try again.');
       }
     }
   };
