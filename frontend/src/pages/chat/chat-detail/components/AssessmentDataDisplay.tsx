@@ -20,21 +20,33 @@ interface AssessmentData {
 
 interface AssessmentDataDisplayProps {
   assessmentId?: string;
+  assessmentObject?: AssessmentData | null;
   onError?: (error: string) => void;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-export function AssessmentDataDisplay({ assessmentId, onError }: AssessmentDataDisplayProps) {
+export function AssessmentDataDisplay({
+  assessmentId,
+  assessmentObject,
+  onError
+}: AssessmentDataDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Priority 1: Use assessmentObject if provided
+    if (assessmentObject) {
+      setAssessmentData(assessmentObject);
+      return;
+    }
+
+    // Priority 2: Fetch by assessmentId if no object provided
     if (assessmentId) {
       fetchAssessmentData();
     }
-  }, [assessmentId]);
+  }, [assessmentId, assessmentObject]);
 
   const fetchAssessmentData = async () => {
     if (!assessmentId) return;
@@ -63,7 +75,7 @@ export function AssessmentDataDisplay({ assessmentId, onError }: AssessmentDataD
     }
   };
 
-  if (!assessmentId) {
+  if (!assessmentId && !assessmentObject) {
     return null;
   }
 
