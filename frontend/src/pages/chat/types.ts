@@ -7,12 +7,30 @@ export interface ApiMessage {
   created_at?: string;
 }
 
+export interface AssessmentData {
+  id: string;
+  age: number;
+  pattern: string;
+  cycle_length: number;
+  period_duration: number;
+  flow_heaviness: string;
+  pain_level: number;
+  physical_symptoms: string[];
+  emotional_symptoms: string[];
+  other_symptoms: string[];
+  recommendations: Array<{
+    title: string;
+    description: string;
+  }>;
+}
+
 export interface Conversation {
   id: string;
   messages: ApiMessage[];
   lastMessageDate?: string;
   preview?: string;
   assessment_id?: string;
+  assessment_object?: AssessmentData; // Assessment data object containing pattern, symptoms, etc.
   assessment_pattern?: string;
 }
 
