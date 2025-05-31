@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { signInSchema, type SignInFormData } from '@/src/lib/validations/auth';
 import { FormInput } from '@/src/components/user-inputs/form-input';
 import { Button } from '@/src/components/buttons/button';
@@ -13,7 +13,8 @@ import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => setPasswordVisible((prev: boolean) => !prev);
 
@@ -48,12 +49,22 @@ export default function SignInPage() {
     }
   }, [setValue]);
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from || '/assessment/age-verification';
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, location.state]);
+
   const onSubmit = async (data: SignInFormData) => {
     try {
       await login(data);
       toast.success('Successfully signed in!');
 
-      navigate('/assessment/age-verification');
+      // Navigate to the intended destination or default to assessment
+      const from = location.state?.from || '/assessment/age-verification';
+      navigate(from, { replace: true });
     } catch (error: unknown) {
       // Check if it looks like an Axios error
       if (error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError) {

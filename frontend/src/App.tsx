@@ -7,7 +7,6 @@ import SignOut from './pages/auth/components/modal-confirm/signout';
 // Import account management pages
 import ProfilePage from './pages/user/profile/profile';
 import PasswordPage from './pages/user/password/password';
-import { Toaster } from 'sonner';
 
 // Import assessment components
 import AgeVerification from './pages/assessment/steps/1-age-verification/page';
@@ -32,159 +31,23 @@ import ChatDetailPage from './pages/chat/chat-detail/page';
 import TestPage from './pages/developer-mode/page';
 import ScrollToTop from './pages/developer-mode/page-components/scroll-to-top';
 import LandingPage from './pages/landing-page/page';
-import UITestPageSwitch from './components/developer-utils/UITestPageSwitch';
+import { AppLayout } from './components/layouts/AppLayout';
 
-import Header from './components/navbar/Header';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
 // Dark mode
 import { ThemeProvider } from './context/theme/ThemeContextProvider';
 import { ReactElement } from 'react';
-import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
 
 function AppContent(): ReactElement {
-  const { isAuthenticated } = useAuth();
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-pink-50 dark:from-gray-900 dark:from-70% dark:to-gray-800">
-      <Toaster
-        position="top-center"
-        richColors
-        toastOptions={{
-          style: {
-            border: '1px solid #fce7f3',
-            borderRadius: '0.75rem',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-          }
-        }}
-      />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Header isLoggedIn={isAuthenticated} />
-        <main className="flex min-h-screen flex-col">
-          <Routes>
+    <BrowserRouter>
+      <ScrollToTop />
+      <AppLayout>
+        <Routes>
             <Route index element={<LandingPage />} />
             <Route path="/test-page" element={<TestPage />} />
-
-            {/* Assessment routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/assessment">
-                <Route index element={<LandingPage />} />
-                <Route
-                  path="age-verification"
-                  element={
-                    <AssessmentResultProvider>
-                      <AgeVerification />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="cycle-length"
-                  element={
-                    <AssessmentResultProvider>
-                      <CycleLength />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="period-duration"
-                  element={
-                    <AssessmentResultProvider>
-                      <PeriodDuration />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="flow"
-                  element={
-                    <AssessmentResultProvider>
-                      <FlowLevel />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="pain"
-                  element={
-                    <AssessmentResultProvider>
-                      <PainLevel />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="symptoms"
-                  element={
-                    <AssessmentResultProvider>
-                      <Symptoms />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="calculate-pattern"
-                  element={
-                    <AssessmentResultProvider>
-                      <CalculatePattern />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="generate-recommendations"
-                  element={
-                    <AssessmentResultProvider>
-                      <GenerateRecommendations />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="save"
-                  element={
-                    <AssessmentResultProvider>
-                      <SaveAssessment />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="results/:id"
-                  element={
-                    <AssessmentResultProvider>
-                      <Results />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="resources"
-                  element={
-                    <AssessmentResultProvider>
-                      <ResourcesPage />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="history"
-                  element={
-                    <AssessmentResultProvider>
-                      <HistoryPage />
-                    </AssessmentResultProvider>
-                  }
-                />
-                <Route
-                  path="history/:id"
-                  element={
-                    <AssessmentResultProvider>
-                      <DetailsPage />
-                    </AssessmentResultProvider>
-                  }
-                />
-              </Route>
-
-              {/* Chat routes */}
-              <Route path="/chat">
-                <Route index element={<ChatPage />} />
-                <Route path=":conversationId" element={<ChatDetailPage />} />
-              </Route>
-            </Route>
-
-            {/* Other routes */}
             <Route path="/test" element={<TestPage />} />
 
             {/* Authentication routes */}
@@ -192,16 +55,128 @@ function AppContent(): ReactElement {
             <Route path="/auth/sign-up" element={<SignUp />} />
             <Route path="/auth/signout" element={<SignOut />} />
 
-            {/* User routes */}
-            <Route path="/user/profile" element={<ProfilePage />} />
-            <Route path="/user/password" element={<PasswordPage />} />
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute />}>
+              {/* Assessment routes */}
+              <Route path="/assessment" element={<LandingPage />} />
+              <Route
+                path="/assessment/age-verification"
+                element={
+                  <AssessmentResultProvider>
+                    <AgeVerification />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/cycle-length"
+                element={
+                  <AssessmentResultProvider>
+                    <CycleLength />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/period-duration"
+                element={
+                  <AssessmentResultProvider>
+                    <PeriodDuration />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/flow"
+                element={
+                  <AssessmentResultProvider>
+                    <FlowLevel />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/pain"
+                element={
+                  <AssessmentResultProvider>
+                    <PainLevel />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/symptoms"
+                element={
+                  <AssessmentResultProvider>
+                    <Symptoms />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/calculate-pattern"
+                element={
+                  <AssessmentResultProvider>
+                    <CalculatePattern />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/generate-recommendations"
+                element={
+                  <AssessmentResultProvider>
+                    <GenerateRecommendations />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/save"
+                element={
+                  <AssessmentResultProvider>
+                    <SaveAssessment />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/results/:id"
+                element={
+                  <AssessmentResultProvider>
+                    <Results />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/resources"
+                element={
+                  <AssessmentResultProvider>
+                    <ResourcesPage />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/history"
+                element={
+                  <AssessmentResultProvider>
+                    <HistoryPage />
+                  </AssessmentResultProvider>
+                }
+              />
+              <Route
+                path="/assessment/history/:id"
+                element={
+                  <AssessmentResultProvider>
+                    <DetailsPage />
+                  </AssessmentResultProvider>
+                }
+              />
+
+              {/* Chat routes */}
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/chat/:conversationId" element={<ChatDetailPage />} />
+
+              {/* User routes */}
+              <Route path="/user/profile" element={<ProfilePage />} />
+              <Route path="/user/password" element={<PasswordPage />} />
+            </Route>
           </Routes>
-          <UITestPageSwitch />
-        </main>
+        </AppLayout>
       </BrowserRouter>
-    </div>
-  );
-}
+    );
+  }
 
 export default function App(): ReactElement {
   return (

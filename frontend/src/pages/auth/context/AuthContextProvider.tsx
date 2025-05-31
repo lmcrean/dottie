@@ -51,25 +51,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Initialize auth state from storage
   useEffect(() => {
     const initializeAuth = async () => {
-      const { user, token } = getStoredAuthData();
+      try {
+        const { user, token } = getStoredAuthData();
 
-      if (user && token) {
-        // Verify token validity by fetching current user
-        try {
-          const currentUser = await userApi.current();
+        if (user && token) {
+          // Verify token validity by fetching current user
+          try {
+            const currentUser = await userApi.current();
 
+            setState({
+              user: currentUser,
+              isAuthenticated: true,
+              isLoading: false,
+              error: null
+            });
+          } catch (error) {
+            console.error(`Error setting user's state`, error);
+            // Clear invalid stored data
+            clearAllTokens();
+            setState({
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: null
+            });
+          }
+        } else {
           setState({
-            user: currentUser,
-            isAuthenticated: true,
+            user: null,
+            isAuthenticated: false,
             isLoading: false,
             error: null
           });
-        } catch (error) {
-          console.error(`Error setting user's state`, error);
-          setState((prev) => ({ ...prev, isLoading: false }));
         }
-      } else {
-        setState((prev) => ({ ...prev, isLoading: false }));
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setState({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null
+        });
       }
     };
 
