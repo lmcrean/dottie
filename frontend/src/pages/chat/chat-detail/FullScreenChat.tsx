@@ -28,7 +28,8 @@ export function FullscreenChat({ chatId, initialMessage }: ChatInterfaceProps) {
     handleConversationSelect,
     handleNewChat,
     handleKeyDown,
-    assessmentId
+    assessmentId,
+    assessmentObject
   } = useChatState({ chatId: chatIdString, initialMessage });
 
   const handleToggleSidebar = () => {
@@ -84,6 +85,7 @@ export function FullscreenChat({ chatId, initialMessage }: ChatInterfaceProps) {
               {/* Assessment Data Display - above chat input */}
               <AssessmentDataDisplay
                 assessmentId={assessmentId || undefined}
+                assessmentObject={assessmentObject}
                 onError={handleAssessmentError}
               />
 
