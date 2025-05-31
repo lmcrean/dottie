@@ -42,15 +42,7 @@ export function ConversationList({
         <div className="p-2">
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <MessageSquare className="mb-2 h-12 w-12 text-gray-300" />
-            <div className="mb-2 text-sm text-gray-500">No conversations yet</div>
-            <Button
-              onClick={onNewChat}
-              size="sm"
-              variant="outline"
-              className="border-pink-200 text-pink-600 hover:bg-pink-50"
-            >
-              Start a new chat
-            </Button>
+            <div className="text-sm text-gray-500">No conversations yet</div>
           </div>
         </div>
       </ScrollArea>

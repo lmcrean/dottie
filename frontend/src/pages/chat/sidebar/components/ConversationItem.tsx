@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/src/components/buttons/button';
-import { MessageSquare, Trash2, Calendar, Target, User } from 'lucide-react';
+import { MessageSquare, Trash2, Target } from 'lucide-react';
 import { ConversationListItem } from '../../types';
 import { formatDate, truncatePreview, formatAssessmentPattern } from '../utils/formatting';
 
@@ -43,7 +43,6 @@ export function ConversationItem({
           <div className="mb-1 flex items-center gap-2">
             <MessageSquare className="h-3 w-3 flex-shrink-0 text-pink-600" />
             <div className="flex items-center gap-2 text-xs text-gray-500">
-              <Calendar className="h-3 w-3" />
               <span>{formatDate(conversation.last_message_date)}</span>
             </div>
           </div>
@@ -63,16 +62,10 @@ export function ConversationItem({
             {truncatePreview(conversation.preview, 50)}
           </div>
 
-          {/* Message count and user info */}
-          <div className="flex items-center justify-between text-xs text-gray-500">
-            <div>
-              {conversation.message_count} message
-              {conversation.message_count !== 1 ? 's' : ''}
-            </div>
-            <div className="flex items-center gap-1 text-xs text-gray-400">
-              <User className="h-2.5 w-2.5" />
-              <span>{conversation.user_id.substring(0, 8)}...</span>
-            </div>
+          {/* Message count */}
+          <div className="text-xs text-gray-500">
+            {conversation.message_count} message
+            {conversation.message_count !== 1 ? 's' : ''}
           </div>
         </div>
 
