@@ -7,6 +7,7 @@ import {
   clearAllTokens,
   getAuthToken,
   getUserData,
+  setUserData,
   storeAuthData
 } from '@/src/api/core/tokenManager';
 
@@ -22,6 +23,7 @@ export interface AuthContextType extends AuthState {
   signup: (userData: SignupInput) => Promise<User>;
   logout: () => Promise<void>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  refreshUser: () => Promise<void>;
   clearError: () => void;
 }
 
@@ -177,6 +179,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const currentUser = await userApi.current();
+      
+      // Update both state and storage
+      setUserData(currentUser);
+      setState({
+        user: currentUser,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null
+      });
+    } catch (error) {
+      console.error('Failed to refresh user', error);
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Failed to refresh user'
+      }));
+    }
+  };
+
   const clearError = () => {
     setState((prev) => ({ ...prev, error: null }));
   };
@@ -189,6 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         updatePassword,
+        refreshUser,
         clearError
       }}
     >

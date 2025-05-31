@@ -12,7 +12,7 @@ export const UpdateEmailButton: React.FC<UpdateEmailButtonProps> = ({
   className = '',
   variant = 'primary'
 }) => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [email, setEmail] = useState(user?.email || '');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,6 +43,7 @@ export const UpdateEmailButton: React.FC<UpdateEmailButtonProps> = ({
 
     try {
       await updateEmail(email.trim());
+      await refreshUser(); // Refresh user data in auth context
       toast.success('Email updated successfully');
     } catch (error) {
       console.error('Error updating email:', error);

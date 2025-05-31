@@ -12,7 +12,7 @@ export const UpdateUsernameButton: React.FC<UpdateUsernameButtonProps> = ({
   className = '',
   variant = 'primary'
 }) => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [name, setName] = useState(user?.name || '');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +33,7 @@ export const UpdateUsernameButton: React.FC<UpdateUsernameButtonProps> = ({
 
     try {
       await updateUsername(name.trim());
+      await refreshUser(); // Refresh user data in auth context
       toast.success('Username updated successfully');
     } catch (error) {
       console.error('Error updating username:', error);
