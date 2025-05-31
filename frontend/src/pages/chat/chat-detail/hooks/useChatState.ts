@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { sendMessage } from '../components/buttons/send-message';
-import { ConversationListItem, ApiMessage } from '../../types';
+import { ConversationListItem, ApiMessage, AssessmentData } from '../../types';
 import { Message } from '../types/chat';
 import { apiClient } from '../../../../api/core/apiClient';
 import axios from 'axios';
@@ -29,12 +29,18 @@ export interface UseChatStateReturn {
   handleNewChat: () => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   assessmentId: string | null;
+  assessmentObject: AssessmentData | null;
 }
 
 // Helper function to fetch conversation from backend
 const fetchConversation = async (
   conversationId: string
-): Promise<{ id: string; messages: ApiMessage[]; assessment_id?: string } | null> => {
+): Promise<{
+  id: string;
+  messages: ApiMessage[];
+  assessment_id?: string;
+  assessment_object?: AssessmentData;
+} | null> => {
   try {
     // Ensure conversationId is a string
     const conversationIdString = String(conversationId);
@@ -65,6 +71,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(initialChatId);
 
   const [assessmentId, setAssessmentId] = useState<string | null>(null);
+  const [assessmentObject, setAssessmentObject] = useState<AssessmentData | null>(null);
   const hasSentInitialMessage = useRef(false);
 
   // Load existing conversation if chatId is provided
@@ -94,6 +101,23 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
               : null;
 
             setAssessmentId(assessmentIdString);
+
+            // Extract assessment_object if it exists
+            if (fullConversation.assessment_object) {
+              // Parse if it's a JSON string, otherwise use directly
+              try {
+                const assessmentObj =
+                  typeof fullConversation.assessment_object === 'string'
+                    ? JSON.parse(fullConversation.assessment_object)
+                    : fullConversation.assessment_object;
+                setAssessmentObject(assessmentObj);
+              } catch (error) {
+                console.warn('Failed to parse assessment_object:', error);
+                setAssessmentObject(fullConversation.assessment_object);
+              }
+            } else {
+              setAssessmentObject(null);
+            }
           } else {
             // Conversation not found
             console.warn(`Conversation ${chatIdString} not found`);
@@ -207,6 +231,23 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
 
         setAssessmentId(assessmentIdString);
 
+        // Extract assessment_object if it exists
+        if (fullConversation.assessment_object) {
+          // Parse if it's a JSON string, otherwise use directly
+          try {
+            const assessmentObj =
+              typeof fullConversation.assessment_object === 'string'
+                ? JSON.parse(fullConversation.assessment_object)
+                : fullConversation.assessment_object;
+            setAssessmentObject(assessmentObj);
+          } catch (error) {
+            console.warn('Failed to parse assessment_object:', error);
+            setAssessmentObject(fullConversation.assessment_object);
+          }
+        } else {
+          setAssessmentObject(null);
+        }
+
         // Navigate to the chat detail page
         navigate(`/chat/${conversationIdString}`);
       } else {
@@ -225,6 +266,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
     setMessages([]);
     setInput('');
     setAssessmentId(null);
+    setAssessmentObject(null);
     hasSentInitialMessage.current = false;
 
     // Navigate to new chat page if needed
@@ -249,6 +291,7 @@ export function useChatState({ chatId, initialMessage }: UseChatStateProps): Use
     handleConversationSelect,
     handleNewChat,
     handleKeyDown,
-    assessmentId
+    assessmentId,
+    assessmentObject
   };
 }

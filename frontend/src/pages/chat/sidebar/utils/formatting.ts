@@ -12,18 +12,40 @@ export const formatDate = (dateString: string) => {
   }
 
   const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffTime = now.getTime() - date.getTime();
+  const diffHours = diffTime / (1000 * 60 * 60);
+  const diffDays = Math.floor(diffHours / 24);
 
-  if (diffDays === 1) return 'Today';
-  if (diffDays === 2) return 'Yesterday';
-  if (diffDays <= 7) return `${diffDays - 1} days ago`;
+  // If less than 24 hours ago, show specific time (e.g., 13:45, 16:23)
+  if (diffHours < 24 && diffHours >= 0) {
+    return date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
 
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-  });
+  // If yesterday
+  if (diffDays === 1) {
+    return 'Yesterday';
+  }
+
+  // If within this year but more than 1 day ago
+  if (date.getFullYear() === now.getFullYear()) {
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short'
+    });
+  }
+
+  // If more than 1 year ago, include shortened year
+  const yearSuffix = date.getFullYear().toString().slice(-2);
+  return (
+    date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short'
+    }) + ` '${yearSuffix}`
+  );
 };
 
 export const truncatePreview = (text: string, maxLength: number = 60) => {

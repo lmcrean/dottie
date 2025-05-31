@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Calendar, Activity, Heart, AlertCircle } from 'lucide-react';
-
-interface AssessmentData {
-  id: string;
-  age: number;
-  pattern: string;
-  cycle_length: number;
-  period_duration: number;
-  flow_heaviness: string;
-  pain_level: number;
-  physical_symptoms: string[];
-  emotional_symptoms: string[];
-  other_symptoms: string[];
-  recommendations: Array<{
-    title: string;
-    description: string;
-  }>;
-}
+import { AssessmentData } from '../../types';
 
 interface AssessmentDataDisplayProps {
   assessmentId?: string;
