@@ -25,7 +25,6 @@ import DetailsPage from './pages/assessment/detail/page';
 
 // Import chat components
 import ChatPage from './pages/chat/page';
-import { ChatDetail as ChatDetailPage } from './pages/chat/chat-detail/ChatDetail';
 
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';
@@ -166,7 +165,7 @@ function AppContent(): ReactElement {
 
             {/* Chat routes */}
             <Route path="/chat" element={<ChatPage />} />
-            <Route path="/chat/:conversationId" element={<ChatDetailPage />} />
+            <Route path="/chat/:conversationId" element={<ChatPage />} />
 
             {/* User routes */}
             <Route path="/user/profile" element={<ProfilePage />} />
