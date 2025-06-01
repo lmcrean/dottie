@@ -1,16 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import ChatSidebar from './sidebar/ChatSidebar';
 
 const ChatPage: React.FC = () => {
-  const [sidebarRefresh, setSidebarRefresh] = useState<(() => Promise<void>) | null>(null);
-
   // Callback to receive the loadConversations function from ChatSidebar
   const handleSidebarUpdate = useCallback((refreshFunction: () => Promise<void>) => {
-    setSidebarRefresh(() => refreshFunction);
+    // Store the refresh function for potential future use
+    console.log('Sidebar update function received:', refreshFunction);
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <div className="w-80 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <ChatSidebar onSidebarUpdate={handleSidebarUpdate} />

@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ChatSidebar from '../sidebar/ChatSidebar';
 import { FullscreenChat } from './FullScreenChat';
+import { ConversationListItem } from '../types';
 
 const ChatDetailPage: React.FC = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
+  const navigate = useNavigate();
   const [sidebarRefresh, setSidebarRefresh] = useState<(() => Promise<void>) | null>(null);
 
   // Callback to receive the loadConversations function from ChatSidebar
@@ -12,11 +14,30 @@ const ChatDetailPage: React.FC = () => {
     setSidebarRefresh(() => refreshFunction);
   }, []);
 
+  // Handle conversation selection from sidebar - simple navigation
+  const handleConversationSelect = useCallback(
+    (conversation: ConversationListItem) => {
+      console.log('[ChatDetailPage] Conversation selected:', conversation.id);
+      navigate(`/chat/${conversation.id}`, { replace: true });
+    },
+    [navigate]
+  );
+
+  // Handle new chat request - navigate to chat home
+  const handleNewChat = useCallback(() => {
+    console.log('[ChatDetailPage] New chat requested');
+    navigate('/chat');
+  }, [navigate]);
+
   if (!conversationId) {
     return (
-      <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="w-80 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-          <ChatSidebar onSidebarUpdate={handleSidebarUpdate} />
+          <ChatSidebar
+            onSidebarUpdate={handleSidebarUpdate}
+            onConversationSelect={handleConversationSelect}
+            onNewChat={handleNewChat}
+          />
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
@@ -33,10 +54,15 @@ const ChatDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <div className="w-80 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-        <ChatSidebar selectedConversationId={conversationId} onSidebarUpdate={handleSidebarUpdate} />
+        <ChatSidebar
+          selectedConversationId={conversationId}
+          onSidebarUpdate={handleSidebarUpdate}
+          onConversationSelect={handleConversationSelect}
+          onNewChat={handleNewChat}
+        />
       </div>
 
       {/* Chat Detail */}

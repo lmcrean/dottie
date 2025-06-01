@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ChatSidebar } from '../sidebar';
 import { useChatState } from './hooks/useChatState';
 import { ChatHeader } from './components/ChatHeader';
 import { MessageList } from './components/MessageList';
@@ -26,8 +25,6 @@ export function FullscreenChat({ chatId, initialMessage, onSidebarRefresh }: Cha
     isLoading,
     currentConversationId,
     handleSend,
-    handleConversationSelect,
-    handleNewChat,
     handleKeyDown,
     assessmentId,
     assessmentObject
@@ -42,35 +39,9 @@ export function FullscreenChat({ chatId, initialMessage, onSidebarRefresh }: Cha
   };
 
   return (
-    <div className="flex h-full w-full bg-white dark:bg-gray-900">
-      {/* Optional sidebar overlay for mobile */}
-      {isSidebarOpen && (
-        <div className="absolute inset-0 z-40 md:hidden">
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setIsSidebarOpen(false)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setIsSidebarOpen(false);
-              }
-            }}
-            role="button"
-            tabIndex={0}
-            aria-label="Close sidebar"
-          />
-          <div className="relative z-50 h-full w-80">
-            <ChatSidebar
-              onConversationSelect={handleConversationSelect}
-              onNewChat={handleNewChat}
-              selectedConversationId={currentConversationId || undefined}
-            />
-          </div>
-        </div>
-      )}
-
+    <div className="flex min-h-screen w-full flex-col bg-white dark:bg-gray-900">
       {/* Main Chat Area */}
-      <div className="flex h-full flex-1 flex-col">
+      <div className="flex min-h-screen flex-1 flex-col">
         <ChatHeader
           isSidebarOpen={isSidebarOpen}
           onToggleSidebar={handleToggleSidebar}
