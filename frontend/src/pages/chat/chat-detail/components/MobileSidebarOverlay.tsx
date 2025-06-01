@@ -1,12 +1,12 @@
 import React from 'react';
 import { ChatSidebar } from '../../sidebar';
-import { Conversation } from '../../types';
+import { ConversationListItem } from '../../types';
 
 interface MobileSidebarOverlayProps {
   isOpen: boolean;
   onClose: () => void;
   currentConversationId?: string;
-  onConversationSelect: (conversation: Conversation) => void;
+  onConversationSelect: (conversation: ConversationListItem) => void;
   onNewChat: () => void;
 }
 

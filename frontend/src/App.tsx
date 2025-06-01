@@ -25,7 +25,7 @@ import DetailsPage from './pages/assessment/detail/page';
 
 // Import chat components
 import ChatPage from './pages/chat/page';
-import ChatDetailPage from './pages/chat/chat-detail/page';
+import { ChatDetail as ChatDetailPage } from './pages/chat/chat-detail/ChatDetail';
 
 // Import TestPage component
 import TestPage from './pages/developer-mode/page';
@@ -46,137 +46,137 @@ function AppContent(): ReactElement {
       <ScrollToTop />
       <AppLayout>
         <Routes>
-            <Route index element={<LandingPage />} />
-            <Route path="/test-page" element={<TestPage />} />
-            <Route path="/test" element={<TestPage />} />
+          <Route index element={<LandingPage />} />
+          <Route path="/test-page" element={<TestPage />} />
+          <Route path="/test" element={<TestPage />} />
 
-            {/* Authentication routes */}
-            <Route path="/auth/sign-in" element={<SignIn />} />
-            <Route path="/auth/sign-up" element={<SignUp />} />
-            <Route path="/auth/signout" element={<SignOut />} />
+          {/* Authentication routes */}
+          <Route path="/auth/sign-in" element={<SignIn />} />
+          <Route path="/auth/sign-up" element={<SignUp />} />
+          <Route path="/auth/signout" element={<SignOut />} />
 
-            {/* Protected routes */}
-            <Route element={<ProtectedRoute />}>
-              {/* Assessment routes */}
-              <Route path="/assessment" element={<LandingPage />} />
-              <Route
-                path="/assessment/age-verification"
-                element={
-                  <AssessmentResultProvider>
-                    <AgeVerification />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/cycle-length"
-                element={
-                  <AssessmentResultProvider>
-                    <CycleLength />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/period-duration"
-                element={
-                  <AssessmentResultProvider>
-                    <PeriodDuration />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/flow"
-                element={
-                  <AssessmentResultProvider>
-                    <FlowLevel />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/pain"
-                element={
-                  <AssessmentResultProvider>
-                    <PainLevel />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/symptoms"
-                element={
-                  <AssessmentResultProvider>
-                    <Symptoms />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/calculate-pattern"
-                element={
-                  <AssessmentResultProvider>
-                    <CalculatePattern />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/generate-recommendations"
-                element={
-                  <AssessmentResultProvider>
-                    <GenerateRecommendations />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/save"
-                element={
-                  <AssessmentResultProvider>
-                    <SaveAssessment />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/results/:id"
-                element={
-                  <AssessmentResultProvider>
-                    <Results />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/resources"
-                element={
-                  <AssessmentResultProvider>
-                    <ResourcesPage />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/history"
-                element={
-                  <AssessmentResultProvider>
-                    <HistoryPage />
-                  </AssessmentResultProvider>
-                }
-              />
-              <Route
-                path="/assessment/history/:id"
-                element={
-                  <AssessmentResultProvider>
-                    <DetailsPage />
-                  </AssessmentResultProvider>
-                }
-              />
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            {/* Assessment routes */}
+            <Route path="/assessment" element={<LandingPage />} />
+            <Route
+              path="/assessment/age-verification"
+              element={
+                <AssessmentResultProvider>
+                  <AgeVerification />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/cycle-length"
+              element={
+                <AssessmentResultProvider>
+                  <CycleLength />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/period-duration"
+              element={
+                <AssessmentResultProvider>
+                  <PeriodDuration />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/flow"
+              element={
+                <AssessmentResultProvider>
+                  <FlowLevel />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/pain"
+              element={
+                <AssessmentResultProvider>
+                  <PainLevel />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/symptoms"
+              element={
+                <AssessmentResultProvider>
+                  <Symptoms />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/calculate-pattern"
+              element={
+                <AssessmentResultProvider>
+                  <CalculatePattern />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/generate-recommendations"
+              element={
+                <AssessmentResultProvider>
+                  <GenerateRecommendations />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/save"
+              element={
+                <AssessmentResultProvider>
+                  <SaveAssessment />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/results/:id"
+              element={
+                <AssessmentResultProvider>
+                  <Results />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/resources"
+              element={
+                <AssessmentResultProvider>
+                  <ResourcesPage />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/history"
+              element={
+                <AssessmentResultProvider>
+                  <HistoryPage />
+                </AssessmentResultProvider>
+              }
+            />
+            <Route
+              path="/assessment/history/:id"
+              element={
+                <AssessmentResultProvider>
+                  <DetailsPage />
+                </AssessmentResultProvider>
+              }
+            />
 
-              {/* Chat routes */}
-              <Route path="/chat" element={<ChatPage />} />
-              <Route path="/chat/:conversationId" element={<ChatDetailPage />} />
+            {/* Chat routes */}
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/chat/:conversationId" element={<ChatDetailPage />} />
 
-              {/* User routes */}
-              <Route path="/user/profile" element={<ProfilePage />} />
-              <Route path="/user/password" element={<PasswordPage />} />
-            </Route>
-          </Routes>
-        </AppLayout>
-      </BrowserRouter>
-    );
-  }
+            {/* User routes */}
+            <Route path="/user/profile" element={<ProfilePage />} />
+            <Route path="/user/password" element={<PasswordPage />} />
+          </Route>
+        </Routes>
+      </AppLayout>
+    </BrowserRouter>
+  );
+}
 
 export default function App(): ReactElement {
   return (

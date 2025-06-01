@@ -13,7 +13,7 @@ interface ChatContentProps {
   input: string;
   setInput: (value: string) => void;
   onSend: () => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onAssessmentError: (error: string) => void;
 }
 

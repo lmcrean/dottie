@@ -63,7 +63,7 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
           isLoading={isLoading}
           currentConversationId={currentConversationId || undefined}
           assessmentId={assessmentId || undefined}
-          assessmentObject={assessmentObject}
+          assessmentObject={assessmentObject || undefined}
           input={input}
           setInput={setInput}
           onSend={handleSend}
