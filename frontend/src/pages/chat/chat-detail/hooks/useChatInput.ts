@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useInputState } from './useInputState';
+import { useInputSender } from './useInputSender';
 
 interface UseChatInputProps {
-  onSend: (message?: string) => Promise<void>;
+  onSend: (message: string) => Promise<void>;
 }
 
 interface UseChatInputReturn {
@@ -9,37 +11,22 @@ interface UseChatInputReturn {
   setInput: (input: string) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   clearInput: () => void;
-  sendMessage: () => Promise<void>;
+  sendFromInput: () => Promise<void>;
 }
 
 export function useChatInput({ onSend }: UseChatInputProps): UseChatInputReturn {
-  const [input, setInput] = useState('');
+  // Pure input management
+  const { input, setInput, clearInput, handleKeyDown: baseHandleKeyDown } = useInputState();
+  
+  // Input-to-send coordination
+  const { sendFromInput } = useInputSender({
+    input,
+    clearInput,
+    onSend
+  });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  const clearInput = () => {
-    setInput('');
-  };
-
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    const messageToSend = input.trim();
-    setInput(''); // Clear input immediately for better UX
-
-    try {
-      await onSend(messageToSend);
-      console.log('[useChatInput] Message sent successfully');
-    } catch (error) {
-      console.error('[useChatInput] Failed to send message:', error);
-      // Restore input if sending failed
-      setInput(messageToSend);
-    }
+    baseHandleKeyDown(e, sendFromInput);
   };
 
   return {
@@ -47,6 +34,6 @@ export function useChatInput({ onSend }: UseChatInputProps): UseChatInputReturn 
     setInput,
     handleKeyDown,
     clearInput,
-    sendMessage
+    sendFromInput
   };
 }

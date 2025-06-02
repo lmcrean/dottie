@@ -1,7 +1,7 @@
 import React from 'react';
 import { Message } from './chat';
 
-export interface UseChatStateProps {
+export interface UseChatPageStateProps {
   chatId?: string;
   initialMessage?: string;
 }
@@ -12,13 +12,13 @@ export interface ChatState {
   currentChatId: string | null;
 }
 
-export interface UseChatStateReturn {
+export interface UseChatPageStateReturn {
   messages: Message[];
   input: string;
   setInput: (input: string) => void;
   isLoading: boolean;
   currentConversationId: string | null;
-  handleSend: (messageText?: string) => Promise<void>;
+  handleSend: (messageText: string) => Promise<void>;
   handleConversationSelect: (data: {
     messages: Message[];
     conversationId: string;

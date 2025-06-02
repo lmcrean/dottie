@@ -4,22 +4,29 @@ import { Message } from '../types/chat';
 import { useConversationData } from './useConversationData';
 import { useMessageSending } from './useMessageSending';
 import { useChatInput } from './useChatInput';
-import { useChatNavigation } from './useChatNavigation';
+import { useConversationNavigation } from './useConversationNavigation';
 import { useInitialMessage } from './useInitialMessage';
 
-interface UseChatStateProps {
+/**
+ * Main hook for managing the overall chat page state
+ * Orchestrates conversation data, message sending, input handling, and navigation
+ * This manages the high-level chat page including the currently active conversation
+ */
+
+interface UseChatPageStateProps {
   chatId?: string;
   initialMessage?: string;
   onSidebarRefresh?: () => Promise<void>;
 }
 
-export interface UseChatStateReturn {
+export interface UseChatPageStateReturn {
   messages: Message[];
   input: string;
   setInput: (input: string) => void;
   isLoading: boolean;
   currentConversationId: string | null;
-  handleSend: (messageText?: string) => Promise<void>;
+  handleSend: (messageText: string) => Promise<void>;
+  sendFromInput: () => Promise<void>;
   handleConversationSelect: (conversation: ConversationListItem) => void;
   handleNewChat: () => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -27,11 +34,11 @@ export interface UseChatStateReturn {
   assessmentObject: AssessmentData | null;
 }
 
-export function useChatState({
+export function useChatPageState({
   chatId,
   initialMessage,
   onSidebarRefresh
-}: UseChatStateProps): UseChatStateReturn {
+}: UseChatPageStateProps): UseChatPageStateReturn {
   // Conversation data management
   const {
     messages,
@@ -57,11 +64,11 @@ export function useChatState({
     input,
     setInput,
     handleKeyDown,
-    sendMessage: sendFromInput
+    sendFromInput
   } = useChatInput({ onSend: sendMessage });
 
   // Navigation between chats
-  const { handleConversationSelect, handleNewChat } = useChatNavigation({
+  const { handleConversationSelect, handleNewChat } = useConversationNavigation({
     onConversationLoad: loadConversation,
     onConversationClear: clearConversation
   });
@@ -73,14 +80,8 @@ export function useChatState({
     onSend: sendMessage
   });
 
-  // Unified send handler that accepts optional message text
-  const handleSend = async (messageText?: string) => {
-    if (messageText) {
-      await sendMessage(messageText);
-    } else {
-      await sendFromInput();
-    }
-  };
+  // Use the main send handler directly (no duplication)
+  const handleSend = sendMessage;
 
   // Combined loading state
   const isLoading = conversationLoading || sendingLoading;
@@ -92,6 +93,7 @@ export function useChatState({
     isLoading,
     currentConversationId,
     handleSend,
+    sendFromInput,
     handleConversationSelect,
     handleNewChat,
     handleKeyDown,
