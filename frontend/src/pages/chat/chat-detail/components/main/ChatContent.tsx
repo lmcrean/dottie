@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageList } from '../MessageList';
+import { MessageList } from './MessageList';
 import { ChatInput } from '../footer/ChatInput';
 import { AssessmentDataDisplay } from '../footer/AssessmentDataDisplay';
 import { ApiMessage, AssessmentData } from '../../../types';
