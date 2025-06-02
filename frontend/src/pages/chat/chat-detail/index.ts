@@ -1,1 +1,1 @@
-export type { FullscreenChatProps, Message } from './types/chat';
+export type { Message, UseChatPageStateProps, ChatState, UseChatPageStateReturn } from './types';

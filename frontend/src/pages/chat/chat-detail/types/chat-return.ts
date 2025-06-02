@@ -1,16 +1,5 @@
 import React from 'react';
-import { Message } from './chat';
-
-export interface UseChatPageStateProps {
-  chatId?: string;
-  initialMessage?: string;
-}
-
-export interface ChatState {
-  messages: Message[];
-  isLoading: boolean;
-  currentChatId: string | null;
-}
+import { Message } from './message';
 
 export interface UseChatPageStateReturn {
   messages: Message[];
@@ -27,4 +16,4 @@ export interface UseChatPageStateReturn {
   handleNewChat: () => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   assessmentId: string | null;
-}
+} 
