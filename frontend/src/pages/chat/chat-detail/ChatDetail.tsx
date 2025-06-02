@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useChatPageState } from './hooks/useChatPageState';
+import { useConversationPageState } from './services/conversation/hooks/useConversationPageState';
 import { ChatHeader } from './components/header/ChatHeader';
 import { MobileSidebarOverlay } from './components/header/MobileSidebarOverlay';
 import { ChatContent } from './components/main/ChatContent';
@@ -30,7 +30,7 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
     handleKeyDown,
     assessmentId,
     assessmentObject
-  } = useChatPageState({ chatId: chatIdString, initialMessage, onSidebarRefresh });
+  } = useConversationPageState({ chatId: chatIdString, initialMessage, onSidebarRefresh });
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

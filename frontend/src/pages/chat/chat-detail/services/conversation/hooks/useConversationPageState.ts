@@ -1,11 +1,11 @@
-import React from 'react';
-import { ConversationListItem, AssessmentData } from '../../types';
-import { Message } from '../types/chat';
-import { useConversationData } from './useConversationData';
-import { useMessageSending } from './useMessageSending';
-import { useChatInput } from './useChatInput';
-import { useConversationNavigation } from './useConversationNavigation';
-import { useInitialMessage } from './useInitialMessage';
+import React, { useRef, useEffect } from 'react';
+import { ConversationListItem, AssessmentData } from '../../../../types';
+import { Message } from '../../../types/chat';
+import { useConversationData } from './data/useConversationData';
+import { useMessageSending } from '../../messages/hooks/sending/useMessageSending';
+import { useInputState } from '../../messages/hooks/state/useInputState';
+import { useInputSender } from '../../messages/hooks/coordination/useInputSender';
+import { useConversationNavigation } from './navigation/useConversationNavigation';
 
 /**
  * Main hook for managing the overall chat page state
@@ -13,13 +13,13 @@ import { useInitialMessage } from './useInitialMessage';
  * This manages the high-level chat page including the currently active conversation
  */
 
-interface UseChatPageStateProps {
+export interface UseConversationPageStateProps {
   chatId?: string;
   initialMessage?: string;
   onSidebarRefresh?: () => Promise<void>;
 }
 
-export interface UseChatPageStateReturn {
+export interface UseConversationPageStateReturn {
   messages: Message[];
   input: string;
   setInput: (input: string) => void;
@@ -34,11 +34,13 @@ export interface UseChatPageStateReturn {
   assessmentObject: AssessmentData | null;
 }
 
-export function useChatPageState({
+export function useConversationPageState({
   chatId,
   initialMessage,
   onSidebarRefresh
-}: UseChatPageStateProps): UseChatPageStateReturn {
+}: UseConversationPageStateProps): UseConversationPageStateReturn {
+  const hasSentInitialMessage = useRef(false);
+
   // Conversation data management
   const {
     messages,
@@ -59,13 +61,19 @@ export function useChatPageState({
     onSidebarRefresh
   });
 
-  // Input state and keyboard handling
-  const {
+  // Input state management
+  const { input, setInput, clearInput, handleKeyDown: baseHandleKeyDown } = useInputState();
+  
+  // Input-to-send coordination
+  const { sendFromInput } = useInputSender({
     input,
-    setInput,
-    handleKeyDown,
-    sendFromInput
-  } = useChatInput({ onSend: sendMessage });
+    clearInput,
+    onSend: sendMessage
+  });
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    baseHandleKeyDown(e, sendFromInput);
+  };
 
   // Navigation between chats
   const { handleConversationSelect, handleNewChat } = useConversationNavigation({
@@ -73,12 +81,18 @@ export function useChatPageState({
     onConversationClear: clearConversation
   });
 
-  // Initial message handling
-  useInitialMessage({
-    initialMessage,
-    messages,
-    onSend: sendMessage
-  });
+  // Auto-send initial message (replaces useInitialMessage hook)
+  useEffect(() => {
+    if (initialMessage && messages.length === 0 && !hasSentInitialMessage.current) {
+      console.log('[useConversationPageState] Auto-sending initial message:', initialMessage);
+      hasSentInitialMessage.current = true;
+      
+      sendMessage(initialMessage).catch((error: any) => {
+        console.error('[useConversationPageState] Failed to send initial message:', error);
+        hasSentInitialMessage.current = false; // Reset on failure
+      });
+    }
+  }, [initialMessage, messages.length, sendMessage]);
 
   // Use the main send handler directly (no duplication)
   const handleSend = sendMessage;

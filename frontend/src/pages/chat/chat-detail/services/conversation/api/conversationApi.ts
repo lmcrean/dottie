@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { apiClient } from '../../../../api/core/apiClient';
-import { ApiMessage, AssessmentData } from '../../types';
+import { apiClient } from '../../../../../../api/core/apiClient';
+import { ApiMessage, AssessmentData } from '../../../../types';
 
 export interface ConversationResponse {
   id: string;
@@ -9,7 +9,7 @@ export interface ConversationResponse {
   assessment_object?: AssessmentData;
 }
 
-export const conversationService = {
+export const conversationApi = {
   /**
    * Fetch conversation data from backend
    */

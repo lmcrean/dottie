@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ConversationListItem } from '../../types';
+import { ConversationListItem } from '../../../../../types';
 
 /**
  * Hook for managing navigation between individual conversation threads

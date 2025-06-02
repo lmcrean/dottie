@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { conversationService } from '../services/conversationService';
-import { ApiMessage, AssessmentData } from '../../types';
-import { Message } from '../types/chat';
+import { conversationApi } from '../../api';
+import { ApiMessage, AssessmentData } from '../../../../../types';
+import { Message } from '../../../../types/chat';
 
 interface UseConversationLoaderProps {
   conversationId?: string;
@@ -32,7 +32,7 @@ export function useConversationLoader({
       setIsLoading(true);
       console.log(`[useConversationLoader] Loading conversation: ${id}`);
 
-      const fullConversation = await conversationService.fetchConversation(id);
+      const fullConversation = await conversationApi.fetchConversation(id);
 
       if (fullConversation) {
         const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({

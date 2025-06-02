@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Message } from '../types/chat';
-import { AssessmentData } from '../../types';
+import { Message } from '../../../../types/chat';
+import { AssessmentData } from '../../../../../types';
 
 interface UseConversationStateProps {
   initialConversationId?: string;
