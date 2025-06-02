@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Calendar, Activity, Heart, AlertCircle } from 'lucide-react';
-import { AssessmentData } from '../../types';
+import { AssessmentData } from '../../../types';
 
 interface AssessmentDataDisplayProps {
   assessmentId?: string;

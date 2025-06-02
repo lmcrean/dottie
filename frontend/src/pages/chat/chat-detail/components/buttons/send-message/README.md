@@ -1,7 +1,3 @@
-this button is triggered in the frontend\src\pages\assessment\detail\page.tsx
-
-it doesn't get rendered but runs the function startNewChat
-
 this is like a follow up to the sendInitialMessageButton
 
 when there is no env in localhost testing -- it will still save the message in the sqlite database

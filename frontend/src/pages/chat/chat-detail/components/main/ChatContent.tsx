@@ -1,8 +1,8 @@
 import React from 'react';
-import { MessageList } from './MessageList';
-import { ChatInput } from './ChatInput';
-import { AssessmentDataDisplay } from './AssessmentDataDisplay';
-import { ApiMessage, AssessmentData } from '../../types';
+import { MessageList } from '../MessageList';
+import { ChatInput } from '../footer/ChatInput';
+import { AssessmentDataDisplay } from '../footer/AssessmentDataDisplay';
+import { ApiMessage, AssessmentData } from '../../../types';
 
 interface ChatContentProps {
   messages: ApiMessage[];

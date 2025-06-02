@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useChatState } from './hooks/useChatState';
-import { ChatHeader } from './components/ChatHeader';
-import { MobileSidebarOverlay } from './components/MobileSidebarOverlay';
-import { ChatContent } from './components/ChatContent';
+import { ChatHeader } from './components/header/ChatHeader';
+import { MobileSidebarOverlay } from './components/header/MobileSidebarOverlay';
+import { ChatContent } from './components/main/ChatContent';
 import { toast } from 'sonner';
 
 interface ChatDetailProps {

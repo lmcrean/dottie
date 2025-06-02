@@ -1,6 +1,6 @@
 import React from 'react';
-import { ChatSidebar } from '../../sidebar';
-import { ConversationListItem } from '../../types';
+import { ChatSidebar } from '../../../sidebar';
+import { ConversationListItem } from '../../../types';
 
 interface MobileSidebarOverlayProps {
   isOpen: boolean;

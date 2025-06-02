@@ -1,6 +1,8 @@
 # Send Initial Message API
 
-This directory contains the API function for sending initial messages with assessment context.
+This component is actually rendered in the assessment page, not the chat page, but it's here as it's more relevant to the chat page functionality.
+
+This component contains the API function for sending initial messages with assessment context.
 
 ## Endpoint
 

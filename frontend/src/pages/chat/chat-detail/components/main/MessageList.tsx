@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Loader2 } from 'lucide-react';
-import { Message } from '../types/chat';
-import { formatMessageTimestamp } from '../utils/formatTimestamp';
+import { Message } from '../../types/chat';
+import { formatMessageTimestamp } from '../../utils/formatTimestamp';
 
 interface MessageListProps {
   messages: Message[];
