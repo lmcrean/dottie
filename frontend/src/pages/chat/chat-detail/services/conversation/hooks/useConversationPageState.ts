@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { ConversationListItem, AssessmentData } from '../../../../types';
-import { Message } from '../../../types/chat';
+import { Message } from '../../../types';
 import { useConversationData } from './data/useConversationData';
 import { useMessageSending } from '../../messages/hooks/sending/useMessageSending';
 import { useInputState } from '../../messages/hooks/state/useInputState';

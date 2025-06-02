@@ -1,7 +1,7 @@
 import { useConversationState } from './useConversationState';
 import { useConversationLoader } from './useConversationLoader';
 import { AssessmentData } from '../../../../../types';
-import { Message } from '../../../../types/chat';
+import { Message } from '../../../../types';
 
 interface UseConversationDataProps {
   conversationId?: string;

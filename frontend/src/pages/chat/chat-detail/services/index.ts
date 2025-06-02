@@ -29,4 +29,4 @@ export { useConversationLoader } from './conversation/hooks/data/useConversation
 export { useConversationNavigation } from './conversation/hooks/navigation/useConversationNavigation';
 
 // Types
-export type { UseChatPageStateProps, UseChatPageStateReturn, ChatState } from '../types/hooks';
+export type { UseChatPageStateProps, UseChatPageStateReturn, ChatState } from '../types';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMessageState } from '../state/useMessageState';
 import { useMessageSender } from './useMessageSender';
-import { Message } from '../../../../types/chat';
+import { Message } from '../../../../types';
 
 interface UseMessageSendingProps {
   currentConversationId: string | null;

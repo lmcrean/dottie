@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Message } from '../../../../types/chat';
+import { Message } from '../../../../types';
 import { AssessmentData } from '../../../../../types';
 
 interface UseConversationStateProps {

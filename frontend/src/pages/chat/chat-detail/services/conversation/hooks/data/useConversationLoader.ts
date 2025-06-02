@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { conversationApi } from '../../api';
 import { ApiMessage, AssessmentData } from '../../../../../types';
-import { Message } from '../../../../types/chat';
+import { Message } from '../../../../types';
 
 interface UseConversationLoaderProps {
   conversationId?: string;
