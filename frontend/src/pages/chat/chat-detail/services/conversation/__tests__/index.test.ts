@@ -2,12 +2,6 @@ import { describe, it, expect } from 'vitest';
 import * as conversationIndex from '../index';
 
 describe('conversation/index', () => {
-  it('should export conversationService', () => {
-    expect(conversationIndex.conversationService).toBeDefined();
-    expect(typeof conversationIndex.conversationService).toBe('object');
-    expect(typeof conversationIndex.conversationService.fetchConversation).toBe('function');
-  });
-
   it('should export conversationApi', () => {
     expect(conversationIndex.conversationApi).toBeDefined();
     expect(typeof conversationIndex.conversationApi).toBe('object');
@@ -31,7 +25,6 @@ describe('conversation/index', () => {
 
   it('should export all required modules without missing exports', () => {
     const expectedExports = [
-      'conversationService',
       'conversationApi', 
       'useConversationPageState',
       'useConversationData',
@@ -47,7 +40,6 @@ describe('conversation/index', () => {
   it('should not export unexpected modules', () => {
     const exportKeys = Object.keys(conversationIndex);
     const expectedExports = [
-      'conversationService',
       'conversationApi',
       'useConversationPageState', 
       'useConversationData',

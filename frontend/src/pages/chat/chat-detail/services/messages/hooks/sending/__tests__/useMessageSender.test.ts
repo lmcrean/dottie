@@ -1,14 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useMessageSender } from '../useMessageSender';
-import { messageService } from '../../../messageService';
+import { sendMessage } from '../../../api';
 import { toast } from 'sonner';
 
 // Mock dependencies
-vi.mock('../../../messageService', () => ({
-  messageService: {
-    sendMessage: vi.fn()
-  }
+vi.mock('../../../api', () => ({
+  sendMessage: vi.fn()
 }));
 
 vi.mock('sonner', () => ({
@@ -17,7 +15,7 @@ vi.mock('sonner', () => ({
   }
 }));
 
-const mockMessageService = vi.mocked(messageService);
+const mockSendMessage = vi.mocked(sendMessage);
 const mockToast = vi.mocked(toast);
 
 describe('useMessageSender', () => {
@@ -44,7 +42,7 @@ describe('useMessageSender', () => {
         created_at: '2024-01-01T00:00:00Z'
       };
 
-      mockMessageService.sendMessage.mockResolvedValue(mockResponse);
+      mockSendMessage.mockResolvedValue(mockResponse);
       mockOnSidebarRefresh.mockResolvedValue(undefined);
 
       const { result } = renderHook(() =>
@@ -64,7 +62,7 @@ describe('useMessageSender', () => {
       });
 
       expect(mockAddUserMessage).toHaveBeenCalledWith('Hello world');
-      expect(mockMessageService.sendMessage).toHaveBeenCalledWith({
+      expect(mockSendMessage).toHaveBeenCalledWith({
         chat_id: 'conv-123',
         message: 'Hello world',
         conversationId: 'conv-123'
@@ -83,7 +81,7 @@ describe('useMessageSender', () => {
         created_at: '2024-01-01T00:00:00Z'
       };
 
-      mockMessageService.sendMessage.mockResolvedValue(mockResponse);
+      mockSendMessage.mockResolvedValue(mockResponse);
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -100,7 +98,7 @@ describe('useMessageSender', () => {
 
       expect(mockAddUserMessage).toHaveBeenCalledWith('Test message');
       expect(mockAddAssistantMessage).toHaveBeenCalledWith('Assistant response');
-      expect(mockMessageService.sendMessage).toHaveBeenCalled();
+      expect(mockSendMessage).toHaveBeenCalled();
     });
 
     it('should trim whitespace from message before sending', async () => {
@@ -112,7 +110,7 @@ describe('useMessageSender', () => {
         created_at: '2024-01-01T00:00:00Z'
       };
 
-      mockMessageService.sendMessage.mockResolvedValue(mockResponse);
+      mockSendMessage.mockResolvedValue(mockResponse);
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -128,7 +126,7 @@ describe('useMessageSender', () => {
       });
 
       expect(mockAddUserMessage).toHaveBeenCalledWith('Hello world');
-      expect(mockMessageService.sendMessage).toHaveBeenCalledWith({
+      expect(mockSendMessage).toHaveBeenCalledWith({
         chat_id: 'conv-123',
         message: 'Hello world',
         conversationId: 'conv-123'
@@ -152,7 +150,7 @@ describe('useMessageSender', () => {
       });
 
       expect(mockAddUserMessage).not.toHaveBeenCalled();
-      expect(mockMessageService.sendMessage).not.toHaveBeenCalled();
+      expect(mockSendMessage).not.toHaveBeenCalled();
     });
 
     it('should not send whitespace-only message', async () => {
@@ -170,7 +168,7 @@ describe('useMessageSender', () => {
       });
 
       expect(mockAddUserMessage).not.toHaveBeenCalled();
-      expect(mockMessageService.sendMessage).not.toHaveBeenCalled();
+      expect(mockSendMessage).not.toHaveBeenCalled();
     });
 
     it('should not send when no conversation ID is present', async () => {
@@ -189,7 +187,7 @@ describe('useMessageSender', () => {
 
       expect(mockToast.error).toHaveBeenCalledWith('No active conversation. Please start a new chat.');
       expect(mockAddUserMessage).not.toHaveBeenCalled();
-      expect(mockMessageService.sendMessage).not.toHaveBeenCalled();
+      expect(mockSendMessage).not.toHaveBeenCalled();
     });
 
     it('should not send when already loading', async () => {
@@ -206,7 +204,7 @@ describe('useMessageSender', () => {
         resolveFirstSend = resolve;
       });
 
-      mockMessageService.sendMessage.mockReturnValueOnce(firstSendPromise);
+      mockSendMessage.mockReturnValueOnce(firstSendPromise);
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -247,7 +245,7 @@ describe('useMessageSender', () => {
     it('should handle message service errors', async () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       const serviceError = new Error('Service error');
-      mockMessageService.sendMessage.mockRejectedValue(serviceError);
+      mockSendMessage.mockRejectedValue(serviceError);
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -282,7 +280,7 @@ describe('useMessageSender', () => {
         created_at: '2024-01-01T00:00:00Z'
       };
 
-      mockMessageService.sendMessage.mockResolvedValue(mockResponse);
+      mockSendMessage.mockResolvedValue(mockResponse);
       mockOnSidebarRefresh.mockRejectedValue(new Error('Sidebar refresh failed'));
 
       const { result } = renderHook(() =>
@@ -315,7 +313,7 @@ describe('useMessageSender', () => {
         resolveMessageService = resolve;
       });
 
-      mockMessageService.sendMessage.mockReturnValue(messageServicePromise);
+      mockSendMessage.mockReturnValue(messageServicePromise);
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -354,7 +352,7 @@ describe('useMessageSender', () => {
 
     it('should reset loading state after error', async () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      mockMessageService.sendMessage.mockRejectedValue(new Error('Test error'));
+      mockSendMessage.mockRejectedValue(new Error('Test error'));
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -387,7 +385,7 @@ describe('useMessageSender', () => {
         created_at: '2024-01-01T00:00:00Z'
       };
 
-      mockMessageService.sendMessage.mockResolvedValue(mockResponse);
+      mockSendMessage.mockResolvedValue(mockResponse);
 
       const { result } = renderHook(() =>
         useMessageSender({
@@ -402,7 +400,7 @@ describe('useMessageSender', () => {
         await result.current.handleSend('Number test');
       });
 
-      expect(mockMessageService.sendMessage).toHaveBeenCalledWith({
+      expect(mockSendMessage).toHaveBeenCalledWith({
         chat_id: '123',
         message: 'Number test',
         conversationId: '123'

@@ -1,11 +1,27 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
+
+// Mock dependencies before importing the module under test
+vi.mock('../../../../../../../api/core/apiClient', () => ({
+  apiClient: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() }
+    },
+    defaults: {
+      headers: { common: {} },
+      baseURL: 'http://localhost:5000'
+    }
+  }
+}));
+vi.mock('axios');
+
 import { conversationApi } from '../conversationApi';
 import { apiClient } from '../../../../../../../api/core/apiClient';
-
-// Mock dependencies
-vi.mock('../../../../../../../api/core/apiClient');
-vi.mock('axios');
 
 const mockApiClient = vi.mocked(apiClient);
 const mockAxios = vi.mocked(axios);

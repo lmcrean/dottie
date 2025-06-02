@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { apiClient } from '../../../../../../api/core/apiClient';
+import { authenticatedGet } from '../../shared/apiHelpers';
 import { ApiMessage, AssessmentData } from '../../../../types';
 
 export interface ConversationResponse {
@@ -14,16 +13,14 @@ export const conversationApi = {
    * Fetch conversation data from backend
    */
   async fetchConversation(conversationId: string): Promise<ConversationResponse | null> {
-    try {
-      const conversationIdString = String(conversationId);
-      const response = await apiClient.get(`/api/chat/history/${conversationIdString}`);
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return null;
+    const conversationIdString = String(conversationId);
+    return await authenticatedGet<ConversationResponse>(
+      `/api/chat/history/${conversationIdString}`,
+      { 
+        requireAuth: false, // Conversation fetching doesn't require auth check
+        handle404AsNull: true,
+        functionName: 'fetchConversation'
       }
-      console.error('Error fetching conversation:', error);
-      throw error;
-    }
+    );
   }
 }; 

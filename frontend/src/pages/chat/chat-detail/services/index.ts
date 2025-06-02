@@ -1,6 +1,6 @@
-// Services
-export { conversationService } from './conversation/conversationService';
-export { messageService } from './messages';
+// APIs
+export { conversationApi } from './conversation';
+export { sendMessage, sendInitialMessage } from './messages';
 
 // Message types
 export type { 

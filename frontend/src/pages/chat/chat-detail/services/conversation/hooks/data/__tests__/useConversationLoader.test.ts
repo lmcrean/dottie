@@ -27,7 +27,11 @@ describe('useConversationLoader', () => {
   });
 
   it('should initialize with loading state false', () => {
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No conversationId so no auto-loading
+      currentConversationId: null
+    }));
 
     expect(result.current.isLoading).toBe(false);
     expect(typeof result.current.loadConversation).toBe('function');
@@ -49,7 +53,11 @@ describe('useConversationLoader', () => {
     };
     mockConversationApi.fetchConversation.mockResolvedValue(mockConversation);
 
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No auto-loading
+      currentConversationId: null
+    }));
 
     let success: boolean;
     await act(async () => {
@@ -58,7 +66,10 @@ describe('useConversationLoader', () => {
 
     expect(success!).toBe(true);
     expect(mockConversationApi.fetchConversation).toHaveBeenCalledWith('conv-123');
-    expect(mockSetters.setMessages).toHaveBeenCalledWith(mockConversation.messages);
+    expect(mockSetters.setMessages).toHaveBeenCalledWith([
+      { role: 'user', content: 'Hello', created_at: '2024-01-01T10:00:00Z' },
+      { role: 'assistant', content: 'Hi there!', created_at: '2024-01-01T10:01:00Z' }
+    ]);
     expect(mockSetters.setCurrentConversationId).toHaveBeenCalledWith('conv-123');
     expect(mockSetters.setAssessmentId).toHaveBeenCalledWith('assess-1');
     expect(mockSetters.setAssessmentObject).toHaveBeenCalledWith(mockConversation.assessment_object);
@@ -68,7 +79,11 @@ describe('useConversationLoader', () => {
     const mockError = new Error('Network failed');
     mockConversationApi.fetchConversation.mockRejectedValue(mockError);
 
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No auto-loading
+      currentConversationId: null
+    }));
 
     let success: boolean;
     await act(async () => {
@@ -88,7 +103,11 @@ describe('useConversationLoader', () => {
   it('should handle null response (404 case) gracefully', async () => {
     mockConversationApi.fetchConversation.mockResolvedValue(null);
 
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No auto-loading
+      currentConversationId: null
+    }));
 
     let success: boolean;
     await act(async () => {
@@ -142,7 +161,11 @@ describe('useConversationLoader', () => {
     };
     mockConversationApi.fetchConversation.mockResolvedValue(mockConversation);
 
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No auto-loading
+      currentConversationId: null
+    }));
 
     let success: boolean;
     await act(async () => {
@@ -150,7 +173,9 @@ describe('useConversationLoader', () => {
     });
 
     expect(success!).toBe(true);
-    expect(mockSetters.setMessages).toHaveBeenCalledWith(mockConversation.messages);
+    expect(mockSetters.setMessages).toHaveBeenCalledWith([
+      { role: 'user', content: 'General chat', created_at: '2024-01-01T10:00:00Z' }
+    ]);
     expect(mockSetters.setCurrentConversationId).toHaveBeenCalledWith('conv-no-assessment');
     expect(mockSetters.setAssessmentId).toHaveBeenCalledWith(null);
     expect(mockSetters.setAssessmentObject).toHaveBeenCalledWith(null);
@@ -164,7 +189,11 @@ describe('useConversationLoader', () => {
     };
     mockConversationApi.fetchConversation.mockResolvedValue(mockConversation);
 
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No auto-loading
+      currentConversationId: null
+    }));
 
     let success: boolean;
     await act(async () => {
@@ -185,7 +214,11 @@ describe('useConversationLoader', () => {
       .mockResolvedValueOnce(mockConversation1)
       .mockResolvedValueOnce(mockConversation2);
 
-    const { result } = renderHook(() => useConversationLoader(mockProps));
+    const { result } = renderHook(() => useConversationLoader({
+      ...mockProps,
+      conversationId: undefined, // No auto-loading
+      currentConversationId: null
+    }));
 
     let success1: boolean, success2: boolean;
 

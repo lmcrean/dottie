@@ -1,5 +1,4 @@
-import { apiClient } from '../../../../../../api/core/apiClient';
-import { getUserData } from '../../../../../../api/core/tokenManager';
+import { authenticatedPost } from '../../shared/apiHelpers';
 
 export interface SendMessageRequest {
   chat_id: string;
@@ -20,29 +19,16 @@ export interface SendMessageResponse {
  * @endpoint /api/chat/:chatId/message (POST)
  */
 export const sendMessage = async (params: SendMessageRequest): Promise<SendMessageResponse> => {
-  try {
-    // Get the user data from token manager
-    const userData = getUserData();
-    if (!userData || !userData.id) {
-      console.error('[sendMessage] User ID not found or invalid.');
-      throw new Error('User ID not found. Please login again.');
-    }
+  const requestBody = {
+    message: params.message,
+    conversationId: params.conversationId
+  };
 
-    const requestBody = {
-      message: params.message,
-      conversationId: params.conversationId
-    };
-
-    const response = await apiClient.post<SendMessageResponse>(
-      `/api/chat/${params.chat_id}/message`,
-      requestBody
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('[sendMessage] Failed to send message:', error);
-    throw error;
-  }
+  return await authenticatedPost<typeof requestBody, SendMessageResponse>(
+    `/api/chat/${params.chat_id}/message`,
+    requestBody,
+    { functionName: 'sendMessage' }
+  );
 };
 
 export default sendMessage; 

@@ -1,5 +1,5 @@
-// Message service and API
-export { messageService } from './messageService';
+// Message APIs
+export { sendMessage, sendInitialMessage } from './api';
 export type { 
   SendMessageRequest, 
   SendMessageResponse,

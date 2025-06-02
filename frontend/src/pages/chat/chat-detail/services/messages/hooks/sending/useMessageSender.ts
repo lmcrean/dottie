@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { messageService } from '../../messageService';
+import { sendMessage } from '../../api';
 
 interface UseMessageSenderProps {
   currentConversationId: string | null;
@@ -45,7 +45,7 @@ export function useMessageSender({
     setIsLoading(true);
 
     try {
-      const response = await messageService.sendMessage({
+      const response = await sendMessage({
         chat_id: conversationIdString,
         message: userMessage,
         conversationId: conversationIdString

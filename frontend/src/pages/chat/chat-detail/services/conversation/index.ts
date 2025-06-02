@@ -2,9 +2,6 @@
 export { conversationApi } from './api';
 export type { ConversationResponse } from './api';
 
-// Service layer
-export { conversationService } from './conversationService';
-
 // Hooks
 export {
   useConversationData,
