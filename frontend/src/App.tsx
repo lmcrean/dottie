@@ -130,6 +130,15 @@ function AppContent(): ReactElement {
                 </AssessmentResultProvider>
               }
             />
+            {/* Assessment results routes - handle both with and without ID */}
+            <Route
+              path="/assessment/results"
+              element={
+                <AssessmentResultProvider>
+                  <Results />
+                </AssessmentResultProvider>
+              }
+            />
             <Route
               path="/assessment/results/:id"
               element={
