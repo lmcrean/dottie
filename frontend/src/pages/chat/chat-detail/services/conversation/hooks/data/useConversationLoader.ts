@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { conversationApi } from '../../api';
 import { ApiMessage, AssessmentData } from '../../../../../types';
 import { Message } from '../../../../types';
@@ -28,7 +28,7 @@ export function useConversationLoader({
   const [isLoading, setIsLoading] = useState(false);
   const [hasLoadedConversation, setHasLoadedConversation] = useState<string | null>(null);
 
-  const loadConversation = async (id: string): Promise<boolean> => {
+  const loadConversation = useCallback(async (id: string): Promise<boolean> => {
     try {
       setIsLoading(true);
       console.log(`[useConversationLoader] Loading conversation: ${id}`);
@@ -79,7 +79,7 @@ export function useConversationLoader({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setMessages, setCurrentConversationId, setAssessmentId, setAssessmentObject]);
 
   // Load conversation when conversationId prop changes
   useEffect(() => {
@@ -87,7 +87,7 @@ export function useConversationLoader({
       console.log(`[useConversationLoader] useEffect triggered - conversationId: ${conversationId}, hasLoadedConversation: ${hasLoadedConversation}`);
       loadConversation(conversationId);
     }
-  }, [conversationId, hasLoadedConversation]);
+  }, [conversationId, hasLoadedConversation, loadConversation]);
 
   return {
     isLoading,
