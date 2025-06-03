@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { sendMessage } from '../../api';
+import { sendMessage } from '../../messageService';
 
 interface UseMessageSenderProps {
   currentConversationId: string | null;

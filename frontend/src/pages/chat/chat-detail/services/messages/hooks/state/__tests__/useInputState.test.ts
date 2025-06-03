@@ -96,6 +96,98 @@ describe('useInputState', () => {
     });
   });
 
+  describe('sendFromInput functionality', () => {
+    it('should send message when input has content and onSend is provided', async () => {
+      const mockOnSend = vi.fn().mockResolvedValue(undefined);
+
+      const { result } = renderHook(() =>
+        useInputState({
+          initialValue: 'Hello world',
+          onSend: mockOnSend
+        })
+      );
+
+      await act(async () => {
+        await result.current.sendFromInput();
+      });
+
+      expect(mockOnSend).toHaveBeenCalledWith('Hello world');
+      expect(result.current.input).toBe(''); // Should clear after sending
+    });
+
+    it('should not send when input is empty', async () => {
+      const mockOnSend = vi.fn();
+
+      const { result } = renderHook(() =>
+        useInputState({
+          initialValue: '',
+          onSend: mockOnSend
+        })
+      );
+
+      await act(async () => {
+        await result.current.sendFromInput();
+      });
+
+      expect(mockOnSend).not.toHaveBeenCalled();
+    });
+
+    it('should not send when onSend is not provided', async () => {
+      const { result } = renderHook(() =>
+        useInputState({ initialValue: 'Some text' })
+      );
+
+      await act(async () => {
+        await result.current.sendFromInput();
+      });
+
+      // Should not throw and input should remain
+      expect(result.current.input).toBe('Some text');
+    });
+
+    it('should trim whitespace before sending', async () => {
+      const mockOnSend = vi.fn().mockResolvedValue(undefined);
+
+      const { result } = renderHook(() =>
+        useInputState({
+          initialValue: '  Hello world  ',
+          onSend: mockOnSend
+        })
+      );
+
+      await act(async () => {
+        await result.current.sendFromInput();
+      });
+
+      expect(mockOnSend).toHaveBeenCalledWith('Hello world');
+    });
+
+    it('should handle onSend errors gracefully', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const mockOnSend = vi.fn().mockRejectedValue(new Error('Send failed'));
+
+      const { result } = renderHook(() =>
+        useInputState({
+          initialValue: 'Test message',
+          onSend: mockOnSend
+        })
+      );
+
+      await act(async () => {
+        await result.current.sendFromInput();
+      });
+
+      expect(mockOnSend).toHaveBeenCalledWith('Test message');
+      expect(result.current.input).toBe(''); // Should still clear input
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[useInputState] Failed to send message from input:',
+        expect.any(Error)
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
   describe('keyboard event handling', () => {
     it('should call onEnter when Enter key is pressed', () => {
       const mockOnEnter = vi.fn();
@@ -112,6 +204,52 @@ describe('useInputState', () => {
 
       expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
       expect(mockOnEnter).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call sendFromInput when Enter is pressed and no onEnter provided but onSend is available', async () => {
+      const mockOnSend = vi.fn().mockResolvedValue(undefined);
+      const { result } = renderHook(() => 
+        useInputState({ 
+          initialValue: 'Test message',
+          onSend: mockOnSend 
+        })
+      );
+
+      const mockEvent = {
+        key: 'Enter',
+        preventDefault: vi.fn()
+      } as any;
+
+      await act(async () => {
+        result.current.handleKeyDown(mockEvent);
+      });
+
+      expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
+      expect(mockOnSend).toHaveBeenCalledWith('Test message');
+    });
+
+    it('should prioritize onEnter over sendFromInput', async () => {
+      const mockOnEnter = vi.fn();
+      const mockOnSend = vi.fn();
+      
+      const { result } = renderHook(() => 
+        useInputState({ 
+          initialValue: 'Test message',
+          onSend: mockOnSend 
+        })
+      );
+
+      const mockEvent = {
+        key: 'Enter',
+        preventDefault: vi.fn()
+      } as any;
+
+      act(() => {
+        result.current.handleKeyDown(mockEvent, mockOnEnter);
+      });
+
+      expect(mockOnEnter).toHaveBeenCalledTimes(1);
+      expect(mockOnSend).not.toHaveBeenCalled();
     });
 
     it('should not call onEnter for other keys', () => {
@@ -202,7 +340,8 @@ describe('useInputState', () => {
         input: expect.any(String),
         setInput: expect.any(Function),
         clearInput: expect.any(Function),
-        handleKeyDown: expect.any(Function)
+        handleKeyDown: expect.any(Function),
+        sendFromInput: expect.any(Function)
       });
     });
 
@@ -214,18 +353,14 @@ describe('useInputState', () => {
       expect(typeof result.current.setInput).toBe('function');
       expect(typeof result.current.clearInput).toBe('function');
       expect(typeof result.current.handleKeyDown).toBe('function');
-
-      // Trigger re-render by changing input
-      act(() => {
-        result.current.setInput('new value');
-      });
+      expect(typeof result.current.sendFromInput).toBe('function');
 
       rerender({ initialValue: 'test' });
 
-      // Functions should still be functions even if references may change
       expect(typeof result.current.setInput).toBe('function');
       expect(typeof result.current.clearInput).toBe('function');
       expect(typeof result.current.handleKeyDown).toBe('function');
+      expect(typeof result.current.sendFromInput).toBe('function');
     });
   });
 

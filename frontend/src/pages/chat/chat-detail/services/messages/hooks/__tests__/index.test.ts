@@ -14,16 +14,7 @@ describe('messages hooks exports', () => {
     const module = await import('../sending');
     
     expect(module).toHaveProperty('useMessageSender');
-    expect(module).toHaveProperty('useMessageSending');
     expect(typeof module.useMessageSender).toBe('function');
-    expect(typeof module.useMessageSending).toBe('function');
-  });
-
-  it('should export coordination hooks', async () => {
-    const module = await import('../coordination');
-    
-    expect(module).toHaveProperty('useInputSender');
-    expect(typeof module.useInputSender).toBe('function');
   });
 
   it('should export all hooks from main index', async () => {
@@ -35,24 +26,17 @@ describe('messages hooks exports', () => {
     
     // Sending hooks
     expect(module).toHaveProperty('useMessageSender');
-    expect(module).toHaveProperty('useMessageSending');
-    
-    // Coordination hooks
-    expect(module).toHaveProperty('useInputSender');
     
     // Verify all are functions
     expect(typeof module.useMessageState).toBe('function');
     expect(typeof module.useInputState).toBe('function');
     expect(typeof module.useMessageSender).toBe('function');
-    expect(typeof module.useMessageSending).toBe('function');
-    expect(typeof module.useInputSender).toBe('function');
   });
 
   it('should have consistent exports across all index files', async () => {
     const mainModule = await import('../index');
     const stateModule = await import('../state');
     const sendingModule = await import('../sending');
-    const coordinationModule = await import('../coordination');
 
     // State hooks should match
     expect(mainModule.useMessageState).toBe(stateModule.useMessageState);
@@ -60,9 +44,5 @@ describe('messages hooks exports', () => {
 
     // Sending hooks should match
     expect(mainModule.useMessageSender).toBe(sendingModule.useMessageSender);
-    expect(mainModule.useMessageSending).toBe(sendingModule.useMessageSending);
-
-    // Coordination hooks should match
-    expect(mainModule.useInputSender).toBe(coordinationModule.useInputSender);
   });
 }); 
