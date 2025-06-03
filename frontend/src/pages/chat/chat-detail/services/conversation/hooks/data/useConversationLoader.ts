@@ -26,6 +26,7 @@ export function useConversationLoader({
   currentConversationId
 }: UseConversationLoaderProps): UseConversationLoaderReturn {
   const [isLoading, setIsLoading] = useState(false);
+  const [hasLoadedConversation, setHasLoadedConversation] = useState<string | null>(null);
 
   const loadConversation = async (id: string): Promise<boolean> => {
     try {
@@ -35,6 +36,8 @@ export function useConversationLoader({
       const fullConversation = await conversationApi.fetchConversation(id);
 
       if (fullConversation) {
+        console.log(`[useConversationLoader] Conversation loaded successfully, messages count: ${fullConversation.messages.length}`);
+        
         const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
           role: msg.role,
           content: msg.content,
@@ -43,6 +46,7 @@ export function useConversationLoader({
 
         setMessages(convertedMessages);
         setCurrentConversationId(id);
+        setHasLoadedConversation(id);
 
         const assessmentIdString = fullConversation.assessment_id
           ? String(fullConversation.assessment_id)
@@ -79,10 +83,11 @@ export function useConversationLoader({
 
   // Load conversation when conversationId prop changes
   useEffect(() => {
-    if (conversationId && conversationId !== currentConversationId) {
+    if (conversationId && conversationId !== hasLoadedConversation) {
+      console.log(`[useConversationLoader] useEffect triggered - conversationId: ${conversationId}, hasLoadedConversation: ${hasLoadedConversation}`);
       loadConversation(conversationId);
     }
-  }, [conversationId, currentConversationId]);
+  }, [conversationId, hasLoadedConversation]);
 
   return {
     isLoading,

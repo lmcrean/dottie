@@ -250,15 +250,15 @@ describe('useConversationLoader', () => {
     expect(mockConversationApi.fetchConversation).toHaveBeenCalledWith('conv-123');
   });
 
-  it('should not auto-load when conversationId matches currentConversationId', () => {
+  it('should auto-load when conversationId is provided even if it matches currentConversationId', () => {
     renderHook(() => useConversationLoader({
       ...mockProps,
       conversationId: 'conv-123',
       currentConversationId: 'conv-123'
     }));
 
-    // Should not auto-load when IDs match
-    expect(mockConversationApi.fetchConversation).not.toHaveBeenCalled();
+    // Should auto-load when conversationId is provided, even if IDs match but conversation hasn't been loaded yet
+    expect(mockConversationApi.fetchConversation).toHaveBeenCalledWith('conv-123');
   });
 
   it('should not auto-load when no conversationId provided', () => {
