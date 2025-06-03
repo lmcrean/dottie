@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { sendInitialMessage } from '../../../messageService';
-import type { SendInitialMessageRequest } from '../../../messageService';
-import { authenticatedPost, normalizeChatId } from '../../../../shared/apiHelpers';
+import { sendInitialMessage } from '../../messageService';
+import type { SendInitialMessageRequest } from '../../messageService';
+import { authenticatedPost, normalizeChatId } from '../../../shared/apiHelpers';
 
 // Mock the dependencies
-vi.mock('../../../../shared/apiHelpers', () => ({
+vi.mock('../../../shared/apiHelpers', () => ({
   authenticatedPost: vi.fn(),
   normalizeChatId: vi.fn()
 }));

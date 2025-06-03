@@ -1,6 +1,6 @@
 export { SendInitialMessageButton } from './SendInitialMessageButton';
-export { sendInitialMessage } from './api/sendInitialMessage';
+export { sendInitialMessage } from '../../../services/messages/messageService';
 export type {
   SendInitialMessageRequest,
   SendInitialMessageResponse
-} from './api/sendInitialMessage';
+} from '../../../services/messages/messageService';

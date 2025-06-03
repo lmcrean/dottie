@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { sendMessage } from '../../../messageService';
-import type { SendMessageRequest } from '../../../messageService';
-import { authenticatedPost } from '../../../../shared/apiHelpers';
+import { sendMessage } from '../../messageService';
+import type { SendMessageRequest } from '../../messageService';
+import { authenticatedPost } from '../../../shared/apiHelpers';
 
 // Mock the dependencies
-vi.mock('../../../../shared/apiHelpers', () => ({
+vi.mock('../../../shared/apiHelpers', () => ({
   authenticatedPost: vi.fn()
 }));
 
