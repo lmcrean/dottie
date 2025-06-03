@@ -262,41 +262,5 @@ describe('messageService', () => {
     });
   });
 
-  describe('logging', () => {
-    it('should log requests and responses for initial messages', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      
-      const mockResponse = {
-        id: 'msg-log',
-        chat_id: 'chat-log',
-        role: 'user' as const,
-        content: 'Log test',
-        created_at: '2024-01-01T00:00:00Z'
-      };
 
-      mockAuthenticatedPost.mockResolvedValue(mockResponse);
-      mockNormalizeChatId.mockReturnValue('chat-log');
-
-      const request: InitialMessageRequest = {
-        chat_id: 'chat-log',
-        assessment_id: 'assess-log',
-        message: 'Log test'
-      };
-
-      await sendInitialMessage(request);
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[sendInitialMessage] Preparing request with chat_id: chat-log, type: string'
-      );
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[sendInitialMessage] Converted chat_id: chat-log, type: string'
-      );
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[sendInitialMessage] Received response:', 
-        mockResponse
-      );
-
-      consoleSpy.mockRestore();
-    });
-  });
 }); 

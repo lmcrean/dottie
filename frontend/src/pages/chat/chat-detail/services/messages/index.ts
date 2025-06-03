@@ -22,6 +22,5 @@ export type {
 export { 
   useMessageState,
   useInputState,
-  useMessageSender,
-  useInputSender
+  useMessageSender
 } from './hooks'; 

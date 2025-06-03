@@ -7,12 +7,6 @@ import { useMessageState } from '../../messages/hooks/state/useMessageState';
 import { useInputState } from '../../messages/hooks/state/useInputState';
 import { useConversationNavigation } from './navigation/useConversationNavigation';
 
-/**
- * Main hook for managing the overall chat page state
- * Orchestrates conversation data, message sending, input handling, and navigation
- * This manages the high-level chat page including the currently active conversation
- */
-
 export interface UseConversationPageStateProps {
   chatId?: string;
   initialMessage?: string;
@@ -41,49 +35,30 @@ export function useConversationPageState({
 }: UseConversationPageStateProps): UseConversationPageStateReturn {
   const hasSentInitialMessage = useRef(false);
 
-  // Conversation data management
   const {
-    messages,
-    setMessages,
-    currentConversationId,
-    assessmentId,
-    assessmentObject,
-    isLoading: conversationLoading,
-    loadConversation,
-    clearConversation
+    messages, setMessages, currentConversationId, assessmentId, assessmentObject,
+    isLoading: conversationLoading, loadConversation, clearConversation
   } = useConversationData({ conversationId: chatId });
 
-  // Message state operations
   const { addUserMessage, addAssistantMessage, addErrorMessage } = useMessageState({
-    messages,
-    setMessages
+    messages, setMessages
   });
 
-  // Message sending functionality
   const { isLoading: sendingLoading, handleSend: sendMessage } = useMessageSender({
-    currentConversationId,
-    addUserMessage,
-    addAssistantMessage,
-    addErrorMessage,
-    onSidebarRefresh
+    currentConversationId, addUserMessage, addAssistantMessage, addErrorMessage, onSidebarRefresh
   });
 
-  // Input state management with integrated sending
   const { input, setInput, handleKeyDown, sendFromInput } = useInputState({
     onSend: sendMessage
   });
 
-  // Navigation between chats
   const { handleConversationSelect, handleNewChat } = useConversationNavigation({
-    onConversationLoad: loadConversation,
-    onConversationClear: clearConversation
+    onConversationLoad: loadConversation, onConversationClear: clearConversation
   });
 
-  // Auto-send initial message
   useEffect(() => {
     if (initialMessage && messages.length === 0 && !hasSentInitialMessage.current) {
       hasSentInitialMessage.current = true;
-      
       sendMessage(initialMessage).catch((error: any) => {
         console.error('[useConversationPageState] Failed to send initial message:', error);
         hasSentInitialMessage.current = false;
@@ -92,17 +67,8 @@ export function useConversationPageState({
   }, [initialMessage, messages.length, sendMessage]);
 
   return {
-    messages,
-    input,
-    setInput,
+    messages, input, setInput, currentConversationId, assessmentId, assessmentObject,
     isLoading: conversationLoading || sendingLoading,
-    currentConversationId,
-    handleSend: sendMessage,
-    sendFromInput,
-    handleConversationSelect,
-    handleNewChat,
-    handleKeyDown,
-    assessmentId,
-    assessmentObject
+    handleSend: sendMessage, sendFromInput, handleConversationSelect, handleNewChat, handleKeyDown
   };
 }
