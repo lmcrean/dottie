@@ -1,13 +1,23 @@
 // APIs
 export { conversationApi } from './conversation';
-export { sendMessage, sendInitialMessage } from './messages';
+export { sendMessage, sendInitialMessage, messageService, sendMessageGeneric } from './messages';
 
-// Message types
+// Message types - Legacy exports for backward compatibility
 export type { 
   SendMessageRequest, 
   SendMessageResponse,
   SendInitialMessageRequest,
   SendInitialMessageResponse 
+} from './messages';
+
+// New unified message types
+export type {
+  BaseMessageRequest,
+  BaseMessageResponse,
+  FollowUpMessageRequest,
+  FollowUpMessageResponse,
+  InitialMessageRequest,
+  InitialMessageResponse
 } from './messages';
 
 // Main orchestration hook

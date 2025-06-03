@@ -4,7 +4,7 @@ import { Button } from '@/src/components/buttons/button';
 import { MessageCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createNewChat } from '../../../../sidebar/api/create-new/api/createNewChat';
-import { sendInitialMessage } from './api/sendInitialMessage';
+import { sendInitialMessage } from '../../../services/messages/messageService';
 import { PATTERN_DATA } from '../../../../../assessment/steps/context/types/recommendations';
 import { MenstrualPattern } from '../../../../../assessment/steps/context/types';
 
