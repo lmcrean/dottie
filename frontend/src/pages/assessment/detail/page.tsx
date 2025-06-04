@@ -336,6 +336,22 @@ export default function DetailPage() {
 
   // Render specific layout for history view (existing assessment)
   if (isHistoryView && assessment) {
+    // Get the pattern for the history view
+    const historyPattern = hasFlattenedFormat
+      ? assessment.pattern
+      : assessment.assessment_data?.pattern || 'regular';
+
+    // Ensure we have a valid pattern value
+    const safeHistoryPattern: MenstrualPattern = [
+      'regular',
+      'irregular',
+      'heavy',
+      'pain',
+      'developing'
+    ].includes(historyPattern as string)
+      ? (historyPattern as MenstrualPattern)
+      : 'regular';
+
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="mx-auto max-w-4xl px-4 py-8">
@@ -349,6 +365,12 @@ export default function DetailPage() {
             </Link>
             {id && <DeleteButton assessmentId={id} />}
           </div>
+
+          {/* Add the pattern display with icon */}
+          <div className="mb-6">
+            <DeterminedPattern pattern={safeHistoryPattern} />
+          </div>
+
           <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gray-900">
             <div className="mb-6 flex items-center justify-between">
               <div>
@@ -377,11 +399,7 @@ export default function DetailPage() {
             {' '}
             <SendInitialMessageButton
               assessmentId={id}
-              pattern={
-                hasFlattenedFormat
-                  ? (assessment.pattern as MenstrualPattern)
-                  : (assessment.assessment_data?.pattern as MenstrualPattern) || 'regular'
-              }
+              pattern={safeHistoryPattern}
             />{' '}
             <Link to="/assessment/history">
               {' '}

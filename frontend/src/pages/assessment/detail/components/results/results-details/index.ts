@@ -6,3 +6,5 @@ export * from './PainLevel';
 export * from './Symptoms';
 export * from './DeterminedPattern';
 export * from './PatternRecommendations';
+export * from './PatternDisplay';
+export * from './PatternIcon';
