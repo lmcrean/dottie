@@ -18,21 +18,27 @@ const ChatPage: React.FC = () => {
   const handleConversationSelect = useCallback(
     (conversation: ConversationListItem) => {
       console.log('[ChatPage] Conversation selected:', conversation.id);
-      navigate(`/chat/${conversation.id}`, { replace: true });
+      console.log('🔍 Current location before navigate:', window.location.href);
+      
+      // Skip React Router entirely - use direct window.location
+      const targetUrl = `/chat/${conversation.id}`;
+      console.log('🚀 Using window.location.href to navigate to:', targetUrl);
+      window.location.href = targetUrl;
     },
-    [navigate]
+    []
   );
 
   // Handle new chat request
   const handleNewChat = useCallback(() => {
     console.log('[ChatPage] New chat requested');
-    navigate('/chat');
-  }, [navigate]);
+    console.log('🚀 Using window.location.href to navigate to: /chat');
+    window.location.href = '/chat';
+  }, []);
 
   return (
-    <div className="flex bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <div className="min-h-screen w-80 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div className="h-full w-80 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <ChatSidebar
           selectedConversationId={conversationId}
           onSidebarUpdate={handleSidebarUpdate}
@@ -47,7 +53,7 @@ const ChatPage: React.FC = () => {
           <ChatDetail chatId={conversationId} onSidebarRefresh={sidebarRefresh || undefined} />
         ) : (
           /* Empty state */
-          <div className="flex min-h-screen flex-1 items-center justify-center">
+          <div className="flex h-full flex-1 items-center justify-center">
             <div className="text-center">
               <div className="mb-4">
                 <svg
