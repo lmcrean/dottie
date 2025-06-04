@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { useIsMobile } from '@/src/hooks/use-mobile';
 import UserIcon from '@/src/components/navbar/UserIcon';
@@ -19,16 +19,23 @@ const Header = ({
 }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate('/');
   };
 
   return (
     <>
       <div>
         <header className="sticky top-0 z-50 flex items-center justify-between border-b p-6 backdrop-blur-sm dark:border-b-slate-800">
-          <Link to="/">
+          <button onClick={handleLogoClick} className="border-none bg-transparent p-0">
             <motion.div
               className="flex cursor-pointer items-center gap-2"
               initial={{ scale: 0.8, opacity: 0 }}
@@ -40,7 +47,7 @@ const Header = ({
               <img src={logoSrc} alt={`${appName} Logo`} className="h-auto w-6" />
               <span className="pl-2 text-xl font-bold text-pink-600">{appName}</span>
             </motion.div>
-          </Link>
+          </button>
 
           {/* Right side container for all controls */}
           <div className="flex items-center gap-4">
