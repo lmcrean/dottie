@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { Calendar, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
 import PageTransition from '../animations/page-transitions';
@@ -9,6 +9,7 @@ import PageTransition from '../animations/page-transitions';
 export default function HistoryPage() {
   // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -118,12 +119,14 @@ export default function HistoryPage() {
                 Start your first assessment to track your menstrual health.
               </p>
               <div className="mt-6">
-                <Link
-                  to="/assessment"
+                <button
+                  onClick={() => {
+                    navigate('/assessment');
+                  }}
                   className="inline-flex items-center rounded-lg bg-pink-600 px-4 py-2 text-white transition-colors hover:bg-pink-700"
                 >
                   Start Assessment
-                </Link>
+                </button>
               </div>
             </div>
           ) : (
