@@ -28,7 +28,8 @@ const Header = ({
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate('/');
+    console.log('🚀 Using window.location.href to navigate to: /');
+    window.location.href = '/';
   };
 
   return (

@@ -39,19 +39,22 @@ const UserIcon: React.FC = () => {
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate('/user/profile');
+    console.log('🚀 Using window.location.href to navigate to: /user/profile');
+    window.location.href = '/user/profile';
   };
 
   const handleHistoryClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate('/assessment/history');
+    console.log('🚀 Using window.location.href to navigate to: /assessment/history');
+    window.location.href = '/assessment/history';
   };
 
   const handleChatClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate('/chat');
+    console.log('🚀 Using window.location.href to navigate to: /chat');
+    window.location.href = '/chat';
   };
 
   if (!isAuthenticated) {
