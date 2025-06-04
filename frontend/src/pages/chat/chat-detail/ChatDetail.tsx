@@ -41,7 +41,7 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-white dark:bg-gray-900">
+    <div className="flex h-full w-full flex-col bg-white dark:bg-gray-900">
       <MobileSidebarOverlay
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -51,7 +51,7 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
       />
 
       {/* Main Chat Area */}
-      <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex h-full flex-1 flex-col">
         <ChatHeader
           isSidebarOpen={isSidebarOpen}
           onToggleSidebar={handleToggleSidebar}
