@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { User, List } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { assessmentApi } from '@/src/pages/assessment/api';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
@@ -8,6 +8,7 @@ const UserIcon: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const [hasHistory, setHasHistory] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAssessmentHistory = async () => {
@@ -27,6 +28,18 @@ const UserIcon: React.FC = () => {
     }
   }, [isAuthenticated]);
 
+  const handleProfileClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate('/user/profile');
+  };
+
+  const handleHistoryClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate('/assessment/history');
+  };
+
   if (!isAuthenticated) {
     return (
       <Link to="/" className="text-gray-500">
@@ -38,17 +51,21 @@ const UserIcon: React.FC = () => {
   return (
     <div className="flex items-center gap-4 text-gray-500">
       {!loading && hasHistory && (
-        <Link
-          to="/assessment/history"
+        <button
+          onClick={handleHistoryClick}
           title="Assessment History"
           className="text-sm font-medium hover:text-pink-600"
         >
           <List className="h-5 w-5" />
-        </Link>
+        </button>
       )}
-      <Link to="/user/profile" title="Profile" className="hover:text-pink-600">
+      <button 
+        onClick={handleProfileClick}
+        title="Profile" 
+        className="hover:text-pink-600"
+      >
         <User className="h-5 w-5" />
-      </Link>
+      </button>
     </div>
   );
 };
