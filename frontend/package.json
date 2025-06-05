@@ -15,8 +15,11 @@
     "test": "vitest",
     "test:api": "vitest src/api/__tests__/unit/integration --testTimeout=30000",
     "test:dev:auth": "npx playwright test e2e/AuthRandomUser.spec.ts",
+    "test:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts",
     "test:debug:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --debug",
+    "test:debug:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --debug",
     "test:headed:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --headed --timeout=120000",
+    "test:headed:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --headed --timeout=180000",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
