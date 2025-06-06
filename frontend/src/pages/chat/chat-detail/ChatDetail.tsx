@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useConversationPageState } from './services/conversation/hooks/useConversationPageState';
-import { ChatHeader } from './components/header/ChatHeader';
 import { MobileSidebarOverlay } from './components/header/MobileSidebarOverlay';
 import { ChatContent } from './components/main/ChatContent';
 import { toast } from 'sonner';
@@ -9,17 +8,9 @@ interface ChatDetailProps {
   chatId?: string;
   initialMessage?: string;
   onSidebarRefresh?: () => Promise<void>;
-  isSidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
 }
 
-export function ChatDetail({
-  chatId,
-  initialMessage,
-  onSidebarRefresh,
-  isSidebarOpen: externalSidebarOpen,
-  onToggleSidebar: externalToggleSidebar
-}: ChatDetailProps) {
+export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDetailProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Ensure chatId is a string if it exists
@@ -39,14 +30,6 @@ export function ChatDetail({
     assessmentObject
   } = useConversationPageState({ chatId: chatIdString, initialMessage, onSidebarRefresh });
 
-  const handleToggleSidebar = () => {
-    if (externalToggleSidebar) {
-      externalToggleSidebar();
-    } else {
-      setIsSidebarOpen(!isSidebarOpen);
-    }
-  };
-
   const handleAssessmentError = (error: string) => {
     toast.error(error);
   };
@@ -63,13 +46,6 @@ export function ChatDetail({
 
       {/* Main Chat Area */}
       <div className="flex h-full flex-1 flex-col">
-        {' '}
-        <ChatHeader
-          isSidebarOpen={externalSidebarOpen !== undefined ? externalSidebarOpen : isSidebarOpen}
-          onToggleSidebar={handleToggleSidebar}
-          showSidebarToggle={true}
-          showCloseButton={false}
-        />
         <ChatContent
           messages={messages}
           isLoading={isLoading}
