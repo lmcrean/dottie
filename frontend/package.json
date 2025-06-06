@@ -5,15 +5,21 @@
   "type": "module",
   "scripts": {
     "dev:frontend": "vite",
+    "dev:frontend:e2e": "vite --mode e2e",
     "dev": "concurrently \"cd ../backend && npm run dev\" \"npm run dev:frontend\"",
+    "dev:e2e": "concurrently \"cd ../backend && npm run dev:e2e\" \"npm run dev:frontend:e2e\"",
     "build": "tsc -p tsconfig.build.json && vite build",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,md,json}\" --ignore-path .prettierignore",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",
-    "test:screenshots": "npx playwright test --project=safari",
-    "test:e2e:dev:regular": "npx playwright test src/components/assessment/__tests__/e2e/development/RegularCycle.spec.ts --headed --timeout=120000",
-    "test:api": "node start-api-and-test.js",
+    "test:api": "vitest src/api/__tests__/unit/integration --testTimeout=30000",
+    "test:dev:auth": "npx playwright test e2e/AuthRandomUser.spec.ts",
+    "test:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts",
+    "test:debug:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --debug",
+    "test:debug:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --debug",
+    "test:headed:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --headed --timeout=120000",
+    "test:headed:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --headed --timeout=180000",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
@@ -23,7 +29,7 @@
     ]
   },
   "engines": {
-    "node": "23.11.0"
+    "node": "22.x"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -110,12 +116,13 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
-    "jsdom": "^26.0.0",
+    "jsdom": "^26.1.0",
     "lint-staged": "^15.5.1",
     "postcss": "^8",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
     "typescript": "^5",
     "typescript-eslint": "^8.31.0",
     "vite": "^5.0.10",

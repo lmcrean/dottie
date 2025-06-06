@@ -1,43 +1,50 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock dependencies
 vi.mock('../../../../../services/logger', () => ({
-  error: vi.fn(),
-  info: vi.fn()
+  default: {
+    error: vi.fn(),
+    info: vi.fn()
+  }
 }));
 
-vi.mock('../../../../../models/chat', () => ({
-  getConversation: vi.fn().mockImplementation((conversationId, userId) => {
+vi.mock('../../../../../models/chat/index.js', () => ({
+  getConversationForUser: vi.fn().mockImplementation((conversationId, userId) => {
     if (conversationId === 'valid-conversation-id' && userId === 'user-123') {
       return Promise.resolve({
-        id: 'valid-conversation-id',
-        userId: 'user-123',
-        createdAt: '2023-06-15T10:00:00Z',
-        updatedAt: '2023-06-15T10:45:00Z',
+        success: true,
+        conversation: {
+          id: 'valid-conversation-id',
+          user_id: 'user-123',
+          assessment_id: 'assessment-1',
+          assessment_pattern: 'regular',
+          title: 'Test Conversation',
+          created_at: '2023-01-01T10:00:00.000Z',
+          updated_at: '2023-01-01T10:01:00.000Z'
+        },
         messages: [
-          { role: 'user', content: 'Hello, can you help with my period symptoms?', createdAt: '2023-06-15T10:30:00Z' },
-          { role: 'assistant', content: 'I\'d be happy to help with your period symptoms. What specifically are you experiencing?', createdAt: '2023-06-15T10:30:15Z' },
-          { role: 'user', content: 'I have severe cramps and bloating.', createdAt: '2023-06-15T10:45:00Z' }
+          { role: 'user', content: 'Hello AI', createdAt: '2023-01-01T10:00:00.000Z' },
+          { role: 'assistant', content: 'Hello User!', createdAt: '2023-01-01T10:01:00.000Z' }
         ]
       });
     }
-    return Promise.resolve(null);
+    return Promise.resolve({
+      success: false,
+      error: 'Conversation not found'
+    });
   })
 }));
 
-// Import controller after mocks are set up
-import * as getConversationController from '../../../get-conversation/controller.js';
+// Import the controller after all mocks are set up
+import * as conversationController from '../../../get-conversation/controller.js';
 
 describe('Get Conversation Controller', () => {
   let req, res;
-  
+
   beforeEach(() => {
     req = {
+      params: {},
       user: {
         id: 'user-123'
-      },
-      params: {
-        conversationId: 'valid-conversation-id'
       }
     };
     
@@ -46,22 +53,27 @@ describe('Get Conversation Controller', () => {
       json: vi.fn()
     };
   });
-  
+
   it('should retrieve a specific conversation with messages', async () => {
+    // Arrange
+    req.params.conversationId = 'valid-conversation-id';
+    
     // Act
-    await getConversationController.getConversation(req, res);
+    await conversationController.getConversation(req, res);
     
     // Assert
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       id: 'valid-conversation-id',
-      userId: 'user-123',
-      createdAt: '2023-06-15T10:00:00Z',
-      updatedAt: '2023-06-15T10:45:00Z',
+      user_id: 'user-123',
+      assessment_id: 'assessment-1',
+      assessment_pattern: 'regular',
+      title: 'Test Conversation',
+      created_at: '2023-01-01T10:00:00.000Z',
+      updated_at: '2023-01-01T10:01:00.000Z',
       messages: [
-        { role: 'user', content: 'Hello, can you help with my period symptoms?', createdAt: '2023-06-15T10:30:00Z' },
-        { role: 'assistant', content: 'I\'d be happy to help with your period symptoms. What specifically are you experiencing?', createdAt: '2023-06-15T10:30:15Z' },
-        { role: 'user', content: 'I have severe cramps and bloating.', createdAt: '2023-06-15T10:45:00Z' }
+        { role: 'user', content: 'Hello AI', createdAt: '2023-01-01T10:00:00.000Z' },
+        { role: 'assistant', content: 'Hello User!', createdAt: '2023-01-01T10:01:00.000Z' }
       ]
     });
   });
@@ -71,7 +83,7 @@ describe('Get Conversation Controller', () => {
     req.params.conversationId = 'invalid-conversation-id';
     
     // Act
-    await getConversationController.getConversation(req, res);
+    await conversationController.getConversation(req, res);
     
     // Assert
     expect(res.status).toHaveBeenCalledWith(404);
@@ -80,10 +92,10 @@ describe('Get Conversation Controller', () => {
   
   it('should return 400 if conversation ID is missing', async () => {
     // Arrange
-    req.params.conversationId = undefined;
+    req.params.conversationId = '';
     
     // Act
-    await getConversationController.getConversation(req, res);
+    await conversationController.getConversation(req, res);
     
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);

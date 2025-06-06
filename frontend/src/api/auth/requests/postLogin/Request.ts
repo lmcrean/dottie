@@ -1,6 +1,5 @@
-import { apiClient } from '../../../core/apiClient';
+import { apiClient, setAuthToken, setRefreshToken } from '../../../core/apiClient';
 import { LoginInput, AuthResponse } from '../../types';
-import { storeAuthData } from '../../../core/tokenManager';
 
 /**
  * Login user with credentials
@@ -8,18 +7,17 @@ import { storeAuthData } from '../../../core/tokenManager';
  */
 export const postLogin = async (credentials: LoginInput): Promise<AuthResponse> => {
   try {
-    console.log('[Login Debug] Making login request with:', {
-      email: credentials.email,
-      hasPassword: !!credentials.password
-    });
-
     const response = await apiClient.post('/api/auth/login', credentials);
 
-    // Use the centralized token manager to handle token storage
-    const success = storeAuthData(response.data);
-    if (!success) {
-      throw new Error('Failed to store authentication data');
+    // Store auth tokens
+    if (response.data.token) {
+      setAuthToken(response.data.token);
     }
+    
+    if (response.data.refreshToken) {
+      setRefreshToken(response.data.refreshToken);
+    }
+    
     return response.data;
   } catch (error) {
     console.error('Login failed:', error);

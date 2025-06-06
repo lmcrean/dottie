@@ -2,27 +2,29 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock dependencies
 vi.mock('../../../../../services/logger', () => ({
-  error: vi.fn(),
-  info: vi.fn()
+  default: {
+    error: vi.fn(),
+    info: vi.fn()
+  }
 }));
 
-vi.mock('../../../../../models/chat', () => ({
+vi.mock('../../../../../models/chat/index.js', () => ({
   getUserConversations: vi.fn().mockResolvedValue([
     {
       id: 'conversation-1',
-      lastMessageDate: '2023-06-15T10:30:00Z',
-      preview: 'Hello, can you help with my period symptoms?'
+      lastMessageDate: '2023-01-01T12:00:00.000Z',
+      preview: 'This is the first conversation preview'
     },
     {
       id: 'conversation-2',
-      lastMessageDate: '2023-06-16T14:45:00Z',
-      preview: 'I have a question about menstrual pain.'
+      lastMessageDate: '2023-01-02T12:00:00.000Z',
+      preview: 'This is the second conversation preview'
     }
   ])
 }));
 
 // Import controller after mocks are set up
-import * as getHistoryController from '../../../get-history/controller.js';
+import * as historyController from '../../../get-history/controller.js';
 
 describe('Get History Controller', () => {
   let req, res;
@@ -42,7 +44,7 @@ describe('Get History Controller', () => {
   
   it('should retrieve all conversations for the user', async () => {
     // Act
-    await getHistoryController.getHistory(req, res);
+    await historyController.getHistory(req, res);
     
     // Assert
     expect(res.status).toHaveBeenCalledWith(200);
@@ -50,13 +52,13 @@ describe('Get History Controller', () => {
       conversations: [
         {
           id: 'conversation-1',
-          lastMessageDate: '2023-06-15T10:30:00Z',
-          preview: 'Hello, can you help with my period symptoms?'
+          lastMessageDate: '2023-01-01T12:00:00.000Z',
+          preview: 'This is the first conversation preview'
         },
         {
           id: 'conversation-2',
-          lastMessageDate: '2023-06-16T14:45:00Z',
-          preview: 'I have a question about menstrual pain.'
+          lastMessageDate: '2023-01-02T12:00:00.000Z',
+          preview: 'This is the second conversation preview'
         }
       ]
     });

@@ -117,14 +117,17 @@ export async function createTables(db) {
       table.uuid("conversation_id").notNullable();
       table.string("role").notNullable(); // 'user' or 'assistant'
       table.text("content").notNullable();
+      table.uuid("parent_message_id").nullable(); // For message threading
       table.timestamp("created_at").defaultTo(db.fn.now());
 
       // Foreign key handling based on database type
       if (!isSQLite) {
         table.foreign("conversation_id").references("conversations.id");
+        table.foreign("parent_message_id").references("chat_messages.id");
       } else {
         try {
           table.foreign("conversation_id").references("conversations.id");
+          table.foreign("parent_message_id").references("chat_messages.id");
         } catch (error) {
           console.warn(
             "Warning: Could not create foreign key - common with SQLite:",
@@ -135,19 +138,16 @@ export async function createTables(db) {
     });
   }
 
-  // Create the assessment table with JSON schema
-  await updateAssessmentToJsonSchema(db);
-
-  // Check if we're in test mode
+  // Determine which assessment schema to use
   if (process.env.TEST_MODE === "true") {
-    // In test mode, use the special assessment schema
+    // In test mode, use the special assessment schema (includes 'age')
+
     await updateAssessmentSchema(db);
   } else {
-    // Normal assessment schema for non-test environments
-    // Assessment results table
-    if (!(await db.schema.hasTable("assessments"))) {
-      await updateAssessmentToJsonSchema(db);
-    }
+    // For development/production, ensure the flattened schema with 'age' is used.
+    // We can directly call updateAssessmentSchema as it handles dropping and recreating if needed.
+
+    await updateAssessmentSchema(db); 
   }
 
   // Enable foreign keys in SQLite

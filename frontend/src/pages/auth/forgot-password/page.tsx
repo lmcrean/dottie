@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { completePasswordReset } from '../../../api/user/requests/passwordReset/Request';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
+import { completePasswordReset } from '../../user/password/api/passwordReset/Request';
+import { Button } from '../../../components/buttons/button';
+import { Input } from '../../../components/user-inputs/input';
 import {
   Card,
   CardContent,

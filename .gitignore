@@ -11,3 +11,6 @@ node_modules/
 # Build outputs
 dist/
 *.tsbuildinfo
+
+# Documentation files
+project-structure.mdc
