@@ -9,9 +9,17 @@ interface ChatDetailProps {
   chatId?: string;
   initialMessage?: string;
   onSidebarRefresh?: () => Promise<void>;
+  isSidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
 }
 
-export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDetailProps) {
+export function ChatDetail({
+  chatId,
+  initialMessage,
+  onSidebarRefresh,
+  isSidebarOpen: externalSidebarOpen,
+  onToggleSidebar: externalToggleSidebar
+}: ChatDetailProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Ensure chatId is a string if it exists
@@ -23,7 +31,6 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
     setInput,
     isLoading,
     currentConversationId,
-    handleSend,
     sendFromInput,
     handleConversationSelect,
     handleNewChat,
@@ -33,7 +40,11 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
   } = useConversationPageState({ chatId: chatIdString, initialMessage, onSidebarRefresh });
 
   const handleToggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    if (externalToggleSidebar) {
+      externalToggleSidebar();
+    } else {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
   };
 
   const handleAssessmentError = (error: string) => {
@@ -52,13 +63,13 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
 
       {/* Main Chat Area */}
       <div className="flex h-full flex-1 flex-col">
+        {' '}
         <ChatHeader
-          isSidebarOpen={isSidebarOpen}
+          isSidebarOpen={externalSidebarOpen !== undefined ? externalSidebarOpen : isSidebarOpen}
           onToggleSidebar={handleToggleSidebar}
           showSidebarToggle={true}
           showCloseButton={false}
         />
-
         <ChatContent
           messages={messages}
           isLoading={isLoading}

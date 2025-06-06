@@ -1,13 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ChatSidebar from './sidebar/ChatSidebar';
 import { ChatDetail } from './chat-detail/ChatDetail';
 import { ConversationListItem } from './types';
 
 const ChatPage: React.FC = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
-  const navigate = useNavigate();
   const [sidebarRefresh, setSidebarRefresh] = useState<(() => Promise<void>) | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Callback to receive the loadConversations function from ChatSidebar
   const handleSidebarUpdate = useCallback((refreshFunction: () => Promise<void>) => {
@@ -15,18 +15,15 @@ const ChatPage: React.FC = () => {
   }, []);
 
   // Handle conversation selection from sidebar
-  const handleConversationSelect = useCallback(
-    (conversation: ConversationListItem) => {
-      console.log('[ChatPage] Conversation selected:', conversation.id);
-      console.log('🔍 Current location before navigate:', window.location.href);
-      
-      // Skip React Router entirely - use direct window.location
-      const targetUrl = `/chat/${conversation.id}`;
-      console.log('🚀 Using window.location.href to navigate to:', targetUrl);
-      window.location.href = targetUrl;
-    },
-    []
-  );
+  const handleConversationSelect = useCallback((conversation: ConversationListItem) => {
+    console.log('[ChatPage] Conversation selected:', conversation.id);
+    console.log('🔍 Current location before navigate:', window.location.href);
+
+    // Skip React Router entirely - use direct window.location
+    const targetUrl = `/chat/${conversation.id}`;
+    console.log('🚀 Using window.location.href to navigate to:', targetUrl);
+    window.location.href = targetUrl;
+  }, []);
 
   // Handle new chat request
   const handleNewChat = useCallback(() => {
@@ -35,10 +32,19 @@ const ChatPage: React.FC = () => {
     window.location.href = '/chat';
   }, []);
 
+  // Handle sidebar toggle
+  const handleToggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
+
   return (
     <div className="flex h-full bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <div className="h-full w-80 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div
+        className={`h-full transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? 'w-80' : 'w-0'
+        } overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800`}
+      >
         <ChatSidebar
           selectedConversationId={conversationId}
           onSidebarUpdate={handleSidebarUpdate}
@@ -50,7 +56,12 @@ const ChatPage: React.FC = () => {
       {/* Main content area */}
       <div className="flex-1">
         {conversationId ? (
-          <ChatDetail chatId={conversationId} onSidebarRefresh={sidebarRefresh || undefined} />
+          <ChatDetail
+            chatId={conversationId}
+            onSidebarRefresh={sidebarRefresh || undefined}
+            isSidebarOpen={isSidebarOpen}
+            onToggleSidebar={handleToggleSidebar}
+          />
         ) : (
           /* Empty state */
           <div className="flex h-full flex-1 items-center justify-center">
