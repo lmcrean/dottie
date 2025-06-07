@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { Calendar, ChevronRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
 import PageTransition from '../animations/page-transitions';
+import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 
 export default function HistoryPage() {
   // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
-  const navigate = useNavigate();
+  const { quickNavigate } = useQuickNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -121,7 +122,7 @@ export default function HistoryPage() {
               <div className="mt-6">
                 <button
                   onClick={() => {
-                    navigate('/assessment');
+                    quickNavigate('/assessment');
                   }}
                   className="inline-flex items-center rounded-lg bg-pink-600 px-4 py-2 text-white transition-colors hover:bg-pink-700"
                 >

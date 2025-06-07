@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { useIsMobile } from '@/src/hooks/use-mobile';
 import UserIcon from '@/src/components/navbar/UserIcon';
 import ThemeToggle from '@/src/components/theme/ThemeToggle';
+import { useQuickNavigate } from '@/src/hooks/useQuickNavigate';
 
 interface HeaderProps {
   logoSrc?: string;
@@ -19,7 +20,7 @@ const Header = ({
 }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
+  const { quickNavigate } = useQuickNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -28,8 +29,7 @@ const Header = ({
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🚀 Using window.location.href to navigate to: /');
-    window.location.href = '/';
+    quickNavigate('/');
   };
 
   return (
