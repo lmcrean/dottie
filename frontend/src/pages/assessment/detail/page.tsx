@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { Card } from '@/src/components/ui/card';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, List } from 'lucide-react';
 import { format, isValid, parseISO } from 'date-fns';
 
 import { useAssessmentData } from '../steps/context/hooks/useAssessmentData';
@@ -404,7 +404,7 @@ export default function DetailPage() {
             />
             <Link to="/assessment/history">
               <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
-                <Save className="h-5 w-5 hover:text-pink-700" />
+                <List className="h-5 w-5 hover:text-pink-700" />
                 View All Results
               </Button>
             </Link>
@@ -466,7 +466,7 @@ export default function DetailPage() {
             />
             <Link to="/assessment/history">
               <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
-                <Save className="h-5 w-5 hover:text-pink-700" />
+                <List className="h-5 w-5 hover:text-pink-700" />
                 View All Results
               </Button>
             </Link>
@@ -535,7 +535,7 @@ export default function DetailPage() {
           />
           <Link to="/assessment/history">
             <Button className="flex items-center justify-center gap-2 border border-pink-200 bg-white px-6 py-6 text-lg text-pink-600 hover:bg-pink-50">
-              <Save className="h-5 w-5 hover:text-pink-700" />
+              <List className="h-5 w-5 hover:text-pink-700" />
               View All Results
             </Button>
           </Link>
