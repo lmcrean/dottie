@@ -396,7 +396,7 @@ export default function DetailPage() {
             />
           </div>
 
-          <div className="mb-8 mt-4 flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mb-8 mt-4 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <SendInitialMessageButton
               assessmentId={id}
               pattern={safeHistoryPattern}
@@ -458,7 +458,7 @@ export default function DetailPage() {
             />
           </Card>
 
-          <div className="mb-8 mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mb-8 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <SendInitialMessageButton
               assessmentId={id}
               pattern={safePattern}
@@ -528,7 +528,7 @@ export default function DetailPage() {
           />
         </Card>
 
-        <div className="mb-8 mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+        <div className="mb-8 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <SendInitialMessageButton
             pattern={safePatternFromContext}
             className="px-6 py-6 text-lg"

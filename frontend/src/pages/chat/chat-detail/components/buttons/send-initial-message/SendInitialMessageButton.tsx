@@ -132,7 +132,7 @@ export function SendInitialMessageButton({
   return (
     <Button
       onClick={handleStartChat}
-      className={`flex w-full items-center justify-center gap-2 ${className}`}
+      className={`gap-2 ${className}`}
       variant="default"
       disabled={disabled || isLoading}
     >
