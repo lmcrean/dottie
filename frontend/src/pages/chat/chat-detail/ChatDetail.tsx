@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useConversationPageState } from './services/conversation/hooks/useConversationPageState';
-import { ChatHeader } from './components/header/ChatHeader';
 import { MobileSidebarOverlay } from './components/header/MobileSidebarOverlay';
 import { ChatContent } from './components/main/ChatContent';
 import { toast } from 'sonner';
@@ -23,7 +22,6 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
     setInput,
     isLoading,
     currentConversationId,
-    handleSend,
     sendFromInput,
     handleConversationSelect,
     handleNewChat,
@@ -31,10 +29,6 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
     assessmentId,
     assessmentObject
   } = useConversationPageState({ chatId: chatIdString, initialMessage, onSidebarRefresh });
-
-  const handleToggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   const handleAssessmentError = (error: string) => {
     toast.error(error);
@@ -52,13 +46,6 @@ export function ChatDetail({ chatId, initialMessage, onSidebarRefresh }: ChatDet
 
       {/* Main Chat Area */}
       <div className="flex h-full flex-1 flex-col">
-        <ChatHeader
-          isSidebarOpen={isSidebarOpen}
-          onToggleSidebar={handleToggleSidebar}
-          showSidebarToggle={true}
-          showCloseButton={false}
-        />
-
         <ChatContent
           messages={messages}
           isLoading={isLoading}
