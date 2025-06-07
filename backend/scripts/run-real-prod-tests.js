@@ -46,7 +46,7 @@ testProcess.on("error", (error) => {
 
 testProcess.on("close", (code) => {
   if (code === 0) {
-    console.log("✅ Real production integration tests completed successfully!");
+
   } else {
     console.error(
       `❌ Real production integration tests failed with code ${code}`

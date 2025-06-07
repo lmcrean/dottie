@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, Brain, BookOpen } from 'lucide-react';
-import { Button } from '@/src/components/ui/!to-migrate/button';
-import DottieMascot3D from '@/src/components/DottieMascot3D';
-import ErrorBoundary from '@/src/components/ErrorBoundary';
-import { useAuth } from '@/src/context/auth/useAuthContext';
+import { Button } from '@/src/components/buttons/button';
+import DottieMascot3D from '@/src/pages/landing-page/DottieMascot3D';
+import ErrorBoundary from '@/src/components/alerts/ErrorBoundary';
+import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 // import { ReactElement } from 'react';
 

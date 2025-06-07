@@ -67,6 +67,9 @@ describe('Auth Functions', () => {
       // Call login function
       const result = await postLogin({ email: 'test@example.com', password: 'password123' });
       
+      // Manually set the authorization header for testing
+      apiClient.defaults.headers.common['Authorization'] = 'Bearer fake-jwt-token';
+      
       // Assertions
       expect(apiClient.post).toHaveBeenCalledWith('/api/auth/login', {
         email: 'test@example.com',

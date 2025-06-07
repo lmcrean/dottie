@@ -1,4 +1,4 @@
-import User from '../../../models/User.js';
+import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { refreshTokens } from '../middleware/index.js';
@@ -69,8 +69,8 @@ export const login = async (req, res) => {
       });
     }
     
-    // Check if user exists
-    const user = await User.findByEmail(email);
+    // Check if user exists - pass false to get unsanitized user with password_hash
+    const user = await User.findByEmail(email, false);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }

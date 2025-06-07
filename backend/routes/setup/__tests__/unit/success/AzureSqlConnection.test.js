@@ -91,6 +91,6 @@ describe('Azure SQL Connection Tests', () => {
   afterAll(async () => {
     // Close database connection
     await db.destroy();
-    console.log('Mock database connection closed');
+
   });
 }); 

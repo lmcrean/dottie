@@ -26,6 +26,15 @@ export default defineConfig([
     ]
   },
   {
+    files: ['e2e/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      }
+    }
+  },
+  {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
       js,

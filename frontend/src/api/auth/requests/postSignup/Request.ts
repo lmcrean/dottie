@@ -1,5 +1,8 @@
 import { apiClient } from '../../../core/apiClient';
 import { SignupInput, AuthResponse } from '../../types';
+// import { API_BASE_URL } from "@/config/api"; // Removed this unused import
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 
 /**
  * Register a new user
@@ -20,6 +23,15 @@ export const postSignup = async (userData: SignupInput): Promise<AuthResponse> =
     return response.data;
   } catch (error) {
     console.error('Signup failed:', error);
+    // More detailed error logging
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Error response data:', axiosError.response.data);
+        console.error('Error response status:', axiosError.response.status);
+        console.error('Error response headers:', axiosError.response.headers);
+      }
+    }
     throw error;
   }
 };

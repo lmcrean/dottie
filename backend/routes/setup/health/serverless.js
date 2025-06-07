@@ -15,4 +15,14 @@ router.get("/serverless", (req, res) => {
   });
 });
 
+// Add a safe environment variables checker
+router.get("/env", (req, res) => {
+  res.json({
+    NODE_ENV: process.env.NODE_ENV,
+    VERCEL: process.env.VERCEL,
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'Set' : 'Not set',
+    SUPABASE_ANON_PUBLIC: process.env.SUPABASE_ANON_PUBLIC ? 'Set' : 'Not set'
+  });
+});
+
 export default router; 

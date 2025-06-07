@@ -59,5 +59,7 @@ async function initDB() {
 }
 
 const dbInstance = await initDB();
-export { dbInstance as db };
+const dbType = isProduction && isVercel ? 'Supabase' : 'SQLite';
+
+export { dbInstance as db, dbType };
 export default dbInstance;
