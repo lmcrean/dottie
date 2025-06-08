@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import logger from '../../../services/logger.js';
 import { insertChatMessage, getConversation, updateConversationAssessmentLinks } from '../../../models/chat/index.js';
+import { encryptMessage } from '../../../services/encryptionUtils.js';
 
 // Initialize Gemini API
 const API_KEY = process.env.GEMINI_API_KEY;
@@ -52,6 +53,13 @@ export const sendInitialMessage = async (req, res) => {
     const { message, assessment_id, is_initial } = req.body;
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
+    const encryptedUserKeyBase64 = req.session.decryptedUserKey;
+
+    if (!encryptedUserKeyBase64 || !userId) {
+      return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
+    }
+
+    const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
     
     // Log request received
     console.log(`[sendInitialMessage] Request received:`, {
@@ -126,8 +134,16 @@ export const sendInitialMessage = async (req, res) => {
     // Log before insertChatMessage (User Message)
     console.log(`[sendInitialMessage] Inserting user message to chat ${chatIdString}, message length: ${message.length}`);
     
-    // Save user message to database
-    const userMessage = { role: 'user', content: message };
+    logger.info("Encrypting User initial message")  
+    
+    // encrypt user message
+    const encryptedMessage = encryptMessage(decryptedUserKeyBuffer, message);
+    logger.info("===================================================")
+    logger.info("This is encrypted message", encryptedMessage)
+    logger.info("===================================================")
+
+    // Save encrypted user message to database
+    const userMessage = { role: 'user', content: encryptedMessage };
     await insertChatMessage(chatIdString, userMessage);
     
     let aiResponse;
@@ -191,8 +207,13 @@ export const sendInitialMessage = async (req, res) => {
     // Log before insertChatMessage (Assistant Message)
     console.log(`[sendInitialMessage] Inserting assistant message to chat ${chatIdString}, message length: ${aiResponse.length}`);
     
+    //encrypt AI response before storing to database  
+    logger.info("Encrypting ai response")  
+    const encryptedAiResponse = encryptMessage(decryptedUserKeyBuffer, aiResponse);
+
     // Save AI response to database
-    const assistantMessage = { role: 'assistant', content: aiResponse };
+    const assistantMessage = { role: 'assistant', content: encryptedAiResponse };
+
     await insertChatMessage(chatIdString, assistantMessage);
 
     // Return the response in the format frontend expects
@@ -200,7 +221,7 @@ export const sendInitialMessage = async (req, res) => {
       id: `msg_${Date.now()}`, // Simple message ID
       chat_id: chatIdString,
       role: 'assistant',
-      content: aiResponse,
+      content: encryptedAiResponse,
       created_at: new Date().toISOString(),
       assessment_context: assessment_id ? {
         assessment_id,

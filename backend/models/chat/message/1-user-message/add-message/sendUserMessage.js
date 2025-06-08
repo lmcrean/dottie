@@ -54,7 +54,7 @@ export const addUserMessage = async (conversationId, userId, messageText, decryp
       id: messageId,
       conversationId,
       role: 'user',
-      content: encryptedMessage,
+      content: messageText,
       parent_message_id: messageData.parent_message_id,
       created_at: messageData.created_at,
       ...context

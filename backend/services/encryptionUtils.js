@@ -111,3 +111,33 @@ export function decryptMessage(userKey, encryptedText) {
 }
 
 
+export function isLikelyEncrypted(text) {
+
+  // Check 1. Basic Type and Minimum Length Check:
+  // Base64 of 32 bytes is (32 / 3) * 4 = 42.66, so at least 44 characters (due to padding).
+  const MIN_EXPECTED_BASE64_LENGTH = 44; 
+  if (typeof text !== 'string' || text.length < MIN_EXPECTED_BASE64_LENGTH) {
+    return false;
+  }
+
+  // Check 2. Base64 Format Check:
+  // This regex is a robust check for a valid Base64 string.
+  if (!/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/.test(text)) {
+    return false;
+  }
+
+  // Check 3. Structural Check 
+  // TODO: to parse the Base64 and check if it has the expected IV and Tag lengths.
+  try {
+    const buffer = Buffer.from(text, 'base64');
+    // Check if the buffer is long enough to contain the IV and Auth Tag
+    if (buffer.length >= IV_LENGTH + 16) {
+      return true;
+    }
+  } catch (e) {
+    console.log("Error", e)
+    return false;
+  }
+
+  return false; 
+}

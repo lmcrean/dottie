@@ -11,6 +11,13 @@ export const getConversation = async (req, res) => {
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
     const { conversationId } = req.params;
+    const encryptedUserKeyBase64 = req.session.decryptedUserKey;
+
+    if (!encryptedUserKeyBase64 || !userId) {
+      return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
+    }
+
+    const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
     
     // Log the user ID for debugging
     logger.info(`Getting conversation ${conversationId} for user: ${userId}`);
@@ -25,7 +32,7 @@ export const getConversation = async (req, res) => {
     }
     
     // Get the conversation and verify ownership
-    const result = await getConversationForUser(conversationId, userId);
+    const result = await getConversationForUser(conversationId, userId, decryptedUserKeyBuffer);
     
     if (!result.success) {
       return res.status(404).json({ error: result.error || 'Conversation not found' });

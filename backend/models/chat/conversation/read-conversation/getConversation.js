@@ -1,18 +1,33 @@
 import DbService from '../../../../services/dbService.js';
 import logger from '../../../../services/logger.js';
 import ParseAssessmentJson from '../../../assessment/transformers/ParseAssessmentJson.js';
+import { decryptMessage, isLikelyEncrypted } from '../../../../services/encryptionUtils.js';
+
+
+
+
+
 
 /**
  * Retrieves conversation data for read operations
  * Simplified interface for common read patterns
  */
-async function getConversation(conversationId, options = {}) {
+async function getConversation(conversationId, decryptedUserKeyBuffer, options = {}) {
     try {
         const defaultOptions = {
             includeMessages: true,
             limit: null,
             offset: 0
         };
+
+        const decryptedmessage = (messageContent) => {
+            if (isLikelyEncrypted(messageContent)){
+                return decryptMessage(decryptedUserKeyBuffer, messageContent)
+            } else {
+                return messageContent
+            }
+        }
+
         
         const mergedOptions = { ...defaultOptions, ...options };
         
@@ -111,7 +126,7 @@ async function getConversation(conversationId, options = {}) {
             },
             messages: messages.map(message => ({
                 id: message.id,
-                content: message.content,
+                content: decryptedmessage(message.content),
                 role: message.role,
                 created_at: message.created_at
             })),
@@ -133,9 +148,9 @@ async function getConversation(conversationId, options = {}) {
     }
 }
 
-async function getConversationForUser(conversationId, userId) {
+async function getConversationForUser(conversationId, userId, decryptedUserKeyBuffer) {
     try {
-        const result = await getConversation(conversationId);
+        const result = await getConversation(conversationId, decryptedUserKeyBuffer);
         
         if (!result.success) {
             return result;
