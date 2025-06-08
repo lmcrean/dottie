@@ -1,4 +1,4 @@
-# default license
+# Default license
 
 [![CC BY-NC-ND 4.0][cc-by-nc-nd-image]][cc-by-nc-nd]
 
@@ -10,9 +10,9 @@ This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDeri
 [cc-by-nc-nd-image]: https://licensebuttons.net/l/by-nc-nd/4.0/88x31.png
 [cc-by-nc-nd-shield]: https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg
 
-# Caveat number 1 08/6/25 -- Contributors may remix and redistribute code snippets
+# Caveat number 1 08/6/25 -- Contributors may remix and redistribute code snippets that they have contributed
 
-Code Contributors may remix and redistribute the software under the following liscence.
+Code Contributors may remix and redistribute code snippets under the following liscence, providing they have written the code themselves. This does not include code written by others.
 
 ```txt
 This is free and unencumbered software released into the public domain.
