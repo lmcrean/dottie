@@ -52,6 +52,3 @@ For more information, please refer to <https://unlicense.org>
 The license refers only to the *functionality* of the software, e.g. architecture, methods, technology stack.
 
 The Design of "Dottie" is strictly copyrighted. It was kindly permitted from a third party.
-
-# license history
-- the licence was formerly [Creative Commons Attribution 4.0 International License][cc-by] with restrictions around remixing and distribution and was proposed to be changed on 08/06/25
