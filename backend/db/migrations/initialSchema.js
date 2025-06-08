@@ -17,7 +17,7 @@ export async function createTables(db) {
     await db.schema.createTable("healthcheck", (table) => {
       table.increments("id").primary();
       table.timestamp("checked_at").defaultTo(db.fn.now());
-    });    
+    });
     // Insert a dummy record to ensure the table is not empty
     await db("healthcheck").insert({});
   }
@@ -30,6 +30,9 @@ export async function createTables(db) {
       table.string("email").notNullable().unique();
       table.string("password_hash").notNullable();
       table.integer("age");
+      table.text('encrypted_key');
+      table.text('key_salt');
+      table.text('key_iv');
       table.timestamps(true, true);
     });
   }
@@ -92,11 +95,15 @@ export async function createTables(db) {
     await db.schema.createTable("conversations", (table) => {
       table.uuid("id").primary();
       table.uuid("user_id").notNullable();
+      table.text("assessment_id");
+      table.text("assessment_pattern");
+      table.text("assessment_object");
       table.timestamps(true, true);
 
       // Foreign key handling based on database type
       if (!isSQLite) {
         table.foreign("user_id").references("users.id");
+        table.foreign("assessment_id").references("assessments.id")
       } else {
         try {
           table.foreign("user_id").references("users.id");
@@ -147,7 +154,7 @@ export async function createTables(db) {
     // For development/production, ensure the flattened schema with 'age' is used.
     // We can directly call updateAssessmentSchema as it handles dropping and recreating if needed.
 
-    await updateAssessmentSchema(db); 
+    await updateAssessmentSchema(db);
   }
 
   // Enable foreign keys in SQLite

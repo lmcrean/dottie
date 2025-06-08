@@ -17,6 +17,9 @@ class CreateUser {
    * @param {string} userData.email - Email
    * @param {string} userData.password_hash - Password hash
    * @param {number} userData.age - Age (optional)
+   * @param {number} userData.encrypted_key - User Encrypted key
+   * @param {number} userData.key_salt - User KEK salt 
+   * @param {number} userData.key_iv - Encryption IV
    * @returns {Promise<object>} - Created user (sanitized) or error
    */
   static async create(userData) {
@@ -63,7 +66,10 @@ class CreateUser {
         username: ValidateUsername.normalize(userData.username),
         email: ValidateEmail.normalize(userData.email),
         password_hash: userData.password_hash,
-        age: userData.age || null
+        age: userData.age || null,
+        encrypted_key: userData.encrypted_key,
+        key_salt: userData.key_salt,
+        key_iv: userData.key_iv
       };
 
       // Create user in database

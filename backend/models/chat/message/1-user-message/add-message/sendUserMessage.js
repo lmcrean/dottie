@@ -4,6 +4,7 @@ import { formatUserMessage } from './validation/formatters/formatUserMessage.js'
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { verifyParentMessageId } from './database/linkParentMessageId.js';
 import Chat from '../../../list/chat.js';
+import { encryptMessage } from '../../../../../services/encryptionUtils.js';
 
 /**
  * Add a user message to a conversation
@@ -15,7 +16,7 @@ import Chat from '../../../list/chat.js';
  * @param {Object} [options.context] - Additional context for the message
  * @returns {Promise<Object>} - User message result
  */
-export const addUserMessage = async (conversationId, userId, messageText, options = {}) => {
+export const addUserMessage = async (conversationId, userId, messageText, decryptedUserKeyBuffer, options = {}) => {
   const { 
     parentMessageId = null, 
     context = {}
@@ -30,12 +31,14 @@ export const addUserMessage = async (conversationId, userId, messageText, option
       throw new Error('User does not own this conversation');
     }
 
+    const encryptedMessage = encryptMessage(decryptedUserKeyBuffer, messageText);
+
     // Generate message ID and create message data
     const messageId = generateMessageId();
     let messageData = {
       id: messageId,
       role: 'user',
-      content: messageText,
+      content: encryptedMessage,
       parent_message_id: parentMessageId,
       created_at: new Date().toISOString()
     };
@@ -51,7 +54,7 @@ export const addUserMessage = async (conversationId, userId, messageText, option
       id: messageId,
       conversationId,
       role: 'user',
-      content: messageText,
+      content: encryptedMessage,
       parent_message_id: messageData.parent_message_id,
       created_at: messageData.created_at,
       ...context

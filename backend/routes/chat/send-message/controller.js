@@ -11,6 +11,13 @@ export const sendMessage = async (req, res) => {
   try {    
     const { message, conversationId, assessment_id } = req.body;
     const userId = req.user.userId || req.user.id;
+    const encryptedUserKeyBase64 = req.session.decryptedUserKey;
+
+    if (!encryptedUserKeyBase64 || !userId) {
+      return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
+    }
+
+    const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
     
     logger.info(`Processing message for user: ${userId}`, { conversationId, assessment_id });
 
@@ -24,8 +31,9 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
+
     // Delegate to model layer for the complete workflow
-    const result = await sendMessageFlow(userId, message, conversationId, assessment_id);
+    const result = await sendMessageFlow(userId, message, decryptedUserKeyBuffer, conversationId, assessment_id, );
     
     if (!result.success) {
       return res.status(400).json({ error: 'Failed to process message' });
