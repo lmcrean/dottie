@@ -1,4 +1,4 @@
-# dafault license
+# default license
 
 [![CC BY-NC-ND 4.0][cc-by-nc-nd-image]][cc-by-nc-nd]
 
@@ -40,6 +40,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <https://unlicense.org>
 ```
+
+## definition of "Contributor"
+
+- a contributor can be defined as someone who has made 3 or more pull requests to this project
 
 ## Reasons for this Caveat
 
