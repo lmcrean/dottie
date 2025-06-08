@@ -10,7 +10,7 @@ This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDeri
 [cc-by-nc-nd-image]: https://licensebuttons.net/l/by-nc-nd/4.0/88x31.png
 [cc-by-nc-nd-shield]: https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg
 
-# Caveat number 1 08/6/25 -- Contributors may remix and redistribute the software
+# Caveat number 1 08/6/25 -- Contributors may remix and redistribute code snippets
 
 Code Contributors may remix and redistribute the software under the following liscence.
 
