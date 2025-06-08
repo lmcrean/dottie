@@ -15,7 +15,7 @@ class UpdatePassword {
    * @param {string} currentPasswordHash - Current password hash for verification (optional)
    * @returns {Promise<object>} - Update result
    */
-  static async updatePassword(userId, newPasswordHash, currentPasswordHash = null) {
+  static async updatePasswordandEncryptionKey(userId, newPasswordHash, newEncrypted_key,  currentPasswordHash = null) {
     try {
       // Check if user exists
       const userExists = await ReadUser.exists(userId);
@@ -50,7 +50,9 @@ class UpdatePassword {
       const updatedUser = await DbService.update(
         UserBase.getTableName(), 
         userId, 
-        { password_hash: newPasswordHash }
+        { password_hash: newPasswordHash,
+          encrypted_key: newEncrypted_key
+         }
       );
 
       return {
@@ -106,7 +108,7 @@ class UpdatePassword {
    * @param {string} newPasswordHash - New password hash
    * @returns {Promise<object>} - Update result
    */
-  static async updatePasswordWithVerification(userId, currentPasswordHash, newPasswordHash) {
+  static async updatePasswordWithVerification(userId, currentPasswordHash, newPasswordHash, newEncryptedKey) {
     try {
       // Verify current password first
       const verification = await this.verifyCurrentPassword(userId, currentPasswordHash);
@@ -118,7 +120,7 @@ class UpdatePassword {
       }
 
       // Update password
-      return await this.updatePassword(userId, newPasswordHash);
+      return await this.updatePasswordandEncryptionKey(userId, newPasswordHash, newEncryptedKey);
 
     } catch (error) {
       console.error('Error updating password with verification:', error);

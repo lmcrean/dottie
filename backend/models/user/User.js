@@ -147,8 +147,8 @@ class User {
    * @param {string} newPasswordHash - New password hash
    * @returns {Promise<object>} - Update result
    */
-  static async updatePassword(userId, currentPasswordHash, newPasswordHash) {
-    return await UpdatePassword.updatePasswordWithVerification(userId, currentPasswordHash, newPasswordHash);
+  static async updatePassword(userId, currentPasswordHash, newPasswordHash, newEncryptedKey) {
+    return await UpdatePassword.updatePasswordWithVerification(userId, currentPasswordHash, newPasswordHash, newEncryptedKey);
   }
 
   /**

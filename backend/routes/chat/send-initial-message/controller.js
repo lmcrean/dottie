@@ -138,9 +138,7 @@ export const sendInitialMessage = async (req, res) => {
     
     // encrypt user message
     const encryptedMessage = encryptMessage(decryptedUserKeyBuffer, message);
-    logger.info("===================================================")
-    logger.info("This is encrypted message", encryptedMessage)
-    logger.info("===================================================")
+
 
     // Save encrypted user message to database
     const userMessage = { role: 'user', content: encryptedMessage };
