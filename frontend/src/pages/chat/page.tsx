@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ChatSidebar from './sidebar/ChatSidebar';
 import { ChatDetail } from './chat-detail/ChatDetail';
 import { ConversationListItem } from './types';
@@ -7,6 +7,7 @@ import { SidebarToggle } from './sidebar/components';
 
 const ChatPage: React.FC = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
+  const navigate = useNavigate();
   const [sidebarRefresh, setSidebarRefresh] = useState<(() => Promise<void>) | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -16,22 +17,25 @@ const ChatPage: React.FC = () => {
   }, []);
 
   // Handle conversation selection from sidebar
-  const handleConversationSelect = useCallback((conversation: ConversationListItem) => {
-    console.log('[ChatPage] Conversation selected:', conversation.id);
-    console.log('🔍 Current location before navigate:', window.location.href);
+  const handleConversationSelect = useCallback(
+    (conversation: ConversationListItem) => {
+      console.log('[ChatPage] Conversation selected:', conversation.id);
+      console.log('🔍 Current location before navigate:', window.location.href);
 
-    // Skip React Router entirely - use direct window.location
-    const targetUrl = `/chat/${conversation.id}`;
-    console.log('🚀 Using window.location.href to navigate to:', targetUrl);
-    window.location.href = targetUrl;
-  }, []);
+      // Use React Router navigation instead of window.location
+      const targetUrl = `/chat/${conversation.id}`;
+      console.log('🚀 Using navigate to:', targetUrl);
+      navigate(targetUrl);
+    },
+    [navigate]
+  );
 
   // Handle new chat request
   const handleNewChat = useCallback(() => {
     console.log('[ChatPage] New chat requested');
-    console.log('🚀 Using window.location.href to navigate to: /chat');
-    window.location.href = '/chat';
-  }, []);
+    console.log('🚀 Using navigate to: /chat');
+    navigate('/chat');
+  }, [navigate]);
 
   // Handle sidebar toggle
   const handleToggleSidebar = useCallback(() => {
