@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, MouseEvent, useCallback } from 'react';
 import { getConversationsList } from '../api/get-list';
 import { deleteConversation } from '../api/delete-conversation';
 import { ConversationListItem } from '../../types';
@@ -8,11 +8,7 @@ export function useConversations(selectedConversationId?: string, onNewChat?: ()
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadConversations();
-  }, []);
-
-  const loadConversations = async () => {
+  const loadConversations = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getConversationsList();
@@ -22,7 +18,12 @@ export function useConversations(selectedConversationId?: string, onNewChat?: ()
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Load conversations on mount and when selectedConversationId changes
+  useEffect(() => {
+    loadConversations();
+  }, [loadConversations, selectedConversationId]);
 
   const handleDeleteConversation = async (conversationId: string, e: MouseEvent) => {
     e.stopPropagation(); // Prevent conversation selection when clicking delete
@@ -30,6 +31,8 @@ export function useConversations(selectedConversationId?: string, onNewChat?: ()
     try {
       setDeletingId(conversationId);
       await deleteConversation(conversationId);
+
+      // Update conversations list immediately
       setConversations((prev) => prev.filter((conv) => conv.id !== conversationId));
 
       // If the deleted conversation was selected, trigger new chat
@@ -38,6 +41,8 @@ export function useConversations(selectedConversationId?: string, onNewChat?: ()
       }
     } catch (error) {
       console.error('Failed to delete conversation:', error);
+      // Reload conversations list on error to ensure consistency
+      loadConversations();
     } finally {
       setDeletingId(null);
     }

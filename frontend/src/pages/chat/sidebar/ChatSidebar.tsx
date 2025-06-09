@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConversationListItem } from '../types';
 import { useConversations } from './hooks/useConversations';
@@ -19,17 +19,20 @@ export function ChatSidebar({
 }: ChatSidebarProps) {
   const navigate = useNavigate();
 
-  const handleConversationSelect = (conversation: ConversationListItem) => {
-    if (onConversationSelect) {
-      // Use callback if provided (for embedded use)
-      onConversationSelect(conversation);
-    } else {
-      // Use navigation for standalone use
-      navigate(`/chat/${conversation.id}`);
-    }
-  };
+  const handleConversationSelect = useCallback(
+    (conversation: ConversationListItem) => {
+      if (onConversationSelect) {
+        // Use callback if provided (for embedded use)
+        onConversationSelect(conversation);
+      } else {
+        // Use navigation for standalone use
+        navigate(`/chat/${conversation.id}`);
+      }
+    },
+    [navigate, onConversationSelect]
+  );
 
-  const handleNewChat = () => {
+  const handleNewChat = useCallback(() => {
     if (onNewChat) {
       // Use callback if provided (for embedded use)
       onNewChat();
@@ -37,12 +40,10 @@ export function ChatSidebar({
       // Use navigation for standalone use
       navigate('/chat');
     }
-  };
+  }, [navigate, onNewChat]);
 
-  const { conversations, loading, deletingId, loadConversations, handleDeleteConversation } = useConversations(
-    selectedConversationId,
-    handleNewChat
-  );
+  const { conversations, loading, deletingId, loadConversations, handleDeleteConversation } =
+    useConversations(selectedConversationId, handleNewChat);
 
   // Expose loadConversations function to parent components
   useEffect(() => {
