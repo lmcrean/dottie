@@ -81,7 +81,7 @@ const devPorts = [3000, 3001, 3005, 5001, 5005, 5173];
 
 const devOrigins = devPorts.flatMap((port) => [
   `http://localhost:${port}`,
-  `http://127.0.0.1:${port}`,
+  `http://127.0.0.1:${port}`
 ]);
 
 // Configure CORS
