@@ -20,8 +20,9 @@ CREATE TABLE IF NOT EXISTS public.users (
   reset_token TEXT,
   reset_token_expires TIMESTAMP,
   deleted_at TIMESTAMP,
-  encryption_salt bytea,
-  encrypted_user_key bytea,
+  encrypted_key BYTEA NOT NULL,
+  key_iv BYTEA NOT NULL,
+  key_salt BYTEA NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 
