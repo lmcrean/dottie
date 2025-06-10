@@ -82,7 +82,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const encryptedKey = user.encrypted_key;
+    const encryptedUserKey = user.encrypted_key;
     const keySalt = user.key_salt;
     if (!keySalt) {
       console.error('Error: User key_salt not found for KEK derivation.');
@@ -93,9 +93,9 @@ export const login = async (req, res) => {
 
     const derivedKek = deriveKEK( password, keySalt)
 
-    const decryptedUserKeyBuffer = decryptUserKey(encryptedKey, derivedKek)
+    const decryptedUserKey = decryptUserKey(encryptedUserKey, derivedKek)
 
-    req.session.decryptedUserKey = decryptedUserKeyBuffer.toString('base64');
+    req.session.decryptedUserKey = decryptedUserKey;
     
     // Generate JWT token
     const token = jwt.sign(

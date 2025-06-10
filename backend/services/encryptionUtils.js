@@ -21,6 +21,30 @@ export function deriveKEK(password, salt) {
 }
 
 /**
+ * Generates a cryptographically strong 256-bit (32-byte) user encryption key.
+ * This key is typically used as a Data Encryption Key (DEK) to encrypt user-specific data.
+ *
+ * @returns {Buffer} A Buffer containing the 256-bit (32-byte) randomly generated key.
+ */
+export const generateUserEncryptionKey = () => {
+  return crypto.randomBytes(32); // 256-bit key
+};
+
+
+// TODO: change IV app-wide to 12-byte(recommended)
+/**
+ * Generates a cryptographically strong 16-byte (128-bit) Initialization Vector (IV).
+ * This IV is crucial for AES-GCM encryption to ensure that encrypting the same plaintext
+ * with the same key produces different ciphertexts, enhancing security.
+ *
+ *
+ * @returns {Buffer} A Buffer containing the 16-byte randomly generated IV.
+ */
+export function generateIV(){
+  return crypto.randomBytes(16);
+}
+
+/**
  * Encrypts a user's symmetric key using a Key Encryption Key (KEK).
  *
  * This function generates a random Initialization Vector (IV)
@@ -56,9 +80,9 @@ export function encryptUserKey(userKey, kek, iv) {
  * @throws {Error} If decryption fails, often due to incorrect KEK, corrupted data, or invalid authentication tag.
  */
 export function decryptUserKey(encryptedData, kek) {
-  const iv = encryptedData.slice(0, IV_LENGTH);
-  const tag = encryptedData.slice(IV_LENGTH, IV_LENGTH + 16);
-  const ciphertext = encryptedData.slice(IV_LENGTH + 16);
+  const iv = encryptedData.subarray(0, IV_LENGTH);
+  const tag = encryptedData.subarray(IV_LENGTH, IV_LENGTH + 16);
+  const ciphertext = encryptedData.subarray(IV_LENGTH + 16);
   const decipher = crypto.createDecipheriv('aes-256-gcm', kek, iv);
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(ciphertext), decipher.final()]);
@@ -102,15 +126,32 @@ export function encryptMessage(userKey, text) {
  */
 export function decryptMessage(userKey, encryptedText) {
   const buffer = Buffer.from(encryptedText, 'base64');
-  const iv = buffer.slice(0, IV_LENGTH);
-  const tag = buffer.slice(IV_LENGTH, IV_LENGTH + 16);
-  const ciphertext = buffer.slice(IV_LENGTH + 16);
+  const iv = buffer.subarray(0, IV_LENGTH);
+  const tag = buffer.subarray(IV_LENGTH, IV_LENGTH + 16);
+  const ciphertext = buffer.subarray(IV_LENGTH + 16);
   const decipher = crypto.createDecipheriv('aes-256-gcm', userKey, iv);
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('utf8');
 }
 
 
+/**
+ * Attempts to determine if a given string is likely an AES-256-GCM encrypted, Base64-encoded text
+ * by performing basic format and structural checks. This function does not guarantee
+ * that the text is valid encrypted data, only that it *resembles* it. 
+ * 
+ * This is to optionally decrypt messages for backward compatibility
+ *
+ * It checks for:
+ * 1. Basic type (string) and minimum length expected for Base64 encoded encrypted data.
+ * 2. Adherence to a standard Base64 format.
+ * 3. A minimum buffer length after Base64 decoding, based on expected IV and Auth Tag sizes.
+ *
+ * @param {string} text The string to check for encryption characteristics.
+ * @param {number} ivLength The expected length of the Initialization Vector (IV) in bytes.
+ * (Commonly 12 or 16 for AES-GCM). This parameter is crucial for the structural check.
+ * @returns {boolean} True if the text is likely encrypted, false otherwise.
+ */
 export function isLikelyEncrypted(text) {
 
   // Check 1. Basic Type and Minimum Length Check:
@@ -127,17 +168,18 @@ export function isLikelyEncrypted(text) {
   }
 
   // Check 3. Structural Check 
-  // TODO: to parse the Base64 and check if it has the expected IV and Tag lengths.
   try {
     const buffer = Buffer.from(text, 'base64');
     // Check if the buffer is long enough to contain the IV and Auth Tag
-    if (buffer.length >= IV_LENGTH + 16) {
+    if (buffer.length >= MIN_STRUCTURAL_BUFFER_LENGTH) {
       return true;
     }
   } catch (e) {
-    console.log("Error", e)
+    // If Buffer.from fails (e.g., invalid Base64, even if regex passed, though unlikely for valid Base64),
+    // it's not encrypted data.
+    console.log("Error during Base64 decoding in isLikelyEncrypted:", e.message);
     return false;
   }
 
-  return false; 
+  return false;
 }

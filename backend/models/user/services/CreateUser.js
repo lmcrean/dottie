@@ -19,7 +19,7 @@ class CreateUser {
    * @param {number} userData.age - Age (optional)
    * @param {number} userData.encrypted_key - User Encrypted key
    * @param {number} userData.key_salt - User KEK salt 
-   * @param {number} userData.key_iv - Encryption IV
+   * @param {number} userData.key_iv - Encryption IV (Buffer/binary)
    * @returns {Promise<object>} - Created user (sanitized) or error
    */
   static async create(userData) {

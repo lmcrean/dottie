@@ -1,7 +1,7 @@
 import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { deriveKEK, encryptUserKey } from '../../../services/encryptionUtils.js';
+import { deriveKEK, encryptUserKey, generateIV, generateUserEncryptionKey } from '../../../services/encryptionUtils.js';
 
 // In-memory storage for test data
 const testEmails = new Set(['test@example.com']);
@@ -49,9 +49,7 @@ function isStrongPassword(password) {
   return true;
 }
 
-const generateUserEncryptionKey = () => {
-  return crypto.randomBytes(32); // 256-bit key
-};
+
 
 
 export const signup = async (req, res) => {
@@ -61,8 +59,8 @@ export const signup = async (req, res) => {
 
     const userEncryptionKey = generateUserEncryptionKey();
     const keySalt = crypto.randomBytes(16);
-    const keyIV = crypto.randomBytes(16);
-    const derivedKeK = await deriveKEK(password, keySalt.toString('base64'));
+    const keyIV = generateIV();
+    const derivedKeK = await deriveKEK(password, keySalt);
     const encryptedUserKey = encryptUserKey(userEncryptionKey, derivedKeK, keyIV);
 
     // Simple validation
@@ -124,8 +122,8 @@ export const signup = async (req, res) => {
       password_hash,
       age,
       encrypted_key: encryptedUserKey,
-      key_salt: keySalt.toString('base64'),
-      key_iv: keyIV.toString('base64')
+      key_salt: keySalt,
+      key_iv: keyIV,
     });
 
     // Handle the new structured response from User.create()
