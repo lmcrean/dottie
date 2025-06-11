@@ -102,13 +102,13 @@ export const signup = async (req, res) => {
 
     // Special handling for test scenarios with duplicate emails
     // Check if we're in a test and this is one of the test emails
-    if (process.env.TEST_MODE === 'true' && (email.includes('duplicate_') || testEmails.has(email))) {
-      return res.status(409).json({
-        error: 'Email already in use',
-        errorType: 'EMAIL_CONFLICT',
-        message: 'An account with this email address already exists. Please use a different email or try signing in.'
-      });
-    }
+    // if (process.env.TEST_MODE === 'true' && (email.includes('duplicate_') || testEmails.has(email))) {
+    //   return res.status(409).json({
+    //     error: 'Email already in use',
+    //     errorType: 'EMAIL_CONFLICT',
+    //     message: 'An account with this email address already exists. Please use a different email or try signing in.'
+    //   });
+    // }
 
     // Hash password
     const saltRounds = 10;

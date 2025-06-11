@@ -47,10 +47,14 @@ describe('getHistory with Assessment Fields', () => {
   let req, res;
 
   beforeEach(() => {
+
+    vi.clearAllMocks()
+
     req = {
       user: {
         userId: 'user-456'
-      }
+      }, 
+      session: {}
     };
 
     res = {
@@ -64,6 +68,9 @@ describe('getHistory with Assessment Fields', () => {
   });
 
   it('should return conversations with all assessment fields', async () => {
+    
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     await getHistory(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
@@ -101,6 +108,8 @@ describe('getHistory with Assessment Fields', () => {
   });
 
   it('should include conversations both with and without assessment links', async () => {
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     await getHistory(req, res);
 
     const responseData = res.json.mock.calls[0][0];
@@ -121,6 +130,8 @@ describe('getHistory with Assessment Fields', () => {
   });
 
   it('should maintain all required fields for each conversation', async () => {
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     await getHistory(req, res);
 
     const responseData = res.json.mock.calls[0][0];

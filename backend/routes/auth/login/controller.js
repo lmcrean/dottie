@@ -89,7 +89,6 @@ export const login = async (req, res) => {
       return res.status(500).json({ error: 'Authentication failed due to missing security data.' });
     }
 
-    // TODO: Confirm login works after password change
 
     const derivedKek = deriveKEK( password, keySalt)
 

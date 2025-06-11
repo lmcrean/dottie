@@ -30,10 +30,14 @@ describe('Get History Controller', () => {
   let req, res;
   
   beforeEach(() => {
+
+    vi.clearAllMocks()
+
     req = {
       user: {
         id: 'user-123'
-      }
+      },
+      session: {}
     };
     
     res = {
@@ -43,6 +47,9 @@ describe('Get History Controller', () => {
   });
   
   it('should retrieve all conversations for the user', async () => {
+    
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     // Act
     await historyController.getHistory(req, res);
     

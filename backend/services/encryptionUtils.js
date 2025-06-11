@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto, {scrypt} from "crypto";
 import { promisify } from "util";
 
 const KEY_LENGTH = 32; // 256-bit AES
@@ -6,7 +6,7 @@ const IV_LENGTH = 16; // For AES-GCM
 const ALGORITHM = 'aes-256-gcm';
 const TAG_LENGTH = 16;
 
-const scryptAsyncPromise = promisify(crypto.scrypt);
+const scryptAsyncPromise = promisify(scrypt);
 
 /**
  * Derives a Key Encryption Key (KEK) from a user's password and a unique salt.
