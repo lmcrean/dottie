@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { 
     generateUserEncryptionKey,
     generateIV,
@@ -13,7 +14,6 @@ const TEST_AES_256_KEY_LENGTH = 32;
 const TEST_AES_GCM_IV_LENGTH = 16;
 const TEST_AES_GCM_AUTH_TAG_LENGTH = 16;
 const TEST_PASSWORD = 'MySuperStrongPassword123!@#';
-const TEST_PLAINTEXT_DEK = Buffer.from('ThisIsMySensitiveUserEncryptionKey123456', 'utf8'); 
 
 describe('Encryption Utilities', () => {
 
@@ -166,7 +166,7 @@ describe('Encryption Utilities', () => {
     });
 
     it('should successfully decrypt valid data', () => {
-      const decrypted = decryptUserKey(encryptedDEKBuffer, kek, iv);
+      const decrypted = decryptUserKey(encryptedDEKBuffer, kek);
       expect(Buffer.isBuffer(decrypted)).toBe(true);
       expect(decrypted.toString('hex')).toBe(userKey.toString('hex'));
       expect(decrypted.length).toBe(userKey.length);
@@ -177,8 +177,8 @@ describe('Encryption Utilities', () => {
       // Tamper with the last byte of the Auth Tag
       const tagStartIndex = TEST_AES_GCM_IV_LENGTH;
       tamperedEncrypted[tagStartIndex + TEST_AES_GCM_AUTH_TAG_LENGTH - 1] ^= 0x01; // Flip a bit
-      expect(() => decryptUserKey(tamperedEncrypted, kek, iv))
-        .toThrow('Unsupported state or unable to authenticate data');
+      expect(() => decryptUserKey(tamperedEncrypted, kek))
+        .toThrow('Decryption failed due to an unexpected cryptographic error.');
     });
 
     it('should throw an error if the ciphertext is tampered with', () => {
@@ -186,36 +186,25 @@ describe('Encryption Utilities', () => {
       // Tamper with a byte in the ciphertext part
       const ciphertextStartIndex = TEST_AES_GCM_IV_LENGTH + TEST_AES_GCM_AUTH_TAG_LENGTH;
       tamperedEncrypted[ciphertextStartIndex + 5] ^= 0x01; // Flip a bit
-      expect(() => decryptUserKey(tamperedEncrypted, kek, iv))
-        .toThrow('Unsupported state or unable to authenticate data');
+      expect(() => decryptUserKey(tamperedEncrypted, kek))
+        .toThrow('Decryption failed due to an unexpected cryptographic error.');
     });
 
     it('should throw an error if the wrong KEK is used', async () => {
       const wrongSalt = crypto.randomBytes(16);
       const wrongKek = await deriveKEK('wrong_password', wrongSalt); // Generate a different KEK
-      expect(() => decryptUserKey(encryptedDEKBuffer, wrongKek, iv))
-        .toThrow('Unsupported state or unable to authenticate data');
-    });
-
-    it('should throw an error if the wrong IV is used', () => {
-      const wrongIv = generateIV(); // Generate a different IV
-      expect(() => decryptUserKey(encryptedDEKBuffer, kek, wrongIv))
-        .toThrow('IV mismatch'); // This is your custom error message from the added IV check
+      expect(() => decryptUserKey(encryptedDEKBuffer, wrongKek))
+        .toThrow('Decryption failed due to an unexpected cryptographic error.');
     });
 
     it('should throw TypeError if encryptedTextBuffer is not a Buffer', () => {
-      expect(() => decryptUserKey('string', kek, iv)).toThrow(TypeError);
-      expect(() => decryptUserKey(null, kek, iv)).toThrow(TypeError);
+      expect(() => decryptUserKey('string', kek)).toThrow(TypeError);
+      expect(() => decryptUserKey(null, kek)).toThrow(TypeError);
     });
 
     it('should throw TypeError if kek is not a Buffer', () => {
-      expect(() => decryptUserKey(encryptedDEKBuffer, 'string', iv)).toThrow(TypeError);
-      expect(() => decryptUserKey(encryptedDEKBuffer, null, iv)).toThrow(TypeError);
-    });
-
-    it('should throw TypeError if iv is not a Buffer', () => {
-      expect(() => decryptUserKey(encryptedDEKBuffer, kek, 'string')).toThrow(TypeError);
-      expect(() => decryptUserKey(encryptedDEKBuffer, kek, null)).toThrow(TypeError);
+      expect(() => decryptUserKey(encryptedDEKBuffer, 'string')).toThrow(TypeError);
+      expect(() => decryptUserKey(encryptedDEKBuffer, null)).toThrow(TypeError);
     });
   });
 
@@ -233,41 +222,29 @@ describe('Encryption Utilities', () => {
     });
 
     it('should return true for a valid Base64 encoded encrypted string', () => {
-      expect(isLikelyEncrypted(encryptedBase64, TEST_AES_GCM_IV_LENGTH)).toBe(true);
+      expect(isLikelyEncrypted(encryptedBase64)).toBe(true);
     });
 
     it('should return false for plain text', () => {
-      expect(isLikelyEncrypted('Hello World!', TEST_AES_GCM_IV_LENGTH)).toBe(false);
+      expect(isLikelyEncrypted('Hello World!')).toBe(false);
     });
 
     it('should return false for non-Base64 strings', () => {
-      expect(isLikelyEncrypted('!@#$%^&*()', TEST_AES_GCM_IV_LENGTH)).toBe(false);
-      expect(isLikelyEncrypted('some_text with spaces', TEST_AES_GCM_IV_LENGTH)).toBe(false);
+      expect(isLikelyEncrypted('!@#$%^&*()')).toBe(false);
+      expect(isLikelyEncrypted('some_text with spaces')).toBe(false);
     });
 
     it('should return false for an empty string', () => {
-      expect(isLikelyEncrypted('', TEST_AES_GCM_IV_LENGTH)).toBe(false);
+      expect(isLikelyEncrypted('')).toBe(false);
     });
 
     it('should return false for Base64 strings that are too short to contain IV and Tag', () => {
       // Create a base64 string that's too short, e.g., 10 bytes encoded to base64
       const shortBuffer = Buffer.from([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       const shortBase64 = shortBuffer.toString('base64');
-      expect(isLikelyEncrypted(shortBase64, TEST_AES_GCM_IV_LENGTH)).toBe(false);
+      expect(isLikelyEncrypted(shortBase64)).toBe(false);
     });
 
-    it('should return false if ivLength is not a number or invalid', () => {
-      expect(isLikelyEncrypted(encryptedBase64, null)).toBe(false);
-      expect(isLikelyEncrypted(encryptedBase64, undefined)).toBe(false);
-      expect(isLikelyEncrypted(encryptedBase64, 'abc')).toBe(false);
-      expect(isLikelyEncrypted(encryptedBase64, 0)).toBe(false);
-      expect(isLikelyEncrypted(encryptedBase64, -1)).toBe(false);
-      expect(isLikelyEncrypted(encryptedBase64, 1.5)).toBe(false); // Must be integer
-    });
 
-    it('should return false if Base64 string is correctly formed but too short for specified ivLength', () => {
-        // Assume ivLength is 20 for this test, but the actual encryptedBase64 was generated with 16 IV
-        expect(isLikelyEncrypted(encryptedBase64, 20)).toBe(false);
-    });
   });
 });

@@ -86,7 +86,7 @@ describe('User Models Index', () => {
     it('should have update methods', () => {
       expect(typeof User.updateEmail).toBe('function');
       expect(typeof User.updateUsername).toBe('function');
-      expect(typeof User.updatePassword).toBe('function');
+      expect(typeof User.updatePasswordAndEncrytion).toBe('function');
     });
 
     it('should have validation methods', () => {

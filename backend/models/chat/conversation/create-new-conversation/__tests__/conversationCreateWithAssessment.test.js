@@ -69,7 +69,7 @@ describe('conversationCreate with assessment linking', () => {
         created_at: expect.any(String),
         updated_at: expect.any(String),
         assessment_id: mockAssessmentId,
-        assessment_object: mockAssessmentObject,
+        assessment_object: JSON.stringify(mockAssessmentObject),
         assessment_pattern: 'irregular'
       });
 
@@ -135,7 +135,8 @@ describe('conversationCreate with assessment linking', () => {
         created_at: expect.any(String),
         updated_at: expect.any(String),
         assessment_id: mockAssessmentId,
-        assessment_object: assessmentWithoutPattern
+        assessment_object: JSON.stringify(assessmentWithoutPattern),
+
       });
 
       expect(conversationId).toBe(mockConversationId);

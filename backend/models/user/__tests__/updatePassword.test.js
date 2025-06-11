@@ -21,6 +21,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'user-123';
       const currentPasswordHash = 'current_password_hash';
       const newPasswordHash = 'new_password_hash';
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       const expectedResult = {
         success: true,
@@ -36,9 +39,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
       UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-      const result = await User.updatePassword(userId, currentPasswordHash, newPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
 
-      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash);
+      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
       expect(result.success).toBe(true);
       expect(result.user).toBeDefined();
       expect(result.user.id).toBe(userId);
@@ -50,6 +53,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'non-existent-user';
       const currentPasswordHash = 'current_password_hash';
       const newPasswordHash = 'new_password_hash';
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       const expectedResult = {
         success: false,
@@ -58,9 +64,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
       UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-      const result = await User.updatePassword(userId, currentPasswordHash, newPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
 
-      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash);
+      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
       expect(result.success).toBe(false);
       expect(result.errors).toContain('User not found');
     });
@@ -69,6 +75,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'user-123';
       const wrongCurrentPasswordHash = 'wrong_password_hash';
       const newPasswordHash = 'new_password_hash';
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       const expectedResult = {
         success: false,
@@ -77,9 +86,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
       UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-      const result = await User.updatePassword(userId, wrongCurrentPasswordHash, newPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, wrongCurrentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
 
-      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, wrongCurrentPasswordHash, newPasswordHash);
+      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, wrongCurrentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
       expect(result.success).toBe(false);
       expect(result.errors).toContain('Current password is incorrect');
     });
@@ -88,6 +97,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'user-123';
       const currentPasswordHash = 'current_password_hash';
       const invalidPasswordHashes = ['', '   ', 'too_short', '123', null, undefined];
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       for (const invalidPasswordHash of invalidPasswordHashes) {
         const expectedResult = {
@@ -97,9 +109,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
         UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-        const result = await User.updatePassword(userId, currentPasswordHash, invalidPasswordHash);
+        const result = await User.updatePasswordAndEncrytion(userId, currentPasswordHash, invalidPasswordHash, encryptedKey, keyIv, keySalt);
 
-        expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, invalidPasswordHash);
+        expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, invalidPasswordHash, encryptedKey, keyIv, keySalt);
         expect(result.success).toBe(false);
         expect(result.errors).toContain('Invalid password hash');
       }
@@ -109,6 +121,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'user-123';
       const currentPasswordHash = 'same_password_hash';
       const newPasswordHash = 'same_password_hash'; // Same as current
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       const expectedResult = {
         success: false,
@@ -117,9 +132,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
       UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-      const result = await User.updatePassword(userId, currentPasswordHash, newPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
 
-      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash);
+      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt); 
       expect(result.success).toBe(false);
       expect(result.errors).toContain('New password must be different from current password');
     });
@@ -128,6 +143,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'user-123';
       const currentPasswordHash = 'current_password_hash';
       const newPasswordHash = 'new_password_hash';
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       const expectedResult = {
         success: false,
@@ -136,9 +154,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
       UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-      const result = await User.updatePassword(userId, currentPasswordHash, newPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
 
-      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash);
+      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, newPasswordHash, encryptedKey, keyIv, keySalt);
       expect(result.success).toBe(false);
       expect(result.errors).toContain('Database error during update');
     });
@@ -147,6 +165,9 @@ describe('Update Password Tests (TDD Plan)', () => {
       const userId = 'user-123';
       const currentPasswordHash = 'current_password_hash';
       const weakPasswordHash = 'weak_hash';
+      const encryptedKey = Buffer.alloc(64);
+      const keyIv = Buffer.alloc(16);
+      const keySalt = Buffer.alloc(16);
 
       const expectedResult = {
         success: false,
@@ -155,9 +176,9 @@ describe('Update Password Tests (TDD Plan)', () => {
 
       UpdatePassword.updatePasswordWithVerification.mockResolvedValue(expectedResult);
 
-      const result = await User.updatePassword(userId, currentPasswordHash, weakPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, currentPasswordHash, weakPasswordHash, encryptedKey, keyIv, keySalt);
 
-      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, weakPasswordHash);
+      expect(UpdatePassword.updatePasswordWithVerification).toHaveBeenCalledWith(userId, currentPasswordHash, weakPasswordHash, encryptedKey, keyIv, keySalt);
       expect(result.success).toBe(false);
       expect(result.errors).toContain('Password does not meet strength requirements');
     });

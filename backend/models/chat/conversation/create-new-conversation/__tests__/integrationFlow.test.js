@@ -75,7 +75,7 @@ describe('Conversation creation integration flow', () => {
         created_at: expect.any(String),
         updated_at: expect.any(String),
         assessment_id: mockAssessmentId,
-        assessment_object: fullAssessmentData,
+        assessment_object: JSON.stringify(fullAssessmentData),
         assessment_pattern: 'irregular'
       });
 
@@ -122,7 +122,7 @@ describe('Conversation creation integration flow', () => {
       expect(DbService.create).toHaveBeenCalledWith('conversations', 
         expect.objectContaining({
           assessment_pattern: 'regular',
-          assessment_object: productionAssessment
+          assessment_object: JSON.stringify(productionAssessment)
         })
       );
     });
@@ -175,15 +175,18 @@ describe('Conversation creation integration flow', () => {
       // Should still create with available data
       expect(DbService.create).toHaveBeenCalledWith('conversations', 
         expect.objectContaining({
-          assessment_pattern: 'irregular',
-          assessment_object: expect.objectContaining({
-            pattern: 'irregular',
-            physical_symptoms: [],
-            emotional_symptoms: [],
-            other_symptoms: null,
-            recommendations: []
-          })
-        })
+        id: mockConversationId,
+        assessment_pattern: 'irregular',
+        physical_symptoms: [],
+        emotional_symptoms: [],
+        other_symptoms: null,
+        recommendations: [],
+        assessment_id: mockAssessmentId,
+        assessment_object: expect.any(String),
+        created_at: expect.any(String), 
+        updated_at: expect.any(String),
+        user_id: mockUserId
+        }),
       );
     });
   });
