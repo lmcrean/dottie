@@ -53,13 +53,11 @@ export const sendInitialMessage = async (req, res) => {
     const { message, assessment_id, is_initial } = req.body;
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
-    const encryptedUserKeyBase64 = req.session.decryptedUserKey;
+    const decryptedUserKey = req.session.decryptedUserKey;
 
-    if (!encryptedUserKeyBase64 || !userId) {
+    if (!decryptedUserKey || !userId) {
       return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
     }
-
-    const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
     
     // Log request received
     console.log(`[sendInitialMessage] Request received:`, {
@@ -137,7 +135,7 @@ export const sendInitialMessage = async (req, res) => {
     logger.info("Encrypting User initial message")  
     
     // encrypt user message
-    const encryptedMessage = encryptMessage(decryptedUserKeyBuffer, message);
+    const encryptedMessage = encryptMessage(decryptedUserKey, message);
 
 
     // Save encrypted user message to database
@@ -207,7 +205,7 @@ export const sendInitialMessage = async (req, res) => {
     
     //encrypt AI response before storing to database  
     logger.info("Encrypting ai response")  
-    const encryptedAiResponse = encryptMessage(decryptedUserKeyBuffer, aiResponse);
+    const encryptedAiResponse = encryptMessage(decryptedUserKey, aiResponse);
 
     // Save AI response to database
     const assistantMessage = { role: 'assistant', content: encryptedAiResponse };

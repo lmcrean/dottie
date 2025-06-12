@@ -19,7 +19,7 @@ export const createConversation = async (userId, assessmentId = null) => {
       assessmentIdType: assessmentId ? typeof assessmentId : 'null'
     });
 
-    if (!userId) {
+    if (!userId ) {
       throw new Error('User ID is required and cannot be empty');
     }
 

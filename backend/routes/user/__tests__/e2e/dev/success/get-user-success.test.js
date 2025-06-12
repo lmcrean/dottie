@@ -28,6 +28,8 @@ beforeAll(async () => {
       });
     });
 
+    const timestamp = Date.now();
+
     // Create a test user
     testUserId = `test-user-${Date.now()}`;
     testUser = {
@@ -38,6 +40,9 @@ beforeAll(async () => {
       age: "25_34",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      encrypted_key: Buffer.alloc(64, 0xA4),
+      key_iv: Buffer.alloc(64, 0xA4), 
+      key_salt: Buffer.alloc(64, 0xA4) 
     };
 
     // Insert the test user into the database
@@ -95,6 +100,9 @@ describe("Get User API - Success Cases", () => {
     expect(response.body).toHaveProperty("email");
     expect(response.body).toHaveProperty("age");
     expect(response.body).not.toHaveProperty("password_hash"); // Should not expose password hash
+    expect(response.body).not.toHaveProperty('encrypted_key');
+    expect(response.body).not.toHaveProperty('key_iv')
+    expect(response.body).not.toHaveProperty('key_salt')
   });
 
   it("should require authentication to access user data", async () => {

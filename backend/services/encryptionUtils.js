@@ -89,7 +89,7 @@ export function encryptUserKey(userKey, kek, iv) {
     return Buffer.concat([iv, tag, encrypted]);
   } catch (error) {
     console.error('Error during encryption:', error);
-    throw new Error('Encryption failed. Please check inputs.');
+    throw new Error('Encryption failed. Please check inputs.', error);
   }
 }
 
@@ -166,8 +166,15 @@ export function decryptUserKey(encryptedData, kek) {
  * @throws {Error} If encryption fails (e.g., invalid key, data encoding issues).
  */
 export function encryptMessage(userKey, text) {
+
+  // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply 
+  let userKeyBuffer = userKey
+  if (userKey && userKey.type === 'Buffer' && Array.isArray(userKey.data)) {
+    userKeyBuffer = Buffer.from(userKey.data); 
+  } 
+
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv("aes-256-gcm", userKey, iv);
+  const cipher = crypto.createCipheriv("aes-256-gcm", userKeyBuffer, iv);
   const encrypted = Buffer.concat([
     cipher.update(text, "utf8"),
     cipher.final(),
@@ -191,11 +198,18 @@ export function encryptMessage(userKey, text) {
  * @throws {Error} If decryption fails, often due to an incorrect user key, corrupted data, or invalid authentication tag.
  */
 export function decryptMessage(userKey, encryptedText) {
+
+  // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply 
+  let userKeyBuffer = userKey
+  if (userKey && userKey.type === 'Buffer' && Array.isArray(userKey.data)) {
+    userKeyBuffer = Buffer.from(userKey.data); 
+  } 
+
   const buffer = Buffer.from(encryptedText, "base64");
   const iv = buffer.subarray(0, IV_LENGTH);
   const tag = buffer.subarray(IV_LENGTH, IV_LENGTH + 16);
   const ciphertext = buffer.subarray(IV_LENGTH + 16);
-  const decipher = crypto.createDecipheriv("aes-256-gcm", userKey, iv);
+  const decipher = crypto.createDecipheriv("aes-256-gcm", userKeyBuffer, iv);
   decipher.setAuthTag(tag);
   return Buffer.concat([
     decipher.update(ciphertext),

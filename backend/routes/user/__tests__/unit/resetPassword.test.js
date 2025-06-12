@@ -42,10 +42,8 @@ vi.mock('bcrypt', () => {
 // Import bcrypt after mocking
 import bcrypt from 'bcrypt';
 
-// --- FIX: Corrected crypto mock definition ---
+
 vi.mock('crypto', () => {
-  // This mock for 'scrypt' must adhere to the Node.js callback pattern:
-  // (password, salt, keylen, callback) => callback(error, derivedKey)
   const mockScrypt = vi.fn((password, salt, keylen, callback) => {
     // Simulate asynchronous operation
     process.nextTick(() => {
@@ -62,19 +60,15 @@ vi.mock('crypto', () => {
       randomBytes: vi.fn(() => ({
         toString: vi.fn(() => 'mock-reset-token')
       })),
-      // IMPORTANT: Add scrypt to the default export if your code uses `crypto.default.scrypt`
-      // Although `import { scrypt }` is used in your encryptionUtils, it's good to be comprehensive
       scrypt: mockScrypt
     },
-    // IMPORTANT: Add randomBytes and scrypt as named exports
-    // This is crucial for `import {scrypt} from "crypto";` and `import {randomBytes} from "crypto";`
     randomBytes: vi.fn(() => ({
       toString: vi.fn(() => 'mock-reset-token')
     })),
-    scrypt: mockScrypt // <--- THIS IS THE PRIMARY FIX for the "No 'scrypt' export" error
+    scrypt: mockScrypt 
   };
 });
-// --- END FIX ---
+
 
 
 // Mock validators

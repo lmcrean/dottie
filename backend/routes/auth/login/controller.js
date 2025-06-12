@@ -90,7 +90,7 @@ export const login = async (req, res) => {
     }
 
 
-    const derivedKek = deriveKEK( password, keySalt)
+    const derivedKek = await deriveKEK( password, keySalt)
 
     const decryptedUserKey = decryptUserKey(encryptedUserKey, derivedKek)
 

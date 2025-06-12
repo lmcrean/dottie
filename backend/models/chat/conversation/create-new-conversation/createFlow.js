@@ -17,8 +17,14 @@ export const createAssessmentConversation = async (userId, assessmentId) => {
       assessmentIdType: assessmentId ? typeof assessmentId : 'null'
     });
 
+    // Null values are -> "null" ( typeof strings )
+    if (!userId ) {
+      throw new Error('User ID is required and cannot be empty');
+    }
     // Ensure IDs are strings
     const userIdString = String(userId);
+
+
     const assessmentIdString = assessmentId ? String(assessmentId) : null;
     
     // Log after type conversion

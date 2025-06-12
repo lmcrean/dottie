@@ -50,13 +50,13 @@ export const sendFollowUpMessage = async (req, res) => {
     const { message, conversationId } = req.body;
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
-    const encryptedUserKeyBase64 = req.session.decryptedUserKey;
+    const decryptedUserKey = req.session.decryptedUserKey;
 
-    if (!encryptedUserKeyBase64 || !userId) {
+    if (!decryptedUserKey || !userId) {
       return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
     }
 
-    const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
+    // const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
     
     logger.info(`[sendFollowUpMessage] Processing follow-up message for user: ${userId}`, { 
       chatId, 
@@ -87,7 +87,7 @@ export const sendFollowUpMessage = async (req, res) => {
       return res.status(404).json({ error: 'Chat conversation not found' });
     }
 
-    const encryptedMessage = encryptMessage(decryptedUserKeyBuffer, message);
+    const encryptedMessage = encryptMessage(decryptedUserKey, message);
 
 
     // Save user message to database
@@ -156,7 +156,7 @@ export const sendFollowUpMessage = async (req, res) => {
     }
     
     // Save Encrypted AI response to database
-    const encryptedAiResponse = encryptMessage(decryptedUserKeyBuffer, aiResponse);
+    const encryptedAiResponse = encryptMessage(decryptedUserKey, aiResponse);
     const assistantMessage = { role: 'assistant', content: encryptedAiResponse };
     await insertChatMessage(targetConversationId, assistantMessage);
 
