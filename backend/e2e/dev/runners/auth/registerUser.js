@@ -8,8 +8,8 @@
  * @param {Object} userData - User data for registration
  * @returns {Promise<Object>} Result with user ID and token
  */
-export async function registerUser(request, userData) {
-  const response = await request.post("/api/auth/signup", {
+export async function registerUser(requestContext, userData) {
+  const response = await requestContext.post("/api/auth/signup", {
     data: userData,
   });
 

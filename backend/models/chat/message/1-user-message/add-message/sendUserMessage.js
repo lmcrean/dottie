@@ -16,7 +16,7 @@ import { encryptMessage } from '../../../../../services/encryptionUtils.js';
  * @param {Object} [options.context] - Additional context for the message
  * @returns {Promise<Object>} - User message result
  */
-export const addUserMessage = async (conversationId, userId, messageText, decryptedUserKeyBuffer, options = {}) => {
+export const addUserMessage = async (conversationId, userId, messageText, decryptedUserKey, options = {}) => {
   const { 
     parentMessageId = null, 
     context = {}
@@ -31,7 +31,7 @@ export const addUserMessage = async (conversationId, userId, messageText, decryp
       throw new Error('User does not own this conversation');
     }
 
-    const encryptedMessage = encryptMessage(decryptedUserKeyBuffer, messageText);
+    const encryptedMessage = encryptMessage(decryptedUserKey, messageText);
 
     // Generate message ID and create message data
     const messageId = generateMessageId();

@@ -10,8 +10,10 @@
  * @param {Object} assessmentData - Assessment data
  * @returns {Promise<string>} Assessment ID
  */
+
+
 export async function createAssessment(
-  request,
+  requestContext,
   token,
   userId,
   assessmentData = null
@@ -40,7 +42,8 @@ export async function createAssessment(
     }
   };
 
-  const response = await request.post("/api/assessment/send", {
+
+  const response = await requestContext.post("/api/assessment/send", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

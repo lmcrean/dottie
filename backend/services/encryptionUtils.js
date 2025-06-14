@@ -169,6 +169,10 @@ export function encryptMessage(userKey, text) {
 
   // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply 
   let userKeyBuffer = userKey
+  // console.log("========================This is Encrypt User Key===================")
+  // console.trace("This is Encrypt User Key: ", userKey)
+  // console.log("========================This is Encrypt User Key===================")
+
   if (userKey && userKey.type === 'Buffer' && Array.isArray(userKey.data)) {
     userKeyBuffer = Buffer.from(userKey.data); 
   } 
@@ -201,6 +205,10 @@ export function decryptMessage(userKey, encryptedText) {
 
   // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply 
   let userKeyBuffer = userKey
+  // console.log("========================This is Decrpyt User Key===================")
+  // console.trace("Decrpyt User Key: ",  userKey)
+  // console.log("========================This is Decrpyt User Key===================")
+
   if (userKey && userKey.type === 'Buffer' && Array.isArray(userKey.data)) {
     userKeyBuffer = Buffer.from(userKey.data); 
   } 
@@ -230,43 +238,42 @@ export function decryptMessage(userKey, encryptedText) {
  * 3. A minimum buffer length after Base64 decoding, based on expected IV and Auth Tag sizes.
  *
  * @param {string} text The string to check for encryption characteristics.
- * @param {number} ivLength The expected length of the Initialization Vector (IV) in bytes.
- * (Commonly 12 or 16 for AES-GCM). This parameter is crucial for the structural check.
  * @returns {boolean} True if the text is likely encrypted, false otherwise.
  */
 export function isLikelyEncrypted(text) {
   // Check 1. Basic Type and Minimum Length Check:
-  // Base64 of 32 bytes is (32 / 3) * 4 = 42.66, so at least 44 characters (due to padding).
-  const MIN_EXPECTED_BASE64_LENGTH = 44;
-  const MIN_STRUCTURAL_BUFFER_LENGTH = Math.ceil((IV_LENGTH + TAG_LENGTH) / 3) * 4;
+  const MIN_ENCRYPTED_CONTENT_LENGTH_BYTES = 1; // At least 1 byte of encrypted data
+  const MIN_TOTAL_BYTES = IV_LENGTH + TAG_LENGTH + MIN_ENCRYPTED_CONTENT_LENGTH_BYTES;
+  const MIN_EXPECTED_BASE64_LENGTH = Math.ceil(MIN_TOTAL_BYTES / 3) * 4; // Ensure proper Base64 padding consideration
+
   if (typeof text !== "string" || text.length < MIN_EXPECTED_BASE64_LENGTH) {
+    // console.log("isLikelyEncrypted: Failed Type or Minimum Length Check");
     return false;
   }
 
   // Check 2. Base64 Format Check:
-  // This regex is a robust check for a valid Base64 string.
-  if (
-    !/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/.test(text)
-  ) {
+  if (!/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/.test(text)) {
+    // console.log("isLikelyEncrypted: Failed Base64 Format Check");
     return false;
   }
 
-  // Check 3. Structural Check
+  // Check 3. Structural Check (Decoding and Length Verification):
   try {
     const buffer = Buffer.from(text, "base64");
-    // Check if the buffer is long enough to contain the IV and Auth Tag
-    if (buffer.length >= MIN_STRUCTURAL_BUFFER_LENGTH) {
-      return true;
+
+    // The encrypted message structure is IV (16 bytes) + Auth Tag (16 bytes) + Encrypted Data.
+    // So, the buffer must be at least IV_LENGTH + TAG_LENGTH long.
+    if (buffer.length < (IV_LENGTH + TAG_LENGTH)) {
+      // console.log(`isLikelyEncrypted: Buffer too short (${buffer.length} bytes). Expected at least ${IV_LENGTH + TAG_LENGTH} bytes.`);
+      return false;
     }
+
+    // console.log("isLikelyEncrypted: TRUE (Passed all checks)");
+    return true;
   } catch (e) {
-    // If Buffer.from fails (e.g., invalid Base64, even if regex passed, though unlikely for valid Base64),
-    // it's not encrypted data.
-    console.log(
-      "Error during Base64 decoding in isLikelyEncrypted:",
-      e.message
-    );
+
+    // console.error("Error during Base64 decoding in isLikelyEncrypted:", e.message);
+    // console.log("isLikelyEncrypted: FALSE (Buffer decoding error)");
     return false;
   }
-
-  return false;
 }

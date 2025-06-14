@@ -58,30 +58,31 @@ const PORT = process.env.PORT || (isMac ? 5001 : 5000);
 // Determine environment
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-// Middleware
-app.use(express.json());
-app.use(cookieParser());
-
 app.use(
   session({
     // store: redisStore,
     secret: process.env.JWT_SECRET || "random-session-key",
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
-      // secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-      // sameSite: "lax",
+      sameSite: "lax",
     },
   })
 );
+
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
 
 const devPorts = [3000, 3001, 3005, 5001, 5005, 5173];
 
 const devOrigins = devPorts.flatMap((port) => [
   `http://localhost:${port}`,
-  `http://127.0.0.1:${port}`
+  `http://127.0.0.1:${port}`,
 ]);
 
 // Configure CORS
@@ -113,6 +114,21 @@ app.get("/api/health", (req, res) => {
     status: "ok",
     message: "Server is running",
     environment: process.env.NODE_ENV || "development",
+  });
+});
+
+app.get("/api/debug/session", (req, res) => {
+  // Security: Only available in test/development mode
+  if (process.env.NODE_ENV === "production") {
+    return res.status(403).json({ error: "Not available in production" });
+  }
+
+  const hasDecryptedKey = !!req.session.decryptedUserKey;
+
+  res.json({
+    sessionActive: !!req.session,
+    hasDecryptedUserKey: hasDecryptedKey,
+    sessionID: req.session.id,
   });
 });
 

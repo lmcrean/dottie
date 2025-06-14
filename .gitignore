@@ -14,3 +14,9 @@ dist/
 
 # Documentation files
 project-structure.mdc
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

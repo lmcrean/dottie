@@ -17,6 +17,10 @@ export const sendMessage = async (req, res) => {
       return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
     }
 
+    // console.log("Session in chat (sendMessage) controller:", req.session);
+    // console.log("Session ID:", req.sessionID);
+    // console.log('conversationID', conversationId)
+    // console.log("Has decryptedUserKey:", !!req.session.decryptedUserKey);
     
     logger.info(`Processing message for user: ${userId}`, { conversationId, assessment_id });
 

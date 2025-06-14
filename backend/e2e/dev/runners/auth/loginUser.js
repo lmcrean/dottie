@@ -8,8 +8,8 @@
  * @param {Object} credentials - Login credentials
  * @returns {Promise<string>} Authentication token
  */
-export async function loginUser(request, credentials) {
-  const response = await request.post("/api/auth/login", {
+export async function loginUser(requestContext, credentials) {
+  const response = await requestContext.post("/api/auth/login", {
     data: {
       email: credentials.email,
       password: credentials.password,
@@ -27,6 +27,16 @@ export async function loginUser(request, credentials) {
     console.error("No token in login response:", data);
     throw new Error("Invalid login response format");
   }
+
+  // ====================================== //
+
+  const sessionResponse = await requestContext.get("/api/debug/session", {
+    headers: {
+      Authorization: `Bearer ${data.token}`
+    }
+  });
+  
+
 
   return data.token;
 } 

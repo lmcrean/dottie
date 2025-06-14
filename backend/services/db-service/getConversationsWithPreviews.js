@@ -9,7 +9,7 @@ import logger from "../logger.js";
  */
 export async function getConversationsWithPreviews(
   userId,
-  decryptedUserKeyBuffer
+  decryptedUserKey
 ) {
   try {
     console.log(
@@ -106,7 +106,7 @@ export async function getConversationsWithPreviews(
             // Check if the preview string is likely encrypted for legacy compatibility
             if (isLikelyEncrypted(message)) {
               try {
-                return decryptMessage(decryptedUserKeyBuffer, message);
+                return decryptMessage(decryptedUserKey, message);
               } catch (decryptError) {
                 logger.warn(`[getUserConversations] Failed to decrypt message for conversation. Returning original. Error: ${decryptError.message}`);
                 return message;

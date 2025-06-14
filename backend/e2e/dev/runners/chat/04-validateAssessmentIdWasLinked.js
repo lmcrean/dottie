@@ -11,9 +11,9 @@
  * @param {string} expectedAssessmentId - Expected assessment ID
  * @returns {Promise<Object>} Validation result with success status and details
  */
-export async function validateAssessmentIdWasLinked(request, token, conversationId, expectedAssessmentId) {
+export async function validateAssessmentIdWasLinked(requestContext, token, conversationId, expectedAssessmentId) {
   try {
-    const response = await request.get(`/api/chat/history/${conversationId}`, {
+    const response = await requestContext.get(`/api/chat/history/${conversationId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -73,14 +73,14 @@ export async function validateAssessmentIdWasLinked(request, token, conversation
 
 /**
  * Quick check if conversation has any assessment_id (not checking specific value)
- * @param {Object} request - Playwright request object
+ * @param {Object} requestContext - Playwright requestContext object
  * @param {string} token - Authentication token
  * @param {string} conversationId - Conversation ID to check
  * @returns {Promise<boolean>} True if conversation has an assessment_id
  */
-export async function hasAssessmentIdLinked(request, token, conversationId) {
+export async function hasAssessmentIdLinked(requestContext, token, conversationId) {
   try {
-    const result = await validateAssessmentIdWasLinked(request, token, conversationId, null);
+    const result = await validateAssessmentIdWasLinked(requestContext, token, conversationId, null);
     return result.success && !!result.assessment_id;
   } catch (error) {
     console.error("Failed to check assessment ID linking:", error.message);

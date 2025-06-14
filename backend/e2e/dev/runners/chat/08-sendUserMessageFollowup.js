@@ -15,7 +15,7 @@ import { getTestUserMessage } from './01-prepareUserMessageString.js';
  * @param {number} messageIndex - Index of message to use from prepared strings (default 1, different from initial)
  * @returns {Promise<Object>} Response containing message details
  */
-export async function sendUserMessageFollowup(request, token, conversationId, messageIndex = 1) {
+export async function sendUserMessageFollowup(requestContext, token, conversationId, messageIndex = 1) {
   try {
     const userMessage = getTestUserMessage(messageIndex);
     
@@ -26,7 +26,8 @@ export async function sendUserMessageFollowup(request, token, conversationId, me
       conversationId: conversationId
     };
 
-    const response = await request.post("/api/chat/send", {
+
+    const response = await requestContext.post("/api/chat/send", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -89,7 +90,7 @@ export async function sendUserMessageFollowup(request, token, conversationId, me
  * @param {string} customMessage - Custom follow-up message content
  * @returns {Promise<Object>} Response containing message details
  */
-export async function sendCustomUserMessageFollowup(request, token, conversationId, customMessage) {
+export async function sendCustomUserMessageFollowup(requestContext, token, conversationId, customMessage) {
   try {
     console.log(`Sending custom follow-up user message: "${customMessage.substring(0, 50)}..."`);
 
@@ -98,7 +99,7 @@ export async function sendCustomUserMessageFollowup(request, token, conversation
       conversationId: conversationId
     };
 
-    const response = await request.post("/api/chat/send", {
+    const response = await requestContext.post("/api/chat/send", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

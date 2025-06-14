@@ -13,7 +13,7 @@ import { verifyToken } from '../auth/verifyToken.js';
  * Complete authentication workflow test
  * Tests user registration, login, and token verification
  */
-export async function runAuthWorkflow(request, expect) {
+export async function  runAuthWorkflow(requestContext, expect) {
   console.log('🔐 Starting Auth Workflow...');
   
   try {
@@ -22,18 +22,19 @@ export async function runAuthWorkflow(request, expect) {
     console.log('✅ Generated test user data');
     
     // Step 2: Register the user
-    const registrationResult = await registerUser(request, testUser);
+    const registrationResult = await registerUser(requestContext, testUser);
     console.log('✅ User registered successfully');
     
-    // Step 3: Login with the registered user
-    const authToken = await loginUser(request, {
+    // Step 3: Login  with the registered user
+    const authToken = await loginUser(requestContext, {
       email: testUser.email,
       password: testUser.password
     });
+
     console.log('✅ User logged in successfully');
     
     // Step 4: Verify the token
-    const tokenVerification = await verifyToken(request, authToken);
+    const tokenVerification = await verifyToken(requestContext, authToken);
     console.log('✅ Token verified successfully');
     
     console.log('🎉 Auth Workflow completed successfully!');
@@ -55,13 +56,13 @@ export async function runAuthWorkflow(request, expect) {
  * Authentication error scenarios test
  * Tests various authentication failure cases
  */
-export async function runAuthErrorTest(request, expect) {
+export async function runAuthErrorTest(requestContext, expect) {
   console.log('🔐 Starting Auth Error Tests...');
   
   try {
     // Test 1: Login with invalid credentials
     try {
-      await loginUser(request, {
+      await loginUser(requestContext, {
         email: 'nonexistent@example.com',
         password: 'wrongpassword'
       });
@@ -75,7 +76,7 @@ export async function runAuthErrorTest(request, expect) {
     
     // Test 2: Verify invalid token
     try {
-      await verifyToken(request, 'invalid-token-123');
+      await verifyToken(requestContext, 'invalid-token-123');
       throw new Error('Token verification should have failed');
     } catch (error) {
       if (error.message.includes('Token verification should have failed')) {

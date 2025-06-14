@@ -56,7 +56,9 @@ export const sendFollowUpMessage = async (req, res) => {
       return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
     }
 
-    // const decryptedUserKeyBuffer = Buffer.from(encryptedUserKeyBase64, 'base64');
+//     console.log("Session in chat (sendFollowUpMessage) controller:", req.session);
+// console.log("Session ID:", req.sessionID);
+// console.log("Has decryptedUserKey:", !!req.session.decryptedUserKey);
     
     logger.info(`[sendFollowUpMessage] Processing follow-up message for user: ${userId}`, { 
       chatId, 
