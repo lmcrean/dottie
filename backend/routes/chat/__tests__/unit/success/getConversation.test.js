@@ -8,7 +8,12 @@ vi.mock('../../../../../services/logger', () => ({
 }));
 
 vi.mock('../../../../../models/chat/index.js', () => ({
-  getConversationForUser: vi.fn().mockImplementation((conversationId, userId) => {
+  getConversationForUser: vi.fn().mockImplementation((conversationId, userId, decryptedUserKey) => {
+
+    if (!(decryptedUserKey instanceof Buffer)) {
+      throw new Error('decryptedUserKeyBuffer is not a Buffer');
+    }
+
     if (conversationId === 'valid-conversation-id' && userId === 'user-123') {
       return Promise.resolve({
         success: true,
@@ -36,6 +41,7 @@ vi.mock('../../../../../models/chat/index.js', () => ({
 
 // Import the controller after all mocks are set up
 import * as conversationController from '../../../get-conversation/controller.js';
+import session from 'express-session';
 
 describe('Get Conversation Controller', () => {
   let req, res;
@@ -45,7 +51,8 @@ describe('Get Conversation Controller', () => {
       params: {},
       user: {
         id: 'user-123'
-      }
+      },
+      session: {}
     };
     
     res = {
@@ -57,6 +64,7 @@ describe('Get Conversation Controller', () => {
   it('should retrieve a specific conversation with messages', async () => {
     // Arrange
     req.params.conversationId = 'valid-conversation-id';
+    req.session.decryptedUserKey = Buffer.alloc(64);
     
     // Act
     await conversationController.getConversation(req, res);
@@ -81,7 +89,7 @@ describe('Get Conversation Controller', () => {
   it('should return 404 if conversation not found', async () => {
     // Arrange
     req.params.conversationId = 'invalid-conversation-id';
-    
+    req.session.decryptedUserKey = Buffer.alloc(64);
     // Act
     await conversationController.getConversation(req, res);
     
@@ -93,6 +101,8 @@ describe('Get Conversation Controller', () => {
   it('should return 400 if conversation ID is missing', async () => {
     // Arrange
     req.params.conversationId = '';
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     
     // Act
     await conversationController.getConversation(req, res);

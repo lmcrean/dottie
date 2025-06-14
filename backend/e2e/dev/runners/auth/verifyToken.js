@@ -9,7 +9,7 @@
  * @returns {Promise<boolean>} True if token is valid
  * @throws {Error} If token is invalid or verification fails
  */
-export async function verifyToken(request, token) {
+export async function verifyToken(requestContext, token) {
   // Try to access a protected endpoint to verify the token
 
   if (!token) {
@@ -17,7 +17,7 @@ export async function verifyToken(request, token) {
   }
 
   try {
-    const response = await request.get("/api/auth/users", {
+    const response = await requestContext.get("/api/auth/users", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

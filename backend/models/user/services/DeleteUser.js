@@ -142,9 +142,12 @@ class DeleteUser {
         UserBase.getTableName(), 
         userId, 
         { 
-          deleted_at: new Date().toISOString(),
+          // deleted_at: new Date().toISOString(), TODO: ADD deleted at on USER TABLE if needed
           email: `deleted_${Date.now()}_${userId}@deleted.com`, // Ensure email uniqueness
-          username: `deleted_${Date.now()}_${userId}` // Ensure username uniqueness
+          username: `deleted_${Date.now()}_${userId}`, // Ensure username uniqueness
+          encrypted_key: `deleted_${Date.now()}_${userId}`,
+          key_iv: `deleted_${Date.now()}_${userId}`,
+          key_salt: `deleted_${Date.now()}_${userId}`
         }
       );
 

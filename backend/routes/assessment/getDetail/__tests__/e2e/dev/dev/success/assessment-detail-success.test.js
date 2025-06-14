@@ -30,6 +30,9 @@ beforeAll(async () => {
       password_hash: "test-hash",
       age: "18-24",
       created_at: new Date().toISOString(),
+      encrypted_key: Buffer.alloc(64, 0xA4),
+      key_iv: Buffer.alloc(16, 0xA4),
+      key_salt: Buffer.alloc(16, 0xA4)
     };
 
     await db("users").insert(userData);

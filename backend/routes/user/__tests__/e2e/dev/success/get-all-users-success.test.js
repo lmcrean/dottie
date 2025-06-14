@@ -39,6 +39,9 @@ beforeAll(async () => {
       age: "18_24",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      encrypted_key: Buffer.alloc(64, 0xA4),
+      key_iv: Buffer.alloc(16, 0xA4), 
+      key_salt: Buffer.alloc(16, 0xA4) 
     };
 
     // User 2 - Admin user
@@ -50,6 +53,9 @@ beforeAll(async () => {
       age: "25_34",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      encrypted_key: Buffer.alloc(64, 0xA4),
+      key_iv: Buffer.alloc(16, 0xA4), 
+      key_salt: Buffer.alloc(16, 0xA4) 
     };
 
     // Insert test users

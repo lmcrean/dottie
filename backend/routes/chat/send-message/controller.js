@@ -11,6 +11,16 @@ export const sendMessage = async (req, res) => {
   try {    
     const { message, conversationId, assessment_id } = req.body;
     const userId = req.user.userId || req.user.id;
+    const decryptedUserKey = req.session.decryptedUserKey;
+
+    if (!decryptedUserKey || !userId) {
+      return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
+    }
+
+    // console.log("Session in chat (sendMessage) controller:", req.session);
+    // console.log("Session ID:", req.sessionID);
+    // console.log('conversationID', conversationId)
+    // console.log("Has decryptedUserKey:", !!req.session.decryptedUserKey);
     
     logger.info(`Processing message for user: ${userId}`, { conversationId, assessment_id });
 
@@ -24,8 +34,9 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
+
     // Delegate to model layer for the complete workflow
-    const result = await sendMessageFlow(userId, message, conversationId, assessment_id);
+    const result = await sendMessageFlow(userId, message, decryptedUserKey, conversationId, assessment_id, );
     
     if (!result.success) {
       return res.status(400).json({ error: 'Failed to process message' });

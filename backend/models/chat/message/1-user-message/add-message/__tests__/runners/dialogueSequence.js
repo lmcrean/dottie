@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { sendMessage } from '../../sendUserMessage.js';
-import { generateResponseToMessage } from '../../../../chatbot-message/generateResponse.js';
+import { generateResponseToMessage } from '../../../../2-chatbot-message/generateResponse.js';
 import logger from '@/services/logger.js';
 
 /**

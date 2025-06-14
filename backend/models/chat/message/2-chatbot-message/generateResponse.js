@@ -2,6 +2,7 @@ import logger from '../../../../services/logger.js';
 import { sendChatbotMessage } from './database/sendChatbotMessage.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getConversationForUser } from '../../conversation/read-conversation/getConversation.js';
+import { response } from 'express';
 
 // Initialize Gemini API
 const API_KEY = process.env.GEMINI_API_KEY;
@@ -42,9 +43,10 @@ const getMockResponse = (message) => {
  * @param {string} userId - User ID (for conversation verification)
  * @param {string} userMessageId - User message ID to respond to
  * @param {string} messageText - User message text
+ * @param {string} decryptedUserKey - UserEncryption key to encrypt message
  * @returns {Promise<Object>} - Generated and saved assistant message
  */
-export async function generateAndSaveResponse(conversationId, userId, userMessageId, messageText) {
+export async function generateAndSaveResponse(conversationId, userId, userMessageId, messageText, decryptedUserKey) {
   try {
     logger.info(`Generating AI response for message ${userMessageId} in conversation ${conversationId}`);
     
@@ -82,8 +84,9 @@ export async function generateAndSaveResponse(conversationId, userId, userMessag
       }
     }
 
+
     // Save assistant message to database
-    const assistantResult = await sendChatbotMessage(conversationId, aiResponse, {
+    const assistantResult = await sendChatbotMessage(conversationId, aiResponse, decryptedUserKey, {
       parentMessageId: userMessageId
     });
 

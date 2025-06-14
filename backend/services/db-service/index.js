@@ -51,8 +51,8 @@ class DbService {
     return getAll(table);
   }
 
-  static async getConversationsWithPreviews(userId) {
-    return getConversationsWithPreviews(userId);
+  static async getConversationsWithPreviews(userId, decryptedUserKeyBuffer) {
+    return getConversationsWithPreviews(userId, decryptedUserKeyBuffer);
   }
 
   static async createWithJson(table, data, jsonFields = []) {

@@ -80,7 +80,10 @@ export default defineConfig({
   projects: [
     {
       name: 'safari',
-      use: { ...devices['Desktop Safari'] }
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: 'playwright/.auth/user.json'
+      }
     }
   ],
 

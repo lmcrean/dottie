@@ -6,7 +6,7 @@ import EmailService from '../../../../services/emailService.js';
 
 // Mock dependencies
 vi.mock('../../../../models/user/User.js', () => ({
-  default: {
+  default: { // Ensure all User methods are under default
     findByEmail: vi.fn(),
     storeResetToken: vi.fn(),
     findByResetToken: vi.fn(),
@@ -16,7 +16,7 @@ vi.mock('../../../../models/user/User.js', () => ({
 }));
 
 vi.mock('../../../../services/emailService.js', () => ({
-  default: {
+  default: { // Ensure sendPasswordResetEmail is under default
     sendPasswordResetEmail: vi.fn().mockResolvedValue(true)
   }
 }));
@@ -26,33 +26,50 @@ const NEW_HASHED_PASSWORD = 'new_hashed_password';
 
 // Mock bcrypt with consistent hash value
 vi.mock('bcrypt', () => {
-  const hash = vi.fn().mockImplementation(() => Promise.resolve(NEW_HASHED_PASSWORD));
+  const mockHash = vi.fn().mockImplementation(() => Promise.resolve(NEW_HASHED_PASSWORD));
+  const mockCompare = vi.fn().mockResolvedValue(true);
   return {
-    default: {
-      hash,
-      compare: vi.fn().mockResolvedValue(true)
+    default: { // For `import bcrypt from 'bcrypt';`
+      hash: mockHash,
+      compare: mockCompare
     },
-    hash,
-    compare: vi.fn().mockResolvedValue(true)
+    // For `import { hash, compare } from 'bcrypt';` if your code uses named imports
+    hash: mockHash,
+    compare: mockCompare
   };
 });
 
 // Import bcrypt after mocking
 import bcrypt from 'bcrypt';
 
-// Mock crypto - fix the crypto mock to provide a proper default export
+
 vi.mock('crypto', () => {
+  const mockScrypt = vi.fn((password, salt, keylen, callback) => {
+    // Simulate asynchronous operation
+    process.nextTick(() => {
+      // Return a Buffer of the specified keylen
+      const derivedKey = Buffer.alloc(keylen);
+      // You can fill it with a predictable value for more specific tests if needed:
+      // derivedKey.fill(0xAA); // Example: fill with hex AA
+      callback(null, derivedKey); // Call the callback with null (no error) and the derived key
+    });
+  });
+
   return {
     default: {
-      randomBytes: () => ({
-        toString: () => 'mock-reset-token'
-      })
+      randomBytes: vi.fn(() => ({
+        toString: vi.fn(() => 'mock-reset-token')
+      })),
+      scrypt: mockScrypt
     },
-    randomBytes: () => ({
-      toString: () => 'mock-reset-token'
-    })
+    randomBytes: vi.fn(() => ({
+      toString: vi.fn(() => 'mock-reset-token')
+    })),
+    scrypt: mockScrypt 
   };
 });
+
+
 
 // Mock validators
 vi.mock('../../../../routes/auth/middleware/validators/resetPasswordValidators.js', () => ({
@@ -80,7 +97,7 @@ describe('Password Reset Functionality', () => {
     // Reset mock implementations
     vi.resetAllMocks();
     
-    // Ensure bcrypt.hash returns the consistent value for all test cases
+    // Ensure bcrypt.default.hash returns the consistent value for all test cases
     bcrypt.hash.mockImplementation(() => Promise.resolve(NEW_HASHED_PASSWORD));
   });
   
@@ -183,8 +200,6 @@ describe('Password Reset Functionality', () => {
       expect(response.status).toBe(500);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe('Failed to process password reset request');
-      
-      // Verify services were called
       expect(User.findByEmail).toHaveBeenCalledWith('error@user');
       expect(User.storeResetToken).toHaveBeenCalled();
       expect(EmailService.sendPasswordResetEmail).toHaveBeenCalled();
@@ -271,4 +286,4 @@ describe('Password Reset Functionality', () => {
       expect(User.clearResetToken).toHaveBeenCalledWith('user-id-123');
     });
   });
-}); 
+});

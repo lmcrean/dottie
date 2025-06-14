@@ -19,13 +19,18 @@ export const createConversation = async (userId, assessmentId = null) => {
       assessmentIdType: assessmentId ? typeof assessmentId : 'null'
     });
 
+    if (!userId ) {
+      throw new Error('User ID is required and cannot be empty');
+    }
+
     // Ensure userId is a string
     const userIdString = String(userId);
     
-    // Validate required parameters
-    if (!userIdString || userIdString.trim() === '') {
-      throw new Error('User ID is required and cannot be empty');
-    }
+    // Validate required parameters  - String(null) returns "null"
+    // if (!userIdString || userIdString.trim() === '') {
+    //   throw new Error('User ID is required and cannot be empty');
+    // }
+
     
     // Generate a UUID and ensure it's a string
     const conversationId = String(uuidv4());

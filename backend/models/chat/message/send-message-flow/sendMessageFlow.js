@@ -12,7 +12,7 @@ import { generateAndSaveResponse } from '../2-chatbot-message/generateResponse.j
  * @param {string} [assessmentId] - Optional assessment ID for new conversations
  * @returns {Promise<Object>} - Result with both messages and conversationId
  */
-export const sendMessageFlow = async (userId, message, conversationId = null, assessmentId = null) => {
+export const sendMessageFlow = async (userId, message, decryptedUserKey, conversationId = null, assessmentId = null) => {
   try {
     logger.info(`Send message flow starting for user ${userId}`, { conversationId, assessmentId });
 
@@ -21,7 +21,7 @@ export const sendMessageFlow = async (userId, message, conversationId = null, as
     
     if (conversationId) {
       // Verify existing conversation ownership
-      const result = await getConversationForUser(conversationId, userId);
+      const result = await getConversationForUser(conversationId, userId, decryptedUserKey);
       if (!result.success) {
         throw new Error('Conversation not found or access denied');
       }
@@ -31,7 +31,7 @@ export const sendMessageFlow = async (userId, message, conversationId = null, as
     }
 
     // Step 2: Add user message to database
-    const userResult = await addUserMessage(currentConversationId, userId, message);
+    const userResult = await addUserMessage(currentConversationId, userId, message, decryptedUserKey);
     logger.info('✅ User message added to database');
 
     // Step 3: Generate and save AI response
@@ -39,7 +39,8 @@ export const sendMessageFlow = async (userId, message, conversationId = null, as
       currentConversationId, 
       userId, 
       userResult.userMessage.id, 
-      message
+      message,
+      decryptedUserKey
     );
     logger.info('✅ Assistant response generated and saved to database');
 

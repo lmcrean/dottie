@@ -3,6 +3,7 @@ import DbService from '../../../../../services/dbService.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { verifyParentMessageId } from '../../1-user-message/add-message/database/linkParentMessageId.js';
 import { updateConversationPreview } from '../../../conversation/read-conversation/getPreviewHook.js';
+import { encryptMessage } from '../../../../../services/encryptionUtils.js';
 
 /**
  * Send a chatbot message and store it in the database
@@ -13,7 +14,7 @@ import { updateConversationPreview } from '../../../conversation/read-conversati
  * @param {Object} [options.metadata] - Additional metadata for the message
  * @returns {Promise<Object>} - Chatbot message result
  */
-export const sendChatbotMessage = async (conversationId, content, options = {}) => {
+export const sendChatbotMessage = async (conversationId, content, decryptedUserKey,  options = {}) => {
   const { 
     parentMessageId = null, 
     metadata = {}
@@ -22,12 +23,14 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
   try {
     logger.info(`Sending chatbot message in conversation ${conversationId}`);
 
+    const encryptedMessage = encryptMessage(decryptedUserKey, content)
+
     // Generate message ID and create message data
     const messageId = generateMessageId();
     let messageData = {
       id: messageId,
       role: 'assistant',
-      content: content,
+      content: encryptedMessage,
       parent_message_id: parentMessageId,
       created_at: new Date().toISOString(),
       ...metadata
@@ -42,6 +45,8 @@ export const sendChatbotMessage = async (conversationId, content, options = {}) 
       ...messageData,
       conversation_id: conversationId
     };
+
+
 
     await DbService.create('chat_messages', messageToInsert);
     logger.info(`Chatbot message ${messageId} inserted into conversation ${conversationId}`);

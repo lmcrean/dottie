@@ -2,6 +2,7 @@ import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { refreshTokens } from '../middleware/index.js';
+import { decryptUserKey, deriveKEK } from '../../../services/encryptionUtils.js';
 
 // Helper function for validation
 function isValidEmail(email) {
@@ -80,6 +81,20 @@ export const login = async (req, res) => {
     if (!isPasswordValid || (password.includes('incorrect') && (process.env.TEST_MODE === 'true' || process.env.NODE_ENV === 'test'))) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    const encryptedUserKey = user.encrypted_key;
+    const keySalt = user.key_salt;
+    if (!keySalt) {
+      console.error('Error: User key_salt not found for KEK derivation.');
+      return res.status(500).json({ error: 'Authentication failed due to missing security data.' });
+    }
+
+
+    const derivedKek = await deriveKEK( password, keySalt)
+
+    const decryptedUserKey = decryptUserKey(encryptedUserKey, derivedKek)
+
+    req.session.decryptedUserKey = decryptedUserKey;
     
     // Generate JWT token
     const token = jwt.sign(
@@ -102,13 +117,13 @@ export const login = async (req, res) => {
       process.env.REFRESH_SECRET || 'your-refresh-secret-key',
       { expiresIn: '7d' }
     );
-    
+
     // Store refresh token
     refreshTokens.add(refreshToken);
     
     // Remove password hash before sending response
     const { password_hash: _, ...userWithoutPassword } = user;
-    
+
     res.json({ token, refreshToken, user: userWithoutPassword });
   } catch (error) {
     console.error('Error during login:', error);

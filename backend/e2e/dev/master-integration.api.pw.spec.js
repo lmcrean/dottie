@@ -2,6 +2,7 @@ import { test as base, expect } from "@playwright/test";
 
 // Import high-level scenario workflows (using dev scenarios with granular functions)
 import * as scenarios from "./runners/scenarios/index.js";
+import { AuthenticatedRequestContext } from "./runners/utils/authRequestContext.js";
 
 /**
  * Master Integration Test for Development
@@ -14,6 +15,7 @@ import * as scenarios from "./runners/scenarios/index.js";
 
 // Create a shared test state object
 const sharedTestState = {
+  requestContext: null,
   authToken: null,
   userId: null,
   firstAssessmentId: null,
@@ -27,12 +29,19 @@ const sharedTestState = {
 base.describe.configure({ mode: "serial" });
 
 base.describe("Master Integration Test", () => {
-  base("1. Complete setup workflow", async ({ request }) => {
-    await scenarios.runSetupWorkflow(request, expect);
+
+    base.beforeAll(async () => {
+    // Create the shared request context once before all tests
+    sharedTestState.requestContext = await AuthenticatedRequestContext();
   });
 
-  base("2. Complete authentication workflow", async ({ request }) => {
-    const authResult = await scenarios.runAuthWorkflow(request, expect);
+
+  base("1. Complete setup workflow", async () => {
+    await scenarios.runSetupWorkflow(sharedTestState.requestContext, expect);
+  });
+
+  base("2. Complete authentication workflow", async () => {
+    const authResult = await scenarios.runAuthWorkflow(sharedTestState.requestContext, expect);
     
     // Store results for subsequent tests
     sharedTestState.testUser = authResult.testUser;
@@ -40,9 +49,9 @@ base.describe("Master Integration Test", () => {
     sharedTestState.authToken = authResult.authToken;
   });
 
-  base("3. Assessment creation and management workflow", async ({ request }) => {
+  base("3. Assessment creation and management workflow", async () => {
     const { firstAssessmentId, secondAssessmentId } = await scenarios.runAssessmentCreationWorkflow(
-      request, 
+      sharedTestState.requestContext, 
       expect, 
       sharedTestState.authToken, 
       sharedTestState.userId
@@ -53,9 +62,9 @@ base.describe("Master Integration Test", () => {
     sharedTestState.secondAssessmentId = secondAssessmentId;
   });
 
-  base("4. User management workflow", async ({ request }) => {
+  base("4. User management workflow", async () => {
     const updatedUser = await scenarios.runUserManagementWorkflow(
-      request,
+      sharedTestState.requestContext,
       expect,
       sharedTestState.authToken,
       sharedTestState.userId,
@@ -66,9 +75,9 @@ base.describe("Master Integration Test", () => {
     sharedTestState.testUser = updatedUser;
   });
 
-  base("5. First chat conversation workflow with assessment", async ({ request }) => {
+  base("5. First chat conversation workflow with assessment", async () => {
     const conversationId = await scenarios.runChatWithAssessmentWorkflow(
-      request,
+      sharedTestState.requestContext,
       expect,
       sharedTestState.authToken,
       sharedTestState.firstAssessmentId
@@ -78,13 +87,13 @@ base.describe("Master Integration Test", () => {
     sharedTestState.firstConversationId = conversationId;
   });
 
-  base("6. Second chat conversation workflow with different assessment", async ({ request }) => {
+  base("6. Second chat conversation workflow with different assessment", async () => {
     // Create second assessment if it's the same as the first (for testing multiple conversations)
     let assessmentIdToUse = sharedTestState.secondAssessmentId;
     if (sharedTestState.firstAssessmentId === sharedTestState.secondAssessmentId) {
       // Create a new assessment for the second conversation
       const { firstAssessmentId: newAssessmentId } = await scenarios.runAssessmentCreationWorkflow(
-        request, 
+        sharedTestState.requestContext, 
         expect, 
         sharedTestState.authToken, 
         sharedTestState.userId
@@ -94,7 +103,7 @@ base.describe("Master Integration Test", () => {
     }
     
     const conversationId = await scenarios.runChatWithAssessmentWorkflow(
-      request,
+      sharedTestState.requestContext,
       expect,
       sharedTestState.authToken,
       assessmentIdToUse
@@ -104,27 +113,27 @@ base.describe("Master Integration Test", () => {
     sharedTestState.secondConversationId = conversationId;
   });
 
-  base("7. Delete first chat conversation", async ({ request }) => {
+  base("7. Delete first chat conversation", async () => {
     await scenarios.deleteAndVerifyConversation(
-      request,
+      sharedTestState.requestContext,
       expect,
       sharedTestState.authToken,
       sharedTestState.firstConversationId
     );
   });
 
-  base("8. Delete second chat conversation", async ({ request }) => {
+  base("8. Delete second chat conversation", async () => {
     await scenarios.deleteAndVerifyConversation(
-      request,
+      sharedTestState.requestContext,
       expect,
       sharedTestState.authToken,
       sharedTestState.secondConversationId
     );
   });
 
-  base("9. Cleanup assessments", async ({ request }) => {
+  base("9. Cleanup assessments", async () => {
     await scenarios.runCleanupWorkflow(
-      request,
+      sharedTestState.requestContext,
       expect,
       sharedTestState.authToken,
       sharedTestState.userId,
@@ -133,7 +142,7 @@ base.describe("Master Integration Test", () => {
     );
   });
 
-  base("10. Authentication error handling", async ({ request }) => {
-    await scenarios.runAuthErrorTest(request, expect);
+  base("10. Authentication error handling", async () => {
+    await scenarios.runAuthErrorTest(sharedTestState.requestContext, expect);
   });
 });

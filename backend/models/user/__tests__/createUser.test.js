@@ -48,6 +48,10 @@ describe('User Creation Tests (TDD Plan)', () => {
       expect(result.user.age).toBe(userData.age);
       // Password hash should not be in sanitized response
       expect(result.user.password_hash).toBeUndefined();
+      expect(result.user.encrypted_key).toBeUndefined();
+      expect(result.user.key_salt).toBeUndefined();
+      expect(result.user.key_iv).toBeUndefined();
+
     });
 
     it('should fail to create user with invalid email', async () => {

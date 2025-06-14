@@ -9,8 +9,8 @@
 export function generateTestUser() {
   const timestamp = Date.now();
   return {
-    username: `testuser-${timestamp}`,
-    email: `test-${timestamp}@example.com`,
-    password: "TestPassword123!",
+    username: `firstuser-${timestamp}`,
+    email: `firstUser-${timestamp}@example.com`,
+    password: "Password@123!",
   };
 } 

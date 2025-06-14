@@ -38,7 +38,7 @@ class ReadUser {
    * @param {boolean} sanitize - Whether to sanitize the result (default: true)
    * @returns {Promise<object|null>} - Found user or null
    */
-  static async findByEmail(email, sanitize = true) {
+  static async  findByEmail(email, sanitize = true) {
     try {
       if (!email || typeof email !== 'string') {
         return null;

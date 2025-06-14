@@ -121,8 +121,10 @@ describe('getConversation - Read Conversation by ID', () => {
   });
 
   describe('getConversation - Options and pagination', () => {
+      const decryptedUserKeyBuffer = Buffer.alloc(64)
+
     it('should support excluding messages when includeMessages is false', async () => {
-      const result = await getConversation(mockData.conversationId, { includeMessages: false });
+      const result = await getConversation(mockData.conversationId, decryptedUserKeyBuffer, { includeMessages: false });
       
       expect(result.success).toBe(true);
       expect(result.messages).toHaveLength(0);
@@ -131,7 +133,7 @@ describe('getConversation - Read Conversation by ID', () => {
     });
 
     it('should support message pagination with limit', async () => {
-      const result = await getConversation(mockData.conversationId, { limit: 1 });
+      const result = await getConversation(mockData.conversationId, decryptedUserKeyBuffer, { limit: 1 });
       
       expect(result.success).toBe(true);
       expect(result.messages).toHaveLength(1);
@@ -141,7 +143,7 @@ describe('getConversation - Read Conversation by ID', () => {
     });
 
     it('should support message pagination with offset', async () => {
-      const result = await getConversation(mockData.conversationId, { offset: 1 });
+      const result = await getConversation(mockData.conversationId, decryptedUserKeyBuffer, { offset: 1 });
       
       expect(result.success).toBe(true);
       expect(result.messages).toHaveLength(1);
@@ -150,7 +152,7 @@ describe('getConversation - Read Conversation by ID', () => {
     });
 
     it('should support both limit and offset pagination', async () => {
-      const result = await getConversation(mockData.conversationId, { limit: 1, offset: 1 });
+      const result = await getConversation(mockData.conversationId, decryptedUserKeyBuffer, { limit: 1, offset: 1 });
       
       expect(result.success).toBe(true);
       expect(result.messages).toHaveLength(1);
