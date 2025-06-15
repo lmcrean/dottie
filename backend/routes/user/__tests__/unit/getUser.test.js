@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
-import User from '../../../../models/User.js';
+import User from '../../../../models/user/User.js';
+import getUser from '../../get-user/controller.js';
 
 // Mock the User model
-vi.mock('../../../../models/User.js', () => ({
+vi.mock('../../../../models/user/User.js', () => ({
   default: {
     findById: vi.fn()
   }

@@ -1,10 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './globals.css'
-import { AssessmentResultProvider } from './context/AssessmentResultContext'
-import { AuthProvider } from './context/AuthContext'
-
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './globals.css';
+import { AssessmentResultProvider } from '@/src/pages/assessment/steps/context/AssessmentResultProvider';
+import { AuthProvider } from '@/src/pages/auth/context/AuthContextProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -13,5 +12,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <App />
       </AssessmentResultProvider>
     </AuthProvider>
-  </React.StrictMode>,
-) 
+  </React.StrictMode>
+);

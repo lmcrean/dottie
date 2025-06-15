@@ -1,4 +1,4 @@
-#  README for Developers
+# README for Developers
 
 This is a **Node.js monorepo** project with separate **frontend** and **backend** applications.
 
@@ -15,6 +15,7 @@ You have two options for running the project in development mode:
 Start each service in its own terminal window.
 
 ### 1. Start Backend
+
 ```bash
 cd backend
 npm install
@@ -22,6 +23,7 @@ npm run dev
 ```
 
 ### 2. Start Frontend
+
 ```bash
 cd frontend
 npm install
@@ -39,7 +41,6 @@ cd frontend
 npm install
 npm run dev
 ```
-
 
 ---
 
@@ -59,6 +60,11 @@ When integrating new API features, ensure consistency across the **backend route
 3. API Request: `frontend/src/api/user/requests/getCurrentUser/Request.ts`
 4. UI Test-Page: `frontend/src/test_page/test-endpoint-table/user/get-user-me/EndpointRow.tsx`
 
-
 > ✅ All successful backend requests will be reflected in the `Developer Mode` UI, accessible via the bottom-right button.
 
+---
+
+## Node Version
+
+This project uses Node.js v23.11.0  
+Run `nvm install` after cloning or switching branches to ensure compatibility.

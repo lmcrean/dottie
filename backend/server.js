@@ -52,7 +52,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-const devPorts = [3000, 3001, 5001, 5173];
+const devPorts = [3000, 3001, 3005, 5001, 5005, 5173];
 
 const devOrigins = devPorts.flatMap(port => [
   `http://localhost:${port}`,
@@ -84,7 +84,11 @@ app.use("/api", routes);
 
 // Health check for Vercel
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok", message: "Server is running" });
+  res.status(200).json({ 
+    status: "ok", 
+    message: "Server is running",
+    environment: process.env.NODE_ENV || "development"
+  });
 });
 
 // Global error handler
@@ -99,10 +103,10 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server if we're running directly
-const isMainModule = import.meta.url.endsWith(process.argv[1]);
+const isMainModule = fileURLToPath(import.meta.url) === process.argv[1];
 
-// Force listen in development and when run directly
-if (isMainModule || process.env.NODE_ENV === "development" || true) {
+// Only start server when run directly (not when imported for testing)
+if (isMainModule) {
   // Start server
   app.listen(PORT, () => {
     console.log(

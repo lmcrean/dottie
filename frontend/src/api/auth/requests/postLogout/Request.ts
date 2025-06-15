@@ -1,29 +1,42 @@
-import { apiClient } from "../../../core/apiClient";
-import { clearAllTokens, getRefreshToken } from "../../../core/tokenManager";
+import { apiClient } from '../../../core/apiClient';
+import { clearAllTokens, getRefreshToken, getAuthToken } from '../../../core/tokenManager';
 
 /**
- * Logout user and clear all tokens 
+ * Logout user and clear all tokens
  * @endpoint /api/auth/logout (POST)
  */
-export const postLogout = async (userId: string = ""): Promise<{ success: boolean }> => {
+export const postLogout = async (): Promise<{ success: boolean }> => {
   const refreshToken = getRefreshToken();
+  const authToken = getAuthToken();
+  
   try {
-    const response = await apiClient.post('/api/auth/logout', { refreshToken });
+    await apiClient.post('/api/auth/logout', {}, {
+      headers: {
+        Authorization: authToken ? `Bearer ${authToken}` : ''
+      }
+    });
+
     // Clear all tokens using the token manager
     clearAllTokens();
-    
+
     // Clear Authorization header from API client
     if (apiClient.defaults.headers.common['Authorization']) {
       delete apiClient.defaults.headers.common['Authorization'];
     }
-    
+
     return { success: true };
   } catch (error) {
     console.error('Logout failed:', error);
     // Still clear tokens even if API call fails
     clearAllTokens();
-    return { success: false };
+    
+    // Clear Authorization header
+    if (apiClient.defaults.headers.common['Authorization']) {
+      delete apiClient.defaults.headers.common['Authorization'];
+    }
+    
+    throw error;
   }
 };
 
-export default postLogout; 
+export default postLogout;

@@ -1,5 +1,5 @@
-import sql from 'mssql';
-import dotenv from 'dotenv';
+import sql from "mssql";
+import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
@@ -11,49 +11,44 @@ async function createAzureDatabase() {
     password: process.env.AZURE_SQL_PASSWORD,
     options: {
       encrypt: true,
-      trustServerCertificate: false
-    }
+      trustServerCertificate: false,
+    },
   };
 
   try {
-    console.log('Connecting to Azure SQL Server...');
-    
     // Connect to master database to create our application database
     const pool = await sql.connect({
       ...config,
-      database: 'master'
+      database: "master",
     });
-    
+
     const dbName = process.env.AZURE_SQL_DATABASE;
-    
+
     // Check if database exists
-    const result = await pool.request()
-      .input('dbName', sql.VarChar, dbName)
-      .query(`SELECT COUNT(*) as count FROM sys.databases WHERE name = @dbName`);
-    
+    const result = await pool
+      .request()
+      .input("dbName", sql.VarChar, dbName)
+      .query(
+        `SELECT COUNT(*) as count FROM sys.databases WHERE name = @dbName`
+      );
+
     const exists = result.recordset[0].count > 0;
-    
+
     if (!exists) {
-      console.log(`Creating database "${dbName}"...`);
       await pool.request().query(`CREATE DATABASE [${dbName}]`);
-      console.log(`Database "${dbName}" created successfully!`);
-    } else {
-      console.log(`Database "${dbName}" already exists.`);
     }
-    
+
     await pool.close();
-    console.log('Azure SQL setup completed.');
-    
   } catch (error) {
-    console.error('Error creating Azure SQL database:', error);
+    console.error("Error creating Azure SQL database:", error);
   }
 }
 
 // Run the function if this script is executed directly
-if (process.argv[1].includes('createAzureDb.js')) {
+if (process.argv[1].includes("createAzureDb.js")) {
   createAzureDatabase()
     .then(() => process.exit(0))
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       process.exit(1);
     });

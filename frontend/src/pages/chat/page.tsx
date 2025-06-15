@@ -1,185 +1,116 @@
-import { useState, useEffect, useRef } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/src/components/ui/!to-migrate/dialog";
-import { Button } from "@/src/components/ui/!to-migrate/button";
-import { Input } from "@/src/components/ui/!to-migrate/input";
-import { ScrollArea } from "@/src/components/ui/!to-migrate/scroll-area";
-import { Send, Loader2, X, MessageCircle, Maximize2 } from "lucide-react";
-import { getAIFeedback } from "@/src/services/ai";
+import React, { useState, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import ChatSidebar from './sidebar/ChatSidebar';
+import { ChatDetail } from './chat-detail/ChatDetail';
+import { ConversationListItem } from './types';
+import { SidebarToggle } from './sidebar/components';
 
-interface ChatModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  initialMessage?: string;
-  setIsFullscreen?: (isFullscreen: boolean) => void;
-}
+const ChatPage: React.FC = () => {
+  const { conversationId } = useParams<{ conversationId: string }>();
+  const navigate = useNavigate();
+  const [sidebarRefresh, setSidebarRefresh] = useState<(() => Promise<void>) | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+  // Callback to receive the loadConversations function from ChatSidebar
+  const handleSidebarUpdate = useCallback((refreshFunction: () => Promise<void>) => {
+    setSidebarRefresh(() => refreshFunction);
+  }, []);
 
-export function ChatModal({
-  isOpen,
-  onClose,
-  initialMessage,
-  setIsFullscreen,
-}: ChatModalProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // Handle conversation selection from sidebar
+  const handleConversationSelect = useCallback(
+    (conversation: ConversationListItem) => {
+      console.log('[ChatPage] Conversation selected:', conversation.id);
+      console.log('🔍 Current location before navigate:', window.location.href);
 
-  // Auto-scroll to bottom when messages change
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+      // Use React Router navigation instead of window.location
+      const targetUrl = `/chat/${conversation.id}`;
+      console.log('🚀 Using navigate to:', targetUrl);
+      navigate(targetUrl);
+    },
+    [navigate]
+  );
 
-  // Send initial message if provided
-  useEffect(() => {
-    if (isOpen && initialMessage && messages.length === 0) {
-      setMessages([{ role: "user", content: initialMessage }]);
-      handleSend(initialMessage);
-    }
-  }, [isOpen, initialMessage]);
+  // Handle new chat request
+  const handleNewChat = useCallback(() => {
+    console.log('[ChatPage] New chat requested');
+    console.log('🚀 Using navigate to: /chat');
+    navigate('/chat');
+  }, [navigate]);
 
-  const handleSend = async (messageText?: string) => {
-    const textToSend = messageText || input.trim();
-    if (!textToSend || isLoading) return;
-
-    const userMessage = textToSend;
-    setInput("");
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
-    setIsLoading(true);
-
-    try {
-      // Get user data from session storage
-      const userData = {
-        age: sessionStorage.getItem("age") || "",
-        cycleLength: sessionStorage.getItem("cycleLength") || "",
-        periodDuration: sessionStorage.getItem("periodDuration") || "",
-        flowHeaviness: sessionStorage.getItem("flowLevel") || "",
-        painLevel: sessionStorage.getItem("painLevel") || "",
-        symptoms: JSON.parse(sessionStorage.getItem("symptoms") || "[]"),
-      };
-
-      const aiResponse = await getAIFeedback(userData, userMessage);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: aiResponse },
-      ]);
-    } catch (error) {
-      console.error("Error getting AI response:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            "I apologize, but I'm having trouble processing your request right now. Please try again later.",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Handle sidebar toggle
+  const handleToggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl border-pink-100 shadow-lg">
-        <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-pink-50 to-white">
-          <div className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-pink-600" />
-            <DialogTitle className="text-lg font-bold text-pink-600">
-              Chat with Dottie
-            </DialogTitle>
-          </div>
-          <div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsFullscreen && setIsFullscreen(true)}
-              className="rounded-full hover:bg-pink-100"
-            >
-              <Maximize2 className="h-4 w-4 text-pink-600" />
-            </Button>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="rounded-full hover:bg-pink-100"
-            >
-              <X className="h-4 w-4 text-pink-600" />
-            </Button> */}
-          </div>
-        </DialogHeader>
-        <div className="flex flex-col h-[500px]">
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-            <div className="space-y-4">
-              {messages.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-full text-center p-8 text-gray-500">
-                  <MessageCircle className="h-12 w-12 text-pink-200 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">
-                    Ask Dottie anything
-                  </h3>
-                  <p className="text-sm">
-                    I'm here to help with your menstrual health questions
-                  </p>
-                </div>
-              )}
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  } animate-fadeIn`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-xl p-3 ${
-                      message.role === "user"
-                        ? "bg-pink-600 text-white"
-                        : "bg-gray-50 text-gray-900 border border-gray-100"
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start animate-fadeIn">
-                  <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                    <Loader2 className="h-4 w-4 animate-spin text-pink-600" />
-                  </div>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
-          <div className="flex gap-2 p-4 border-t bg-white">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              disabled={isLoading}
-              className="rounded-full border-gray-200 focus:border-pink-300 focus:ring-pink-200"
-            />
-            <Button
-              onClick={() => handleSend()}
-              disabled={isLoading}
-              className="rounded-full bg-pink-600 hover:bg-pink-700 text-white"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
+    <div className="flex h-full bg-gray-50 dark:bg-gray-900">
+      {/* Sidebar */}
+      <div
+        className={`h-full transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? 'w-80' : 'w-0'
+        } overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800`}
+      >
+        <ChatSidebar
+          selectedConversationId={conversationId}
+          onSidebarUpdate={handleSidebarUpdate}
+          onConversationSelect={handleConversationSelect}
+          onNewChat={handleNewChat}
+        />
+      </div>
 
-export default ChatModal;
+      {/* Main content area */}
+      <div className="flex flex-1 flex-col">
+        {/* Sidebar Toggle Button */}
+        <div className="flex items-center border-b bg-gradient-to-r from-pink-50 to-white p-2 dark:from-gray-900 dark:to-black">
+          <SidebarToggle
+            isOpen={isSidebarOpen}
+            onToggle={handleToggleSidebar}
+            className="mr-2"
+            showCloseIcon={true}
+          />
+          <h1 className="text-lg font-bold text-pink-600">Chat with Dottie</h1>
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1">
+          {conversationId ? (
+            <ChatDetail chatId={conversationId} onSidebarRefresh={sidebarRefresh || undefined} />
+          ) : (
+            /* Empty state */
+            <div className="flex h-full flex-1 items-center justify-center">
+              <div className="text-center">
+                <div className="mb-4">
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-4.126-.98L3 21l1.98-5.874A8.955 8.955 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+                  Welcome to Chat with Dottie
+                </h3>
+                <p className="mb-4 text-gray-500 dark:text-gray-400">
+                  Select a conversation from the sidebar or start a new chat from your assessment
+                  results.
+                </p>
+                <p className="text-sm text-gray-400 dark:text-gray-500">
+                  No active conversation selected
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatPage;

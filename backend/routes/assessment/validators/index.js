@@ -1,49 +1,49 @@
 /**
  * Validates assessment data
- * @param {Object} assessment - The assessment data to validate
+ * @param {Object} assessmentData - The assessment data to validate
  * @returns {Object} - Object with isValid flag and errors array
  */
-export function validateAssessmentData(assessment) {
+export function validateAssessmentData(assessmentData) {
   const errors = [];
   
-
-  // Check for required fields
-  // if (!assessment.userId) {
-  //   errors.push('userId is required');
-  // }
-  
-  if (!assessment.assessment_data) {
-    errors.push('assessment_data is required');
-    return { isValid: errors.length === 0, errors };
+  // Handle both nested (assessment_data) and flattened formats
+  let dataToValidate = assessmentData;
+  if (assessmentData.assessment_data) {
+    dataToValidate = assessmentData.assessment_data;
   }
   
-  const assessmentData = assessment.assessment_data;
-  // console.log('Validating assessment data:', assessmentData);
-  
-  // Validate required assessment fields
-  if (!assessmentData.age) {
+  // Check age - handle both camelCase and snake_case
+  const age = dataToValidate.age;
+  if (!age) {
     errors.push('age is required');
-  } else if (!isValidAge(assessmentData.age)) {
+  } else if (!isValidAge(age)) {
     errors.push('Invalid age value');
   }
   
-  if (!assessmentData.cycleLength) {
-    errors.push('cycleLength is required');
-  } else if (!isValidCycleLength(assessmentData.cycleLength)) {
-    errors.push('Invalid cycleLength value');
+  // Check cycle length - handle both camelCase and snake_case
+  const cycleLength = dataToValidate.cycleLength || dataToValidate.cycle_length;
+  if (!cycleLength) {
+    errors.push('cycle length is required');
+  } else if (!isValidCycleLength(cycleLength)) {
+    errors.push('Invalid cycle length value');
   }
   
-  // Validate optional fields if they exist
-  if (assessmentData.periodDuration && !isValidPeriodDuration(assessmentData.periodDuration)) {
-    errors.push('Invalid periodDuration value');
+  // Check period duration - handle both camelCase and snake_case
+  const periodDuration = dataToValidate.periodDuration || dataToValidate.period_duration;
+  if (periodDuration && !isValidPeriodDuration(periodDuration)) {
+    errors.push('Invalid period duration value');
   }
   
-  if (assessmentData.flowHeaviness && !isValidFlowHeaviness(assessmentData.flowHeaviness)) {
-    errors.push('Invalid flowHeaviness value');
+  // Check flow heaviness - handle both camelCase and snake_case
+  const flowHeaviness = dataToValidate.flowHeaviness || dataToValidate.flow_heaviness;
+  if (flowHeaviness && !isValidFlowHeaviness(flowHeaviness)) {
+    errors.push('Invalid flow heaviness value');
   }
   
-  if (assessmentData.painLevel && !isValidPainLevel(assessmentData.painLevel)) {
-    errors.push('Invalid painLevel value');
+  // Check pain level - handle both camelCase and snake_case
+  const painLevel = dataToValidate.painLevel || dataToValidate.pain_level;
+  if (painLevel && !isValidPainLevel(painLevel)) {
+    errors.push('Invalid pain level value');
   }
   
   return {

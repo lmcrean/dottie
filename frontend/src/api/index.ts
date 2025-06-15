@@ -1,14 +1,23 @@
 import { apiClient, isSuccess, isClientError, isServerError } from './core/apiClient';
 import { checkDbConnection, fetchUserData } from './core/db';
 
-import { authApi, login, signup, logout, refreshToken } from './auth';
+import { authApi, postLogin, postSignup, postLogout, postRefreshToken } from './auth';
 import { type User, type LoginInput, type SignupInput, type AuthResponse } from './auth/types';
 
-import { assessmentApi, type Assessment } from './assessment';
-import { chatApi, type ApiMessage, type Conversation, type ChatResponse } from './message';
-import { userApi, type UserProfile, type PasswordResetRequest, type PasswordUpdateRequest } from './user';
+import { assessmentApi, type Assessment } from '../pages/assessment/api';
+// Chat API is now colocated with components - import from specific locations as needed
+import {
+  userApi,
+  type UserProfile,
+  type PasswordResetRequest,
+  type PasswordUpdateRequest
+} from '../pages/user/api';
 import setupApi from './setup';
-import { type HealthResponse, type DatabaseStatusResponse, type DatabaseHelloResponse } from './setup/types';
+import {
+  type HealthResponse,
+  type DatabaseStatusResponse,
+  type DatabaseHelloResponse
+} from './setup/types';
 
 // Export all API modules
 export {
@@ -18,34 +27,34 @@ export {
   isServerError,
   checkDbConnection,
   fetchUserData,
-  
+
   // Auth exports
   authApi,
-  login,
-  signup,
-  logout,
-  refreshToken,
+  postLogin,
+  postSignup,
+  postLogout,
+  postRefreshToken,
   User,
   LoginInput,
   SignupInput,
   AuthResponse,
-  
+
   // Assessment exports
   assessmentApi,
   Assessment,
-  
-  // Chat exports
-  chatApi,
-  ApiMessage,
-  Conversation,
-  ChatResponse,
-  
+
+  // Chat APIs are now colocated with their respective components
+  // Import directly from:
+  // - ../pages/chat/chat-detail/components/buttons/send-message
+  // - ../pages/chat/sidebar/api/get-list
+  // - etc.
+
   // User exports
   userApi,
   UserProfile,
   PasswordResetRequest,
   PasswordUpdateRequest,
-  
+
   // Setup exports
   setupApi,
   HealthResponse,
@@ -58,8 +67,8 @@ export default {
   apiClient,
   auth: authApi,
   assessment: assessmentApi,
-  chat: chatApi,
+  // chat: removed - now colocated with components
   user: userApi,
   setup: setupApi,
   db: { checkDbConnection, fetchUserData }
-}; 
+};
