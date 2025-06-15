@@ -156,6 +156,9 @@ export const signup = async (req, res) => {
     if (!user) {
       throw new Error('Failed to create user - no user returned');
     }
+    
+    // Sets the session on login controller skip  
+    req.session.decryptedUserKey = userEncryptionKey;
 
     // The user is already sanitized by the User.create() method
     // Ensure user ID is included in the response
