@@ -29,7 +29,7 @@ The `vercel-deploy.yml` workflow automates the deployment of the frontend applic
 The workflow requires these secrets to be configured in GitHub repository settings:
 - `VERCEL_TOKEN`: Your Vercel authentication token
 - `VERCEL_ORG_ID`: Your Vercel organization ID
-- `VERCEL_PROJECT_ID`: Your specific Vercel project ID
+- `VERCEL_FRONTEND_PROJECT_ID`: Your specific Vercel project ID
 
 ## How to Test This Workflow
 
