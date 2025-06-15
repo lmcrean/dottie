@@ -1,9 +1,9 @@
-import crypto, {scrypt} from "crypto";
+import crypto, { scrypt } from "crypto";
 import { promisify } from "util";
 
 const KEY_LENGTH = 32; // 256-bit AES
 const IV_LENGTH = 16; // For AES-GCM
-const ALGORITHM = 'aes-256-gcm';
+const ALGORITHM = "aes-256-gcm";
 const TAG_LENGTH = 16;
 
 const scryptAsyncPromise = promisify(scrypt);
@@ -50,7 +50,6 @@ export function generateIV() {
   return crypto.randomBytes(16);
 }
 
-
 /**
  * Encrypts a user key using AES-256-GCM.
  * Combines IV, Auth Tag, and Encrypted Data into a single Buffer for storage/transmission.
@@ -65,31 +64,35 @@ export function generateIV() {
 export function encryptUserKey(userKey, kek, iv) {
   // Detailed input validation
   if (!Buffer.isBuffer(userKey)) {
-    throw new TypeError('Invalid parameter: userKey must be a Buffer.');
+    throw new TypeError("Invalid parameter: userKey must be a Buffer.");
   }
   if (!Buffer.isBuffer(kek)) {
-    throw new TypeError('Invalid parameter: kek must be a Buffer.');
+    throw new TypeError("Invalid parameter: kek must be a Buffer.");
   }
   if (kek.length !== KEY_LENGTH) {
-    throw new TypeError(`Invalid parameter: kek must be ${KEY_LENGTH} bytes long for ${ALGORITHM}, received ${kek.length}.`);
+    throw new TypeError(
+      `Invalid parameter: kek must be ${KEY_LENGTH} bytes long for ${ALGORITHM}, received ${kek.length}.`
+    );
   }
   if (!Buffer.isBuffer(iv)) {
-    throw new TypeError('Invalid parameter: iv must be a Buffer.');
+    throw new TypeError("Invalid parameter: iv must be a Buffer.");
   }
   if (iv.length !== IV_LENGTH) {
-    throw new TypeError(`Invalid parameter: iv must be ${IV_LENGTH} bytes long for GCM, received ${iv.length}.`);
+    throw new TypeError(
+      `Invalid parameter: iv must be ${IV_LENGTH} bytes long for GCM, received ${iv.length}.`
+    );
   }
 
   try {
     const cipher = crypto.createCipheriv(ALGORITHM, kek, iv);
     const encrypted = Buffer.concat([cipher.update(userKey), cipher.final()]);
-    const tag = cipher.getAuthTag(); 
+    const tag = cipher.getAuthTag();
 
     // Concatenate IV, Auth Tag, and encrypted data for easy storage/retrieval
     return Buffer.concat([iv, tag, encrypted]);
   } catch (error) {
-    console.error('Error during encryption:', error);
-    throw new Error('Encryption failed. Please check inputs.', error);
+    console.error("Error during encryption:", error);
+    throw new Error("Encryption failed. Please check inputs.", error);
   }
 }
 
@@ -110,19 +113,23 @@ export function encryptUserKey(userKey, kek, iv) {
 export function decryptUserKey(encryptedData, kek) {
   // --- Input Validation ---
   if (!Buffer.isBuffer(encryptedData)) {
-    throw new TypeError('Invalid parameter: encryptedData must be a Buffer.');
+    throw new TypeError("Invalid parameter: encryptedData must be a Buffer.");
   }
   if (!Buffer.isBuffer(kek)) {
-    throw new TypeError('Invalid parameter: kek must be a Buffer.');
+    throw new TypeError("Invalid parameter: kek must be a Buffer.");
   }
   if (kek.length !== KEY_LENGTH) {
-    throw new TypeError(`Invalid parameter: kek must be ${KEY_LENGTH} bytes long for ${ALGORITHM}, received ${kek.length}.`);
+    throw new TypeError(
+      `Invalid parameter: kek must be ${KEY_LENGTH} bytes long for ${ALGORITHM}, received ${kek.length}.`
+    );
   }
 
   // Calculate the minimum expected length of encryptedData (IV + Tag)
   const MIN_ENCRYPTED_DATA_LENGTH = IV_LENGTH + TAG_LENGTH;
   if (encryptedData.length < MIN_ENCRYPTED_DATA_LENGTH) {
-    throw new TypeError(`Invalid parameter: encryptedData is too short. Expected at least ${MIN_ENCRYPTED_DATA_LENGTH} bytes (IV + Auth Tag).`);
+    throw new TypeError(
+      `Invalid parameter: encryptedData is too short. Expected at least ${MIN_ENCRYPTED_DATA_LENGTH} bytes (IV + Auth Tag).`
+    );
   }
 
   // --- Extract Components ---
@@ -134,19 +141,28 @@ export function decryptUserKey(encryptedData, kek) {
   // --- Decryption Process ---
   try {
     const decipher = crypto.createDecipheriv(ALGORITHM, kek, iv);
-    decipher.setAuthTag(tag); 
-    
-    const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+    decipher.setAuthTag(tag);
+
+    const decrypted = Buffer.concat([
+      decipher.update(ciphertext),
+      decipher.final(),
+    ]);
     return decrypted;
   } catch (error) {
     // Catch specific 'Bad decrypt' errors which indicate tag mismatch or corrupted data
-    if (error.message === 'Bad decrypt') {
-      console.error('Decryption failed: Authentication tag mismatch or corrupted data.');
-      throw new Error('Decryption failed: Data integrity compromised or incorrect KEK.');
+    if (error.message === "Bad decrypt") {
+      console.error(
+        "Decryption failed: Authentication tag mismatch or corrupted data."
+      );
+      throw new Error(
+        "Decryption failed: Data integrity compromised or incorrect KEK."
+      );
     } else {
       // Log other unexpected cryptographic errors
-      console.error('An unexpected error occurred during decryption:', error);
-      throw new Error('Decryption failed due to an unexpected cryptographic error.');
+      console.error("An unexpected error occurred during decryption:", error);
+      throw new Error(
+        "Decryption failed due to an unexpected cryptographic error."
+      );
     }
   }
 }
@@ -166,16 +182,13 @@ export function decryptUserKey(encryptedData, kek) {
  * @throws {Error} If encryption fails (e.g., invalid key, data encoding issues).
  */
 export function encryptMessage(userKey, text) {
-
-  // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply 
-  let userKeyBuffer = userKey
+  // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply
+  let userKeyBuffer = converttoBuffer(userKey);
   // console.log("========================This is Encrypt User Key===================")
   // console.trace("This is Encrypt User Key: ", userKey)
   // console.log("========================This is Encrypt User Key===================")
 
-  if (userKey && userKey.type === 'Buffer' && Array.isArray(userKey.data)) {
-    userKeyBuffer = Buffer.from(userKey.data); 
-  } 
+ 
 
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv("aes-256-gcm", userKeyBuffer, iv);
@@ -202,16 +215,11 @@ export function encryptMessage(userKey, text) {
  * @throws {Error} If decryption fails, often due to an incorrect user key, corrupted data, or invalid authentication tag.
  */
 export function decryptMessage(userKey, encryptedText) {
-
-  // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply 
-  let userKeyBuffer = userKey
+  // Userkey from req (express-session) is a serialised Buffer -> we get the Buffer then apply
+  let userKeyBuffer = converttoBuffer(userKey);
   // console.log("========================This is Decrpyt User Key===================")
   // console.trace("Decrpyt User Key: ",  userKey)
   // console.log("========================This is Decrpyt User Key===================")
-
-  if (userKey && userKey.type === 'Buffer' && Array.isArray(userKey.data)) {
-    userKeyBuffer = Buffer.from(userKey.data); 
-  } 
 
   const buffer = Buffer.from(encryptedText, "base64");
   const iv = buffer.subarray(0, IV_LENGTH);
@@ -243,7 +251,8 @@ export function decryptMessage(userKey, encryptedText) {
 export function isLikelyEncrypted(text) {
   // Check 1. Basic Type and Minimum Length Check:
   const MIN_ENCRYPTED_CONTENT_LENGTH_BYTES = 1; // At least 1 byte of encrypted data
-  const MIN_TOTAL_BYTES = IV_LENGTH + TAG_LENGTH + MIN_ENCRYPTED_CONTENT_LENGTH_BYTES;
+  const MIN_TOTAL_BYTES =
+    IV_LENGTH + TAG_LENGTH + MIN_ENCRYPTED_CONTENT_LENGTH_BYTES;
   const MIN_EXPECTED_BASE64_LENGTH = Math.ceil(MIN_TOTAL_BYTES / 3) * 4; // Ensure proper Base64 padding consideration
 
   if (typeof text !== "string" || text.length < MIN_EXPECTED_BASE64_LENGTH) {
@@ -252,7 +261,9 @@ export function isLikelyEncrypted(text) {
   }
 
   // Check 2. Base64 Format Check:
-  if (!/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/.test(text)) {
+  if (
+    !/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/.test(text)
+  ) {
     // console.log("isLikelyEncrypted: Failed Base64 Format Check");
     return false;
   }
@@ -263,7 +274,7 @@ export function isLikelyEncrypted(text) {
 
     // The encrypted message structure is IV (16 bytes) + Auth Tag (16 bytes) + Encrypted Data.
     // So, the buffer must be at least IV_LENGTH + TAG_LENGTH long.
-    if (buffer.length < (IV_LENGTH + TAG_LENGTH)) {
+    if (buffer.length < IV_LENGTH + TAG_LENGTH) {
       // console.log(`isLikelyEncrypted: Buffer too short (${buffer.length} bytes). Expected at least ${IV_LENGTH + TAG_LENGTH} bytes.`);
       return false;
     }
@@ -271,9 +282,34 @@ export function isLikelyEncrypted(text) {
     // console.log("isLikelyEncrypted: TRUE (Passed all checks)");
     return true;
   } catch (e) {
-
     // console.error("Error during Base64 decoding in isLikelyEncrypted:", e.message);
     // console.log("isLikelyEncrypted: FALSE (Buffer decoding error)");
     return false;
   }
 }
+
+// Helper function to convert serialised/hex( from SQLITE/POSTGRESQL) buffer to buffer 
+export const converttoBuffer = (key) => {
+  if (!key) return null;
+
+  // Case 1: If it's already a Buffer, just return it
+  if (Buffer.isBuffer(key)) {
+    return key;
+  }
+
+  // Case 2: If it's an object like { type: 'Buffer', data: [...] }
+  if (
+    typeof key === "object" &&
+    key.type === "Buffer" &&
+    Array.isArray(key.data)
+  ) {
+    return Buffer.from(key.data);
+  }
+
+  // Case 3: If it's a hex string from Postgres bytea, e.g. '\x862da8...'
+  if (typeof key === "string" && key.startsWith("\\x")) {
+    return Buffer.from(key.slice(2), "hex");
+  }
+
+  return key;
+};
