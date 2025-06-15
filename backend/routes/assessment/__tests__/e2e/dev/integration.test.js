@@ -42,19 +42,25 @@ beforeAll(async () => {
       password_hash: "test-hash",
       age: "25-plus",
       created_at: new Date().toISOString(),
+      encrypted_key: Buffer.alloc(64, 0xA4),
+      key_iv: Buffer.alloc(16, 0xA4),
+      key_salt: Buffer.alloc(16, 0xA4)
     };
 
     // Insert using raw query to avoid type issues
     await db.raw(
-      `INSERT INTO users (id, username, email, password_hash, age, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO users (id, username, email, password_hash, age, created_at, encrypted_key, key_iv, key_salt ) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         userData.id,
         userData.username,
         userData.email,
         userData.password_hash,
         userData.age,
-        userData.created_at
+        userData.created_at,
+        userData.encrypted_key,
+        userData.key_iv,
+        userData.key_salt,
       ]
     );
 

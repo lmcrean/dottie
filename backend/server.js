@@ -1,4 +1,7 @@
 import express from "express";
+// import { RedisStore } from "connect-redis";
+import session from "express-session";
+// import { createClient } from "redis";
 import cors from "cors";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
@@ -39,24 +42,47 @@ if (isProduction && isVercel) {
 
 // Create Express app
 const app = express();
-const isMac = process.platform === 'darwin';
+const isMac = process.platform === "darwin";
 const PORT = process.env.PORT || (isMac ? 5001 : 5000);
 
+// // Redis Client
+// let redisClient = createClient({ legacyMode: false });
+// redisClient.connect().catch(console.error);
 
+// // Store for express-session
+// let redisStore = new RedisStore({
+//   client: redisClient,
+//   prefix: "dottie",
+// });
 
 // Determine environment
 const isDevelopment = process.env.NODE_ENV !== "production";
+
+app.use(
+  session({
+    // store: redisStore,
+    secret: process.env.JWT_SECRET || "random-session-key",
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      secure: process.env.LOCAL_DEV === "false",
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      sameSite: "lax",
+    },
+  })
+);
+
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-
 const devPorts = [3000, 3001, 3005, 5001, 5005, 5173];
 
-const devOrigins = devPorts.flatMap(port => [
+const devOrigins = devPorts.flatMap((port) => [
   `http://localhost:${port}`,
-  `http://127.0.0.1:${port}`
+  `http://127.0.0.1:${port}`,
 ]);
 
 // Configure CORS
@@ -84,10 +110,25 @@ app.use("/api", routes);
 
 // Health check for Vercel
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ 
-    status: "ok", 
+  res.status(200).json({
+    status: "ok",
     message: "Server is running",
-    environment: process.env.NODE_ENV || "development"
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
+app.get("/api/debug/session", (req, res) => {
+  // Security: Only available in test/development mode
+  if (process.env.NODE_ENV === "production") {
+    return res.status(403).json({ error: "Not available in production" });
+  }
+
+  const hasDecryptedKey = !!req.session.decryptedUserKey;
+
+  res.json({
+    sessionActive: !!req.session,
+    hasDecryptedUserKey: hasDecryptedKey,
+    sessionID: req.session.id,
   });
 });
 

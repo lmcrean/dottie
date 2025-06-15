@@ -20,8 +20,12 @@ CREATE TABLE IF NOT EXISTS public.users (
   reset_token TEXT,
   reset_token_expires TIMESTAMP,
   deleted_at TIMESTAMP,
+  encrypted_key BYTEA NOT NULL,
+  key_iv BYTEA NOT NULL,
+  key_salt BYTEA NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
 );
 
 -- Periods tracking table
@@ -41,6 +45,7 @@ CREATE TABLE IF NOT EXISTS public.conversations (
   user_id UUID NOT NULL REFERENCES public.users(id),
   assessment_id TEXT NULL REFERENCES public.assessments(id),
   assessment_pattern TEXT NULL,
+  assessment_object JSONB NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

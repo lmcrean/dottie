@@ -30,9 +30,9 @@ export async function createTables(db) {
       table.string("email").notNullable().unique();
       table.string("password_hash").notNullable();
       table.integer("age");
-      table.text('encrypted_key');
-      table.text('key_salt');
-      table.text('key_iv');
+      table.binary('encrypted_key').notNullable();
+      table.binary('key_salt').notNullable();
+      table.binary('key_iv').notNullable();
       table.timestamps(true, true);
     });
   }

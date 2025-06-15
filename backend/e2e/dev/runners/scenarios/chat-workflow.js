@@ -26,21 +26,21 @@ import {
  * @param {string} assessmentId - Assessment ID for context (REQUIRED)
  * @returns {Promise<string>} Conversation ID
  */
-export async function runChatWithAssessmentWorkflow(request, expect, authToken, assessmentId) {
+export async function runChatWithAssessmentWorkflow(requestContext, expect, authToken, assessmentId) {
     logWorkflowStep('Starting Chat with Assessment Workflow (DEV)', '💬🩺');
     
     // Create new conversation by sending initial message with assessment context
-    const conversationResult = await chat.createConversation(request, authToken, assessmentId);
+    const conversationResult = await chat.createConversation(requestContext, authToken, assessmentId);
     const conversationId = validateConversationCreation(expect, conversationResult, assessmentId);
     logWorkflowStep('Created conversation with assessment context (DEV)');
     
     // Verify the conversation was properly linked to the assessment
-    const linkValidation = await chat.validateAssessmentIdWasLinked(request, authToken, conversationId, assessmentId);
+    const linkValidation = await chat.validateAssessmentIdWasLinked(requestContext, authToken, conversationId, assessmentId);
     expect(linkValidation.success).toBe(true);
     logWorkflowStep('Verified assessment-conversation link (DEV)');
     
     // Get conversation details and validate structure
-    const conversationDetails = await chat.getConversationRaw(request, authToken, conversationId);
+    const conversationDetails = await chat.getConversationRaw(requestContext, authToken, conversationId);
     validateConversationExpectations(expect, conversationDetails, conversationId, assessmentId);
     logWorkflowStep('Verified conversation includes assessment data (DEV)');
     
@@ -51,20 +51,20 @@ export async function runChatWithAssessmentWorkflow(request, expect, authToken, 
     logWorkflowStep('Initial message structure validated (DEV)');
     
     // Send follow-up message to maintain assessment context
-    const followUpResult = await chat.sendUserMessageFollowup(request, authToken, conversationId, 1);
+    const followUpResult = await chat.sendUserMessageFollowup(requestContext, authToken, conversationId, 1);
     validateMessageSendResult(expect, followUpResult, conversationId);
     logWorkflowStep('Follow-up message sent successfully (DEV)');
     
     // Validate updated conversation with 4 messages
-    const updatedConversationResponse = await chat.getConversation(request, authToken, conversationId, 4);
+    const updatedConversationResponse = await chat.getConversation(requestContext, authToken, conversationId, 4);
     expect(updatedConversationResponse.success).toBe(true);
     
-    const messageOrderValidation = await chat.validateMessageOrder(request, authToken, conversationId, 4);
+    const messageOrderValidation = await chat.validateMessageOrder(requestContext, authToken, conversationId, 4);
     expect(messageOrderValidation.success).toBe(true);
     logWorkflowStep('Follow-up chatbot response validated (DEV)');
     
     // Verify conversation appears in history with assessment link
-    const conversations = await chat.getConversationHistory(request, authToken);
+    const conversations = await chat.getConversationHistory(requestContext, authToken);
     validateConversationInHistory(expect, conversations, conversationId, assessmentId);
     logWorkflowStep('Conversation appears in history with assessment link (DEV)');
     
@@ -74,16 +74,16 @@ export async function runChatWithAssessmentWorkflow(request, expect, authToken, 
 
 /**
  * Delete conversation and verify it's removed
- * @param {Object} request - Playwright request object
+ * @param {Object} requestContext - Playwright requestContext object
  * @param {Function} expect - Playwright expect function
  * @param {string} authToken - Authentication token
  * @param {string} conversationId - Conversation ID to delete
  */
-export async function deleteAndVerifyConversation(request, expect, authToken, conversationId) {
-    const deleteResult = await chat.deleteConversation(request, authToken, conversationId);
+export async function deleteAndVerifyConversation(requestContext, expect, authToken, conversationId) {
+    const deleteResult = await chat.deleteConversation(requestContext, authToken, conversationId);
     expect(deleteResult).toBe(true);
     
-    const conversationsAfterDelete = await chat.getConversationHistory(request, authToken);
+    const conversationsAfterDelete = await chat.getConversationHistory(requestContext, authToken);
     const deletedConversation = conversationsAfterDelete.find(conv => conv.id === conversationId);
     expect(deletedConversation).toBeFalsy();
 } 

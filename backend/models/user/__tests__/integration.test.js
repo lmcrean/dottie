@@ -2,6 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { User, ReadUser, AuthenticateUser, ResetPassword, CreateUser } from '../index.js';
 import DbService from '@/services/dbService.js';
 import { generateUser } from '@test-utils/testFixtures.js';
+import { 
+    generateUserEncryptionKey,
+    generateIV,
+    deriveKEK,
+    encryptUserKey,
+    decryptUserKey,
+    isLikelyEncrypted
+ } from '../../../services/encryptionUtils';
 
 // Mock DbService and new services
 vi.mock('@/services/dbService.js');
@@ -184,13 +192,19 @@ describe('User Models Integration', () => {
       const currentHash = 'current-hash';
       const newPasswordHash = 'new-hashed-password';
       const updatedUser = generateUser({ id: userId, password_hash: newPasswordHash });
+      const newIV = Buffer.alloc(16);
+      const newKeySalt = Buffer.alloc(16);
+      const userKey = Buffer.alloc(32);
+      const newKek = await deriveKEK(newPasswordHash, newKeySalt )
+
+      const newEncryptedKey = encryptUserKey(userKey, newKek, newIV);
 
       // Mock User.updatePassword method (which uses UpdatePassword service)
-      vi.spyOn(User, 'updatePassword').mockResolvedValue({ success: true, user: updatedUser });
+      vi.spyOn(User, 'updatePasswordAndEncrytion').mockResolvedValue({ success: true, user: updatedUser });
 
-      const result = await User.updatePassword(userId, currentHash, newPasswordHash);
+      const result = await User.updatePasswordAndEncrytion(userId, currentHash, newPasswordHash, newEncryptedKey, newIV, newKeySalt );
 
-      expect(User.updatePassword).toHaveBeenCalledWith(userId, currentHash, newPasswordHash);
+      expect(User.updatePasswordAndEncrytion).toHaveBeenCalledWith(userId, currentHash, newPasswordHash, newEncryptedKey, newIV, newKeySalt);
       expect(result.success).toBe(true);
       expect(result.user).toEqual(updatedUser);
     });

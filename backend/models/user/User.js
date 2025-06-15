@@ -145,10 +145,13 @@ class User {
    * @param {string} userId - User ID
    * @param {string} currentPasswordHash - Current password hash
    * @param {string} newPasswordHash - New password hash
+   * @param {string} newEncryptedKey - New encrypted User key
+   * @param {string} newIV
+   * @param {string} newKeySalt
    * @returns {Promise<object>} - Update result
    */
-  static async updatePassword(userId, currentPasswordHash, newPasswordHash) {
-    return await UpdatePassword.updatePasswordWithVerification(userId, currentPasswordHash, newPasswordHash);
+  static async updatePasswordAndEncrytion(userId, currentPasswordHash, newPasswordHash, newEncryptedKey, newIV, newKeySalt) {
+    return await UpdatePassword.updatePasswordWithVerification(userId, currentPasswordHash, newPasswordHash, newEncryptedKey, newIV, newKeySalt);
   }
 
   /**

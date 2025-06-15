@@ -90,18 +90,23 @@ vi.mock('../../../../../services/dbService.js', () => ({
 
 // Import the controller after all mocks are set up
 import * as sendMessageController from '../../../send-message/controller.js';
+import session from 'express-session';
 
 describe('Send Message Controller', () => {
   let req, res;
 
   beforeEach(() => {
+
+    vi.clearAllMocks()
+
     req = {
       body: {
         message: 'Test message',
       },
       user: {
         id: 'user-123'
-      }
+      },
+      session: {}
     };
     
     res = {
@@ -111,6 +116,9 @@ describe('Send Message Controller', () => {
   });
 
   it('should send a message and receive a response (new conversation)', async () => {
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
+    
     // Act
     await sendMessageController.sendMessage(req, res);
     
@@ -123,6 +131,8 @@ describe('Send Message Controller', () => {
   });
 
   it('should send a message in an existing conversation', async () => {
+    
+    req.session.decryptedUserKey = Buffer.alloc(64);
     // Arrange
     req.body.conversationId = 'valid-conversation-id';
     
@@ -138,6 +148,9 @@ describe('Send Message Controller', () => {
   });
   
   it('should return 400 if message is missing', async () => {
+    
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     // Arrange
     req.body.message = undefined;
     
@@ -150,6 +163,9 @@ describe('Send Message Controller', () => {
   });
   
   it('should return 404 if conversation not found', async () => {
+    
+    req.session.decryptedUserKey = Buffer.alloc(64);
+    
     // Arrange
     req.body.conversationId = 'invalid-conversation-id';
     

@@ -35,7 +35,7 @@ class UserBase {
    * @returns {Array<string>} - Array of sensitive column names
    */
   static getSensitiveColumns() {
-    return ['password_hash', 'reset_token', 'reset_token_expires'];
+    return ['password_hash', 'reset_token', 'reset_token_expires', 'encrypted_key', 'key_salt', 'key_iv'];
   }
 }
 

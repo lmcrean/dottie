@@ -7,8 +7,12 @@ import logger from '@/services/logger.js';
 vi.mock('@/services/dbService.js');
 vi.mock('@/services/logger.js');
 
+// const decryptedUserKeyBuffer = Buffer.alloc(64)
+
 describe('getUserConversations', () => {
   const mockUserId = 'test-user-123';
+  const decryptedUserKeyBuffer = Buffer.alloc(64)
+
   
   beforeEach(() => {
     vi.clearAllMocks();
@@ -48,10 +52,9 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockResolvedValue(mockDbConversations);
 
       // Act
-      const result = await getUserConversations(mockUserId);
-
+      const result = await getUserConversations(mockUserId, decryptedUserKeyBuffer);
       // Assert
-      expect(DbService.getConversationsWithPreviews).toHaveBeenCalledWith(mockUserId);
+      expect(DbService.getConversationsWithPreviews).toHaveBeenCalledWith(mockUserId, decryptedUserKeyBuffer);
       expect(result).toHaveLength(2);
       
       // Check first conversation formatting
@@ -103,7 +106,7 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockResolvedValue(mockDbConversations);
 
       // Act
-      const result = await getUserConversations(mockUserId);
+      const result = await getUserConversations(mockUserId, decryptedUserKeyBuffer);
 
       // Assert
       expect(result).toHaveLength(2);
@@ -145,10 +148,10 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockResolvedValue([]);
 
       // Act
-      const result = await getUserConversations(mockUserId);
+      const result = await getUserConversations(mockUserId, decryptedUserKeyBuffer);
 
       // Assert
-      expect(DbService.getConversationsWithPreviews).toHaveBeenCalledWith(mockUserId);
+      expect(DbService.getConversationsWithPreviews).toHaveBeenCalledWith(mockUserId, decryptedUserKeyBuffer);
       expect(result).toEqual([]);
     });
 
@@ -157,7 +160,7 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockResolvedValue(null);
 
       // Act
-      const result = await getUserConversations(mockUserId);
+      const result = await getUserConversations(mockUserId, decryptedUserKeyBuffer);
 
       // Assert
       expect(result).toEqual([]);
@@ -171,7 +174,7 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockRejectedValue(mockError);
 
       // Act & Assert
-      await expect(getUserConversations(mockUserId)).rejects.toThrow('Database connection failed');
+      await expect(getUserConversations(mockUserId, decryptedUserKeyBuffer)).rejects.toThrow('Database connection failed');
       
       expect(logger.error).toHaveBeenCalledWith('[getUserConversations] Error getting user conversations:', mockError);
     });
@@ -182,8 +185,8 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockRejectedValue(new Error('Invalid user ID'));
 
       // Act & Assert
-      await expect(getUserConversations(invalidUserId)).rejects.toThrow('Invalid user ID');
-      expect(DbService.getConversationsWithPreviews).toHaveBeenCalledWith(invalidUserId);
+      await expect(getUserConversations(invalidUserId, decryptedUserKeyBuffer)).rejects.toThrow('Invalid user ID');
+      expect(DbService.getConversationsWithPreviews).toHaveBeenCalledWith(invalidUserId, decryptedUserKeyBuffer);
     });
   });
 
@@ -205,7 +208,7 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockResolvedValue(mockDbConversations);
 
       // Act
-      const result = await getUserConversations(mockUserId);
+      const result = await getUserConversations(mockUserId, decryptedUserKeyBuffer);
 
       // Assert
       const conversation = result[0];
@@ -235,7 +238,7 @@ describe('getUserConversations', () => {
       DbService.getConversationsWithPreviews = vi.fn().mockResolvedValue(mockDbConversations);
 
       // Act
-      const result = await getUserConversations(mockUserId);
+      const result = await getUserConversations(mockUserId, decryptedUserKeyBuffer);
 
       // Assert
       const conversation = result[0];

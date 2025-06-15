@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 // Mock all dependencies
 vi.mock('@/services/dbService.js');
 vi.mock('@/services/logger.js');
-vi.mock('../../../chatbot-message/database/sendChatbotMessage.js', () => ({
+vi.mock('../../2-chatbot-message/database/sendChatbotMessage.js', () => ({
   sendChatbotMessage: vi.fn(),
   getMessage: vi.fn(),
   getConversationMessages: vi.fn()
@@ -27,10 +27,10 @@ vi.mock('../database/sendUserMessage.js', () => ({
 vi.mock('../sendUserMessage.js', () => ({
   sendMessage: vi.fn()
 }));
-vi.mock('../../../../chatbot-message/generateResponse.js', () => ({
+vi.mock('../../../2-chatbot-message/generateResponse.js', () => ({
   generateResponseToMessage: vi.fn()
 }));
-vi.mock('../../../../chatbot-message/database/sendChatbotMessage.js', () => ({
+vi.mock('../../../2-chatbot-message/database/sendChatbotMessage.js', () => ({
   sendChatbotMessage: vi.fn(),
   getMessage: vi.fn(),
   getConversationMessages: vi.fn()
@@ -76,13 +76,13 @@ describe('Message Flow Dialogue Integration Tests', () => {
       timestamp: new Date().toISOString()
     });
 
-    const { generateResponseToMessage } = await import('../../../../chatbot-message/generateResponse.js');
+    const { generateResponseToMessage } = await import('../../../2-chatbot-message/generateResponse.js');
     // Force the mock to return our specific mock data
     generateResponseToMessage.mockImplementation(async (conversationId, userMessageId, messageText) => {
       return messageFlowTestData.mockAssistantMessage;
     });
 
-    const { sendChatbotMessage } = await import('../../../../chatbot-message/database/sendChatbotMessage.js');
+    const { sendChatbotMessage } = await import('../../../2-chatbot-message/database/sendChatbotMessage.js');
     sendChatbotMessage.mockResolvedValue(messageFlowTestData.mockAssistantMessage);
     
     // Setup linkParentMessageId mocks

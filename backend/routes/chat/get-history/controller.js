@@ -10,7 +10,12 @@ export const getHistory = async (req, res) => {
   try {
     // Get userId from req.user, supporting both id and userId fields
     const userId = req.user.userId || req.user.id;
-    
+    const decryptedUserKey = req.session.decryptedUserKey;
+
+    if (!decryptedUserKey || !userId) {
+      return res.status(401).json({ error: 'User key not available in session. Please log in again.' });
+    }
+
     // Log the user ID for debugging
     logger.info(`[getHistory] Getting conversation history for user: ${userId}`);
     console.log(`[getHistory] req.user object:`, JSON.stringify(req.user, null, 2));
@@ -24,7 +29,7 @@ export const getHistory = async (req, res) => {
     
     // Get all conversations for this user
     console.log(`[getHistory] Calling getUserConversations with userId: ${userId}`);
-    const conversations = await getUserConversations(userId);
+    const conversations = await getUserConversations(userId, decryptedUserKey);
     
     console.log(`[getHistory] getUserConversations returned:`, JSON.stringify(conversations, null, 2));
     
