@@ -63,11 +63,21 @@ const devOrigins = devPorts.flatMap(port => [
 const corsOptions = {
   origin: isDevelopment
     ? devOrigins
-    : [
-        "https://dottie-health.vercel.app",
-        "https://dottie-lmcreans-projects.vercel.app",
-        "https://dottie-oi1fayiad-lmcreans-projects.vercel.app",
-      ],
+    : (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        // Allow all Vercel preview and production URLs for your project
+        const allowedPatterns = [
+          /^https:\/\/dottie-health\.vercel\.app$/,
+          /^https:\/\/dottie-lmcreans-projects\.vercel\.app$/,
+          /^https:\/\/dottie-.*-lmcreans-projects\.vercel\.app$/,  // Preview deployments
+          /^https:\/\/dottie-git-.*-lmcreans-projects\.vercel\.app$/ // Git branch deployments
+        ];
+        
+        const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
+        callback(null, isAllowed);
+      },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   credentials: true,
   optionsSuccessStatus: 204,
