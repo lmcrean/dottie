@@ -12,7 +12,7 @@ export function AppLayout({ children }: AppLayoutProps): ReactElement {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="h-screen bg-gradient-to-b from-white to-pink-50 dark:from-gray-900 dark:from-70% dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-white to-pink-50 dark:from-gray-900 dark:from-70% dark:to-gray-800">
       <Toaster
         position="top-center"
         richColors
@@ -25,10 +25,10 @@ export function AppLayout({ children }: AppLayoutProps): ReactElement {
         }}
       />
       <Header isLoggedIn={isAuthenticated} />
-      <main className="flex flex-col" style={{ height: 'calc(100vh - 76px)' }}>
+      <main className="flex min-h-screen flex-col">
         {children}
         <UITestPageSwitch />
       </main>
     </div>
   );
-} 
+}

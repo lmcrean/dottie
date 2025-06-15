@@ -132,14 +132,14 @@ export function SendInitialMessageButton({
   return (
     <Button
       onClick={handleStartChat}
-      className={`${className} w-full`}
+      className={`gap-2 ${className}`}
       variant="default"
       disabled={disabled || isLoading}
     >
       {isLoading ? (
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
-        <MessageCircle className="mr-2 h-4 w-4" />
+        <MessageCircle className="h-4 w-4" />
       )}
       Chat with Dottie
     </Button>

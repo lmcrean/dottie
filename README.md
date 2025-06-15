@@ -1,5 +1,4 @@
-![image](https://github.com/user-attachments/assets/fb1640d0-8b7c-4bc9-9310-eb2c1905acc2)
-
+![image](https://github.com/user-attachments/assets/50885e5b-cf6a-4c11-b66b-c0e48ac8740c)
 
 # Dottie: Your Period Bestie
 
