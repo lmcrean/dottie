@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import { initializeDatabase } from "./services/runtime-db-setup.js";
 
 // Import route modules
 import assessmentRoutes from "./routes/assessment/index.js";
@@ -118,15 +119,23 @@ const isMainModule = fileURLToPath(import.meta.url) === process.argv[1];
 // Only start server when run directly (not when imported for testing)
 if (isMainModule) {
   // Start server
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(
       `Server running on port ${PORT} in ${
         process.env.NODE_ENV || "development"
       } mode`
     );
+    
+    // Initialize database on server startup
+    await initializeDatabase();
   });
 } else {
   console.log("Exporting server app for serverless deployment");
+  
+  // For serverless deployment, initialize database when module is imported
+  initializeDatabase().catch(error => {
+    console.error("Database initialization failed:", error.message);
+  });
 }
 
 export default app;
