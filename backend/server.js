@@ -72,11 +72,19 @@ const corsOptions = {
         const allowedPatterns = [
           /^https:\/\/dottie-health\.vercel\.app$/,
           /^https:\/\/dottie-lmcreans-projects\.vercel\.app$/,
-          /^https:\/\/dottie-.*-lmcreans-projects\.vercel\.app$/,  // Preview deployments
-          /^https:\/\/dottie-git-.*-lmcreans-projects\.vercel\.app$/ // Git branch deployments
+          /^https:\/\/dottie-[a-zA-Z0-9-]+\.lmcreans-projects\.vercel\.app$/,  // Preview deployments
+          /^https:\/\/dottie-git-[a-zA-Z0-9-]+\.lmcreans-projects\.vercel\.app$/,  // Git branch deployments
+          /^https:\/\/dottie-[a-zA-Z0-9-]+-lmcreans-projects\.vercel\.app$/ // Branch deployments with different format
         ];
         
         const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
+        
+        // Log CORS decisions in development/debugging
+        console.log(`CORS check for origin: ${origin} - ${isAllowed ? 'ALLOWED' : 'BLOCKED'}`);
+        if (!isAllowed) {
+          console.log('Allowed patterns:', allowedPatterns.map(p => p.toString()));
+        }
+        
         callback(null, isAllowed);
       },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
