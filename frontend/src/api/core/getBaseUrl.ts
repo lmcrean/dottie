@@ -37,6 +37,21 @@ export const getBaseUrl = (): string => {
         return import.meta.env.VITE_API_BASE_URL;
       }
       
+      // Alternative: Try to use Vercel's built-in environment variables
+      const vercelUrl = import.meta.env.VITE_VERCEL_URL;
+      const vercelGitCommitSha = import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA;
+      
+      if (vercelUrl || vercelGitCommitSha) {
+        console.log(`[getBaseUrl] Vercel built-in vars - URL: ${vercelUrl}, SHA: ${vercelGitCommitSha}`);
+        // Try to construct backend URL using commit SHA or deployment ID
+        if (vercelGitCommitSha) {
+          const shortSha = vercelGitCommitSha.substring(0, 8);
+          const shaBasedUrl = `https://dottie-backend-git-${shortSha}-lmcreans-projects.vercel.app`;
+          console.log(`[getBaseUrl] Trying SHA-based backend URL: ${shaBasedUrl}`);
+          return shaBasedUrl;
+        }
+      }
+      
       // Fallback: construct URL (likely to fail due to different hashes)
       const branchPart = hostname.replace('dottie-', '').replace('-lmcreans-projects.vercel.app', '');
       const constructedUrl = `https://dottie-backend-${branchPart}-lmcreans-projects.vercel.app`;
