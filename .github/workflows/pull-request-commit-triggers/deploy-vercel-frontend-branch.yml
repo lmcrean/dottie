@@ -4,16 +4,12 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'frontend/**'
   push:
     branches:
       - feat-*
       - feature/*
       - develop
       - hotfix/*
-    paths:
-      - 'frontend/**'
 
 jobs:
   deploy:
