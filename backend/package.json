@@ -26,7 +26,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run -t unit",
-    "vercel-build": "node scripts/prepare-deploy.js",
+    "vercel-build-simple": "node scripts/prepare-deploy.js",
     "vercel-build-full": "node scripts/prepare-deploy.js && node services/vercel-build.js",
     "___test workflow____": "___test workflow using vitest and test driven development____",
     "___STATUS:PASSED____": "___the following tests have passed____",
