@@ -11,5 +11,15 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
-  ]
+  ],
+  "buildCommand": "npm run vercel-build",
+  "installCommand": "npm ci",
+  "functions": {
+    "server.js": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
 } 
