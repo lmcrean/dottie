@@ -1,14 +1,17 @@
-name: Deploy to Vercel
+name: Deploy Frontend Branch to Vercel
 
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
       - 'frontend/**'
-  pull_request:
+  push:
     branches:
-      - main
+      - feat-*
+      - feature/*
+      - develop
+      - hotfix/*
     paths:
       - 'frontend/**'
 
@@ -37,18 +40,7 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Deploy to Vercel (Production)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
-          working-directory: ./frontend
-          vercel-args: '--prod'
-
-      - name: Deploy to Vercel (Preview)
-        if: github.event_name == 'pull_request'
+      - name: Deploy Frontend Branch to Vercel (Preview)
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}

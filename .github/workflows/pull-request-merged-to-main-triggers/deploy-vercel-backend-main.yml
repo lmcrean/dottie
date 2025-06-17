@@ -1,12 +1,7 @@
-name: Deploy Backend to Vercel
+name: Deploy Backend to Production
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'backend/**'
-  pull_request:
     branches:
       - main
     paths:
@@ -32,8 +27,7 @@ jobs:
           cd backend
           npm ci
 
-      - name: Deploy Backend to Vercel (Production)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      - name: Deploy Backend to Production
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -41,13 +35,3 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
           working-directory: ./backend
           vercel-args: '--prod --confirm'
-
-      - name: Deploy Backend to Vercel (Preview)
-        if: github.event_name == 'pull_request'
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-          working-directory: ./backend
-          github-comment: true 
