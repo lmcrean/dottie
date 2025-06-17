@@ -2,15 +2,7 @@
  * Determines the appropriate API base URL based on deployment context
  */
 export const getBaseUrl = (): string => {
-  // PRIORITY 1: Environment variable (for CI/CD deployments)
-  if (import.meta.env.VITE_API_BASE_URL) {
-    console.log(`[getBaseUrl] Using environment variable: ${import.meta.env.VITE_API_BASE_URL}`);
-    return import.meta.env.VITE_API_BASE_URL;
-  }
-
-  console.log(`[getBaseUrl] No VITE_API_BASE_URL found, falling back to detection logic`);
-
-  // PRIORITY 2: Are we in localhost development?
+  // PRIORITY 1: Are we in localhost development? (Never use env vars here)
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     // Detect E2E mode - if frontend is running on port 3005, use backend port 5005
     const isE2EMode = window.location.port === '3005';
@@ -24,41 +16,52 @@ export const getBaseUrl = (): string => {
     }
 
     const localUrl = `http://${window.location.hostname}:${API_PORT}`;
-    console.log(`[getBaseUrl] Using localhost: ${localUrl}`);
+    console.log(`[getBaseUrl] LOCALHOST detected - Using local backend: ${localUrl}`);
     return localUrl;
   }
 
-  // PRIORITY 3: Are we in a Vercel branch deployment?
+  // PRIORITY 2: Are we in a Vercel deployment? Check environment variable first
   const isVercelDeployment = window.location.hostname.includes('vercel.app');
   if (isVercelDeployment) {
+    console.log(`[getBaseUrl] VERCEL deployment detected`);
+    
+    // 2a. Use environment variable if provided (from CI/CD)
+    if (import.meta.env.VITE_API_BASE_URL) {
+      console.log(`[getBaseUrl] Using CI/CD environment variable: ${import.meta.env.VITE_API_BASE_URL}`);
+      return import.meta.env.VITE_API_BASE_URL;
+    }
+
+    console.log(`[getBaseUrl] No VITE_API_BASE_URL found, using Vercel detection logic`);
+    
     const hostname = window.location.hostname;
     
-    // 3a. Are we in the main Vercel production branch?
+    // 2b. Are we in the main Vercel production branch?
     if (hostname === 'dottie-lmcreans-projects.vercel.app') {
       const prodUrl = 'https://dottie-backend.vercel.app';
-      console.log(`[getBaseUrl] Using production backend: ${prodUrl}`);
+      console.log(`[getBaseUrl] Production branch - Using: ${prodUrl}`);
       return prodUrl;
     }
     
-    // 3b. Are we in a Vercel branch deployment? (This is likely to fail)
+    // 2c. Are we in a Vercel branch deployment? (This is likely to fail without env var)
     if (hostname.includes('dottie-') && hostname.includes('-lmcreans-projects.vercel.app')) {
       // Extract the branch identifier from the frontend URL
       const branchPart = hostname.replace('dottie-', '').replace('-lmcreans-projects.vercel.app', '');
       const constructedUrl = `https://dottie-backend-${branchPart}-lmcreans-projects.vercel.app`;
       console.warn(`[getBaseUrl] CONSTRUCTED backend URL (likely to fail): ${constructedUrl}`);
-      console.warn(`[getBaseUrl] This should use VITE_API_BASE_URL instead!`);
+      console.warn(`[getBaseUrl] Frontend and backend deployment hashes don't match!`);
+      console.warn(`[getBaseUrl] This deployment needs VITE_API_BASE_URL from CI/CD`);
       return constructedUrl;
     }
   }
 
-  // PRIORITY 4: LocalStorage override (for manual testing/debugging)
+  // PRIORITY 3: LocalStorage override (for manual testing/debugging)
   const savedApiUrl = localStorage.getItem('api_base_url');
   if (savedApiUrl) {
     console.log(`[getBaseUrl] Using localStorage override: ${savedApiUrl}`);
     return savedApiUrl;
   }
 
-  // PRIORITY 5: Default fallback to production backend
+  // PRIORITY 4: Default fallback to production backend
   const fallbackUrl = 'https://dottie-backend.vercel.app';
   console.log(`[getBaseUrl] Using fallback: ${fallbackUrl}`);
   return fallbackUrl;
