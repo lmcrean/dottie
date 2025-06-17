@@ -9,7 +9,7 @@
     "dev": "concurrently \"cd ../backend && npm run dev\" \"npm run dev:frontend\"",
     "dev:e2e": "concurrently \"cd ../backend && npm run dev:e2e\" \"npm run dev:frontend:e2e\"",
     "build": "tsc -p tsconfig.build.json && vite build",
-    "vercel-build": "tsc -p tsconfig.build.json && npx vite build",
+    "vercel-build": "npm run build",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,md,json}\" --ignore-path .prettierignore",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
