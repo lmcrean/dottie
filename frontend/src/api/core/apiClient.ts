@@ -7,10 +7,7 @@ import { getAuthToken, setAuthToken, setRefreshToken } from './tokenManager';
  */
 // Determine API base URL with fallbacks
 const getBaseUrl = () => {
-  // First priority: Vercel deployment URL if we're connecting to the deployed backend
-  const vercelUrl = 'https://dottie-backend.vercel.app';
-
-  // Second priority: Use environment variable if available
+  // First priority: Use environment variable if available
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
@@ -19,6 +16,27 @@ const getBaseUrl = () => {
   const savedApiUrl = localStorage.getItem('api_base_url');
   if (savedApiUrl) {
     return savedApiUrl;
+  }
+
+  // Third priority: Dynamic backend URL construction for Vercel deployments
+  const isVercelProduction = window.location.hostname.includes('vercel.app');
+  if (isVercelProduction) {
+    const hostname = window.location.hostname;
+    
+    // If we're on the production domain
+    if (hostname === 'dottie-lmcreans-projects.vercel.app') {
+      return 'https://dottie-backend.vercel.app';
+    }
+    
+    // If we're on a branch deployment, construct the corresponding backend URL
+    if (hostname.includes('dottie-') && hostname.includes('-lmcreans-projects.vercel.app')) {
+      // Extract the branch identifier from the frontend URL
+      const branchPart = hostname.replace('dottie-', '').replace('-lmcreans-projects.vercel.app', '');
+      return `https://dottie-backend-${branchPart}-lmcreans-projects.vercel.app`;
+    }
+    
+    // Fallback to production backend
+    return 'https://dottie-backend.vercel.app';
   }
 
   // Detect E2E mode - if frontend is running on port 3005, use backend port 5005
@@ -40,19 +58,24 @@ const getBaseUrl = () => {
   }
 
   // Production fallback: use Vercel deployment
-  return vercelUrl;
+  return 'https://dottie-backend.vercel.app';
 };
 
 // Expose a function to update the API URL at runtime
 export const setApiBaseUrl = (url: string) => {
   localStorage.setItem('api_base_url', url);
   apiClient.defaults.baseURL = url;
-
+  console.log(`[API Client] Base URL updated to: ${url}`);
   return url;
 };
 
+// Add debug logging for the selected base URL
+const baseUrl = getBaseUrl();
+console.log(`[API Client] Using base URL: ${baseUrl}`);
+console.log(`[API Client] Current hostname: ${window.location.hostname}`);
+
 const apiClient = axios.create({
-  baseURL: getBaseUrl(),
+  baseURL: baseUrl,
   headers: {
     'Content-Type': 'application/json'
   }
