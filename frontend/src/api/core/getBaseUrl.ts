@@ -25,15 +25,26 @@ export const getBaseUrl = (): string => {
   if (isVercelDeployment) {
     console.log(`[getBaseUrl] VERCEL deployment detected`);
     
-    // 2a. Use environment variable if provided (from CI/CD)
-    if (import.meta.env.VITE_API_BASE_URL) {
-      console.log(`[getBaseUrl] Using CI/CD environment variable: ${import.meta.env.VITE_API_BASE_URL}`);
-      return import.meta.env.VITE_API_BASE_URL;
-    }
-
-    console.log(`[getBaseUrl] No VITE_API_BASE_URL found, using Vercel detection logic`);
-    
     const hostname = window.location.hostname;
+    
+    // 2a. Are we in a Vercel branch deployment? (Check this first to identify context)
+    if (hostname.includes('dottie-') && hostname.includes('-lmcreans-projects.vercel.app') && hostname !== 'dottie-lmcreans-projects.vercel.app') {
+      console.log(`[getBaseUrl] Branch deployment detected: ${hostname}`);
+      
+      // For branch deployments, prefer environment variable from CI/CD
+      if (import.meta.env.VITE_API_BASE_URL) {
+        console.log(`[getBaseUrl] Using CI/CD environment variable: ${import.meta.env.VITE_API_BASE_URL}`);
+        return import.meta.env.VITE_API_BASE_URL;
+      }
+      
+      // Fallback: construct URL (likely to fail due to different hashes)
+      const branchPart = hostname.replace('dottie-', '').replace('-lmcreans-projects.vercel.app', '');
+      const constructedUrl = `https://dottie-backend-${branchPart}-lmcreans-projects.vercel.app`;
+      console.warn(`[getBaseUrl] CONSTRUCTED backend URL (likely to fail): ${constructedUrl}`);
+      console.warn(`[getBaseUrl] Frontend and backend deployment hashes don't match!`);
+      console.warn(`[getBaseUrl] This deployment needs VITE_API_BASE_URL from CI/CD`);
+      return constructedUrl;
+    }
     
     // 2b. Are we in the main Vercel production branch?
     if (hostname === 'dottie-lmcreans-projects.vercel.app') {
@@ -42,16 +53,13 @@ export const getBaseUrl = (): string => {
       return prodUrl;
     }
     
-    // 2c. Are we in a Vercel branch deployment? (This is likely to fail without env var)
-    if (hostname.includes('dottie-') && hostname.includes('-lmcreans-projects.vercel.app')) {
-      // Extract the branch identifier from the frontend URL
-      const branchPart = hostname.replace('dottie-', '').replace('-lmcreans-projects.vercel.app', '');
-      const constructedUrl = `https://dottie-backend-${branchPart}-lmcreans-projects.vercel.app`;
-      console.warn(`[getBaseUrl] CONSTRUCTED backend URL (likely to fail): ${constructedUrl}`);
-      console.warn(`[getBaseUrl] Frontend and backend deployment hashes don't match!`);
-      console.warn(`[getBaseUrl] This deployment needs VITE_API_BASE_URL from CI/CD`);
-      return constructedUrl;
+    // 2c. Other Vercel deployment - use environment variable if available
+    if (import.meta.env.VITE_API_BASE_URL) {
+      console.log(`[getBaseUrl] Using CI/CD environment variable: ${import.meta.env.VITE_API_BASE_URL}`);
+      return import.meta.env.VITE_API_BASE_URL;
     }
+    
+    console.log(`[getBaseUrl] Unknown Vercel deployment type, no environment variable found`);
   }
 
   // PRIORITY 3: LocalStorage override (for manual testing/debugging)
