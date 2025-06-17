@@ -1,8 +1,9 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",
-  "devCommand": "npm run dev",
+  "devCommand": "npm run dev:frontend",
   "framework": null,
+  "installCommand": "npm ci",
   "rewrites": [
     {
       "source": "/(.*)",
