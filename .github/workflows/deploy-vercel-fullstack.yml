@@ -124,9 +124,10 @@ jobs:
           echo "Dist folder contents:"
           ls -la dist/
           
-          # Deploy from current directory, let Vercel use outputDirectory from vercel.json
-          echo "Deploying with Vercel using outputDirectory configuration..."
-          DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+          # Deploy from current directory with backend URL as environment variable
+          echo "Deploying with Vercel using outputDirectory configuration and backend URL..."
+          echo "Setting VITE_API_BASE_URL to: ${{ needs.deploy-backend.outputs.backend-url }}"
+          DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Frontend deployed to: $DEPLOYMENT_URL"
         env:
