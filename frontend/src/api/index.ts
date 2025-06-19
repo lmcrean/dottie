@@ -1,4 +1,5 @@
-import { apiClient, isSuccess, isClientError, isServerError } from './core/apiClient';
+import { apiClient, setApiBaseUrl } from './core/apiClient';
+import { isSuccess, isClientError, isServerError } from './core/helpers';
 import { checkDbConnection, fetchUserData } from './core/db';
 
 import { authApi, postLogin, postSignup, postLogout, postRefreshToken } from './auth';
@@ -22,6 +23,7 @@ import {
 // Export all API modules
 export {
   apiClient,
+  setApiBaseUrl,
   isSuccess,
   isClientError,
   isServerError,

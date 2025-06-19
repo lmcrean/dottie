@@ -41,22 +41,8 @@ try {
   process.exit(1);
 }
 
-// Update package.json to include the prepare-deploy script in vercel-build
-try {
-  const packageJsonPath = path.join(rootDir, 'package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  
-  // Check if vercel-build already includes prepare-deploy
-  if (packageJson.scripts['vercel-build'] && !packageJson.scripts['vercel-build'].includes('prepare-deploy')) {
-    packageJson.scripts['vercel-build'] = 'node scripts/prepare-deploy.js && ' + packageJson.scripts['vercel-build'];
-    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-    console.log('✅ Updated package.json to run prepare-deploy before vercel-build');
-  } else {
-    console.log('✅ package.json already configured correctly');
-  }
-} catch (error) {
-  console.error('Error updating package.json:', error);
-}
+// Skip package.json modification during build - it's already configured correctly
+console.log('✅ Skipping package.json modification - already configured for Vercel');
 
 // Add script to create a .env.production file for Vercel
 const envProductionPath = path.join(rootDir, '.env.production');
@@ -70,5 +56,4 @@ try {
 }
 
 console.log('✅ Deployment preparation complete!');
-console.log('You can now deploy to Vercel with:');
-console.log('  vercel --prod'); 
+console.log('Ready for Vercel deployment'); 
