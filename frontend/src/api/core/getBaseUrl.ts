@@ -105,4 +105,18 @@ export const setApiBaseUrl = (url: string): string => {
 export const logBaseUrlConfig = (baseUrl: string): void => {
   console.log(`[API Client] Using base URL: ${baseUrl}`);
   console.log(`[API Client] Current hostname: ${window.location.hostname}`);
+  
+  // Log all relevant environment variables for debugging
+  console.log(`[API Client] Environment Variables Debug:`);
+  console.log(`  - VITE_API_BASE_URL: ${import.meta.env.VITE_API_BASE_URL || 'NOT SET'}`);
+  console.log(`  - VITE_VERCEL_URL: ${import.meta.env.VITE_VERCEL_URL || 'NOT SET'}`);
+  console.log(`  - VITE_VERCEL_GIT_COMMIT_SHA: ${import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA || 'NOT SET'}`);
+  console.log(`  - NODE_ENV: ${import.meta.env.NODE_ENV || 'NOT SET'}`);
+  console.log(`  - MODE: ${import.meta.env.MODE || 'NOT SET'}`);
+  
+  // Log localStorage override if exists
+  const savedApiUrl = localStorage.getItem('api_base_url');
+  if (savedApiUrl) {
+    console.log(`[API Client] LocalStorage override available: ${savedApiUrl}`);
+  }
 }; 
