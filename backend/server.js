@@ -106,7 +106,9 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ 
     status: "ok", 
     message: "Server is running",
-    environment: process.env.NODE_ENV || "development"
+    environment: process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString(),
+    workflow: "fullstack-deployment-test"
   });
 });
 
