@@ -27,16 +27,11 @@ jobs:
           cd frontend
           npm ci
 
-      - name: Build project
-        run: |
-          cd frontend
-          npm run build
-
       - name: Deploy Frontend to Production
-        uses: amondnet/vercel-action@v25
+        uses: vercel/action@v1
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
           working-directory: ./frontend
-          vercel-args: '--prod --confirm'
+          vercel-args: '--prod'

@@ -28,10 +28,10 @@ jobs:
           npm ci
 
       - name: Deploy Backend to Production
-        uses: amondnet/vercel-action@v25
+        uses: vercel/action@v1
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
           working-directory: ./backend
-          vercel-args: '--prod --confirm'
+          vercel-args: '--prod'
