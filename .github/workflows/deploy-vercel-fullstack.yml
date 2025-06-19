@@ -2,14 +2,7 @@ name: Deploy Full-Stack Branch to Vercel (Backend First, Then Frontend)
 
 on:
   pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - feat-*
-      - feature/*
-      - develop
-      - hotfix/*
+    types: [opened, synchronize, reopened]
 
 jobs:
   deploy-backend:
