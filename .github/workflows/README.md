@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `vercel-deploy.yml` workflow automates the deployment of the frontend application to Vercel, providing both production and preview deployments.
+The two `.yml` workflows automate the deployment of the frontend application to Vercel, providing both production and preview deployments.
 
 ## What This Workflow Does
 
