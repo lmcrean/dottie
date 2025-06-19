@@ -15,7 +15,7 @@ jobs:
   deploy-backend:
     runs-on: ubuntu-latest
     outputs:
-      backend-url: ${{ steps.deploy.outputs.preview-url }}
+      backend-url: ${{ steps.deploy.outputs.url }}
     
     steps:
       - name: Checkout code
@@ -33,26 +33,31 @@ jobs:
           cd backend
           npm ci
 
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
       - name: Deploy Backend Branch to Vercel (Preview)
         id: deploy
-        uses: vercel/action@v1
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-          working-directory: ./backend
+        working-directory: ./backend
+        run: |
+          echo "Deploying backend to Vercel..."
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Backend deployed to: $DEPLOYMENT_URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
 
       - name: Debug backend deployment outputs
         run: |
           echo "Backend deployment outputs:"
-          echo "preview-url: ${{ steps.deploy.outputs.preview-url }}"
-          echo "deployment-url: ${{ steps.deploy.outputs.deployment-url }}"
-          echo "All available outputs:"
-          echo "${{ toJson(steps.deploy.outputs) }}"
+          echo "preview-url: ${{ steps.deploy.outputs.url }}"
 
       - name: Test backend deployment
         run: |
-          BACKEND_URL="${{ steps.deploy.outputs.preview-url }}"
+          BACKEND_URL="${{ steps.deploy.outputs.url }}"
           echo "Testing backend at: $BACKEND_URL"
           
           # Test if backend URL contains "backend"
@@ -97,6 +102,9 @@ jobs:
           cd frontend
           npm ci
 
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
       - name: Debug environment variables
         run: |
           echo "Environment variables for frontend build:"
@@ -105,18 +113,22 @@ jobs:
 
       - name: Deploy Frontend Branch to Vercel (Preview)
         id: deploy-frontend
-        uses: vercel/action@v1
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
-          working-directory: ./frontend
+        working-directory: ./frontend
+        run: |
+          echo "Deploying frontend to Vercel..."
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Frontend deployed to: $DEPLOYMENT_URL"
         env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
           VITE_API_BASE_URL: ${{ needs.deploy-backend.outputs.backend-url }}
 
       - name: Test integration
         run: |
-          FRONTEND_URL="${{ steps.deploy-frontend.outputs.preview-url }}"
+          FRONTEND_URL="${{ steps.deploy-frontend.outputs.url }}"
           BACKEND_URL="${{ needs.deploy-backend.outputs.backend-url }}"
           
           echo "🧪 Integration Test Results:"
