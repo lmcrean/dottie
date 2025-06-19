@@ -126,8 +126,8 @@ jobs:
           echo "Setting up Vercel configuration..."
           vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
           
-          echo "Deploying prebuilt frontend to Vercel..."
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "Deploying frontend with built dist folder to Vercel..."
+          DEPLOYMENT_URL=$(vercel deploy ./dist --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Frontend deployed to: $DEPLOYMENT_URL"
         env:
