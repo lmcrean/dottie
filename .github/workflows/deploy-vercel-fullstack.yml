@@ -111,20 +111,28 @@ jobs:
           echo "VITE_API_BASE_URL: ${{ needs.deploy-backend.outputs.backend-url }}"
           echo "Backend URL from previous job: ${{ needs.deploy-backend.outputs.backend-url }}"
 
+      - name: Build frontend locally
+        run: |
+          cd frontend
+          echo "Building frontend locally with backend URL..."
+          npm run build
+        env:
+          VITE_API_BASE_URL: ${{ needs.deploy-backend.outputs.backend-url }}
+
       - name: Deploy Frontend Branch to Vercel (Preview)
         id: deploy-frontend
         run: |
           cd frontend
-          echo "Deploying frontend to Vercel..."
+          echo "Setting up Vercel configuration..."
           vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          
+          echo "Deploying prebuilt frontend to Vercel..."
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Frontend deployed to: $DEPLOYMENT_URL"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
-          VITE_API_BASE_URL: ${{ needs.deploy-backend.outputs.backend-url }}
 
       - name: Test integration
         run: |
