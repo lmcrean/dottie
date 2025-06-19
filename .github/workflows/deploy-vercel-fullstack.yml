@@ -15,7 +15,7 @@ jobs:
   deploy-backend:
     runs-on: ubuntu-latest
     outputs:
-      backend-url: ${{ steps.deploy.outputs.url }}
+      backend-url: ${{ steps.deploy-backend.outputs.url }}
     
     steps:
       - name: Checkout code
@@ -37,9 +37,9 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Deploy Backend Branch to Vercel (Preview)
-        id: deploy
-        working-directory: ./backend
+        id: deploy-backend
         run: |
+          cd backend
           echo "Deploying backend to Vercel..."
           vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --token=${{ secrets.VERCEL_TOKEN }}
@@ -53,11 +53,11 @@ jobs:
       - name: Debug backend deployment outputs
         run: |
           echo "Backend deployment outputs:"
-          echo "preview-url: ${{ steps.deploy.outputs.url }}"
+          echo "preview-url: ${{ steps.deploy-backend.outputs.url }}"
 
       - name: Test backend deployment
         run: |
-          BACKEND_URL="${{ steps.deploy.outputs.url }}"
+          BACKEND_URL="${{ steps.deploy-backend.outputs.url }}"
           echo "Testing backend at: $BACKEND_URL"
           
           # Test if backend URL contains "backend"
@@ -113,8 +113,8 @@ jobs:
 
       - name: Deploy Frontend Branch to Vercel (Preview)
         id: deploy-frontend
-        working-directory: ./frontend
         run: |
+          cd frontend
           echo "Deploying frontend to Vercel..."
           vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --token=${{ secrets.VERCEL_TOKEN }}
