@@ -224,4 +224,4 @@ Please read our [contributing guidelines](CONTRIBUTING.md) before submitting PRs
 ---
 
 ## License
-[ISC License](LICENSE)
+[Apache License](LICENSE)
