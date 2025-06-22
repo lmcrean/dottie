@@ -61,7 +61,7 @@ test.describe('Master Integration Test - Operations Architecture', () => {
     console.log(`📸 Screenshot saved: ${filename}`);
   };
 
-  test('1. Authentication Setup', async ({ page }) => {
+  test('1. Authentication and Assessment Flow', async ({ page }) => {
     console.log('🔐 ==> STARTING AUTHENTICATION OPERATIONS');
     
     // Setup error handling
@@ -70,7 +70,7 @@ test.describe('Master Integration Test - Operations Architecture', () => {
     page.on('crash', () => console.error('Page crashed'));
 
     try {
-      // Run authentication using existing auth system
+      // Step 1: Authentication
       const authResult = await runAuthTests(page, testState);
       
       // Update global state
@@ -78,20 +78,11 @@ test.describe('Master Integration Test - Operations Architecture', () => {
       testState.authToken = authResult.authToken;
       
       console.log(`✅ Authentication successful - User ID: ${testState.userId}`);
-      
       await saveScreenshot(page, 'auth-complete');
       
-    } catch (error) {
-      console.error('❌ Authentication failed:', error);
-      await saveScreenshot(page, 'auth-failed');
-      throw error;
-    }
-  });
-
-  test('2. Assessment Operations Flow', async ({ page }) => {
-    console.log('📋 ==> STARTING ASSESSMENT OPERATIONS');
-    
-    try {
+      // Step 2: Assessment Operations (immediately after auth in same context)
+      console.log('📋 ==> STARTING ASSESSMENT OPERATIONS');
+      
       // Initialize Assessment Operations
       const assessmentOps = new AssessmentOperations(page, testState);
       
@@ -102,8 +93,8 @@ test.describe('Master Integration Test - Operations Architecture', () => {
         console.error(`Assessment operations failed: ${result.error}`);
         await saveScreenshot(page, 'assessment-failed');
         
-        // Don't throw error - let's continue to see how far we get
-        console.log('⚠️ Continuing despite assessment failure...');
+        // Stop the test when assessment fails
+        throw new Error(`Assessment operations failed: ${result.error}`);
       } else {
         console.log('✅ Assessment operations completed successfully!');
         await saveScreenshot(page, 'assessment-complete');
@@ -113,15 +104,13 @@ test.describe('Master Integration Test - Operations Architecture', () => {
       testState.assessmentIds = result.assessmentIds;
       
     } catch (error) {
-      console.error('❌ Assessment operations error:', error);
-      await saveScreenshot(page, 'assessment-error');
-      
-      // Continue to next test section
-      console.log('⚠️ Continuing to next operations section...');
+      console.error('❌ Authentication or Assessment failed:', error);
+      await saveScreenshot(page, 'auth-assessment-failed');
+      throw error;
     }
   });
 
-  test('3. Chat Operations Flow', async ({ page }) => {
+  test('2. Chat Operations Flow', async ({ page }) => {
     console.log('💬 ==> STARTING CHAT OPERATIONS');
     
     try {
@@ -150,7 +139,7 @@ test.describe('Master Integration Test - Operations Architecture', () => {
     }
   });
 
-  test('4. User Operations Flow', async ({ page }) => {
+  test('3. User Operations Flow', async ({ page }) => {
     console.log('👤 ==> STARTING USER OPERATIONS');
     
     try {
@@ -181,7 +170,7 @@ test.describe('Master Integration Test - Operations Architecture', () => {
     }
   });
 
-  test('5. Cleanup Operations', async ({ page }) => {
+  test('4. Cleanup Operations', async ({ page }) => {
     console.log('🗑️ ==> STARTING CLEANUP OPERATIONS');
     
     try {
@@ -214,7 +203,7 @@ test.describe('Master Integration Test - Operations Architecture', () => {
     }
   });
 
-  test('6. Test Summary and Reporting', async ({ page }) => {
+  test('5. Test Summary and Reporting', async ({ page }) => {
     console.log('📊 ==> GENERATING TEST SUMMARY');
     
     // Generate test summary
