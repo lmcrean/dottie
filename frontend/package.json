@@ -22,6 +22,8 @@
     "test:headed:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --headed --timeout=120000",
     "test:headed:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --headed --timeout=180000",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then cd .. && husky frontend/.husky; fi"
+    "test:dev": "npx playwright test e2e/CompleteAssessmentFlow.spec.ts --headed --timeout=300000",
+    "postinstall": "npx playwright install webkit",
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,md,html,css}": [
