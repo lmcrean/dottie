@@ -20,6 +20,8 @@
     "test:debug:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --debug",
     "test:headed:auth": "npx playwright test e2e/AuthRandomUser.spec.ts --headed --timeout=120000",
     "test:headed:prod:auth": "npx playwright test e2e/AuthRandomUser.prod.spec.ts --headed --timeout=180000",
+    "test:dev": "npx playwright test e2e/CompleteAssessmentFlow.spec.ts --headed --timeout=300000",
+    "postinstall": "npx playwright install webkit",
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {

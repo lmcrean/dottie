@@ -84,6 +84,9 @@ export default defineConfig({
     }
   ],
 
+  // Global teardown
+  globalTeardown: './global-teardown.ts',
+
   // Setup and teardown for the tests
   webServer: {
     command: 'npm run dev:e2e',
