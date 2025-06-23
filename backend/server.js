@@ -111,7 +111,6 @@ app.use((err, req, res, next) => {
 
   console.error(`Error: ${message}`);
   console.error(err.stack);
-
   res.status(statusCode).json({ error: message });
 });
 
