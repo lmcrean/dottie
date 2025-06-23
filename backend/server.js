@@ -89,8 +89,21 @@ const corsOptions = {
       },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   credentials: true,
-  optionsSuccessStatus: 204,
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 200,
+  allowedHeaders: [
+    "Content-Type", 
+    "Authorization", 
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+    "X-CSRF-Token",
+    "Accept-Version",
+    "Content-Length",
+    "Content-MD5",
+    "Date",
+    "X-Api-Version"
+  ],
+  preflightContinue: false,
 };
 
 app.use(cors(corsOptions));
@@ -117,7 +130,6 @@ app.use((err, req, res, next) => {
 
   console.error(`Error: ${message}`);
   console.error(err.stack);
-
   res.status(statusCode).json({ error: message });
 });
 
