@@ -24,7 +24,7 @@
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then cd .. && husky frontend/.husky; fi",
     "test:dev": "npx playwright test e2e/master-integration-operations.spec.ts --headed --timeout=600000",
     "test:dev:old": "npx playwright test e2e/CompleteAssessmentFlow.spec.ts --headed --timeout=300000",    
-    "postinstall": "npx playwright install webkit",
+    "postinstall": "npx playwright install webkit"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,md,html,css}": [
