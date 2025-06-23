@@ -1,10 +1,14 @@
 {
-  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "devCommand": "npm run dev",
-  "framework": "vite",
+  "devCommand": "npm run dev:frontend",
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
