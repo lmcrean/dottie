@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 import { deleteUserAccount } from './api';
+import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 
 interface DeleteAccountButtonProps {
   className?: string;
@@ -13,19 +14,13 @@ export const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
   className = '',
   variant = 'danger'
 }) => {
+  const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
   const handleDeleteAccount = async () => {
     if (isLoading) return;
-
-    const confirmDelete = window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.'
-    );
-
-    if (!confirmDelete) return;
-
     setIsLoading(true);
 
     try {
@@ -40,6 +35,7 @@ export const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
       toast.error('Failed to delete account');
     } finally {
       setIsLoading(false);
+      setDialogOpen(false);
     }
   };
 
@@ -51,14 +47,23 @@ export const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleDeleteAccount}
-      disabled={isLoading}
-      className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-    >
-      {isLoading ? 'Deleting...' : 'Delete Account'}
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={() => setDialogOpen(true)}
+        className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+        disabled={isLoading}
+      >
+        Delete Account
+      </button>
+
+      <DeleteConfirmationDialog
+        isOpen={isDialogOpen}
+        onCancel={() => setDialogOpen(false)}
+        onConfirm={handleDeleteAccount}
+        isLoading={isLoading}
+      />
+    </>
   );
 };
 
