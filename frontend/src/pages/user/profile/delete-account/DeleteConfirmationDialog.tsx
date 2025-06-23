@@ -1,7 +1,13 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog.tsx';
-import { DeleteConfirmationDialogProps } from './types';
-import { useTheme } from '@/src/context/theme/useTheme.ts';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog';
+import { useTheme } from '@/src/context/theme/useTheme';
+
+interface DeleteConfirmationDialogProps {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isLoading: boolean;
+}
 
 const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   isOpen,

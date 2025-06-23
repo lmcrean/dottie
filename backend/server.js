@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import { initializeDatabase } from "./services/runtime-db-setup.js";
 
 // Import route modules
 import assessmentRoutes from "./routes/assessment/index.js";
@@ -63,11 +64,29 @@ const devOrigins = devPorts.flatMap(port => [
 const corsOptions = {
   origin: isDevelopment
     ? devOrigins
-    : [
-        "https://dottie-health.vercel.app",
-        "https://dottie-lmcreans-projects.vercel.app",
-        "https://dottie-oi1fayiad-lmcreans-projects.vercel.app",
-      ],
+    : (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        // Allow all Vercel preview and production URLs for your project
+        const allowedPatterns = [
+          /^https:\/\/dottie-health\.vercel\.app$/,
+          /^https:\/\/dottie-lmcreans-projects\.vercel\.app$/,
+          /^https:\/\/dottie-[a-zA-Z0-9-]+\.lmcreans-projects\.vercel\.app$/,  // Preview deployments
+          /^https:\/\/dottie-git-[a-zA-Z0-9-]+\.lmcreans-projects\.vercel\.app$/,  // Git branch deployments
+          /^https:\/\/dottie-[a-zA-Z0-9-]+-lmcreans-projects\.vercel\.app$/ // Branch deployments with different format
+        ];
+        
+        const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
+        
+        // Log CORS decisions in development/debugging
+        console.log(`CORS check for origin: ${origin} - ${isAllowed ? 'ALLOWED' : 'BLOCKED'}`);
+        if (!isAllowed) {
+          console.log('Allowed patterns:', allowedPatterns.map(p => p.toString()));
+        }
+        
+        callback(null, isAllowed);
+      },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -108,15 +127,23 @@ const isMainModule = fileURLToPath(import.meta.url) === process.argv[1];
 // Only start server when run directly (not when imported for testing)
 if (isMainModule) {
   // Start server
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(
       `Server running on port ${PORT} in ${
         process.env.NODE_ENV || "development"
       } mode`
     );
+    
+    // Initialize database on server startup
+    await initializeDatabase();
   });
 } else {
   console.log("Exporting server app for serverless deployment");
+  
+  // For serverless deployment, initialize database when module is imported
+  initializeDatabase().catch(error => {
+    console.error("Database initialization failed:", error.message);
+  });
 }
 
 export default app;
