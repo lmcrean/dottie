@@ -220,14 +220,14 @@ jobs:
           *This deployment will be available until the PR is closed or merged.*
           EOF
 
-      - name: 💬 Comment PR with deployment URLs
+      - name: 💬 Update PR with deployment URLs
         uses: actions/github-script@v7
         with:
           script: |
             const frontendUrl = '${{ steps.deploy-frontend.outputs.url }}';
             const backendUrl = '${{ needs.deploy-backend.outputs.backend-url }}';
             
-            const comment = `## 🚀 Preview Deployment Ready!
+            const commentBody = `## 🚀 Preview Deployment Ready!
 
             Your changes have been deployed and are ready for testing:
 
@@ -245,11 +245,37 @@ jobs:
             ---
             ✅ **Integration Status:** Frontend and backend are connected and ready for testing!
 
-            *🔄 This preview will update automatically when you push new commits to this PR.*`;
+            *🔄 Last updated: ${new Date().toLocaleString()} UTC*
+            
+            <!-- DEPLOYMENT_COMMENT_MARKER -->`;
 
-            github.rest.issues.createComment({
+            // Find existing deployment comment
+            const comments = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
-            }); 
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('<!-- DEPLOYMENT_COMMENT_MARKER -->')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+              console.log('✅ Updated existing deployment comment');
+            } else {
+              // Create new comment if none exists
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+              console.log('✅ Created new deployment comment');
+            } 
