@@ -34,9 +34,21 @@ jobs:
         run: |
           cd backend
           echo "Deploying backend to Vercel..."
-          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --token=${{ secrets.VERCEL_TOKEN }}
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "Setting up Vercel project linking..."
+          # Ensure .vercel directory exists and create project.json
+          mkdir -p .vercel
+          echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\"}" > .vercel/project.json
+          
+          # Try vercel pull first, if it fails, proceed with direct deployment
+          if vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}; then
+            echo "✅ Successfully pulled Vercel configuration"
+            vercel build --token=${{ secrets.VERCEL_TOKEN }}
+            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          else
+            echo "⚠️ Vercel pull failed, proceeding with direct deployment"
+            DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+          fi
+          
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Backend deployed to: $DEPLOYMENT_URL"
         env:
@@ -117,15 +129,16 @@ jobs:
         run: |
           cd frontend
           echo "Setting up Vercel configuration..."
-          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+          # Ensure .vercel directory exists and create project.json
+          mkdir -p .vercel
+          echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\"}" > .vercel/project.json
           
-          echo "Deploying frontend to Vercel..."
           echo "Current directory: $(pwd)"
           echo "Dist folder contents:"
           ls -la dist/
           
           # Deploy from current directory with backend URL as environment variable
-          echo "Deploying with Vercel using outputDirectory configuration and backend URL..."
+          echo "Deploying frontend to Vercel..."
           echo "Setting VITE_API_BASE_URL to: ${{ needs.deploy-backend.outputs.backend-url }}"
           DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
