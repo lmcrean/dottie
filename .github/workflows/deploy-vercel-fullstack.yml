@@ -44,14 +44,17 @@ jobs:
           mkdir -p .vercel
           echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\"}" > .vercel/project.json
           
+          # Set token environment variable for Vercel CLI
+          export VERCEL_TOKEN="${{ secrets.VERCEL_TOKEN }}"
+          
           # Try vercel pull first, if it fails, proceed with direct deployment
-          if vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}; then
+          if vercel pull --yes --environment=preview; then
             echo "✅ Successfully pulled Vercel configuration"
-            vercel build --token=${{ secrets.VERCEL_TOKEN }}
-            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+            vercel build
+            DEPLOYMENT_URL=$(vercel deploy --prebuilt)
           else
             echo "⚠️ Vercel pull failed, proceeding with direct deployment"
-            DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+            DEPLOYMENT_URL=$(vercel deploy)
           fi
           
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
@@ -62,6 +65,7 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Debug backend deployment outputs
         run: |
@@ -145,10 +149,13 @@ jobs:
           echo "Dist folder contents:"
           ls -la dist/
           
+          # Set token environment variable for Vercel CLI
+          export VERCEL_TOKEN="${{ secrets.VERCEL_TOKEN }}"
+          
           # Deploy from current directory with backend URL as environment variable
           echo "Deploying frontend to Vercel..."
           echo "Setting VITE_API_BASE_URL to: ${{ needs.deploy-backend.outputs.backend-url }}"
-          DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
+          DEPLOYMENT_URL=$(vercel deploy --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo ""
           echo "🌟 FRONTEND DEPLOYED SUCCESSFULLY!"
@@ -158,6 +165,7 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Test integration
         run: |
