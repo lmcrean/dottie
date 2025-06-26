@@ -50,7 +50,10 @@ jobs:
           fi
           
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "Backend deployed to: $DEPLOYMENT_URL"
+          echo ""
+          echo "🎯 BACKEND DEPLOYED SUCCESSFULLY!"
+          echo "📍 Backend URL: $DEPLOYMENT_URL"
+          echo ""
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
@@ -142,7 +145,11 @@ jobs:
           echo "Setting VITE_API_BASE_URL to: ${{ needs.deploy-backend.outputs.backend-url }}"
           DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "Frontend deployed to: $DEPLOYMENT_URL"
+          echo ""
+          echo "🌟 FRONTEND DEPLOYED SUCCESSFULLY!"
+          echo "🔗 Frontend URL: $DEPLOYMENT_URL"
+          echo "🔌 Connected to Backend: ${{ needs.deploy-backend.outputs.backend-url }}"
+          echo ""
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
@@ -166,4 +173,83 @@ jobs:
                -X OPTIONS \
                "$BACKEND_URL/api/setup/health/hello" -v || echo "CORS preflight failed"
           
-          echo "✅ Integration test completed. Check browser console for frontend logs." 
+          echo "✅ Integration test completed. Check browser console for frontend logs."
+
+      - name: 🚀 Deployment Summary
+        run: |
+          FRONTEND_URL="${{ steps.deploy-frontend.outputs.url }}"
+          BACKEND_URL="${{ needs.deploy-backend.outputs.backend-url }}"
+          
+          echo ""
+          echo "======================================================"
+          echo "🎉 DEPLOYMENT SUCCESSFUL! 🎉"
+          echo "======================================================"
+          echo ""
+          echo "🌐 FRONTEND: $FRONTEND_URL"
+          echo "⚡ BACKEND:  $BACKEND_URL"
+          echo ""
+          echo "📝 Quick Test Links:"
+          echo "   • Frontend App: $FRONTEND_URL"
+          echo "   • Backend Health: $BACKEND_URL/api/health"
+          echo "   • Backend API: $BACKEND_URL/api"
+          echo ""
+          echo "✅ Both services are deployed and integrated!"
+          echo "======================================================"
+          
+          # Create GitHub Actions Summary
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## 🚀 Deployment Successful!
+          
+          Your branch has been successfully deployed to Vercel preview environments:
+          
+          ### 🌐 Frontend Application
+          **URL:** [$FRONTEND_URL]($FRONTEND_URL)
+          
+          ### ⚡ Backend API  
+          **URL:** [$BACKEND_URL]($BACKEND_URL)
+          
+          ### 🧪 Quick Test Links
+          - [Frontend App]($FRONTEND_URL) - Main application interface
+          - [Backend Health Check]($BACKEND_URL/api/health) - API health status
+          - [Backend API Base]($BACKEND_URL/api) - API documentation
+          
+          ### ✅ Integration Status
+          Both frontend and backend are deployed and properly connected!
+          
+          ---
+          *This deployment will be available until the PR is closed or merged.*
+          EOF
+
+      - name: 💬 Comment PR with deployment URLs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const frontendUrl = '${{ steps.deploy-frontend.outputs.url }}';
+            const backendUrl = '${{ needs.deploy-backend.outputs.backend-url }}';
+            
+            const comment = `## 🚀 Preview Deployment Ready!
+
+            Your changes have been deployed and are ready for testing:
+
+            ### 🌐 Frontend Application
+            **Live Preview:** [${frontendUrl}](${frontendUrl})
+
+            ### ⚡ Backend API
+            **API Endpoint:** [${backendUrl}](${backendUrl})
+
+            ### 🧪 Quick Test Links
+            - [📱 Frontend App](${frontendUrl}) - Test the user interface
+            - [❤️ Backend Health](${backendUrl}/api/health) - Verify API status  
+            - [📚 API Documentation](${backendUrl}/api) - Explore endpoints
+
+            ---
+            ✅ **Integration Status:** Frontend and backend are connected and ready for testing!
+
+            *🔄 This preview will update automatically when you push new commits to this PR.*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            }); 
