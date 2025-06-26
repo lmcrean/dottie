@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   deploy-backend:
     runs-on: ubuntu-latest
@@ -35,25 +40,39 @@ jobs:
           cd backend
           echo "Deploying backend to Vercel..."
           echo "Setting up Vercel project linking..."
+          
           # Ensure .vercel directory exists and create project.json
           mkdir -p .vercel
           echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\"}" > .vercel/project.json
           
+          # Debug: Check if token is available (first 10 chars only for security)
+          echo "Token check: ${VERCEL_TOKEN:0:10}..."
+          
+          # Explicitly set token in multiple ways for Vercel CLI
+          export VERCEL_TOKEN="$VERCEL_TOKEN"
+          
+          # Use explicit token parameter as backup
+          TOKEN_ARG="--token=$VERCEL_TOKEN"
+          
           # Try vercel pull first, if it fails, proceed with direct deployment
-          if vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}; then
+          if vercel pull --yes --environment=preview $TOKEN_ARG; then
             echo "✅ Successfully pulled Vercel configuration"
-            vercel build --token=${{ secrets.VERCEL_TOKEN }}
-            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+            vercel build $TOKEN_ARG
+            DEPLOYMENT_URL=$(vercel deploy --prebuilt $TOKEN_ARG)
           else
             echo "⚠️ Vercel pull failed, proceeding with direct deployment"
-            DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+            DEPLOYMENT_URL=$(vercel deploy $TOKEN_ARG)
           fi
           
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "Backend deployed to: $DEPLOYMENT_URL"
+          echo ""
+          echo "🎯 BACKEND DEPLOYED SUCCESSFULLY!"
+          echo "📍 Backend URL: $DEPLOYMENT_URL"
+          echo ""
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Debug backend deployment outputs
         run: |
@@ -137,15 +156,29 @@ jobs:
           echo "Dist folder contents:"
           ls -la dist/
           
+          # Debug: Check if token is available (first 10 chars only for security)
+          echo "Token check: ${VERCEL_TOKEN:0:10}..."
+          
+          # Explicitly set token in multiple ways for Vercel CLI
+          export VERCEL_TOKEN="$VERCEL_TOKEN"
+          
+          # Use explicit token parameter as backup
+          TOKEN_ARG="--token=$VERCEL_TOKEN"
+          
           # Deploy from current directory with backend URL as environment variable
           echo "Deploying frontend to Vercel..."
           echo "Setting VITE_API_BASE_URL to: ${{ needs.deploy-backend.outputs.backend-url }}"
-          DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
+          DEPLOYMENT_URL=$(vercel deploy $TOKEN_ARG --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "Frontend deployed to: $DEPLOYMENT_URL"
+          echo ""
+          echo "🌟 FRONTEND DEPLOYED SUCCESSFULLY!"
+          echo "🔗 Frontend URL: $DEPLOYMENT_URL"
+          echo "🔌 Connected to Backend: ${{ needs.deploy-backend.outputs.backend-url }}"
+          echo ""
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Test integration
         run: |
@@ -166,4 +199,109 @@ jobs:
                -X OPTIONS \
                "$BACKEND_URL/api/setup/health/hello" -v || echo "CORS preflight failed"
           
-          echo "✅ Integration test completed. Check browser console for frontend logs." 
+          echo "✅ Integration test completed. Check browser console for frontend logs."
+
+      - name: 🚀 Deployment Summary
+        run: |
+          FRONTEND_URL="${{ steps.deploy-frontend.outputs.url }}"
+          BACKEND_URL="${{ needs.deploy-backend.outputs.backend-url }}"
+          
+          echo ""
+          echo "======================================================"
+          echo "🎉 DEPLOYMENT SUCCESSFUL! 🎉"
+          echo "======================================================"
+          echo ""
+          echo "🌐 FRONTEND: $FRONTEND_URL"
+          echo "⚡ BACKEND:  $BACKEND_URL"
+          echo ""
+          echo "📝 Quick Test Links:"
+          echo "   • Frontend App: $FRONTEND_URL"
+          echo "   • Backend Health: $BACKEND_URL/api/health"
+          echo "   • Backend API: $BACKEND_URL/api"
+          echo ""
+          echo "✅ Both services are deployed and integrated!"
+          echo "======================================================"
+          
+          # Create GitHub Actions Summary
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## 🚀 Deployment Successful!
+          
+          Your branch has been successfully deployed to Vercel preview environments:
+          
+          ### 🌐 Frontend Application
+          **URL:** [$FRONTEND_URL]($FRONTEND_URL)
+          
+          ### ⚡ Backend API  
+          **URL:** [$BACKEND_URL]($BACKEND_URL)
+          
+          ### 🧪 Quick Test Links
+          - [Frontend App]($FRONTEND_URL) - Main application interface
+          - [Backend Health Check]($BACKEND_URL/api/health) - API health status
+          - [Backend API Base]($BACKEND_URL/api) - API documentation
+          
+          ### ✅ Integration Status
+          Both frontend and backend are deployed and properly connected!
+          
+          ---
+          *This deployment will be available until the PR is closed or merged.*
+          EOF
+
+      - name: 💬 Update PR with deployment URLs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const frontendUrl = '${{ steps.deploy-frontend.outputs.url }}';
+            const backendUrl = '${{ needs.deploy-backend.outputs.backend-url }}';
+            
+            const commentBody = `## 🚀 Preview Deployment Ready!
+
+            Your changes have been deployed and are ready for testing:
+
+            ### 🌐 Frontend Application
+            **Live Preview:** [${frontendUrl}](${frontendUrl})
+
+            ### ⚡ Backend API
+            **API Endpoint:** [${backendUrl}](${backendUrl})
+
+            ### 🧪 Quick Test Links
+            - [📱 Frontend App](${frontendUrl}) - Test the user interface
+            - [❤️ Backend Health](${backendUrl}/api/health) - Verify API status  
+            - [📚 API Documentation](${backendUrl}/api) - Explore endpoints
+
+            ---
+            ✅ **Integration Status:** Frontend and backend are connected and ready for testing!
+
+            *🔄 Last updated: ${new Date().toLocaleString()} UTC*
+            
+            <!-- DEPLOYMENT_COMMENT_MARKER -->`;
+
+            // Find existing deployment comment
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('<!-- DEPLOYMENT_COMMENT_MARKER -->')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+              console.log('✅ Updated existing deployment comment');
+            } else {
+              // Create new comment if none exists
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+              console.log('✅ Created new deployment comment');
+            } 
