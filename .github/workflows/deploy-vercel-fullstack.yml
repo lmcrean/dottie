@@ -40,21 +40,28 @@ jobs:
           cd backend
           echo "Deploying backend to Vercel..."
           echo "Setting up Vercel project linking..."
+          
           # Ensure .vercel directory exists and create project.json
           mkdir -p .vercel
           echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\"}" > .vercel/project.json
           
-          # Set token environment variable for Vercel CLI
-          export VERCEL_TOKEN="${{ secrets.VERCEL_TOKEN }}"
+          # Debug: Check if token is available (first 10 chars only for security)
+          echo "Token check: ${VERCEL_TOKEN:0:10}..."
+          
+          # Explicitly set token in multiple ways for Vercel CLI
+          export VERCEL_TOKEN="$VERCEL_TOKEN"
+          
+          # Use explicit token parameter as backup
+          TOKEN_ARG="--token=$VERCEL_TOKEN"
           
           # Try vercel pull first, if it fails, proceed with direct deployment
-          if vercel pull --yes --environment=preview; then
+          if vercel pull --yes --environment=preview $TOKEN_ARG; then
             echo "✅ Successfully pulled Vercel configuration"
-            vercel build
-            DEPLOYMENT_URL=$(vercel deploy --prebuilt)
+            vercel build $TOKEN_ARG
+            DEPLOYMENT_URL=$(vercel deploy --prebuilt $TOKEN_ARG)
           else
             echo "⚠️ Vercel pull failed, proceeding with direct deployment"
-            DEPLOYMENT_URL=$(vercel deploy)
+            DEPLOYMENT_URL=$(vercel deploy $TOKEN_ARG)
           fi
           
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
@@ -149,13 +156,19 @@ jobs:
           echo "Dist folder contents:"
           ls -la dist/
           
-          # Set token environment variable for Vercel CLI
-          export VERCEL_TOKEN="${{ secrets.VERCEL_TOKEN }}"
+          # Debug: Check if token is available (first 10 chars only for security)
+          echo "Token check: ${VERCEL_TOKEN:0:10}..."
+          
+          # Explicitly set token in multiple ways for Vercel CLI
+          export VERCEL_TOKEN="$VERCEL_TOKEN"
+          
+          # Use explicit token parameter as backup
+          TOKEN_ARG="--token=$VERCEL_TOKEN"
           
           # Deploy from current directory with backend URL as environment variable
           echo "Deploying frontend to Vercel..."
           echo "Setting VITE_API_BASE_URL to: ${{ needs.deploy-backend.outputs.backend-url }}"
-          DEPLOYMENT_URL=$(vercel deploy --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
+          DEPLOYMENT_URL=$(vercel deploy $TOKEN_ARG --build-env VITE_API_BASE_URL=${{ needs.deploy-backend.outputs.backend-url }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo ""
           echo "🌟 FRONTEND DEPLOYED SUCCESSFULLY!"
