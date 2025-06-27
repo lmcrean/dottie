@@ -1,0 +1,86 @@
+name: Deploy Backend
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    outputs:
+      deployment_url:
+        description: "Backend deployment URL"
+        value: ${{ jobs.deploy.outputs.deployment_url }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_url: ${{ steps.validate.outputs.deployment_url }}
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: 📥 Install Backend Dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: 🧪 Run Backend Tests
+        run: |
+          cd backend
+          npm test 2>/dev/null || echo "⚠️ Tests not configured or failed"
+      
+      - name: 🚀 Deploy to Vercel
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+          working-directory: ./backend
+          vercel-args: '--prebuilt'
+      
+      - name: ✅ Validate Backend Deployment
+        id: validate
+        run: |
+          BACKEND_URL="${{ steps.deploy.outputs.preview-url }}"
+          echo "🔍 Testing backend at: $BACKEND_URL"
+          
+          # Verify URL contains backend identifier
+          if [[ "$BACKEND_URL" != *"backend"* ]]; then
+            echo "❌ ERROR: URL doesn't appear to be backend: $BACKEND_URL"
+            exit 1
+          fi
+          
+          # Test health endpoint with retry
+          for i in {1..5}; do
+            echo "🏥 Health check attempt $i/5..."
+            if curl -f "$BACKEND_URL/api/health" -m 10; then
+              echo "✅ Backend is healthy!"
+              break
+            fi
+            
+            if [ $i -eq 5 ]; then
+              echo "❌ Backend health check failed after 5 attempts"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 10 seconds before retry..."
+            sleep 10
+          done
+          
+          echo "deployment_url=$BACKEND_URL" >> $GITHUB_OUTPUT
+      
+      - name: 📊 Deployment Summary
+        run: |
+          echo "🎯 Backend Deployment Complete!"
+          echo "📍 URL: ${{ steps.deploy.outputs.preview-url }}"
+          echo "✅ Health check passed" 

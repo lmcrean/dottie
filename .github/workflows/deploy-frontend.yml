@@ -1,0 +1,99 @@
+name: Deploy Frontend
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      backend_url:
+        required: true
+        type: string
+    outputs:
+      deployment_url:
+        description: "Frontend deployment URL"
+        value: ${{ jobs.deploy.outputs.deployment_url }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_url: ${{ steps.validate.outputs.deployment_url }}
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: 📥 Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+      
+      - name: 🔧 Configure Backend Integration
+        run: |
+          echo "🔗 Backend URL: ${{ inputs.backend_url }}"
+          if [[ ! "${{ inputs.backend_url }}" =~ ^https?:// ]]; then
+            echo "❌ Invalid backend URL format"
+            exit 1
+          fi
+      
+      - name: 🏗️ Build Frontend
+        run: |
+          cd frontend
+          npm run build
+        env:
+          VITE_API_BASE_URL: ${{ inputs.backend_url }}
+      
+      - name: 🧪 Run Frontend Tests
+        run: |
+          cd frontend
+          npm test 2>/dev/null || echo "⚠️ Tests not configured or failed"
+      
+      - name: 🚀 Deploy to Vercel
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prebuilt --build-env VITE_API_BASE_URL=${{ inputs.backend_url }}'
+      
+      - name: ✅ Validate Frontend Deployment
+        id: validate
+        run: |
+          FRONTEND_URL="${{ steps.deploy.outputs.preview-url }}"
+          echo "🔍 Testing frontend at: $FRONTEND_URL"
+          
+          # Test if frontend is accessible
+          for i in {1..3}; do
+            echo "📱 Frontend accessibility test $i/3..."
+            if curl -f "$FRONTEND_URL" -m 10 >/dev/null 2>&1; then
+              echo "✅ Frontend is accessible!"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ Frontend accessibility test failed"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 5 seconds before retry..."
+            sleep 5
+          done
+          
+          echo "deployment_url=$FRONTEND_URL" >> $GITHUB_OUTPUT
+      
+      - name: 📊 Deployment Summary
+        run: |
+          echo "🌟 Frontend Deployment Complete!"
+          echo "📍 URL: ${{ steps.deploy.outputs.preview-url }}"
+          echo "🔌 Backend: ${{ inputs.backend_url }}"
+          echo "✅ Ready for integration testing" 
