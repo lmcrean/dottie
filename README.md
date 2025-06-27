@@ -1,3 +1,6 @@
+# Dottie
+
+<!-- Test GitHub Actions Vercel CLI deployment - 2025-01-27 -->
 
 ![image](https://github.com/user-attachments/assets/50885e5b-cf6a-4c11-b66b-c0e48ac8740c)
 
