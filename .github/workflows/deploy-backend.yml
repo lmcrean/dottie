@@ -46,7 +46,6 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
           working-directory: ./backend
-          vercel-args: '--prebuilt'
       
       - name: ✅ Validate Backend Deployment
         id: validate

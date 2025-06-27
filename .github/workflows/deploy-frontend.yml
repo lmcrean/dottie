@@ -44,13 +44,6 @@ jobs:
             exit 1
           fi
       
-      - name: 🏗️ Build Frontend
-        run: |
-          cd frontend
-          npm run build
-        env:
-          VITE_API_BASE_URL: ${{ inputs.backend_url }}
-      
       - name: 🧪 Run Frontend Tests
         run: |
           cd frontend
@@ -64,7 +57,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
           working-directory: ./frontend
-          vercel-args: '--prebuilt --build-env VITE_API_BASE_URL=${{ inputs.backend_url }}'
+          vercel-args: '--build-env VITE_API_BASE_URL=${{ inputs.backend_url }}'
       
       - name: ✅ Validate Frontend Deployment
         id: validate
