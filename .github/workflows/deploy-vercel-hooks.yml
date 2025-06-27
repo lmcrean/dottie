@@ -1,30 +1,28 @@
-name: Deploy to Vercel via Deploy Hooks
+name: Deploy to Vercel via CLI
 
-# 🚀 DEPLOY HOOKS APPROACH - WORKS FOR ALL CONTRIBUTORS!
-# ======================================================
-# This workflow uses Vercel Deploy Hooks - simple HTTP POST requests that require no authentication.
-# Perfect for open source projects as it works for both maintainers and external contributors!
+# 🚀 VERCEL CLI APPROACH - HANDLES MONOREPOS PERFECTLY!
+# =====================================================
+# This workflow uses Vercel CLI with proper directory handling for monorepos.
+# Works for backend/ and frontend/ subdirectories automatically!
 # 
 # 🔧 SETUP REQUIRED:
-# 1. Create Deploy Hooks in Vercel Dashboard:
-#    - Go to each project → Settings → Git → Deploy Hooks
-#    - Create hook for the branch you want to deploy (main, or specific branches)
-#    - Copy the generated URLs
+# 1. Add Vercel tokens as Repository Secrets:
+#    - Go to GitHub repo → Settings → Secrets and Variables → Actions → Secrets tab
+#    - Add: VERCEL_TOKEN = your Vercel API token (from vercel.com/account/tokens)
+#    - Add: VERCEL_ORG_ID = your Vercel team/org ID 
+#    - Add: VERCEL_PROJECT_ID_BACKEND = backend project ID
+#    - Add: VERCEL_PROJECT_ID_FRONTEND = frontend project ID
 #
-# 2. Add Deploy Hook URLs as Repository Variables (NOT secrets):
-#    - Go to GitHub repo → Settings → Secrets and Variables → Actions → Variables tab
-#    - Add: VERCEL_BACKEND_DEPLOY_HOOK = https://api.vercel.com/v1/integrations/deploy/prj_xxx/hookId
-#    - Add: VERCEL_FRONTEND_DEPLOY_HOOK = https://api.vercel.com/v1/integrations/deploy/prj_yyy/hookId
-#
-# 3. Optional: Set up branch-specific hooks for preview deployments
+# 2. Get Project IDs:
+#    - Run `npx vercel link` in backend/ and frontend/ directories
+#    - Copy project IDs from .vercel/project.json files
 #
 # 🌟 BENEFITS:
-# ✅ Works for external contributors (no authentication needed)
-# ✅ No complex Vercel CLI setup
-# ✅ No workflow failures due to missing secrets  
-# ✅ Simple HTTP requests that always work
-# ✅ Same experience for everyone
-# ✅ Automatic deployments for every PR
+# ✅ Handles monorepo structure perfectly
+# ✅ Deploys from correct subdirectories (backend/, frontend/)  
+# ✅ Full control over build process
+# ✅ Works with any project structure
+# ✅ Proper dependency handling
 
 on:
   pull_request:
@@ -36,116 +34,102 @@ permissions:
   pull-requests: write
 
 jobs:
-  deploy-via-hooks:
+  deploy-vercel:
     runs-on: ubuntu-latest
     outputs:
-      backend-job-id: ${{ steps.backend-deploy.outputs.job-id }}
-      frontend-job-id: ${{ steps.frontend-deploy.outputs.job-id }}
-      deployment-triggered: ${{ steps.check-hooks.outputs.deployment-triggered }}
+      backend-url: ${{ steps.backend-deploy.outputs.deployment-url }}
+      frontend-url: ${{ steps.frontend-deploy.outputs.deployment-url }}
+      deployment-status: ${{ steps.check-setup.outputs.deployment-status }}
     
     steps:
-      - name: 🔍 Check Deploy Hook Configuration
-        id: check-hooks
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      
+      - name: 🔍 Check Vercel Configuration
+        id: check-setup
         run: |
-          echo "Checking Deploy Hook configuration..."
+          echo "Checking Vercel configuration..."
           
-          backend_hook="${{ vars.VERCEL_BACKEND_DEPLOY_HOOK }}"
-          frontend_hook="${{ vars.VERCEL_FRONTEND_DEPLOY_HOOK }}"
-          
-          if [ -n "$backend_hook" ] && [ -n "$frontend_hook" ]; then
-            echo "✅ Both Deploy Hooks are configured"
-            echo "deployment-triggered=true" >> $GITHUB_OUTPUT
-          elif [ -n "$backend_hook" ] || [ -n "$frontend_hook" ]; then
-            echo "⚠️ Only one Deploy Hook is configured"
-            echo "deployment-triggered=partial" >> $GITHUB_OUTPUT
-          else
-            echo "❌ No Deploy Hooks configured"
-            echo "deployment-triggered=false" >> $GITHUB_OUTPUT
-          fi
+          # Check for required secrets
+          has_token="${{ secrets.VERCEL_TOKEN != '' }}"
+          has_org="${{ secrets.VERCEL_ORG_ID != '' }}"
+          has_backend_project="${{ secrets.VERCEL_PROJECT_ID_BACKEND != '' }}"
+          has_frontend_project="${{ secrets.VERCEL_PROJECT_ID_FRONTEND != '' }}"
           
           echo "📊 Configuration status:"
-          echo "Backend Hook: ${{ vars.VERCEL_BACKEND_DEPLOY_HOOK != '' && '✅ Configured' || '❌ Missing' }}"
-          echo "Frontend Hook: ${{ vars.VERCEL_FRONTEND_DEPLOY_HOOK != '' && '✅ Configured' || '❌ Missing' }}"
-
-      - name: 🚀 Deploy Backend via Hook
-        id: backend-deploy
-        if: vars.VERCEL_BACKEND_DEPLOY_HOOK != ''
-        run: |
-          echo "🔥 Triggering backend deployment..."
-          echo "Hook URL: ${{ vars.VERCEL_BACKEND_DEPLOY_HOOK }}"
+          echo "Vercel Token: ${{ secrets.VERCEL_TOKEN != '' && '✅ Configured' || '❌ Missing' }}"
+          echo "Org ID: ${{ secrets.VERCEL_ORG_ID != '' && '✅ Configured' || '❌ Missing' }}"
+          echo "Backend Project ID: ${{ secrets.VERCEL_PROJECT_ID_BACKEND != '' && '✅ Configured' || '❌ Missing' }}"
+          echo "Frontend Project ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND != '' && '✅ Configured' || '❌ Missing' }}"
           
-          # Trigger deployment with error handling
-          response=$(curl -s -w "\n%{http_code}" -X POST "${{ vars.VERCEL_BACKEND_DEPLOY_HOOK }}" \
-            -H "Content-Type: application/json" \
-            -H "User-Agent: GitHub-Actions-Deploy-Hook") || {
-            echo "❌ Failed to trigger backend deployment"
-            exit 1
-          }
-          
-          # Split response and status code
-          http_code=$(echo "$response" | tail -n1)
-          json_response=$(echo "$response" | head -n -1)
-          
-          echo "HTTP Status: $http_code"
-          echo "Response: $json_response"
-          
-          if [ "$http_code" = "200" ] || [ "$http_code" = "201" ]; then
-            # Extract job ID from response
-            job_id=$(echo "$json_response" | grep -o '"id":"[^"]*"' | cut -d'"' -f4 | head -1)
-            if [ -n "$job_id" ]; then
-              echo "job-id=$job_id" >> $GITHUB_OUTPUT
-              echo "✅ Backend deployment triggered successfully!"
-              echo "📍 Job ID: $job_id"
-            else
-              echo "⚠️ Deployment triggered but couldn't extract job ID"
-              echo "job-id=unknown" >> $GITHUB_OUTPUT
-            fi
+          if [[ "$has_token" == "true" && "$has_org" == "true" && "$has_backend_project" == "true" && "$has_frontend_project" == "true" ]]; then
+            echo "deployment-status=ready" >> $GITHUB_OUTPUT
+            echo "✅ All configuration is present"
           else
-            echo "❌ Backend deployment failed with HTTP $http_code"
-            echo "Response: $json_response"
+            echo "deployment-status=missing-config" >> $GITHUB_OUTPUT
+            echo "❌ Missing required configuration"
+          fi
+
+      - name: 🔧 Install Vercel CLI
+        if: steps.check-setup.outputs.deployment-status == 'ready'
+        run: npm install -g vercel@latest
+
+      - name: 🚀 Deploy Backend to Vercel
+        id: backend-deploy
+        if: steps.check-setup.outputs.deployment-status == 'ready'
+        working-directory: ./backend
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
+        run: |
+          echo "🔥 Deploying backend from backend/ directory..."
+          
+          # Deploy with Vercel CLI
+          deployment_url=$(vercel deploy --token=$VERCEL_TOKEN --yes --force)
+          
+          if [ $? -eq 0 ] && [ -n "$deployment_url" ]; then
+            echo "deployment-url=$deployment_url" >> $GITHUB_OUTPUT
+            echo "✅ Backend deployment successful!"
+            echo "📍 Backend URL: $deployment_url"
+          else
+            echo "❌ Backend deployment failed"
             exit 1
           fi
 
-      - name: 🌐 Deploy Frontend via Hook
+      - name: 🌐 Deploy Frontend to Vercel  
         id: frontend-deploy
-        if: vars.VERCEL_FRONTEND_DEPLOY_HOOK != ''
+        if: steps.check-setup.outputs.deployment-status == 'ready'
+        working-directory: ./frontend
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
         run: |
-          echo "🔥 Triggering frontend deployment..."
-          echo "Hook URL: ${{ vars.VERCEL_FRONTEND_DEPLOY_HOOK }}"
+          echo "🔥 Deploying frontend from frontend/ directory..."
           
-          # Add small delay to ensure backend starts first
-          echo "⏳ Waiting 5 seconds for backend to start..."
-          sleep 5
+          # Add small delay to ensure backend is ready
+          echo "⏳ Waiting 10 seconds for backend to be ready..."
+          sleep 10
           
-          # Trigger deployment with error handling
-          response=$(curl -s -w "\n%{http_code}" -X POST "${{ vars.VERCEL_FRONTEND_DEPLOY_HOOK }}" \
-            -H "Content-Type: application/json" \
-            -H "User-Agent: GitHub-Actions-Deploy-Hook") || {
-            echo "❌ Failed to trigger frontend deployment"
-            exit 1
-          }
+          # Deploy with Vercel CLI
+          deployment_url=$(vercel deploy --token=$VERCEL_TOKEN --yes --force)
           
-          # Split response and status code
-          http_code=$(echo "$response" | tail -n1)
-          json_response=$(echo "$response" | head -n -1)
-          
-          echo "HTTP Status: $http_code"
-          echo "Response: $json_response"
-          
-          if [ "$http_code" = "200" ] || [ "$http_code" = "201" ]; then
-            # Extract job ID from response
-            job_id=$(echo "$json_response" | grep -o '"id":"[^"]*"' | cut -d'"' -f4 | head -1)
-            if [ -n "$job_id" ]; then
-              echo "job-id=$job_id" >> $GITHUB_OUTPUT
-              echo "✅ Frontend deployment triggered successfully!"
-              echo "📍 Job ID: $job_id"
-            else
-              echo "⚠️ Deployment triggered but couldn't extract job ID"
-              echo "job-id=unknown" >> $GITHUB_OUTPUT
-            fi
+          if [ $? -eq 0 ] && [ -n "$deployment_url" ]; then
+            echo "deployment-url=$deployment_url" >> $GITHUB_OUTPUT
+            echo "✅ Frontend deployment successful!"
+            echo "📍 Frontend URL: $deployment_url"
           else
-            echo "❌ Frontend deployment failed with HTTP $http_code"
-            echo "Response: $json_response"
+            echo "❌ Frontend deployment failed"
             exit 1
           fi
 
@@ -153,88 +137,73 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const backendJobId = '${{ steps.backend-deploy.outputs.job-id }}';
-            const frontendJobId = '${{ steps.frontend-deploy.outputs.job-id }}';
-            const deploymentTriggered = '${{ steps.check-hooks.outputs.deployment-triggered }}';
+            const backendUrl = '${{ steps.backend-deploy.outputs.deployment-url }}';
+            const frontendUrl = '${{ steps.frontend-deploy.outputs.deployment-url }}';
+            const deploymentStatus = '${{ steps.check-setup.outputs.deployment-status }}';
             
             let commentBody = '';
             
-            if (deploymentTriggered === 'true' && backendJobId && frontendJobId) {
-              commentBody = `## 🚀 Deployments Triggered Successfully!
+            if (deploymentStatus === 'ready' && backendUrl && frontendUrl) {
+              commentBody = `## 🚀 Vercel Deployments Successful!
 
-              Your changes are being deployed to Vercel via Deploy Hooks! 🎉
+              Your monorepo has been deployed successfully! 🎉
 
-              ### 📊 Deployment Jobs
-              - **🔧 Backend**: Job \`${backendJobId}\` 
-              - **🌐 Frontend**: Job \`${frontendJobId}\`
+              ### 🔗 Preview URLs
+              - **🔧 Backend**: ${backendUrl}
+              - **🌐 Frontend**: ${frontendUrl}
 
-              ### 🔍 Monitor Progress
-              - Check [Vercel Dashboard](https://vercel.com/dashboard) for real-time status
-              - Deployments typically complete in 1-3 minutes
-              - Preview URLs will appear in Vercel dashboard once ready
+              ### ✨ What Happened
+              1. ✅ Backend deployed from \`backend/\` directory
+              2. ✅ Frontend deployed from \`frontend/\` directory  
+              3. ✅ Both deployments completed successfully
 
-              ### ✨ What's Happening
-              1. Backend deployment started first
-              2. Frontend deployment triggered (with backend integration)
-              3. Both will be available at preview URLs when complete
+              ### 🧪 Test Your Changes
+              Click the URLs above to test your changes in the preview environment!
 
               ---
-              ⏳ **Status**: Deployments in progress... Check Vercel dashboard for preview URLs!
+              ⚡ **Status**: Deployments complete and ready for testing!
               
               *🔄 Last updated: ${new Date().toLocaleString()} UTC*`;
               
-            } else if (deploymentTriggered === 'partial') {
-              const activeDeployment = backendJobId ? 'Backend' : 'Frontend';
-              const activeJobId = backendJobId || frontendJobId;
-              
-              commentBody = `## ⚠️ Partial Deployment Triggered
+            } else if (deploymentStatus === 'missing-config') {
+              commentBody = `## 🔧 Vercel CLI Not Set Up
 
-              Only **${activeDeployment}** deployment was triggered successfully.
-
-              ### 📊 Active Deployment
-              - **${activeDeployment}**: Job \`${activeJobId}\`
-
-              ### 🔧 Action Required
-              The other deployment hook appears to be missing or misconfigured. 
-              Please check repository variables:
-              - \`VERCEL_BACKEND_DEPLOY_HOOK\`
-              - \`VERCEL_FRONTEND_DEPLOY_HOOK\`
-
-              ### 🧪 Test Locally Meanwhile
-              \`\`\`bash
-              # Backend
-              cd backend && npm install && npm run dev
-
-              # Frontend (new terminal)  
-              cd frontend && npm install && npm run dev
-              \`\`\``;
-              
-            } else if (deploymentTriggered === 'false') {
-              commentBody = `## 🔧 Deploy Hooks Not Set Up
-
-              No Deploy Hook deployments were triggered because the hooks haven't been configured yet.
+              Vercel CLI deployments are not configured yet. This approach handles monorepos perfectly!
 
               ### 🛠️ Setup Instructions for Maintainers
 
-              #### 1. Create Deploy Hooks in Vercel
-              For **each project** (backend & frontend):
-              - Go to Vercel Dashboard → Project → Settings → Git
-              - Scroll to "Deploy Hooks" section  
-              - Click "Create Hook"
-              - Name: \`GitHub-PR-Previews\` (or similar)
-              - Branch: \`main\` (or your default branch)
-              - Copy the generated URL
+              #### 1. Get Vercel API Token
+              - Go to [Vercel Account Settings](https://vercel.com/account/tokens)
+              - Create a new token
+              - Copy the token value
 
-              #### 2. Add URLs as Repository Variables
-              - Go to GitHub repo → Settings → Secrets and Variables → Actions
-              - Click **Variables** tab (not Secrets!)
-              - Add these variables:
-                - \`VERCEL_BACKEND_DEPLOY_HOOK\` = your backend hook URL
-                - \`VERCEL_FRONTEND_DEPLOY_HOOK\` = your frontend hook URL
+              #### 2. Get Organization ID
+              \`\`\`bash
+              npx vercel teams list
+              # Copy your team/org ID
+              \`\`\`
 
-              #### 3. Test the Setup
-              - Create a new PR or push to this PR
-              - The workflow will automatically trigger deployments! 🎉
+              #### 3. Get Project IDs
+              \`\`\`bash
+              # In backend directory
+              cd backend && npx vercel link
+              cat .vercel/project.json  # Copy projectId
+
+              # In frontend directory  
+              cd frontend && npx vercel link
+              cat .vercel/project.json  # Copy projectId
+              \`\`\`
+
+              #### 4. Add GitHub Secrets
+              Go to **Settings** → **Secrets and Variables** → **Actions** → **Secrets**:
+              - \`VERCEL_TOKEN\` = your API token
+              - \`VERCEL_ORG_ID\` = your organization ID
+              - \`VERCEL_PROJECT_ID_BACKEND\` = backend project ID
+              - \`VERCEL_PROJECT_ID_FRONTEND\` = frontend project ID
+
+              #### 5. Test the Setup
+              - Push to this PR or create a new PR
+              - Deployments will automatically work from correct directories! 🎉
 
               ### 🧪 Testing Changes Locally
               \`\`\`bash
@@ -245,21 +214,22 @@ jobs:
               cd frontend && npm install && npm run dev
               \`\`\`
 
-              ### 🌟 Benefits of Deploy Hooks
-              - ✅ Works for **all contributors** (no authentication issues)
-              - ✅ Simple HTTP requests (no complex CLI setup)
-              - ✅ Automatic deployments for every PR
-              - ✅ No workflow failures due to missing secrets`;
+              ### 🌟 Benefits of Vercel CLI
+              - ✅ Perfect monorepo support (deploys from subdirectories)
+              - ✅ Full control over build process
+              - ✅ Works with any project structure
+              - ✅ Handles dependencies correctly
+              - ✅ Preview URLs for every PR`;
               
             } else {
               commentBody = `## ❌ Deployment Issues
 
-              There was an issue triggering the deployments. Please check the workflow logs for details.
+              There was an issue with the Vercel CLI deployments. Please check the workflow logs for details.
 
               ### 🔧 Troubleshooting
-              - Verify Deploy Hook URLs are correct
-              - Check Vercel project settings
-              - Ensure hooks are for the correct branch
+              - Verify all Vercel secrets are set correctly
+              - Check project IDs match your Vercel projects
+              - Ensure API token has correct permissions
 
               ### 🧪 Test Locally
               \`\`\`bash
@@ -273,7 +243,7 @@ jobs:
 
             commentBody += `
             
-            <!-- DEPLOY_HOOKS_COMMENT_MARKER -->`;
+            <!-- VERCEL_CLI_COMMENT_MARKER -->`;
 
             // Find existing comment
             const comments = await github.rest.issues.listComments({
@@ -283,7 +253,7 @@ jobs:
             });
 
             const existingComment = comments.data.find(comment => 
-              comment.body.includes('<!-- DEPLOY_HOOKS_COMMENT_MARKER -->')
+              comment.body.includes('<!-- VERCEL_CLI_COMMENT_MARKER -->')
             );
 
             if (existingComment) {
@@ -293,7 +263,7 @@ jobs:
                 repo: context.repo.repo,
                 body: commentBody
               });
-              console.log('✅ Updated existing Deploy Hooks comment');
+              console.log('✅ Updated existing Vercel CLI comment');
             } else {
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -301,48 +271,44 @@ jobs:
                 repo: context.repo.repo,
                 body: commentBody
               });
-              console.log('✅ Created new Deploy Hooks comment');
+              console.log('✅ Created new Vercel CLI comment');
             }
 
   workflow-summary:
     runs-on: ubuntu-latest
-    needs: deploy-via-hooks
+    needs: deploy-vercel
     if: always()
     
     steps:
       - name: 📊 Deployment Summary
         run: |
-          echo "🔍 Deploy Hooks Workflow Summary"
-          echo "================================"
+          echo "🔍 Vercel CLI Workflow Summary"
+          echo "=============================="
           
-          deployment_status="${{ needs.deploy-via-hooks.outputs.deployment-triggered }}"
-          backend_job="${{ needs.deploy-via-hooks.outputs.backend-job-id }}"
-          frontend_job="${{ needs.deploy-via-hooks.outputs.frontend-job-id }}"
+          deployment_status="${{ needs.deploy-vercel.outputs.deployment-status }}"
+          backend_url="${{ needs.deploy-vercel.outputs.backend-url }}"
+          frontend_url="${{ needs.deploy-vercel.outputs.frontend-url }}"
           
           case "$deployment_status" in
-            "true")
-              echo "✅ SUCCESS: Both deployments triggered successfully"
-              echo "🔧 Backend Job: $backend_job"
-              echo "🌐 Frontend Job: $frontend_job"
-              echo ""
-              echo "🔍 Next Steps:"
-              echo "- Monitor progress in Vercel Dashboard"
-              echo "- Preview URLs will be available when deployments complete"
+            "ready")
+              if [[ -n "$backend_url" && -n "$frontend_url" ]]; then
+                echo "✅ SUCCESS: Both deployments completed successfully"
+                echo "🔧 Backend: $backend_url"
+                echo "🌐 Frontend: $frontend_url"
+                echo ""
+                echo "🎉 Your monorepo is deployed and ready for testing!"
+              else
+                echo "⚠️ PARTIAL: Some deployments may have failed"
+                echo "Backend: ${backend_url:-❌ Failed}"
+                echo "Frontend: ${frontend_url:-❌ Failed}"
+              fi
               ;;
-            "partial")
-              echo "⚠️ PARTIAL: Only one deployment was triggered"
-              echo "Active Job: ${backend_job:-$frontend_job}"
-              echo ""
-              echo "🔧 Action Required:"
-              echo "- Check Deploy Hook configuration"
-              echo "- Ensure both VERCEL_BACKEND_DEPLOY_HOOK and VERCEL_FRONTEND_DEPLOY_HOOK are set"
-              ;;
-            "false")
-              echo "❌ NOT CONFIGURED: No Deploy Hooks set up"
+            "missing-config")
+              echo "❌ NOT CONFIGURED: Vercel CLI secrets not set up"
               echo ""
               echo "🛠️ Setup Required:"
-              echo "1. Create Deploy Hooks in Vercel Dashboard"
-              echo "2. Add hook URLs as repository variables"
+              echo "1. Get Vercel API token and project IDs"
+              echo "2. Add secrets to GitHub repository"
               echo "3. Re-run this workflow"
               ;;
             *)
@@ -352,34 +318,34 @@ jobs:
           esac
           
           echo ""
-          echo "🌟 Deploy Hooks Benefits:"
-          echo "- Works for ALL contributors (maintainers + external)"
-          echo "- No authentication required"
-          echo "- Simple HTTP requests"
-          echo "- Automatic deployments"
-          echo "- No complex CLI setup"
+          echo "🌟 Vercel CLI Benefits:"
+          echo "- Perfect monorepo support"
+          echo "- Deploys from correct subdirectories (backend/, frontend/)"
+          echo "- Full control over build process"
+          echo "- Works with any project structure"
           
           # Create GitHub Actions Summary
           cat >> $GITHUB_STEP_SUMMARY << EOF
-          ## 🚀 Deploy Hooks Workflow Results
+          ## 🚀 Vercel CLI Deployment Results
           
-          **Deployment Status**: $deployment_status
+          **Status**: $deployment_status
           
           $(case "$deployment_status" in
-            "true")
-              echo "### ✅ Both Deployments Triggered"
-              echo "- **Backend Job**: \`$backend_job\`"
-              echo "- **Frontend Job**: \`$frontend_job\`"
-              echo ""
-              echo "Monitor progress in [Vercel Dashboard](https://vercel.com/dashboard)"
+            "ready")
+              if [[ -n "$backend_url" && -n "$frontend_url" ]]; then
+                echo "### ✅ Monorepo Deployed Successfully"
+                echo "- **🔧 Backend**: [$backend_url]($backend_url)"
+                echo "- **🌐 Frontend**: [$frontend_url]($frontend_url)"
+                echo ""
+                echo "🎉 Both applications deployed from their respective directories!"
+              else
+                echo "### ⚠️ Partial Deployment"
+                echo "Some deployments may have failed. Check logs for details."
+              fi
               ;;
-            "partial")
-              echo "### ⚠️ Partial Deployment"
-              echo "Only one deployment was triggered. Check Deploy Hook configuration."
-              ;;
-            "false")
+            "missing-config")
               echo "### 🔧 Setup Required"
-              echo "Deploy Hooks need to be configured. See PR comment for instructions."
+              echo "Vercel CLI needs to be configured with API tokens and project IDs."
               ;;
             *)
               echo "### ❓ Unknown Status"
@@ -389,7 +355,7 @@ jobs:
           
           ---
           
-          ### 🌟 About Deploy Hooks
-          This workflow uses [Vercel Deploy Hooks](https://vercel.com/docs/deploy-hooks) - simple HTTP endpoints that trigger deployments without requiring authentication. Perfect for open source projects!
+          ### 🏗️ About Vercel CLI
+          This workflow uses the [Vercel CLI](https://vercel.com/docs/cli) to deploy directly from subdirectories, perfect for monorepos like yours with \`backend/\` and \`frontend/\` folders.
           
           EOF 
