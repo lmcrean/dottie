@@ -58,6 +58,9 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
           working-directory: ./frontend
           vercel-args: '--build-env VITE_API_BASE_URL=${{ inputs.backend_url }}'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
       
       - name: ✅ Validate Frontend Deployment
         id: validate
