@@ -23,8 +23,8 @@ name: Deploy to Vercel via Deploy Hooks
 # ✅ No complex Vercel CLI setup
 # ✅ No workflow failures due to missing secrets  
 # ✅ Simple HTTP requests that always work
-# ✅ Automatic deployments for every PR
 # ✅ Same experience for everyone
+# ✅ Automatic deployments for every PR
 
 on:
   pull_request:
