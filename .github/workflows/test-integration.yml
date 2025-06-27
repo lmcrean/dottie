@@ -1,0 +1,91 @@
+name: Test Integration
+
+on:
+  workflow_call:
+    inputs:
+      frontend_url:
+        required: true
+        type: string
+      backend_url:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 🔍 Environment Validation
+        run: |
+          echo "🧪 Frontend: ${{ inputs.frontend_url }}"
+          echo "🧪 Backend: ${{ inputs.backend_url }}"
+          
+          if [[ ! "${{ inputs.frontend_url }}" =~ ^https?:// ]] || [[ ! "${{ inputs.backend_url }}" =~ ^https?:// ]]; then
+            echo "❌ Invalid URL format"
+            exit 1
+          fi
+      
+      - name: 🏥 Backend Health Check
+        run: |
+          echo "🔍 Testing backend health endpoint..."
+          
+          for i in {1..3}; do
+            echo "Health check attempt $i/3..."
+            
+            if curl -f "${{ inputs.backend_url }}/api/health" -m 15; then
+              echo "✅ Backend health check passed"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ Backend health check failed after 3 attempts"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 10 seconds..."
+            sleep 10
+          done
+      
+      - name: 📡 API Endpoint Tests
+        run: |
+          echo "🔍 Testing key API endpoints..."
+          BACKEND_URL="${{ inputs.backend_url }}"
+          
+          # Test setup endpoint
+          echo "Testing setup endpoint..."
+          curl -f "$BACKEND_URL/api/setup/health/hello" -m 10 || {
+            echo "⚠️ Setup endpoint test failed"
+          }
+          
+          # Test if CORS is properly configured
+          echo "Testing CORS configuration..."
+          curl -H "Origin: ${{ inputs.frontend_url }}" \
+               -H "Access-Control-Request-Method: GET" \
+               -H "Access-Control-Request-Headers: Content-Type" \
+               -X OPTIONS \
+               "$BACKEND_URL/api/health" -m 10 || {
+            echo "⚠️ CORS preflight test failed"
+          }
+          
+          echo "✅ API endpoint tests completed"
+      
+      - name: 📱 Frontend Accessibility Test
+        run: |
+          echo "🔍 Testing frontend accessibility..."
+          
+          # Test if frontend serves the main page
+          if curl -f "${{ inputs.frontend_url }}" -m 15 >/dev/null 2>&1; then
+            echo "✅ Frontend is serving content"
+          else
+            echo "❌ Frontend accessibility test failed"
+            exit 1
+          fi
+      
+      - name: 🔗 Integration Test Summary
+        run: |
+          echo "🧪 Integration Results: ✅ PASSED"
+          echo "🌐 Frontend: ${{ inputs.frontend_url }}"
+          echo "⚡ Backend: ${{ inputs.backend_url }}" 

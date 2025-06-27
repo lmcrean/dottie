@@ -1,0 +1,97 @@
+name: Deploy Preview (Backend → Frontend → Test)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+
+jobs:
+  deploy-backend:
+    uses: ./.github/workflows/deploy-backend.yml
+    secrets: inherit
+    with:
+      environment: preview
+
+  deploy-frontend:
+    needs: deploy-backend
+    uses: ./.github/workflows/deploy-frontend.yml
+    secrets: inherit
+    with:
+      environment: preview
+      backend_url: ${{ needs.deploy-backend.outputs.deployment_url }}
+
+  test-integration:
+    needs: [deploy-backend, deploy-frontend]
+    uses: ./.github/workflows/test-integration.yml
+    secrets: inherit
+    with:
+      frontend_url: ${{ needs.deploy-frontend.outputs.deployment_url }}
+      backend_url: ${{ needs.deploy-backend.outputs.deployment_url }}
+
+  update-pr:
+    needs: [deploy-backend, deploy-frontend, test-integration]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💬 Update PR with Deployment Status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const frontendUrl = '${{ needs.deploy-frontend.outputs.deployment_url }}';
+            const backendUrl = '${{ needs.deploy-backend.outputs.deployment_url }}';
+            const testStatus = '${{ needs.test-integration.result }}';
+            
+            const statusEmoji = testStatus === 'success' ? '✅' : '⚠️';
+            const statusText = testStatus === 'success' ? 'All tests passed!' : 'Some tests failed';
+            
+            const commentBody = `## 🚀 Preview Deployment ${statusEmoji}
+
+            ### 🌐 Frontend Application
+            **Live Preview:** [${frontendUrl}](${frontendUrl})
+
+            ### ⚡ Backend API  
+            **API Endpoint:** [${backendUrl}](${backendUrl})
+
+            ### 🧪 Quick Test Links
+            - [📱 Frontend App](${frontendUrl}) - Test the user interface
+            - [❤️ Backend Health](${backendUrl}/api/health) - Verify API status
+            - [📚 API Documentation](${backendUrl}/api) - Explore endpoints
+
+            ### 🔄 Integration Status
+            ${statusEmoji} ${statusText}
+
+            ---
+            *🔄 Last updated: ${new Date().toLocaleString()} UTC*
+            
+            <!-- PREVIEW_DEPLOYMENT_COMMENT -->`;
+
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('<!-- PREVIEW_DEPLOYMENT_COMMENT -->')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            } 
