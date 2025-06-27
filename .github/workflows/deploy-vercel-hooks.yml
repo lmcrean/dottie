@@ -83,14 +83,30 @@ jobs:
         if: steps.check-setup.outputs.deployment-status == 'ready'
         run: npm install -g vercel@latest
 
+      - name: 🔗 Setup Backend Project Configuration
+        if: steps.check-setup.outputs.deployment-status == 'ready'
+        working-directory: ./backend
+        run: |
+          echo "Setting up backend project configuration..."
+          mkdir -p .vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID_BACKEND }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          cat .vercel/project.json
+
+      - name: 🔗 Setup Frontend Project Configuration  
+        if: steps.check-setup.outputs.deployment-status == 'ready'
+        working-directory: ./frontend
+        run: |
+          echo "Setting up frontend project configuration..."
+          mkdir -p .vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          cat .vercel/project.json
+
       - name: 🚀 Deploy Backend to Vercel
         id: backend-deploy
         if: steps.check-setup.outputs.deployment-status == 'ready'
         working-directory: ./backend
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
         run: |
           echo "🔥 Deploying backend from backend/ directory..."
           
@@ -112,8 +128,6 @@ jobs:
         working-directory: ./frontend
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
         run: |
           echo "🔥 Deploying frontend from frontend/ directory..."
           
