@@ -89,7 +89,13 @@ jobs:
         run: |
           echo "Setting up backend project configuration..."
           mkdir -p .vercel
-          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID_BACKEND }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          cat > .vercel/project.json << EOF
+          {
+            "projectId": "${{ secrets.VERCEL_PROJECT_ID_BACKEND }}",
+            "orgId": "${{ secrets.VERCEL_ORG_ID }}"
+          }
+          EOF
+          echo "Backend .vercel/project.json created:"
           cat .vercel/project.json
 
       - name: 🔗 Setup Frontend Project Configuration  
@@ -98,7 +104,13 @@ jobs:
         run: |
           echo "Setting up frontend project configuration..."
           mkdir -p .vercel
-          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          cat > .vercel/project.json << EOF
+          {
+            "projectId": "${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}",
+            "orgId": "${{ secrets.VERCEL_ORG_ID }}"
+          }
+          EOF
+          echo "Frontend .vercel/project.json created:"
           cat .vercel/project.json
 
       - name: 🚀 Deploy Backend to Vercel
@@ -111,14 +123,16 @@ jobs:
           echo "🔥 Deploying backend from backend/ directory..."
           
           # Deploy with Vercel CLI
-          deployment_url=$(vercel deploy --token=$VERCEL_TOKEN --yes --force)
+          deployment_url=$(vercel deploy --token=$VERCEL_TOKEN --yes --force 2>&1 | grep -E "https://.*\.vercel\.app" | tail -n1)
           
-          if [ $? -eq 0 ] && [ -n "$deployment_url" ]; then
+          if [ -n "$deployment_url" ]; then
             echo "deployment-url=$deployment_url" >> $GITHUB_OUTPUT
             echo "✅ Backend deployment successful!"
             echo "📍 Backend URL: $deployment_url"
           else
-            echo "❌ Backend deployment failed"
+            echo "❌ Backend deployment failed or URL not found"
+            # Let's try to get more info
+            vercel deploy --token=$VERCEL_TOKEN --yes --force
             exit 1
           fi
 
@@ -128,22 +142,28 @@ jobs:
         working-directory: ./frontend
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          # 🔗 Connect frontend to backend!
+          VITE_API_BASE_URL: ${{ steps.backend-deploy.outputs.deployment-url }}
         run: |
           echo "🔥 Deploying frontend from frontend/ directory..."
+          echo "🔗 Backend URL for frontend: $VITE_API_BASE_URL"
           
           # Add small delay to ensure backend is ready
-          echo "⏳ Waiting 10 seconds for backend to be ready..."
-          sleep 10
+          echo "⏳ Waiting 15 seconds for backend to be ready..."
+          sleep 15
           
-          # Deploy with Vercel CLI
-          deployment_url=$(vercel deploy --token=$VERCEL_TOKEN --yes --force)
+          # Deploy with Vercel CLI and set environment variable
+          deployment_url=$(vercel deploy --token=$VERCEL_TOKEN --yes --force --env VITE_API_BASE_URL=$VITE_API_BASE_URL 2>&1 | grep -E "https://.*\.vercel\.app" | tail -n1)
           
-          if [ $? -eq 0 ] && [ -n "$deployment_url" ]; then
+          if [ -n "$deployment_url" ]; then
             echo "deployment-url=$deployment_url" >> $GITHUB_OUTPUT
             echo "✅ Frontend deployment successful!"
             echo "📍 Frontend URL: $deployment_url"
+            echo "🔗 Connected to Backend: $VITE_API_BASE_URL"
           else
-            echo "❌ Frontend deployment failed"
+            echo "❌ Frontend deployment failed or URL not found"
+            # Let's try to get more info
+            vercel deploy --token=$VERCEL_TOKEN --yes --force --env VITE_API_BASE_URL=$VITE_API_BASE_URL
             exit 1
           fi
 
