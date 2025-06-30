@@ -53,14 +53,14 @@ export const UpdateUsernameButton: React.FC<UpdateUsernameButtonProps> = ({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       <input
         type="text"
         id="username"
         name="username"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200"
+        className="max-w-full flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200"
         placeholder="Enter your full name"
       />
       <button

@@ -68,14 +68,14 @@ export const UpdateEmailButton: React.FC<UpdateEmailButtonProps> = ({
 
   return (
     <div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <input
           type="email"
           id="email"
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={`flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 ${
+          className={`max-w-full flex-1 rounded-md border px-3 py-2 text-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 ${
             email && !isEmailValid ? 'border-red-500 focus:ring-red-500' : ''
           }`}
           placeholder="Enter your email address"
