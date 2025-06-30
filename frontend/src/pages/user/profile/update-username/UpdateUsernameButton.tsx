@@ -48,12 +48,18 @@ export const UpdateUsernameButton: React.FC<UpdateUsernameButtonProps> = ({
   const baseClasses =
     'rounded-md px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50';
   const variantClasses = {
-    primary: 'bg-pink-600 text-white hover:bg-pink-700 focus:ring-pink-500',
-    outlined: 'border border-pink-600 text-pink-600 hover:bg-pink-50 focus:ring-pink-500'
+    primary:
+      isLoading || name === user?.name
+        ? 'bg-pink-600 text-white'
+        : 'bg-pink-600 text-white hover:bg-pink-700 focus:ring-pink-500',
+    outlined:
+      isLoading || name === user?.name
+        ? 'border border-pink-600 text-pink-600'
+        : 'border border-pink-600 text-pink-600 hover:bg-pink-50 focus:ring-pink-500'
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2 sm:flex-row">
       <input
         type="text"
         id="username"
@@ -67,7 +73,7 @@ export const UpdateUsernameButton: React.FC<UpdateUsernameButtonProps> = ({
         type="button"
         onClick={handleSubmit}
         disabled={isLoading || name === user?.name}
-        className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+        className={`${baseClasses} ${variantClasses[variant]} ${className} ${isLoading || name === user?.name ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         {isLoading ? 'Updating...' : 'Update Name'}
       </button>
