@@ -55,20 +55,23 @@ export const UpdateEmailButton: React.FC<UpdateEmailButtonProps> = ({
     }
   };
 
-  const baseClasses =
-    'rounded-md px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50';
-  const variantClasses = {
-    primary: 'bg-pink-600 text-white hover:bg-pink-700 focus:ring-pink-500',
-    outlined: 'border border-pink-600 text-pink-600 hover:bg-pink-50 focus:ring-pink-500'
-  };
-
   const isEmailValid = isValidEmail(email);
   const hasChanges = email !== user?.email;
   const canUpdate = isEmailValid && hasChanges && !isLoading;
 
+  const baseClasses = `rounded-md px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 `;
+  const variantClasses = {
+    primary: !canUpdate
+      ? 'bg-pink-600 text-white'
+      : 'bg-pink-600 text-white hover:bg-pink-700 focus:ring-pink-500',
+    outlined: !canUpdate
+      ? 'border border-pink-600 text-pink-600'
+      : 'border border-pink-600 text-pink-600 hover:bg-pink-50 focus:ring-pink-500'
+  };
+
   return (
     <div>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <input
           type="email"
           id="email"
@@ -84,7 +87,7 @@ export const UpdateEmailButton: React.FC<UpdateEmailButtonProps> = ({
           type="button"
           onClick={handleSubmit}
           disabled={!canUpdate}
-          className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+          className={`${baseClasses} ${variantClasses[variant]} ${className} ${!canUpdate ? 'cursor-not-allowed opacity-50' : ''}`}
         >
           {isLoading ? 'Updating...' : 'Update Email'}
         </button>
