@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { User, List, MessageCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { assessmentApi } from '@/src/pages/assessment/api';
 import { getConversationsList } from '@/src/pages/chat/sidebar/api/get-list/getConversationsList';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
@@ -10,7 +10,6 @@ const UserIcon: React.FC = () => {
   const [hasHistory, setHasHistory] = useState(false);
   const [hasConversations, setHasConversations] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const checkHistory = async () => {
@@ -69,6 +68,7 @@ const UserIcon: React.FC = () => {
     <div className="flex items-center gap-4 text-gray-500">
       {!loading && hasConversations && (
         <button
+          type="button"
           onClick={handleChatClick}
           title="Chat with Dottie"
           className="text-sm font-medium hover:text-pink-600"
@@ -78,6 +78,7 @@ const UserIcon: React.FC = () => {
       )}
       {!loading && hasHistory && (
         <button
+          type="button"
           onClick={handleHistoryClick}
           title="Assessment History"
           className="text-sm font-medium hover:text-pink-600"
@@ -85,9 +86,10 @@ const UserIcon: React.FC = () => {
           <List className="h-5 w-5" />
         </button>
       )}
-      <button 
+      <button
+        type="button"
         onClick={handleProfileClick}
-        title="Profile" 
+        title="Profile"
         className="hover:text-pink-600"
       >
         <User className="h-5 w-5" />
