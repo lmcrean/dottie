@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { Calendar, ChevronRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
 import PageTransition from '../animations/page-transitions';
@@ -10,6 +10,7 @@ export default function HistoryPage() {
   // #actual
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,12 +90,13 @@ export default function HistoryPage() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">
               Assessment History
             </h1>
-            <Link
-              to="/assessment/age-verification"
+            <button
+              type="button"
+              onClick={() => navigate('/assessment/age-verification')}
               className="inline-flex items-center rounded-lg bg-pink-600 px-4 py-2 text-white transition-colors hover:bg-pink-700 hover:text-white"
             >
               New Assessment
-            </Link>
+            </button>
           </div>
 
           {error ? (
@@ -104,7 +106,7 @@ export default function HistoryPage() {
               <div className="mt-6">
                 <button
                   type="button"
-                  onClick={() => window.location.reload()}
+                  onClick={() => navigate(location.pathname)}
                   className="inline-flex w-full items-center rounded-lg bg-pink-600 px-4 py-2 text-white transition-colors hover:bg-pink-700"
                 >
                   Retry
@@ -120,6 +122,7 @@ export default function HistoryPage() {
               </p>
               <div className="mt-6">
                 <button
+                  type="button"
                   onClick={() => {
                     navigate('/assessment');
                   }}
@@ -164,9 +167,16 @@ export default function HistoryPage() {
                   : assessment.assessment_data?.cycleLength;
 
                 return (
-                  <Link
+                  <div
+                    role="button"
+                    tabIndex={0}
                     key={assessment.id}
-                    to={`/assessment/history/${assessment.id}`}
+                    onClick={() => navigate(`/assessment/history/${assessment.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        navigate(`/assessment/history/${assessment.id}`);
+                      }
+                    }}
                     className="block rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                   >
                     <div className="flex items-center justify-between">
@@ -197,7 +207,7 @@ export default function HistoryPage() {
                       </div>
                       <ChevronRight className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>

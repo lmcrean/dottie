@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { User, List, MessageCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { assessmentApi } from '@/src/pages/assessment/api';
 import { getConversationsList } from '@/src/pages/chat/sidebar/api/get-list/getConversationsList';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
@@ -40,28 +40,32 @@ const UserIcon: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     console.log('🚀 Using window.location.href to navigate to: /user/profile');
-    window.location.href = '/user/profile';
+    navigate('/user/profile');
   };
 
   const handleHistoryClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('🚀 Using window.location.href to navigate to: /assessment/history');
-    window.location.href = '/assessment/history';
+    navigate('/assessment/history');
   };
 
   const handleChatClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('🚀 Using window.location.href to navigate to: /chat');
-    window.location.href = '/chat';
+    navigate('/chat');
+  };
+
+  const handleNavigation = () => {
+    navigate('/');
   };
 
   if (!isAuthenticated) {
     return (
-      <Link to="/" className="text-gray-500">
+      <button type="button" onClick={handleNavigation} className="text-gray-500">
         not authenticated
-      </Link>
+      </button>
     );
   }
 
@@ -69,6 +73,7 @@ const UserIcon: React.FC = () => {
     <div className="flex items-center gap-4 text-gray-500">
       {!loading && hasConversations && (
         <button
+          type="button"
           onClick={handleChatClick}
           title="Chat with Dottie"
           className="text-sm font-medium hover:text-pink-600"
@@ -78,6 +83,7 @@ const UserIcon: React.FC = () => {
       )}
       {!loading && hasHistory && (
         <button
+          type="button"
           onClick={handleHistoryClick}
           title="Assessment History"
           className="text-sm font-medium hover:text-pink-600"
@@ -85,9 +91,10 @@ const UserIcon: React.FC = () => {
           <List className="h-5 w-5" />
         </button>
       )}
-      <button 
+      <button
+        type="button"
         onClick={handleProfileClick}
-        title="Profile" 
+        title="Profile"
         className="hover:text-pink-600"
       >
         <User className="h-5 w-5" />
