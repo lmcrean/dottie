@@ -19,7 +19,7 @@ jobs:
       
       - name: 📋 Load Project Configuration
         id: config
-        uses: ./.github/actions/load-config
+        uses: ./.github/workflows/actions/load-config
       
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
@@ -51,7 +51,7 @@ jobs:
       - name: 🛠️ Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ steps.config.outputs.gcp-project-id }}
       
       - name: 🔍 Validate GCP Authentication & Permissions
         run: |
@@ -71,8 +71,8 @@ jobs:
           PROJECT_ID=$(gcloud config get-value project)
           echo "📋 Current project: $PROJECT_ID"
           
-          if [ "$PROJECT_ID" != "${{ secrets.GCP_PROJECT_ID }}" ]; then
-            echo "❌ Project mismatch! Expected: ${{ secrets.GCP_PROJECT_ID }}, Got: $PROJECT_ID"
+          if [ "$PROJECT_ID" != "${{ steps.config.outputs.gcp-project-id }}" ]; then
+            echo "❌ Project mismatch! Expected: ${{ steps.config.outputs.gcp-project-id }}, Got: $PROJECT_ID"
             exit 1
           fi
           
@@ -136,7 +136,7 @@ jobs:
             
             # Check IAM policy for the service account
             echo "🔍 IAM roles for service account:"
-            gcloud projects get-iam-policy ${{ secrets.GCP_PROJECT_ID }} \
+            gcloud projects get-iam-policy ${{ steps.config.outputs.gcp-project-id }} \
               --flatten="bindings[].members" \
               --format="table(bindings.role)" \
               --filter="bindings.members:$CURRENT_SA"
@@ -210,8 +210,6 @@ jobs:
           # Verify environment variables were set correctly
           echo "🔍 Verifying environment variables in deployed service..."
           gcloud run services describe $SERVICE_NAME --platform managed --region ${{ steps.config.outputs.cloud-run-region }} --format="value(spec.template.spec.template.spec.containers[0].env[].name,spec.template.spec.template.spec.containers[0].env[].value)"
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       
       - name: ✅ Validate API Deployment
         run: |

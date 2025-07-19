@@ -24,6 +24,10 @@ jobs:
       - name: 🛒 Checkout Repository
         uses: actions/checkout@v4
       
+      - name: 📋 Load Project Configuration
+        id: config
+        uses: ./.github/workflows/actions/load-config
+      
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -54,7 +58,7 @@ jobs:
       - name: 🛠️ Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ steps.config.outputs.gcp-project-id }}
       
       # Add comprehensive validation steps
       - name: 🔍 Validate GCP Authentication & Permissions
@@ -75,8 +79,8 @@ jobs:
           PROJECT_ID=$(gcloud config get-value project)
           echo "📋 Current project: $PROJECT_ID"
           
-          if [ "$PROJECT_ID" != "${{ secrets.GCP_PROJECT_ID }}" ]; then
-            echo "❌ Project mismatch! Expected: ${{ secrets.GCP_PROJECT_ID }}, Got: $PROJECT_ID"
+          if [ "$PROJECT_ID" != "${{ steps.config.outputs.gcp-project-id }}" ]; then
+            echo "❌ Project mismatch! Expected: ${{ steps.config.outputs.gcp-project-id }}, Got: $PROJECT_ID"
             exit 1
           fi
           
@@ -96,21 +100,21 @@ jobs:
           fi
           
           # Check if repository exists
-          echo "📦 Checking api-images repository..."
-          if gcloud artifacts repositories describe api-images --location=us-central1 --format="value(name)"; then
-            echo "✅ api-images repository exists"
+          echo "📦 Checking ${{ steps.config.outputs.artifact-registry-repository }} repository..."
+          if gcloud artifacts repositories describe ${{ steps.config.outputs.artifact-registry-repository }} --location=${{ steps.config.outputs.artifact-registry-location }} --format="value(name)"; then
+            echo "✅ ${{ steps.config.outputs.artifact-registry-repository }} repository exists"
           else
-            echo "❌ api-images repository does not exist"
+            echo "❌ ${{ steps.config.outputs.artifact-registry-repository }} repository does not exist"
             echo "🔧 Creating repository..."
-            gcloud artifacts repositories create api-images \
+            gcloud artifacts repositories create ${{ steps.config.outputs.artifact-registry-repository }} \
               --repository-format=docker \
-              --location=us-central1 \
+              --location=${{ steps.config.outputs.artifact-registry-location }} \
               --description="API Docker images for branch deployments"
           fi
           
           # Test Docker authentication
           echo "🐳 Testing Docker authentication..."
-          if gcloud auth configure-docker us-central1-docker.pkg.dev --quiet; then
+          if gcloud auth configure-docker ${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev --quiet; then
             echo "✅ Docker authentication configured"
           else
             echo "❌ Docker authentication failed"
@@ -121,7 +125,7 @@ jobs:
           echo "🔑 Testing repository permissions..."
           CLEAN_BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
           SERVICE_NAME="api-github-${CLEAN_BRANCH}"
-          IMAGE_NAME="us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/api-images/${SERVICE_NAME}:test"
+          IMAGE_NAME="${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev/${{ steps.config.outputs.gcp-project-id }}/${{ steps.config.outputs.artifact-registry-repository }}/${SERVICE_NAME}:test"
           
           echo "🧪 Testing image push permissions with test image..."
           echo "FROM alpine:latest" > Dockerfile.test
@@ -141,7 +145,7 @@ jobs:
             
             # Check IAM policy for the service account
             echo "🔍 IAM roles for service account:"
-            gcloud projects get-iam-policy ${{ secrets.GCP_PROJECT_ID }} \
+            gcloud projects get-iam-policy ${{ steps.config.outputs.gcp-project-id }} \
               --flatten="bindings[].members" \
               --format="table(bindings.role)" \
               --filter="bindings.members:$CURRENT_SA"
@@ -156,14 +160,14 @@ jobs:
 
       - name: 🐳 Configure Docker for Artifact Registry
         run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
+          gcloud auth configure-docker ${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev
       
       - name: 🏗️ Build and Push Docker Image
         run: |
           # Clean branch name for use in service names (remove special characters)
           CLEAN_BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
           SERVICE_NAME="api-${CLEAN_BRANCH}"
-          IMAGE_NAME="us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/api-images/${SERVICE_NAME}:${{ github.sha }}"
+          IMAGE_NAME="${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev/${{ steps.config.outputs.gcp-project-id }}/${{ steps.config.outputs.artifact-registry-repository }}/${SERVICE_NAME}:${{ github.sha }}"
           
           echo "🏷️ Building image: $IMAGE_NAME"
           echo "🔖 Service name: $SERVICE_NAME"
@@ -186,13 +190,13 @@ jobs:
           echo "🗑️ Cleaning up any existing conflicting services..."
           
           # Delete service and wait for complete removal
-          if gcloud run services describe $SERVICE_NAME --region=us-central1 --quiet > /dev/null 2>&1; then
+          if gcloud run services describe $SERVICE_NAME --region=${{ steps.config.outputs.cloud-run-region }} --quiet > /dev/null 2>&1; then
             echo "📍 Found existing service, deleting..."
-            gcloud run services delete $SERVICE_NAME --region=us-central1 --quiet
+            gcloud run services delete $SERVICE_NAME --region=${{ steps.config.outputs.cloud-run-region }} --quiet
             
             # Wait for deletion to complete
             echo "⏳ Waiting for service deletion to complete..."
-            while gcloud run services describe $SERVICE_NAME --region=us-central1 --quiet > /dev/null 2>&1; do
+            while gcloud run services describe $SERVICE_NAME --region=${{ steps.config.outputs.cloud-run-region }} --quiet > /dev/null 2>&1; do
               echo "   Still deleting..."
               sleep 5
             done
@@ -206,24 +210,24 @@ jobs:
           gcloud run deploy $SERVICE_NAME \
             --image $IMAGE_NAME \
             --platform managed \
-            --region us-central1 \
+            --region ${{ steps.config.outputs.cloud-run-region }} \
             --allow-unauthenticated \
-            --memory=512Mi \
-            --cpu=1 \
-            --min-instances=0 \
-            --max-instances=10 \
-            --timeout=60s \
-            --concurrency=100 \
+            --memory=${{ steps.config.outputs.cloud-run-memory }} \
+            --cpu=${{ steps.config.outputs.cloud-run-cpu }} \
+            --min-instances=${{ steps.config.outputs.cloud-run-min-instances }} \
+            --max-instances=${{ steps.config.outputs.cloud-run-max-instances }} \
+            --timeout=${{ steps.config.outputs.cloud-run-timeout }} \
+            --concurrency=${{ steps.config.outputs.cloud-run-concurrency }} \
             --set-env-vars="NODE_ENV=production"
           
           # Get the service URL - should now be predictable
-          SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --platform managed --region us-central1 --format 'value(status.url)')
+          SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --platform managed --region ${{ steps.config.outputs.cloud-run-region }} --format 'value(status.url)')
           
           echo "🌐 Service deployed at: $SERVICE_URL"
           echo "deployment_url=$SERVICE_URL" >> $GITHUB_OUTPUT
           
           # Verify the URL matches expected pattern
-          EXPECTED_URL="https://$SERVICE_NAME.us-central1.run.app"
+          EXPECTED_URL="https://$SERVICE_NAME.${{ steps.config.outputs.cloud-run-region }}.run.app"
           if [ "$SERVICE_URL" = "$EXPECTED_URL" ]; then
             echo "✅ Service URL matches expected pattern: $EXPECTED_URL"
           else
@@ -233,9 +237,7 @@ jobs:
           
           # Verify environment variables were set correctly
           echo "🔍 Verifying environment variables in deployed service..."
-          gcloud run services describe $SERVICE_NAME --platform managed --region us-central1 --format="value(spec.template.spec.template.spec.containers[0].env[].name,spec.template.spec.template.spec.containers[0].env[].value)"
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          gcloud run services describe $SERVICE_NAME --platform managed --region ${{ steps.config.outputs.cloud-run-region }} --format="value(spec.template.spec.template.spec.containers[0].env[].name,spec.template.spec.template.spec.containers[0].env[].value)"
       
       - name: ✅ Validate API Deployment
         run: |
