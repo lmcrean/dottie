@@ -21,14 +21,14 @@ gcloud config set account your-email@gmail.com
 gcloud auth list
 
 # Ensure you're using the correct project
-gcloud config set project lauriecrean-free-38256
+gcloud config set project dottie-YOUR_PROJECT_ID
 ```
 
 ### Step 2: Build and Deploy API
 
 ```bash
 # Navigate to the API directory
-cd apps/api/github
+cd backend
 
 # Install dependencies
 npm install
@@ -37,7 +37,7 @@ npm install
 npm run build
 
 # Deploy to Google Cloud Run
-gcloud run deploy api-github-main \
+gcloud run deploy dottie-api \
   --source . \
   --region us-central1 \
   --allow-unauthenticated \
@@ -54,10 +54,10 @@ gcloud run deploy api-github-main \
 
 ```bash
 # Test the health endpoint (replace with your actual URL)
-curl https://api-github-main-329000596728.us-central1.run.app/health
+curl https://dottie-api-YOUR_PROJECT_ID.us-central1.run.app/health
 
 # Expected response:
-# {"status":"ok","timestamp":"2025-07-06T16:07:31.141Z","service":"api-github"}
+# {"status":"ok","timestamp":"2025-07-19T16:07:31.141Z","service":"dottie-api"}
 ```
 
 ## Part 2: Deploy Web App to Firebase Hosting
@@ -86,7 +86,7 @@ npx firebase projects:list
 
 ```bash
 # Navigate to the web app directory
-cd apps/web
+cd frontend
 
 # Install dependencies
 npm install
@@ -140,8 +140,8 @@ npx firebase deploy --only hosting
 
 After successful deployment, you'll get these URLs:
 
-- **API**: `https://api-github-main-329000596728.us-central1.run.app`
-- **Web App**: `https://your-project-id.web.app`
+- **API**: `https://dottie-api-YOUR_PROJECT_ID.us-central1.run.app`
+- **Web App**: `https://dottie-YOUR_PROJECT_ID.web.app`
 
 ## Environment Variables
 

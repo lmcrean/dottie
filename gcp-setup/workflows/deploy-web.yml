@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'apps/web/**'
+      - 'frontend/**'
       - '.github/workflows/deploy-web.yml'
   workflow_dispatch:
 
@@ -21,21 +21,21 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: 'apps/web/package-lock.json'
+        cache-dependency-path: 'frontend/package-lock.json'
         
     - name: Install dependencies
       run: |
-        cd apps/web
+        cd frontend
         npm ci
         
     - name: Build web app
       run: |
-        cd apps/web
+        cd frontend
         npm run build
         
     - name: Check build size (safety check)
       run: |
-        cd apps/web
+        cd frontend
         BUILD_SIZE=$(du -sm dist | cut -f1)
         echo "Build size: ${BUILD_SIZE}MB"
         if [ $BUILD_SIZE -gt 8000 ]; then
@@ -55,7 +55,7 @@ jobs:
       
     - name: Deploy to Firebase Hosting
       run: |
-        cd apps/web
+        cd frontend
         firebase deploy --only hosting --project ${{ secrets.GCP_PROJECT_ID }}
         
     - name: Comment deployment URL
