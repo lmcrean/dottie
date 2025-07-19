@@ -1,0 +1,63 @@
+# Project Configuration
+# This file contains all project-specific variables used in GitHub Actions workflows
+# Copy this file to other projects and update the values as needed
+
+project:
+  # Google Cloud Platform Configuration
+  gcp:
+    project_id: "odyssey-466315"
+    region: "us-central1"
+    service_account: "github-actions-cloudrun@odyssey-466315.iam.gserviceaccount.com"
+    
+    # Artifact Registry Configuration
+    artifact_registry:
+      repository: "api-images"
+      location: "us-central1"
+    
+    # Cloud Run Configuration
+    cloud_run:
+      region: "us-central1"
+      memory: "512Mi"
+      cpu: "1"
+      min_instances: 0
+      max_instances: 10
+      timeout: "60s"
+      concurrency: 100
+
+  # Firebase Configuration
+  firebase:
+    project_id: "odyssey-466315"
+    hosting:
+      main_url: "https://odyssey-466315.web.app"
+      branch_url_pattern: "https://odyssey-466315--branch-{pr_number}-{hash}.web.app"
+
+  # Application Configuration
+  app:
+    name: "odyssey"
+    api:
+      entry_point: "backend"
+      service_name_pattern: "api-{branch}"
+      health_endpoint: "/health"
+      cors_origins:
+        - "https://odyssey-466315.web.app"
+        - "https://odyssey-466315--*.web.app"
+      build_command: "npm install --production"
+      test_command: "npm test"
+      start_command: "npm start"
+    
+    web:
+      entry_point: "frontend"
+      build_command: "npm run build"
+      test_command: "npm test"
+      dist_directory: "dist"
+      environment_prefix: "VITE_"
+
+# GitHub Secrets Used (for documentation)
+# These secrets must be configured in your GitHub repository:
+secrets:
+  required:
+    - GCP_SA_KEY                    # Google Cloud service account JSON key
+    - GCP_PROJECT_ID                # Google Cloud project ID (should match project.gcp.project_id)
+    - FIREBASE_SERVICE_ACCOUNT_KEY  # Firebase service account JSON key
+  optional:
+    - GITHUB_TOKEN                  # Automatically provided by GitHub Actions

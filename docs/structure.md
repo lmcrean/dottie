@@ -40,22 +40,30 @@ tests/                    # Integration tests
     ├── hooks/          # Hook tests
     └── utils/          # Test utilities
 
-e2e/                      # Playwright E2E tests
-├── tests/                # Test scenarios
-├── fixtures/             # Test data with environment-aware URLs
-├── utils/                # Test helpers and global setup
-├── playwright.config.api.local.ts           # API-only local tests
-├── playwright.config.api.production.branch.ts  # API-only branch tests
-├── playwright.config.api.production.main.ts    # API-only main tests
-├── playwright.config.web.local.ts           # Full web+API local tests
-├── playwright.config.web.production.branch.ts  # Full web+API branch tests
-├── playwright.config.web.production.main.ts    # Full web+API main tests
-├── global-setup.api.local.ts               # API service health check (local)
-├── global-setup.api.production.branch.ts   # API service health check (branch)
-├── global-setup.api.production.main.ts     # API service health check (main)
-├── global-setup.web.local.ts               # Both services health check (local)
-├── global-setup.web.production.branch.ts   # Both services health check (branch)
-└── global-setup.web.production.main.ts     # Both services health check (main)
+e2e/                      # Playwright E2E tests (unified structure)
+├── frontend/             # Frontend E2E tests
+│   ├── README-Operations-Architecture.md
+│   ├── master-integration-operations.spec.ts
+│   ├── runners/          # Test runners organized by feature
+│   │   ├── assessment/   # Assessment flow tests
+│   │   ├── auth/         # Authentication tests
+│   │   ├── chat/         # Chat functionality tests
+│   │   ├── landing/      # Landing page tests
+│   │   └── user/         # User profile tests
+│   └── utils/            # Frontend test utilities
+├── backend/              # Backend API E2E tests
+│   ├── dev/              # Development environment tests
+│   │   └── runners/      # API test runners by feature
+│   ├── prod/             # Production environment tests
+│   └── utils/            # Backend test utilities
+├── playwright.frontend.local.ts            # Frontend local development configuration
+├── playwright.backend.local.ts             # Backend local development configuration
+├── playwright.frontend.production.branch.ts # Frontend branch deployment configuration
+├── playwright.backend.production.branch.ts  # Backend branch deployment configuration
+├── playwright.frontend.production.main.ts   # Frontend production deployment configuration
+├── playwright.backend.production.main.ts    # Backend production deployment configuration
+├── global-setup.ts                         # Global test setup
+└── global-teardown.ts                      # Global test teardown
 
 docs/                     # Project documentation
 ├── README.md            # Documentation index

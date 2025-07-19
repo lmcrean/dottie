@@ -22,37 +22,49 @@
 - ✅ Async operation testing
 - ✅ Context and hook testing
 
-## End-to-End Tests (`e2e/`) ✅ UPDATED
+## End-to-End Tests (`e2e/`) ✅ REORGANIZED
 
-### Playwright Test Suite with Explicit Configuration Architecture
+### Unified E2E Directory Structure
 
-**Configuration Strategy**: Explicit naming convention for test scope and environment separation to prevent deployment failures and ensure proper test isolation.
+**Organization Strategy**: Centralized e2e testing with clear separation between frontend and backend tests to improve maintainability and reduce refactoring pain.
 
-### API-Only Test Configurations
-For branch deployments where web apps don't exist:
-- `playwright.config.api.local.ts` - API tests against `http://localhost:5000` (Node.js/Express)
-- `playwright.config.api.production.branch.ts` - API tests for PR branches (requires `API_DEPLOYMENT_URL`)
-- `playwright.config.api.production.main.ts` - API tests for main production (has fallback URL)
+### Directory Structure
+- `e2e/frontend/` - Frontend E2E tests (moved from frontend/e2e/)
+- `e2e/backend/` - Backend API E2E tests (moved from backend/e2e/)
 
-### Full Web+API Test Configurations
-For complete deployments:
-- `playwright.config.web.local.ts` - Full tests against localhost:3000 (React/Vite) + localhost:5000 (API)
-- `playwright.config.web.production.branch.ts` - Full tests for PR branches (requires env vars)
-- `playwright.config.web.production.main.ts` - Full tests for main production (has fallback URLs)
+### Playwright Configurations (Split by Service)
+**Local Development:**
+- `playwright.frontend.local.ts` - Frontend local testing (React app + API)
+- `playwright.backend.local.ts` - Backend local testing (API endpoints only)
 
-### Corresponding Global Setup Files
-- `global-setup.api.*.ts` - Only validates API service health
-- `global-setup.web.*.ts` - Validates both web and API service health
+**Branch Deployments:**
+- `playwright.frontend.production.branch.ts` - Frontend branch testing (deployed React app)
+- `playwright.backend.production.branch.ts` - Backend branch testing (deployed API)
+
+**Production Deployments:**
+- `playwright.frontend.production.main.ts` - Frontend production testing (stable React app)
+- `playwright.backend.production.main.ts` - Backend production testing (stable API)
+
+### Frontend E2E Tests (`e2e/frontend/`)
+- **Master Integration**: Complete user workflow testing
+- **Feature Runners**: Organized by functionality (assessment, auth, chat, user)
+- **Test Scenarios**: Real user interactions with the React application
+- **Cross-browser Testing**: Chrome, Firefox, Safari, Mobile devices
+
+### Backend E2E Tests (`e2e/backend/`)
+- **API Integration**: Direct API endpoint testing
+- **Development Tests**: Local development validation
+- **Production Tests**: Deployed API validation
+- **Feature Coverage**: Authentication, assessments, chat, user management
 
 ### Key Benefits
-- **Separation of Concerns**: API tests don't wait for web services that may not exist
-- **Branch Deployment Compatibility**: PR branches can test API-only without web deployment failures
-- **Environment-Specific Timeouts**: Production configs use longer timeouts for network delays
-- **Explicit Dependencies**: Clear naming shows exactly what each config tests
-
-### npm Scripts
-- `test:api:local`, `test:api:branch`, `test:api:main` - API-only testing
-- `test:web:local`, `test:web:branch`, `test:web:main` - Full web+API testing
+- **Unified Structure**: All E2E tests in one location
+- **Clear Separation**: Frontend vs Backend test organization  
+- **Independent Testing**: Can test frontend and backend separately
+- **Specialized Configurations**: Each config optimized for its specific test type
+- **Reduced Refactoring**: Easier to maintain and update test configurations
+- **Better Organization**: Feature-based test grouping
+- **Flexible Execution**: Run frontend or backend tests independently based on changes
 
 ### Environment Variables for Production E2E Tests
 - `WEB_DEPLOYMENT_URL` or `CLOUD_RUN_WEB_URL` - Web app URL (web configs only)
@@ -73,7 +85,20 @@ For complete deployments:
 - **All Tests**: `npm run test:all`
 - **Backend Unit Tests**: `npm run test` (from backend/ directory) - Vitest
 - **Frontend Unit Tests**: `npm run test` (from frontend/ directory) - Vitest
-- **E2E API Tests**: `npm run test:api:local`, `npm run test:api:branch`, `npm run test:api:main`
-- **E2E Web Tests**: `npm run test:web:local`, `npm run test:web:branch`, `npm run test:web:main`
+
+### E2E Testing Commands (from e2e/ directory)
+**Local Development:**
+- `npx playwright test --config=playwright.frontend.local.ts` - Frontend local tests
+- `npx playwright test --config=playwright.backend.local.ts` - Backend local tests
+
+**Branch Deployment Testing:**
+- `npx playwright test --config=playwright.frontend.production.branch.ts` - Frontend branch tests
+- `npx playwright test --config=playwright.backend.production.branch.ts` - Backend branch tests
+
+**Production Testing:**
+- `npx playwright test --config=playwright.frontend.production.main.ts` - Frontend production tests
+- `npx playwright test --config=playwright.backend.production.main.ts` - Backend production tests
+
+### Legacy Commands
 - **E2E Development**: `npm run test:dev` (from frontend/ directory) - Playwright headed mode
 - **Custom Runner**: `node test-runner.js [api|web|e2e|integration|all]`

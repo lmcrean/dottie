@@ -1,59 +1,61 @@
 # Project Overview
 
-A B2B competitive intelligence platform built with Angular frontend and C# ASP.NET Core backend, deployed to Google Cloud Platform.
+Dottie is a full-stack web application providing AI-powered menstrual health guidance for adolescents, built with React/TypeScript frontend and Node.js/Express backend, deployed to Google Cloud Platform.
 
 ## Implementation Status
 
 ### Iteration 1 (i1) - Hello World Foundation ✅ COMPLETED
-**Goal**: Establish basic Angular-to-C# API communication and deployment pipeline
+**Goal**: Establish basic React-to-Node.js API communication and deployment pipeline
 
-#### Backend (apps/api) - C# ASP.NET Core
-- ✅ Project structure with Controllers, Models, Middleware directories
-- ✅ HealthController with `/api/health` (simple string) and `/api/health/status` (structured JSON)
+#### Backend (backend/) - Node.js/Express API
+- ✅ Project structure with routes, models, middleware directories
+- ✅ Health endpoints with `/api/health` (simple string) and `/api/health/status` (structured JSON)
 - ✅ Additional `/health` endpoint for workflow compatibility
-- ✅ CORS configuration for Angular frontend (localhost:4200)
-- ✅ Swagger/OpenAPI documentation
-- ✅ Google Cloud Run deployment configuration (Dockerfile, cloudbuild.yaml)
+- ✅ CORS configuration for React frontend (localhost:3000)
+- ✅ Express.js routing and middleware
+- ✅ Google Cloud Run deployment configuration (Dockerfile)
 - ✅ Environment-specific settings (Development/Production)
-- ✅ Observability package integration with health metrics
+- ✅ Database integration with SQLite (dev) and Azure SQL/Supabase (prod)
 
-#### Frontend (apps/web) - Angular 18
-- ✅ Standalone components architecture
-- ✅ ApiService for HTTP communication with backend
-- ✅ HelloWorldComponent displaying API responses
+#### Frontend (frontend/) - React/Vite
+- ✅ React components with TypeScript
+- ✅ API client layer for HTTP communication with backend
+- ✅ Component-based architecture with pages and reusable components
 - ✅ Environment configurations (development/production)
 - ✅ Firebase hosting configuration
 - ✅ Error handling and loading states
+- ✅ Tailwind CSS styling with Radix UI components
 
 #### Key Features Implemented
 - Basic API health endpoints returning "Hello World" messages
-- Angular component consuming C# API with structured response
-- Environment-specific API URL configuration
+- React components consuming Node.js API with structured response
+- Environment-specific API URL configuration with VITE_ prefix
 - Google Cloud deployment ready (Cloud Run + Firebase)
 - CORS properly configured for cross-origin requests
 
 #### Next Steps (Iteration 2)
 - Authentication system implementation
 - JWT token management
-- Role-based access control for B2B users
+- AI chat integration with Google Generative AI
+- Assessment questionnaire system
 
-## Docker Configuration ✅ FIXED
-**Issue Resolution**: Fixed Docker build failure due to missing Observability package reference
+## Docker Configuration ✅ UPDATED
+**Configuration**: Node.js Alpine-based production container
 
-**Updated Dockerfile** (`apps/api/Dockerfile`):
-- Build context moved to repository root
-- Properly copies both API project and Observability package
-- Multi-stage build with correct dependency resolution
-- Optimized layer caching for dependencies
+**Docker Configuration** (`backend/Dockerfile`):
+- Multi-stage Node.js build with Alpine Linux
+- Security-focused with non-root user
+- Proper signal handling with dumb-init
+- Optimized layer caching for npm dependencies
+- Port 8080 for Cloud Run compatibility
 
 **Updated GitHub Actions Workflows**:
-- `deploy-api-main.yml` and `deploy-api-branch.yml` updated
-- Docker builds now run from repository root with `-f apps/api/Dockerfile .`
-- Proper context allows access to referenced packages
+- All workflows updated for Node.js/React deployment
+- Docker builds use proper Node.js base images
+- Environment variables use VITE_ prefix for frontend
 
 ## Health Endpoints
 - `/` - Simple "API is running" response
 - `/health` - JSON health status for workflows
-- `/api/health` - Controller-based health check
-- `/api/health/status` - Structured health response
-- `/observability/health` - Observability metrics
+- `/api/health` - Express route-based health check
+- `/api/health/status` - Structured health response with system information
