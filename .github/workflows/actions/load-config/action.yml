@@ -39,6 +39,9 @@ outputs:
   api-cors-origins:
     description: 'API CORS origins (JSON array)'
     value: ${{ steps.config.outputs.api-cors-origins }}
+  api-entry-point:
+    description: 'API application entry point'
+    value: ${{ steps.config.outputs.api-entry-point }}
   web-entry-point:
     description: 'Web application entry point'
     value: ${{ steps.config.outputs.web-entry-point }}
@@ -124,6 +127,7 @@ runs:
         API_SERVICE_NAME_PATTERN=$(yq '.project.app.api.service_name_pattern' "$CONFIG_FILE")
         API_HEALTH_ENDPOINT=$(yq '.project.app.api.health_endpoint' "$CONFIG_FILE")
         API_CORS_ORIGINS=$(yq -o=json -I=0 '.project.app.api.cors_origins' "$CONFIG_FILE")
+        API_ENTRY_POINT=$(yq '.project.app.api.entry_point' "$CONFIG_FILE")
         
         WEB_ENTRY_POINT=$(yq '.project.app.web.entry_point' "$CONFIG_FILE")
         WEB_BUILD_COMMAND=$(yq '.project.app.web.build_command' "$CONFIG_FILE")
@@ -152,6 +156,7 @@ runs:
         APP_NAME=${APP_NAME//\"/}
         API_SERVICE_NAME_PATTERN=${API_SERVICE_NAME_PATTERN//\"/}
         API_HEALTH_ENDPOINT=${API_HEALTH_ENDPOINT//\"/}
+        API_ENTRY_POINT=${API_ENTRY_POINT//\"/}
         WEB_ENTRY_POINT=${WEB_ENTRY_POINT//\"/}
         WEB_BUILD_COMMAND=${WEB_BUILD_COMMAND//\"/}
         WEB_TEST_COMMAND=${WEB_TEST_COMMAND//\"/}
