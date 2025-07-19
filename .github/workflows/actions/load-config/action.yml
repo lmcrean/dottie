@@ -184,6 +184,7 @@ runs:
         echo "api-service-name-pattern=$API_SERVICE_NAME_PATTERN" >> $GITHUB_OUTPUT
         echo "api-health-endpoint=$API_HEALTH_ENDPOINT" >> $GITHUB_OUTPUT
         echo "api-cors-origins=$API_CORS_ORIGINS" >> $GITHUB_OUTPUT
+        echo "api-entry-point=$API_ENTRY_POINT" >> $GITHUB_OUTPUT
         echo "web-entry-point=$WEB_ENTRY_POINT" >> $GITHUB_OUTPUT
         echo "web-build-command=$WEB_BUILD_COMMAND" >> $GITHUB_OUTPUT
         echo "web-test-command=$WEB_TEST_COMMAND" >> $GITHUB_OUTPUT

@@ -21,16 +21,20 @@ jobs:
       - name: 🛒 Checkout Repository
         uses: actions/checkout@v4
       
+      - name: 📋 Load Project Configuration
+        id: config
+        uses: ./.github/actions/load-config
+      
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: ${{ steps.config.outputs.web-entry-point }}/package-lock.json
       
       - name: 📥 Install Web Dependencies  
         run: |
-          cd frontend
+          cd ${{ steps.config.outputs.web-entry-point }}
           echo "🔍 Checking package-lock.json sync..."
           
           # Try npm ci first (preferred for CI)
@@ -57,28 +61,28 @@ jobs:
             exit 1
           fi
           
-          cd frontend
+          cd ${{ steps.config.outputs.web-entry-point }}
           
-          # Create Vite environment file for production build
-          echo "VITE_API_URL=${{ inputs.api_url }}" > .env.production
+          # Create environment file for production build
+          echo "${{ steps.config.outputs.web-environment-prefix }}API_URL=${{ inputs.api_url }}" > .env.production
           echo "📝 Created .env.production with API URL: ${{ inputs.api_url }}"
           
           # Also update the local .env file if it exists (for consistency)
           if [ -f .env ]; then
-            sed -i "s|VITE_API_URL=.*|VITE_API_URL=${{ inputs.api_url }}|g" .env || true
+            sed -i "s|${{ steps.config.outputs.web-environment-prefix }}API_URL=.*|${{ steps.config.outputs.web-environment-prefix }}API_URL=${{ inputs.api_url }}|g" .env || true
           fi
           
           echo "✅ API integration configured"
       
       - name: 🧪 Run Web Tests
         run: |
-          cd frontend
-          npm test || echo "⚠️ Tests not configured or failed"
+          cd ${{ steps.config.outputs.web-entry-point }}
+          ${{ steps.config.outputs.web-test-command }} || echo "⚠️ Tests not configured or failed"
       
       - name: 🏗️ Build Web App
         run: |
-          cd frontend
-          npm run build
+          cd ${{ steps.config.outputs.web-entry-point }}
+          ${{ steps.config.outputs.web-build-command }}
         env:
           NODE_ENV: production
       
@@ -87,9 +91,9 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-          projectId: odyssey-466315
+          projectId: ${{ steps.config.outputs.firebase-project-id }}
           channelId: live
-          entryPoint: frontend
+          entryPoint: ${{ steps.config.outputs.web-entry-point }}
         id: deploy
       
       - name: 🔍 Debug Firebase Deploy Outputs
@@ -120,7 +124,7 @@ jobs:
             echo "✅ Using first URL from Firebase action: $DEPLOYMENT_URL"
           else
             # Fallback to predictable Firebase main URL
-            DEPLOYMENT_URL="https://odyssey-466315.web.app"
+            DEPLOYMENT_URL="${{ steps.config.outputs.firebase-main-url }}"
             echo "⚠️ Firebase action outputs empty, using fallback URL: $DEPLOYMENT_URL"
           fi
           
