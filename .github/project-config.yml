@@ -5,18 +5,18 @@
 project:
   # Google Cloud Platform Configuration
   gcp:
-    project_id: "odyssey-466315"
-    region: "us-central1"
-    service_account: "github-actions-cloudrun@odyssey-466315.iam.gserviceaccount.com"
+    project_id: "dottie-app-37930"
+    region: "europe-west2"
+    service_account: "github-actions@dottie-app-37930.iam.gserviceaccount.com"
     
     # Artifact Registry Configuration
     artifact_registry:
-      repository: "api-images"
-      location: "us-central1"
+      repository: "dottie-api-images"
+      location: "europe-west2"
     
     # Cloud Run Configuration
     cloud_run:
-      region: "us-central1"
+      region: "europe-west2"
       memory: "512Mi"
       cpu: "1"
       min_instances: 0
@@ -26,21 +26,21 @@ project:
 
   # Firebase Configuration
   firebase:
-    project_id: "odyssey-466315"
+    project_id: "dottie-app-37930"
     hosting:
-      main_url: "https://odyssey-466315.web.app"
-      branch_url_pattern: "https://odyssey-466315--branch-{pr_number}-{hash}.web.app"
+      main_url: "https://dottie-app-37930.web.app"
+      branch_url_pattern: "https://dottie-app-37930--branch-{pr_number}-{hash}.web.app"
 
   # Application Configuration
   app:
-    name: "odyssey"
+    name: "dottie"
     api:
       entry_point: "backend"
-      service_name_pattern: "api-{branch}"
-      health_endpoint: "/health"
+      service_name_pattern: "dottie-api-{branch}"
+      health_endpoint: "/api/health"
       cors_origins:
-        - "https://odyssey-466315.web.app"
-        - "https://odyssey-466315--*.web.app"
+        - "https://dottie-app-37930.web.app"
+        - "https://dottie-app-37930--*.web.app"
       build_command: "npm install --production"
       test_command: "npm test"
       start_command: "npm start"
