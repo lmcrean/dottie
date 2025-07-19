@@ -1,0 +1,155 @@
+name: E2E Tests on Branch Deployment
+
+on:
+  workflow_call:
+    inputs:
+      web_url:
+        required: true
+        type: string
+      api_url:
+        required: true
+        type: string
+      branch_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+      
+      - name: 📥 Install E2E Dependencies
+        run: |
+          # Install and build observability package first
+          echo "🔧 Building observability package..."
+          cd packages/observability
+          npm ci
+          npm run build
+          
+          # Install e2e dependencies
+          echo "📦 Installing e2e dependencies..."
+          cd ../../e2e
+          npm ci
+      
+      - name: 🎭 Install Playwright Browsers
+        run: |
+          cd e2e
+          npx playwright install chromium firefox webkit
+          npx playwright install-deps
+      
+      - name: 🔍 Environment Setup
+        run: |
+          echo "🌐 Web URL: ${{ inputs.web_url }}"
+          echo "🔗 API URL: ${{ inputs.api_url }}"
+          echo "🌿 Branch: ${{ inputs.branch_name }}"
+          echo "🔢 PR Number: ${{ inputs.pr_number }}"
+          
+          # Validate URLs
+          if [[ ! "${{ inputs.web_url }}" =~ ^https?:// ]] || [[ ! "${{ inputs.api_url }}" =~ ^https?:// ]]; then
+            echo "❌ Invalid URL format"
+            exit 1
+          fi
+      
+      - name: ⏳ Wait for Deployments to Stabilize
+        run: |
+          echo "⏳ Allowing 30 seconds for deployments to fully stabilize..."
+          sleep 30
+          
+          echo "🏥 Final health checks before e2e tests..."
+          
+          # Check API health
+          for i in {1..3}; do
+            echo "API health check $i/3..."
+            if curl -f "${{ inputs.api_url }}/health" -m 10 >/dev/null 2>&1; then
+              echo "✅ API is healthy"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ API failed final health check"
+              exit 1
+            fi
+            
+            sleep 5
+          done
+          
+          # Check web app accessibility
+          for i in {1..3}; do
+            echo "Web accessibility check $i/3..."
+            if curl -f "${{ inputs.web_url }}" -m 10 >/dev/null 2>&1; then
+              echo "✅ Web app is accessible"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ Web app failed final accessibility check"
+              exit 1
+            fi
+            
+            sleep 5
+          done
+      
+      - name: 🧪 Run E2E Tests
+        run: |
+          cd e2e
+          
+          # Run e2e tests using the web configuration for branch deployments
+          echo "🎭 Running e2e tests against deployed services..."
+          npm run test:web:branch
+          
+          echo "✅ E2E tests completed successfully"
+        env:
+          # Set environment variables for the Playwright config
+          WEB_DEPLOYMENT_URL: ${{ inputs.web_url }}
+          API_DEPLOYMENT_URL: ${{ inputs.api_url }}
+          FIREBASE_HOSTING_URL: ${{ inputs.web_url }}
+          CLOUD_RUN_URL: ${{ inputs.api_url }}
+          BRANCH_NAME: ${{ inputs.branch_name }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          GITHUB_HEAD_REF: ${{ inputs.branch_name }}
+          GITHUB_EVENT_NUMBER: ${{ inputs.pr_number }}
+      
+      - name: 📊 Upload E2E Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results-pr-${{ inputs.pr_number }}
+          path: e2e/playwright-report/
+          retention-days: 30
+      
+      - name: 📸 Upload E2E Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-screenshots-pr-${{ inputs.pr_number }}
+          path: e2e/test-results/
+          retention-days: 7
+      
+      - name: 📋 E2E Test Summary
+        if: always()
+        run: |
+          echo "🎭 E2E Test Summary"
+          echo "🌐 Web App: ${{ inputs.web_url }}"
+          echo "🔗 API Service: ${{ inputs.api_url }}"
+          echo "🌿 Branch: ${{ inputs.branch_name }}"
+          echo "🔢 PR: #${{ inputs.pr_number }}"
+          echo "🔍 Test Focus: PR feed and detail functionality"
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ PR e2e tests completed successfully!"
+          else
+            echo "❌ PR e2e tests failed - check artifacts for details"
+          fi

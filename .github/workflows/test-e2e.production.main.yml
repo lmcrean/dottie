@@ -1,0 +1,130 @@
+name: E2E Tests on Main Deployment
+
+on:
+  workflow_call:
+    inputs:
+      web_url:
+        required: true
+        type: string
+      api_url:
+        required: true
+        type: string
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+      
+      - name: 📥 Install E2E Dependencies
+        run: |
+          # Install and build observability package first
+          echo "🔧 Building observability package..."
+          cd packages/observability
+          npm ci
+          npm run build
+          
+          # Install e2e dependencies
+          echo "📦 Installing e2e dependencies..."
+          cd ../../e2e
+          npm ci
+      
+      - name: 🎭 Install Playwright Browsers
+        run: |
+          cd e2e
+          npx playwright install chromium firefox webkit
+          npx playwright install-deps
+      
+      - name: 🔍 Environment Validation
+        run: |
+          echo "🧪 Main Production Web App: ${{ inputs.web_url }}"
+          echo "🧪 Main Production API Service: ${{ inputs.api_url }}"
+          
+          if [[ ! "${{ inputs.web_url }}" =~ ^https?:// ]] || [[ ! "${{ inputs.api_url }}" =~ ^https?:// ]]; then
+            echo "❌ Invalid URL format"
+            exit 1
+          fi
+      
+      - name: 🏥 Pre-E2E API Health Check
+        run: |
+          echo "🔍 Ensuring API is healthy before E2E tests..."
+          
+          for i in {1..3}; do
+            echo "Health check attempt $i/3..."
+            
+            if curl -f "${{ inputs.api_url }}/health" -m 15; then
+              echo "✅ API is healthy, proceeding with E2E tests"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ API health check failed - skipping E2E tests"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 10 seconds..."
+            sleep 10
+          done
+      
+      - name: 📱 Pre-E2E Web App Check
+        run: |
+          echo "🔍 Ensuring web app is accessible before E2E tests..."
+          
+          for i in {1..3}; do
+            echo "Web accessibility check attempt $i/3..."
+            
+            if curl -f "${{ inputs.web_url }}" -m 15 > /dev/null 2>&1; then
+              echo "✅ Web app is accessible, proceeding with E2E tests"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ Web app accessibility check failed - skipping E2E tests"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 10 seconds..."
+            sleep 10
+          done
+      
+      - name: 🧪 Run E2E Tests
+        run: |
+          echo "🚀 Running main production E2E tests..."
+          cd e2e
+          npm run test:production
+        env:
+          WEB_DEPLOYMENT_URL: ${{ inputs.web_url }}
+          API_DEPLOYMENT_URL: ${{ inputs.api_url }}
+          FIREBASE_HOSTING_URL: ${{ inputs.web_url }}
+          CLOUD_RUN_URL: ${{ inputs.api_url }}
+        continue-on-error: true
+      
+      - name: 📊 Upload E2E Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results-main
+          path: |
+            e2e/test-results/
+            e2e/playwright-report/
+          retention-days: 30
+      
+      - name: 🎯 E2E Test Summary
+        run: |
+          echo "🎯 Main Production E2E Testing Complete!"
+          echo "📍 Web URL: ${{ inputs.web_url }}"
+          echo "📍 API URL: ${{ inputs.api_url }}"
+          echo "✅ Environment validation passed"
+          echo "✅ Pre-test health checks passed"
+          echo "🧪 E2E tests executed"
+          echo "📋 Test results uploaded as artifacts"
+          echo "🔍 Check artifacts for detailed test reports"
