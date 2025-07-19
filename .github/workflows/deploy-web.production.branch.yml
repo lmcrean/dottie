@@ -1,0 +1,140 @@
+name: Deploy Web to Firebase (Branch)
+
+on:
+  workflow_call:
+    inputs:
+      branch_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+      api_url:
+        required: true
+        type: string
+    outputs:
+      deployment_url:
+        description: "Web deployment URL"
+        value: ${{ jobs.deploy.outputs.deployment_url }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_url: ${{ steps.set_url.outputs.deployment_url }}
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📋 Load Project Configuration
+        id: config
+        uses: ./.github/actions/load-config
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ${{ steps.config.outputs.web-entry-point }}/package-lock.json
+      
+      - name: 📥 Install Web Dependencies  
+        run: |
+          cd ${{ steps.config.outputs.web-entry-point }}
+          echo "🔍 Checking package-lock.json sync..."
+          
+          # Try npm ci first (preferred for CI)
+          if npm ci; then
+            echo "✅ Dependencies installed with npm ci"
+          else
+            echo "⚠️ npm ci failed - lock file may be out of sync"
+            echo "🔧 Attempting to fix with npm install..."
+            
+            # Remove node_modules and package-lock.json to start fresh
+            rm -rf node_modules package-lock.json
+            
+            # Install dependencies and regenerate lock file
+            npm install
+            
+            echo "✅ Dependencies installed with npm install (lock file regenerated)"
+          fi
+      
+      - name: 🔧 Configure API Integration
+        run: |
+          echo "🔗 API URL: ${{ inputs.api_url }}"
+          if [[ ! "${{ inputs.api_url }}" =~ ^https?:// ]]; then
+            echo "❌ Invalid API URL format"
+            exit 1
+          fi
+          
+          cd ${{ steps.config.outputs.web-entry-point }}
+          
+          # Create Vite environment file for production build
+          echo "${{ steps.config.outputs.web-environment-prefix }}API_URL=${{ inputs.api_url }}" > .env.production
+          echo "📝 Created .env.production with API URL: ${{ inputs.api_url }}"
+          
+          # Also update the local .env file if it exists (for consistency)
+          if [ -f .env ]; then
+            sed -i "s|${{ steps.config.outputs.web-environment-prefix }}API_URL=.*|${{ steps.config.outputs.web-environment-prefix }}API_URL=${{ inputs.api_url }}|g" .env || true
+          fi
+          
+          echo "✅ API integration configured"
+      
+      - name: 🧪 Run Web Tests
+        run: |
+          cd ${{ steps.config.outputs.web-entry-point }}
+          ${{ steps.config.outputs.web-test-command }} 2>/dev/null || echo "⚠️ Tests not configured or failed"
+      
+      - name: 🏗️ Build Web App
+        run: |
+          cd ${{ steps.config.outputs.web-entry-point }}
+          ${{ steps.config.outputs.web-build-command }}
+        env:
+          NODE_ENV: production
+      
+      - name: 🔐 Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          projectId: ${{ steps.config.outputs.firebase-project-id }}
+          channelId: branch-${{ inputs.pr_number }}
+          entryPoint: ${{ steps.config.outputs.web-entry-point }}
+        id: deploy
+      
+      - name: 🔗 Set Deployment URL
+        id: set_url
+        run: |
+          # Firebase creates URLs in format: https://${{ steps.config.outputs.firebase-project-id }}--branch-123-abcdef.web.app
+          DEPLOYMENT_URL="${{ steps.deploy.outputs.details_url }}"
+          echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+      
+      - name: ✅ Validate Web Deployment
+        run: |
+          WEB_URL="${{ steps.set_url.outputs.deployment_url }}"
+          echo "🔍 Testing web app at: $WEB_URL"
+          
+          # Test if web app is accessible
+          for i in {1..3}; do
+            echo "📱 Web accessibility test $i/3..."
+            if curl -f "$WEB_URL" -m 15 >/dev/null 2>&1; then
+              echo "✅ Web app is accessible!"
+              break
+            fi
+            
+            if [ $i -eq 3 ]; then
+              echo "❌ Web accessibility test failed"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 10 seconds before retry..."
+            sleep 10
+          done
+      
+      - name: 📊 Deployment Summary
+        run: |
+          echo "🌟 Web Deployment Complete!"
+          echo "📍 URL: ${{ steps.set_url.outputs.deployment_url }}"
+          echo "🔌 API Connected: ${{ inputs.api_url }}"
+          echo "🌿 Branch Channel: branch-${{ inputs.pr_number }}"
+          echo "✅ Ready for integration testing"

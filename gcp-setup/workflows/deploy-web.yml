@@ -1,0 +1,82 @@
+name: Deploy Web App to Firebase Hosting
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-web.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'frontend/package-lock.json'
+        
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+        
+    - name: Build web app
+      run: |
+        cd frontend
+        npm run build
+        
+    - name: Check build size (safety check)
+      run: |
+        cd frontend
+        BUILD_SIZE=$(du -sm dist | cut -f1)
+        echo "Build size: ${BUILD_SIZE}MB"
+        if [ $BUILD_SIZE -gt 8000 ]; then
+          echo "⚠️ Warning: Build size exceeds 8GB, approaching Firebase free tier limit"
+          exit 1
+        fi
+        
+    - name: Setup Firebase CLI
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+        
+    - name: Install Firebase CLI
+      run: npm install -g firebase-tools
+      
+    - name: Deploy to Firebase Hosting
+      run: |
+        cd frontend
+        firebase deploy --only hosting --project ${{ secrets.GCP_PROJECT_ID }}
+        
+    - name: Comment deployment URL
+      uses: actions/github-script@v7
+      if: github.event_name == 'push'
+      with:
+        script: |
+          const projectId = '${{ secrets.GCP_PROJECT_ID }}';
+          const deploymentUrl = `https://${projectId}.web.app`;
+          
+          github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+            body: `🚀 Web app deployed to Firebase Hosting: ${deploymentUrl}`
+          });
+          
+    - name: Usage reminder
+      run: |
+        echo "✅ Deployment completed successfully!"
+        echo "🆓 Remember: Firebase Hosting free tier includes:"
+        echo "   - 10GB storage"
+        echo "   - 10GB/month bandwidth"
+        echo "📊 Monitor usage at: https://console.firebase.google.com/project/${{ secrets.GCP_PROJECT_ID }}/hosting" 

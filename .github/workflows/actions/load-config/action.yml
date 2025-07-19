@@ -1,0 +1,204 @@
+name: 'Load Project Configuration'
+description: 'Loads project-specific configuration from project-config.yml'
+inputs:
+  config-path:
+    description: 'Path to the project configuration file'
+    required: false
+    default: '.github/project-config.yml'
+outputs:
+  gcp-project-id:
+    description: 'Google Cloud project ID'
+    value: ${{ steps.config.outputs.gcp-project-id }}
+  gcp-region:
+    description: 'Google Cloud region'
+    value: ${{ steps.config.outputs.gcp-region }}
+  gcp-service-account:
+    description: 'Google Cloud service account email'
+    value: ${{ steps.config.outputs.gcp-service-account }}
+  artifact-registry-repository:
+    description: 'Artifact Registry repository name'
+    value: ${{ steps.config.outputs.artifact-registry-repository }}
+  artifact-registry-location:
+    description: 'Artifact Registry location'
+    value: ${{ steps.config.outputs.artifact-registry-location }}
+  firebase-project-id:
+    description: 'Firebase project ID'
+    value: ${{ steps.config.outputs.firebase-project-id }}
+  firebase-main-url:
+    description: 'Firebase main hosting URL'
+    value: ${{ steps.config.outputs.firebase-main-url }}
+  app-name:
+    description: 'Application name'
+    value: ${{ steps.config.outputs.app-name }}
+  api-service-name-pattern:
+    description: 'API service name pattern'
+    value: ${{ steps.config.outputs.api-service-name-pattern }}
+  api-health-endpoint:
+    description: 'API health endpoint'
+    value: ${{ steps.config.outputs.api-health-endpoint }}
+  api-cors-origins:
+    description: 'API CORS origins (JSON array)'
+    value: ${{ steps.config.outputs.api-cors-origins }}
+  api-entry-point:
+    description: 'API application entry point'
+    value: ${{ steps.config.outputs.api-entry-point }}
+  web-entry-point:
+    description: 'Web application entry point'
+    value: ${{ steps.config.outputs.web-entry-point }}
+  web-build-command:
+    description: 'Web build command'
+    value: ${{ steps.config.outputs.web-build-command }}
+  web-test-command:
+    description: 'Web test command'
+    value: ${{ steps.config.outputs.web-test-command }}
+  web-environment-file:
+    description: 'Web environment file path'
+    value: ${{ steps.config.outputs.web-environment-file }}
+  web-config-file:
+    description: 'Web config file path'
+    value: ${{ steps.config.outputs.web-config-file }}
+  web-dist-directory:
+    description: 'Web dist directory'
+    value: ${{ steps.config.outputs.web-dist-directory }}
+  web-environment-prefix:
+    description: 'Web environment variable prefix'
+    value: ${{ steps.config.outputs.web-environment-prefix }}
+  cloud-run-region:
+    description: 'Cloud Run region'
+    value: ${{ steps.config.outputs.cloud-run-region }}
+  cloud-run-memory:
+    description: 'Cloud Run memory allocation'
+    value: ${{ steps.config.outputs.cloud-run-memory }}
+  cloud-run-cpu:
+    description: 'Cloud Run CPU allocation'
+    value: ${{ steps.config.outputs.cloud-run-cpu }}
+  cloud-run-min-instances:
+    description: 'Cloud Run minimum instances'
+    value: ${{ steps.config.outputs.cloud-run-min-instances }}
+  cloud-run-max-instances:
+    description: 'Cloud Run maximum instances'
+    value: ${{ steps.config.outputs.cloud-run-max-instances }}
+  cloud-run-timeout:
+    description: 'Cloud Run timeout'
+    value: ${{ steps.config.outputs.cloud-run-timeout }}
+  cloud-run-concurrency:
+    description: 'Cloud Run concurrency'
+    value: ${{ steps.config.outputs.cloud-run-concurrency }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install yq
+      shell: bash
+      run: |
+        if ! command -v yq &> /dev/null; then
+          echo "Installing yq..."
+          wget -qO /tmp/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /tmp/yq
+          sudo mv /tmp/yq /usr/local/bin/yq
+        fi
+        echo "yq version: $(yq --version)"
+    
+    - name: Load and parse configuration
+      id: config
+      shell: bash
+      run: |
+        CONFIG_FILE="${{ inputs.config-path }}"
+        
+        if [[ ! -f "$CONFIG_FILE" ]]; then
+          echo "❌ Configuration file not found: $CONFIG_FILE"
+          exit 1
+        fi
+        
+        echo "📋 Loading configuration from: $CONFIG_FILE"
+        
+        # Load all configuration values
+        GCP_PROJECT_ID=$(yq '.project.gcp.project_id' "$CONFIG_FILE")
+        GCP_REGION=$(yq '.project.gcp.region' "$CONFIG_FILE")
+        GCP_SERVICE_ACCOUNT=$(yq '.project.gcp.service_account' "$CONFIG_FILE")
+        
+        ARTIFACT_REGISTRY_REPOSITORY=$(yq '.project.gcp.artifact_registry.repository' "$CONFIG_FILE")
+        ARTIFACT_REGISTRY_LOCATION=$(yq '.project.gcp.artifact_registry.location' "$CONFIG_FILE")
+        
+        FIREBASE_PROJECT_ID=$(yq '.project.firebase.project_id' "$CONFIG_FILE")
+        FIREBASE_MAIN_URL=$(yq '.project.firebase.hosting.main_url' "$CONFIG_FILE")
+        
+        APP_NAME=$(yq '.project.app.name' "$CONFIG_FILE")
+        API_SERVICE_NAME_PATTERN=$(yq '.project.app.api.service_name_pattern' "$CONFIG_FILE")
+        API_HEALTH_ENDPOINT=$(yq '.project.app.api.health_endpoint' "$CONFIG_FILE")
+        API_CORS_ORIGINS=$(yq -o=json -I=0 '.project.app.api.cors_origins' "$CONFIG_FILE")
+        API_ENTRY_POINT=$(yq '.project.app.api.entry_point' "$CONFIG_FILE")
+        
+        WEB_ENTRY_POINT=$(yq '.project.app.web.entry_point' "$CONFIG_FILE")
+        WEB_BUILD_COMMAND=$(yq '.project.app.web.build_command' "$CONFIG_FILE")
+        WEB_TEST_COMMAND=$(yq '.project.app.web.test_command' "$CONFIG_FILE")
+        WEB_ENVIRONMENT_FILE=$(yq '.project.app.web.environment_file' "$CONFIG_FILE")
+        WEB_CONFIG_FILE=$(yq '.project.app.web.config_file' "$CONFIG_FILE")
+        WEB_DIST_DIRECTORY=$(yq '.project.app.web.dist_directory' "$CONFIG_FILE")
+        WEB_ENVIRONMENT_PREFIX=$(yq '.project.app.web.environment_prefix' "$CONFIG_FILE")
+        
+        CLOUD_RUN_REGION=$(yq '.project.gcp.cloud_run.region' "$CONFIG_FILE")
+        CLOUD_RUN_MEMORY=$(yq '.project.gcp.cloud_run.memory' "$CONFIG_FILE")
+        CLOUD_RUN_CPU=$(yq '.project.gcp.cloud_run.cpu' "$CONFIG_FILE")
+        CLOUD_RUN_MIN_INSTANCES=$(yq '.project.gcp.cloud_run.min_instances' "$CONFIG_FILE")
+        CLOUD_RUN_MAX_INSTANCES=$(yq '.project.gcp.cloud_run.max_instances' "$CONFIG_FILE")
+        CLOUD_RUN_TIMEOUT=$(yq '.project.gcp.cloud_run.timeout' "$CONFIG_FILE")
+        CLOUD_RUN_CONCURRENCY=$(yq '.project.gcp.cloud_run.concurrency' "$CONFIG_FILE")
+        
+        # Remove quotes from values
+        GCP_PROJECT_ID=${GCP_PROJECT_ID//\"/}
+        GCP_REGION=${GCP_REGION//\"/}
+        GCP_SERVICE_ACCOUNT=${GCP_SERVICE_ACCOUNT//\"/}
+        ARTIFACT_REGISTRY_REPOSITORY=${ARTIFACT_REGISTRY_REPOSITORY//\"/}
+        ARTIFACT_REGISTRY_LOCATION=${ARTIFACT_REGISTRY_LOCATION//\"/}
+        FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID//\"/}
+        FIREBASE_MAIN_URL=${FIREBASE_MAIN_URL//\"/}
+        APP_NAME=${APP_NAME//\"/}
+        API_SERVICE_NAME_PATTERN=${API_SERVICE_NAME_PATTERN//\"/}
+        API_HEALTH_ENDPOINT=${API_HEALTH_ENDPOINT//\"/}
+        API_ENTRY_POINT=${API_ENTRY_POINT//\"/}
+        WEB_ENTRY_POINT=${WEB_ENTRY_POINT//\"/}
+        WEB_BUILD_COMMAND=${WEB_BUILD_COMMAND//\"/}
+        WEB_TEST_COMMAND=${WEB_TEST_COMMAND//\"/}
+        WEB_ENVIRONMENT_FILE=${WEB_ENVIRONMENT_FILE//\"/}
+        WEB_CONFIG_FILE=${WEB_CONFIG_FILE//\"/}
+        WEB_DIST_DIRECTORY=${WEB_DIST_DIRECTORY//\"/}
+        WEB_ENVIRONMENT_PREFIX=${WEB_ENVIRONMENT_PREFIX//\"/}
+        CLOUD_RUN_REGION=${CLOUD_RUN_REGION//\"/}
+        CLOUD_RUN_MEMORY=${CLOUD_RUN_MEMORY//\"/}
+        CLOUD_RUN_CPU=${CLOUD_RUN_CPU//\"/}
+        CLOUD_RUN_MIN_INSTANCES=${CLOUD_RUN_MIN_INSTANCES//\"/}
+        CLOUD_RUN_MAX_INSTANCES=${CLOUD_RUN_MAX_INSTANCES//\"/}
+        CLOUD_RUN_TIMEOUT=${CLOUD_RUN_TIMEOUT//\"/}
+        CLOUD_RUN_CONCURRENCY=${CLOUD_RUN_CONCURRENCY//\"/}
+        
+        # Set outputs
+        echo "gcp-project-id=$GCP_PROJECT_ID" >> $GITHUB_OUTPUT
+        echo "gcp-region=$GCP_REGION" >> $GITHUB_OUTPUT
+        echo "gcp-service-account=$GCP_SERVICE_ACCOUNT" >> $GITHUB_OUTPUT
+        echo "artifact-registry-repository=$ARTIFACT_REGISTRY_REPOSITORY" >> $GITHUB_OUTPUT
+        echo "artifact-registry-location=$ARTIFACT_REGISTRY_LOCATION" >> $GITHUB_OUTPUT
+        echo "firebase-project-id=$FIREBASE_PROJECT_ID" >> $GITHUB_OUTPUT
+        echo "firebase-main-url=$FIREBASE_MAIN_URL" >> $GITHUB_OUTPUT
+        echo "app-name=$APP_NAME" >> $GITHUB_OUTPUT
+        echo "api-service-name-pattern=$API_SERVICE_NAME_PATTERN" >> $GITHUB_OUTPUT
+        echo "api-health-endpoint=$API_HEALTH_ENDPOINT" >> $GITHUB_OUTPUT
+        echo "api-cors-origins=$API_CORS_ORIGINS" >> $GITHUB_OUTPUT
+        echo "api-entry-point=$API_ENTRY_POINT" >> $GITHUB_OUTPUT
+        echo "web-entry-point=$WEB_ENTRY_POINT" >> $GITHUB_OUTPUT
+        echo "web-build-command=$WEB_BUILD_COMMAND" >> $GITHUB_OUTPUT
+        echo "web-test-command=$WEB_TEST_COMMAND" >> $GITHUB_OUTPUT
+        echo "web-environment-file=$WEB_ENVIRONMENT_FILE" >> $GITHUB_OUTPUT
+        echo "web-config-file=$WEB_CONFIG_FILE" >> $GITHUB_OUTPUT
+        echo "web-dist-directory=$WEB_DIST_DIRECTORY" >> $GITHUB_OUTPUT
+        echo "web-environment-prefix=$WEB_ENVIRONMENT_PREFIX" >> $GITHUB_OUTPUT
+        echo "cloud-run-region=$CLOUD_RUN_REGION" >> $GITHUB_OUTPUT
+        echo "cloud-run-memory=$CLOUD_RUN_MEMORY" >> $GITHUB_OUTPUT
+        echo "cloud-run-cpu=$CLOUD_RUN_CPU" >> $GITHUB_OUTPUT
+        echo "cloud-run-min-instances=$CLOUD_RUN_MIN_INSTANCES" >> $GITHUB_OUTPUT
+        echo "cloud-run-max-instances=$CLOUD_RUN_MAX_INSTANCES" >> $GITHUB_OUTPUT
+        echo "cloud-run-timeout=$CLOUD_RUN_TIMEOUT" >> $GITHUB_OUTPUT
+        echo "cloud-run-concurrency=$CLOUD_RUN_CONCURRENCY" >> $GITHUB_OUTPUT
+        
+        echo "✅ Configuration loaded successfully"
+        echo "📋 Project: $APP_NAME ($GCP_PROJECT_ID)"

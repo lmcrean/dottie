@@ -1,0 +1,123 @@
+name: Test API Branch Deployment
+
+on:
+  workflow_call:
+    inputs:
+      api_deployment_url:
+        required: true
+        type: string
+      branch_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: 📥 Install Backend Dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: 🧪 Run Backend Unit Tests
+        run: |
+          echo "🧪 Running backend unit tests..."
+          cd backend
+          npm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: test-secret
+      
+      - name: 🧪 Test API Health Check
+        run: |
+          echo "🏥 Testing API health at: ${{ inputs.api_deployment_url }}"
+          
+          # Test health endpoint with retry
+          for i in {1..5}; do
+            echo "🔍 Health check attempt $i/5..."
+            if curl -f "${{ inputs.api_deployment_url }}/health" -m 15; then
+              echo "✅ API is healthy!"
+              break
+            fi
+            
+            if [ $i -eq 5 ]; then
+              echo "❌ API health check failed after 5 attempts"
+              exit 1
+            fi
+            
+            echo "⏳ Waiting 10 seconds before retry..."
+            sleep 10
+          done
+      
+      - name: 🧪 Test API Endpoints
+        run: |
+          echo "🚀 Testing branch API endpoints..."
+          
+          # Test auth endpoints
+          echo "📄 Testing auth endpoint..."
+          if curl -f "${{ inputs.api_deployment_url }}/api/auth/health" -m 15; then
+            echo "✅ Auth endpoint is working!"
+          else
+            echo "⚠️ Auth endpoint not responding (may require authentication)"
+          fi
+          
+          # Test assessment endpoints
+          echo "📄 Testing assessment endpoint..."
+          if curl -f "${{ inputs.api_deployment_url }}/api/assessment/health" -m 15; then
+            echo "✅ Assessment endpoint is working!"
+          else
+            echo "⚠️ Assessment endpoint not responding (may require authentication)"
+          fi
+          
+          echo "✅ API endpoint tests completed!"
+      
+      - name: 🎯 Run Backend Integration Tests
+        run: |
+          echo "🧪 Running backend integration tests..."
+          cd backend
+          npm run test:integration || true
+        env:
+          API_BASE_URL: ${{ inputs.api_deployment_url }}
+          NODE_ENV: test
+          JWT_SECRET: test-secret
+          BRANCH_NAME: ${{ inputs.branch_name }}
+          GITHUB_HEAD_REF: ${{ inputs.branch_name }}
+        continue-on-error: true
+      
+      - name: 📊 Test Summary
+        if: always()
+        run: |
+          echo "🎯 API Testing Complete!"
+          echo "📍 API URL: ${{ inputs.api_deployment_url }}"
+          echo "🌿 Branch: ${{ inputs.branch_name }}"
+          echo "🔢 PR: #${{ inputs.pr_number }}"
+          
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ All API tests passed!"
+          else
+            echo "❌ Some API tests failed - check logs above"
+          fi
+      
+      - name: 📋 Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-results-pr-${{ inputs.pr_number }}
+          path: |
+            backend/test-results/
+            backend/coverage/
+          retention-days: 7

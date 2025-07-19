@@ -1,0 +1,79 @@
+name: Deploy Main Production (API → Web → Test)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+  checks: write
+  id-token: write
+
+jobs:
+  deploy-api:
+    uses: ./.github/workflows/deploy-api.production.main.yml
+    secrets: inherit
+
+  test-api:
+    needs: deploy-api
+    uses: ./.github/workflows/test-api.production.main.yml
+    secrets: inherit
+    with:
+      api_deployment_url: ${{ needs.deploy-api.outputs.deployment_url }}
+
+  deploy-web:
+    needs: [deploy-api, test-api]
+    if: needs.test-api.result == 'success'
+    uses: ./.github/workflows/deploy-web.production.main.yml
+    secrets: inherit
+    with:
+      api_url: ${{ needs.deploy-api.outputs.deployment_url }}
+
+  test-integration:
+    needs: [deploy-api, test-api, deploy-web]
+    uses: ./.github/workflows/test-integration.production.main.yml
+    secrets: inherit
+    with:
+      web_url: ${{ needs.deploy-web.outputs.deployment_url }}
+      api_url: ${{ needs.deploy-api.outputs.deployment_url }}
+
+  test-e2e:
+    needs: [deploy-api, test-api, deploy-web, test-integration]
+    if: needs.test-integration.result == 'success'
+    uses: ./.github/workflows/test-e2e.production.main.yml
+    secrets: inherit
+    with:
+      web_url: ${{ needs.deploy-web.outputs.deployment_url }}
+      api_url: ${{ needs.deploy-api.outputs.deployment_url }}
+
+  deployment-summary:
+    needs: [deploy-api, test-api, deploy-web, test-integration, test-e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📊 Log Deployment Summary
+        run: |
+          echo "=== 🚀 PRODUCTION DEPLOYMENT SUMMARY ==="
+          echo "Web URL: ${{ needs.deploy-web.outputs.deployment_url }}"
+          echo "API URL: ${{ needs.deploy-api.outputs.deployment_url }}"
+          echo "API Tests: ${{ needs.test-api.result }}"
+          echo "Integration Tests: ${{ needs.test-integration.result }}"
+          echo "E2E Tests: ${{ needs.test-e2e.result }}"
+          echo "API Deployment: ${{ needs.deploy-api.result }}"
+          echo "Web Deployment: ${{ needs.deploy-web.result }}"
+          
+          # Determine overall status
+          api_test_success="${{ needs.test-api.result == 'success' }}"
+          integration_success="${{ needs.test-integration.result == 'success' }}"
+          e2e_success="${{ needs.test-e2e.result == 'success' }}"
+          api_deploy_success="${{ needs.deploy-api.result == 'success' }}"
+          web_deploy_success="${{ needs.deploy-web.result == 'success' }}"
+          
+          if [ "$api_test_success" = "true" ] && [ "$integration_success" = "true" ] && [ "$e2e_success" = "true" ] && [ "$api_deploy_success" = "true" ] && [ "$web_deploy_success" = "true" ]; then
+            echo "✅ ALL PRODUCTION DEPLOYMENTS SUCCESSFUL!"
+          else
+            echo "⚠️ SOME PRODUCTION DEPLOYMENTS FAILED"
+            exit 1
+          fi
