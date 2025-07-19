@@ -44,7 +44,9 @@ jobs:
       - name: 🔐 Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
       
       - name: 🛠️ Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
