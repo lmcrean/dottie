@@ -160,8 +160,9 @@ export default function SymptomsPage() {
           <div className="mb-6 h-2 w-full rounded-full bg-gray-200">
             <div className="h-2 w-full rounded-full bg-pink-500"></div>
           </div>
-
-          <div className="mb-8 flex flex-col gap-8 lg:flex-row">
+          {/* Div wraps both the questions and symptoms (row in large screens & col in small screens) */}
+          <div className="mb-8 flex flex-col gap-10 lg:flex-row">
+            {/* Question section */}
             <div className="items-top flex justify-center text-center lg:w-1/2 lg:justify-start lg:text-left">
               <div className="flex flex-col gap-3">
                 <h1 className="mb-2 text-xl font-bold dark:text-slate-100">Question 6 of 6</h1>
@@ -178,76 +179,85 @@ export default function SymptomsPage() {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="mb-3 text-center text-base font-medium dark:text-slate-100">
-              Physical symptoms
-            </h3>
-            <div className="grid grid-cols-2 gap-3 dark:text-slate-200">
-              {physicalSymptomDefinitions.map((symptom) => (
-                <div
-                  role="button"
-                  tabIndex={0}
-                  key={symptom.id}
-                  className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                    physicalSymptoms.includes(asPhysicalSymptomId(symptom.id))
-                      ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
-                      : 'hover:bg-gray-50'
-                  }`}
-                  onClick={() => togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      togglePhysicalSymptom(asPhysicalSymptomId(symptom.id));
-                    }
-                  }}
-                >
-                  <span className="mb-1 text-2xl">{symptom.emoji}</span>
-                  <span className="text-center text-sm">{symptom.label}</span>
-                  <Checkbox
-                    id={`physical-${symptom.id}`}
-                    checked={physicalSymptoms.includes(asPhysicalSymptomId(symptom.id))}
-                    onCheckedChange={() => togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))}
-                    className="sr-only"
-                  />
+            {/* Container wrapping both the physical and emotional symptoms */}
+            <Card className="w-full border shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-800 lg:w-2/3">
+              {/* Physical symptoms section */}
+              <CardContent className="pb-8 pt-8">
+                <div className="mb-8">
+                  <h3 className="mb-5 text-center text-lg font-medium dark:text-slate-100 md:mb-4">
+                    Physical symptoms
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3.5 dark:text-slate-200 md:grid md:grid-cols-3 lg:grid lg:grid-cols-2">
+                    {physicalSymptomDefinitions.map((symptom) => (
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        key={symptom.id}
+                        className={`flex w-full cursor-pointer flex-col items-center gap-3 rounded-lg border p-4 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 sm:flex sm:flex-row md:p-4 ${
+                          physicalSymptoms.includes(asPhysicalSymptomId(symptom.id))
+                            ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
+                            : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            togglePhysicalSymptom(asPhysicalSymptomId(symptom.id));
+                          }
+                        }}
+                      >
+                        <span className="text-right text-xl md:text-2xl">{symptom.emoji}</span>
+                        <span className="text-center text-sm md:text-base">{symptom.label}</span>
+                        <Checkbox
+                          id={`physical-${symptom.id}`}
+                          checked={physicalSymptoms.includes(asPhysicalSymptomId(symptom.id))}
+                          onCheckedChange={() =>
+                            togglePhysicalSymptom(asPhysicalSymptomId(symptom.id))
+                          }
+                          className="sr-only"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="mb-3 text-center text-base font-medium dark:text-slate-100">
-              Emotional/Mood symptoms
-            </h3>
-            <div className="grid grid-cols-2 gap-3 dark:text-slate-200">
-              {emotionalSymptomDefinitions.map((symptom) => (
-                <div
-                  role="button"
-                  tabIndex={0}
-                  key={symptom.id}
-                  className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 ${
-                    emotionalSymptoms.includes(asEmotionalSymptomId(symptom.id))
-                      ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
-                      : 'hover:bg-gray-50'
-                  }`}
-                  onClick={() => toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id));
-                    }
-                  }}
-                >
-                  <span className="mb-1 text-2xl">{symptom.emoji}</span>
-                  <span className="text-center text-sm">{symptom.label}</span>
-                  <Checkbox
-                    id={`emotional-${symptom.id}`}
-                    checked={emotionalSymptoms.includes(asEmotionalSymptomId(symptom.id))}
-                    onCheckedChange={() => toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))}
-                    className="sr-only"
-                  />
+                {/* Emotional /Mood symptoms section */}
+                <div className="mb-6">
+                  <h3 className="mb-5 text-center text-lg font-medium dark:text-slate-100 md:mb-4">
+                    Emotional/Mood symptoms
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3.5 dark:text-slate-200 md:grid md:grid-cols-3 lg:grid lg:grid-cols-2">
+                    {emotionalSymptomDefinitions.map((symptom) => (
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        key={symptom.id}
+                        className={`flex w-full cursor-pointer flex-col items-center gap-3 rounded-lg border p-3 transition-all duration-300 dark:border-slate-800 dark:hover:text-gray-900 sm:flex sm:flex-row md:p-4 ${
+                          emotionalSymptoms.includes(asEmotionalSymptomId(symptom.id))
+                            ? 'border-pink-300 bg-pink-50 dark:text-gray-900'
+                            : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id));
+                          }
+                        }}
+                      >
+                        <span className="mb-1 text-2xl">{symptom.emoji}</span>
+                        <span className="text-center text-sm">{symptom.label}</span>
+                        <Checkbox
+                          id={`emotional-${symptom.id}`}
+                          checked={emotionalSymptoms.includes(asEmotionalSymptomId(symptom.id))}
+                          onCheckedChange={() =>
+                            toggleEmotionalSymptom(asEmotionalSymptomId(symptom.id))
+                          }
+                          className="sr-only"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="mb-6">
