@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Button } from '@/src/components/buttons/button';
 import { useIsMobile } from '@/src/hooks/use-mobile';
 import UserIcon from '@/src/components/navbar/UserIcon';
 import ThemeToggle from '@/src/components/theme/ThemeToggle';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   logoSrc?: string;
@@ -19,6 +19,7 @@ const Header = ({
 }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -28,7 +29,7 @@ const Header = ({
     e.preventDefault();
     e.stopPropagation();
     console.log('🚀 Using window.location.href to navigate to: /');
-    window.location.href = '/';
+    navigate('/');
   };
   return (
     <>
@@ -52,15 +53,16 @@ const Header = ({
           {/* Desktop Navigation - shown when not mobile */}
           {!isMobile && !isLoggedIn && (
             <nav className="flex items-center gap-6">
-              <Link
-                to="/auth/sign-in"
+              <button
+                type="button"
+                onClick={() => navigate('/auth/sign-in')}
                 className="text-gray-600 transition-colors hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600"
               >
                 Sign In
-              </Link>
-              <Link to="/auth/sign-up">
+              </button>
+              <button type="button" onClick={() => navigate('/auth/sign-up')}>
                 <Button className="bg-pink-600 text-white hover:bg-pink-700">Get Started</Button>
-              </Link>
+              </button>
             </nav>
           )}
           {/* Show UserIcon only when logged in */}
@@ -100,16 +102,26 @@ const Header = ({
             transition={{ duration: 0.3 }}
           >
             <div className="flex flex-col items-center justify-center py-2">
-              <Link
-                to="/auth/sign-in"
+              <button
+                type="button"
                 className="py-2 text-gray-600 transition-colors hover:text-pink-600 dark:text-slate-200 dark:hover:text-pink-600"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/auth/sign-in');
+                }}
               >
                 Sign In
-              </Link>
-              <Link to="/auth/sign-up" className="py-2" onClick={() => setMobileMenuOpen(false)}>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/auth/sign-up');
+                }}
+                className="py-2"
+              >
                 <Button className="bg-pink-600 text-white hover:bg-pink-700">Get Started</Button>
-              </Link>
+              </button>
             </div>
           </motion.div>
         )}
