@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { User, List, MessageCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { User, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { assessmentApi } from '@/src/pages/assessment/api';
 import { getConversationsList } from '@/src/pages/chat/sidebar/api/get-list/getConversationsList';
 import { useAuth } from '@/src/pages/auth/context/useAuthContext';
 
 const UserIcon: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const [hasHistory, setHasHistory] = useState(false);
+  const [/*hasHistory,*/ setHasHistory] = useState(false);
   const [hasConversations, setHasConversations] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  /*const navigate = useNavigate();*/
 
   useEffect(() => {
     const checkHistory = async () => {
@@ -43,12 +43,12 @@ const UserIcon: React.FC = () => {
     window.location.href = '/user/profile';
   };
 
-  const handleHistoryClick = (e: React.MouseEvent) => {
+  /*const handleHistoryClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('🚀 Using window.location.href to navigate to: /assessment/history');
     window.location.href = '/assessment/history';
-  };
+  };*/
 
   const handleChatClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,27 +70,29 @@ const UserIcon: React.FC = () => {
       {!loading && hasConversations && (
         <button
           onClick={handleChatClick}
+          type="button"
           title="Chat with Dottie"
           className="text-sm font-medium hover:text-pink-600"
         >
           <MessageCircle className="h-5 w-5" />
         </button>
       )}
-      {!loading && hasHistory && (
+      {/*{!loading && hasHistory && (
         <button
           onClick={handleHistoryClick}
           title="Assessment History"
           className="text-sm font-medium hover:text-pink-600"
         >
-          <List className="h-5 w-5" />
+          <FileText className="h-6 w-6" />
         </button>
-      )}
-      <button 
+      )}*/}
+      <button
         onClick={handleProfileClick}
-        title="Profile" 
+        type="button"
+        title="Profile"
         className="hover:text-pink-600"
       >
-        <User className="h-5 w-5" />
+        <User className="h-6 w-6" />
       </button>
     </div>
   );
