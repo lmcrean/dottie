@@ -20,7 +20,7 @@ const NavigationDebugger: React.FC = () => {
     const handleClick = (event: Event) => {
       const target = event.target as HTMLElement;
       const linkElement = target.closest('a');
-      
+
       if (linkElement) {
         console.log('🔗 Link clicked:', {
           href: linkElement.href,
@@ -34,24 +34,26 @@ const NavigationDebugger: React.FC = () => {
     };
 
     document.addEventListener('click', handleClick, true);
-    
+
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
   }, []);
 
   return (
-    <div style={{ 
-      position: 'fixed', 
-      top: '10px', 
-      right: '10px', 
-      background: 'rgba(0,0,0,0.8)', 
-      color: 'white', 
-      padding: '10px', 
-      fontSize: '12px',
-      zIndex: 9999,
-      maxWidth: '300px'
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: '10px',
+        right: '10px',
+        background: 'rgba(0,0,0,0.8)',
+        color: 'white',
+        padding: '10px',
+        fontSize: '12px',
+        zIndex: 9999,
+        maxWidth: '300px'
+      }}
+    >
       <div>Current Route: {location.pathname}</div>
       <div>Search: {location.search}</div>
       <div>Time: {new Date().toLocaleTimeString()}</div>
@@ -59,4 +61,4 @@ const NavigationDebugger: React.FC = () => {
   );
 };
 
-export default NavigationDebugger; 
+export default NavigationDebugger;

@@ -1,11 +1,11 @@
 /**
  * Chat Operations Controller
- * 
+ *
  * This controller orchestrates all chat-related test operations
  * It delegates to specific chat runners for different actions
  */
 
-import { Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 // Import specific chat runners (these will be created)
 import { getChatHistory } from '../chat/get-chat-history';
@@ -64,29 +64,32 @@ export class ChatOperations {
       if (!createResult.success) {
         throw new Error(`Conversation creation failed: ${createResult.error}`);
       }
-      
+
       // Update state with new conversation ID
       this.state.conversationId = createResult.conversationId;
       console.log('✅ Conversation created successfully');
 
       // Step 3: Send messages
       console.log('📨 Step 3: Sending messages...');
-      const messageResult = await sendMessage(this.page, this.state, 'Hello, this is a test message from the automated test suite.');
+      const messageResult = await sendMessage(
+        this.page,
+        this.state,
+        'Hello, this is a test message from the automated test suite.'
+      );
       if (!messageResult.success) {
         throw new Error(`Message sending failed: ${messageResult.error}`);
       }
       console.log('✅ Messages sent successfully');
 
       console.log('🎉 Chat Operations Flow completed successfully!');
-      
+
       return {
         success: true,
         conversationId: this.state.conversationId
       };
-
     } catch (error) {
       console.error('❌ Chat Operations Flow failed:', error);
-      
+
       return {
         success: false,
         conversationId: this.state.conversationId,
@@ -100,7 +103,7 @@ export class ChatOperations {
    */
   async cleanup(): Promise<void> {
     console.log('🗑️ Cleaning up chat resources...');
-    
+
     if (this.state.conversationId) {
       try {
         await deleteConversation(this.page, this.state, this.state.conversationId);
@@ -111,4 +114,4 @@ export class ChatOperations {
       }
     }
   }
-} 
+}

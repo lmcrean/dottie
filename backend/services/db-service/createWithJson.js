@@ -10,6 +10,11 @@ import { findById } from './findById.js';
  */
 export async function createWithJson(table, data, jsonFields = []) {
   try {
+    // Validate data before spreading
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid data provided to createWithJson()');
+    }
+
     const preparedData = { ...data };
 
     for (const field of jsonFields) {
@@ -18,7 +23,20 @@ export async function createWithJson(table, data, jsonFields = []) {
       }
     }
 
-    const [id] = await db(table).insert(preparedData);
+    // Filter out undefined values to prevent NULL being inserted
+    // This allows database defaults (like gen_random_uuid() for id) to work
+    const cleanedData = Object.fromEntries(
+      Object.entries(preparedData).filter(([_, value]) => value !== undefined)
+    );
+
+    // Use returning() for PostgreSQL compatibility
+    // SQLite returns [id], PostgreSQL needs .returning() to return data
+    const result = await db(table)
+      .insert(cleanedData)
+      .returning('*');
+
+    // PostgreSQL returns an array of objects, SQLite returns an array of IDs
+    const id = result[0]?.id || result[0] || data.id;
 
     const insertedRecord = await findById(table, data.id || id);
 

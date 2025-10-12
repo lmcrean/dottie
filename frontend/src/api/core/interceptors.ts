@@ -60,4 +60,4 @@ export const setupResponseInterceptor = (client: AxiosInstance): void => {
       return Promise.reject(error);
     }
   );
-}; 
+};

@@ -41,6 +41,8 @@ describe('conversationCreate with assessment linking', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure tests run in Supabase mode (matching production)
+    process.env.DB_TYPE = 'supabase';
     logger.info = vi.fn();
     logger.warn = vi.fn();
     logger.error = vi.fn();

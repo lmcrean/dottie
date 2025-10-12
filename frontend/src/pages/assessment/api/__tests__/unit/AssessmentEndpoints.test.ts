@@ -2,13 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as tokenManager from '../../../../../api/core/tokenManager';
 
 // Mock tokenManager and apiClient
-vi.mock('../../../core/tokenManager', () => ({
+vi.mock('../../../../../api/core/tokenManager', () => ({
   getUserData: vi.fn(),
   getAuthToken: vi.fn()
 }));
 
 // Mock the apiClient module
-vi.mock('../../../core/apiClient', () => ({
+vi.mock('../../../../../api/core/apiClient', () => ({
   apiClient: {
     put: vi.fn(),
     delete: vi.fn()
@@ -17,7 +17,7 @@ vi.mock('../../../core/apiClient', () => ({
 
 // Import after mocking
 import { apiClient } from '../../../../../api/core/apiClient';
-import { deleteById } from '../../requests/deleteById/Request';
+import { deleteById } from '../../../components/buttons/delete-id/api/deleteById/Request';
 
 describe('Assessment API Endpoints', () => {
   const mockUserData = { id: 'user-123', email: 'test@example.com' };

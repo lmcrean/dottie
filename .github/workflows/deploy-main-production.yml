@@ -1,0 +1,55 @@
+name: Deploy Main Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+  checks: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/reusable-deploy.yml
+    secrets: inherit
+    with:
+      deployment_type: 'main'
+
+  test:
+    needs: deploy
+    uses: ./.github/workflows/reusable-test.yml
+    secrets: inherit
+    with:
+      api_url: ${{ needs.deploy.outputs.api_url }}
+      web_url: ${{ needs.deploy.outputs.web_url }}
+      deployment_type: 'main'
+
+  deployment-summary:
+    needs: [deploy, test]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📊 Log Deployment Summary
+        run: |
+          echo "=== 🚀 PRODUCTION DEPLOYMENT SUMMARY ==="
+          echo "Web URL: ${{ needs.deploy.outputs.web_url }}"
+          echo "API URL: ${{ needs.deploy.outputs.api_url }}"
+          echo "Deployment: ${{ needs.deploy.result }}"
+          echo "Tests: ${{ needs.test.result }}"
+
+          # Determine overall status
+          deploy_success="${{ needs.deploy.result == 'success' }}"
+          test_success="${{ needs.test.result == 'success' }}"
+
+          if [ "$deploy_success" = "true" ] && [ "$test_success" = "true" ]; then
+            echo "✅ PRODUCTION DEPLOYMENT SUCCESSFUL!"
+          else
+            echo "⚠️ PRODUCTION DEPLOYMENT HAD ISSUES"
+            [ "$deploy_success" != "true" ] && echo "❌ Deployment failed"
+            [ "$test_success" != "true" ] && echo "❌ Tests failed"
+            exit 1
+          fi

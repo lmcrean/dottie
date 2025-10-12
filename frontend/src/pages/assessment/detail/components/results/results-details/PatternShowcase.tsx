@@ -72,4 +72,4 @@ export const PatternShowcase = () => {
       </div>
     </div>
   );
-}; 
+};

@@ -4,13 +4,13 @@ import { apiClient } from '../../../../../../../../../api/core/apiClient';
 import { getUserData } from '../../../../../../../../../api/core/tokenManager';
 
 // Mock the apiClient and tokenManager
-vi.mock('../../../../../core/apiClient', () => ({
+vi.mock('../../../../../../../../../api/core/apiClient', () => ({
   apiClient: {
     get: vi.fn(),
   },
 }));
 
-vi.mock('../../../../../core/tokenManager', () => ({
+vi.mock('../../../../../../../../../api/core/tokenManager', () => ({
   getUserData: vi.fn(),
 }));
 

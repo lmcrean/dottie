@@ -654,11 +654,22 @@ export const createTestToken = (userId, isProd = false) => {
  */
 export const closeTestServer = async (server) => {
   if (!server) return;
-  
-  return new Promise(resolve => {
-    server.close(() => {
 
-      resolve(true);
+  return new Promise(resolve => {
+    // First, stop accepting new connections
+    server.close(() => {
+      // Add a small delay to ensure port is fully released
+      setTimeout(() => {
+        resolve(true);
+      }, 100);
     });
+
+    // Force close all open connections after a timeout
+    setTimeout(() => {
+      if (server.listening) {
+        // Destroy all sockets to force immediate closure
+        server.closeAllConnections?.();
+      }
+    }, 50);
   });
 }; 

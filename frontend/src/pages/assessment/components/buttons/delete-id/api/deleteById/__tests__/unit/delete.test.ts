@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { deleteById } from '../../Request';
-import { apiClient } from '../../../../../../../api/core/apiClient';
-import { getUserData } from '../../../../../../../api/core/tokenManager';
+import { apiClient } from '../../../../../../../../../api/core/apiClient';
+import { getUserData } from '../../../../../../../../../api/core/tokenManager';
 
 // Mock the apiClient and tokenManager
-vi.mock('../../../../../core/apiClient', () => ({
+vi.mock('../../../../../../../../../api/core/apiClient', () => ({
   apiClient: {
     delete: vi.fn(),
   },
 }));
 
-vi.mock('../../../../../core/tokenManager', () => ({
+vi.mock('../../../../../../../../../api/core/tokenManager', () => ({
   getUserData: vi.fn(),
 }));
 

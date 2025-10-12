@@ -7,7 +7,13 @@
 export async function updateAssessmentSchema(db) {
   const isSQLite = db.client.config.client === "sqlite3";
 
-  // Check if assessments table exists
+  // Drop dependent tables first to avoid foreign key constraint violations
+  // Drop existing symptoms table if it exists (has FK to assessments)
+  if (await db.schema.hasTable("symptoms")) {
+    await db.schema.dropTable("symptoms");
+  }
+
+  // Now we can safely drop the assessments table
   if (await db.schema.hasTable("assessments")) {
     // Drop the existing assessments table
     await db.schema.dropTable("assessments");
@@ -29,25 +35,10 @@ export async function updateAssessmentSchema(db) {
     table.text("other_symptoms");
     table.text("recommendations");
 
-    // Foreign key handling based on database type
-    if (!isSQLite) {
-      table.foreign("user_id").references("users.id");
-    } else {
-      try {
-        table.foreign("user_id").references("users.id");
-      } catch (error) {
-        console.warn(
-          "Warning: Could not create foreign key - common with SQLite:",
-          error.message
-        );
-      }
-    }
+    // Note: user_id is STRING type, but users.id is UUID
+    // Foreign key constraint removed to prevent PostgreSQL type mismatch
+    // TODO: Fix user_id to be UUID type for proper foreign key
   });
-
-  // Drop existing symptoms table if it exists
-  if (await db.schema.hasTable("symptoms")) {
-    await db.schema.dropTable("symptoms");
-  }
 
   // Create symptoms table with the correct schema for tests
   await db.schema.createTable("symptoms", (table) => {

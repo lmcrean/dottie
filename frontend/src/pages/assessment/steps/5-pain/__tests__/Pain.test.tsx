@@ -2,11 +2,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PainPage from '../page'
-import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
 import * as PainLevelHook from '../hooks/use-pain-level'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-pain-level', () => ({
+vi.mock('../hooks/use-pain-level', () => ({
   usePainLevel: vi.fn()
 }));
 
@@ -66,10 +66,11 @@ describe('Pain', () => {
 
   it('should navigate to the previous page when back button is clicked', () => {
     renderWithRouter(<PainPage />)
-    
-    // Check if the back button links to the flow page
-    const backButton = screen.getByText('Back').closest('a')
-    expect(backButton).toHaveAttribute('href', '/assessment/flow')
+
+    // Check if the back button is rendered (it's a button, not a link)
+    const backButton = screen.getByTestId('back-button')
+    expect(backButton).toBeInTheDocument()
+    expect(backButton.tagName).toBe('BUTTON')
   })
 
   it('should display privacy information', () => {

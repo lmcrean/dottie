@@ -204,7 +204,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = async () => {
     try {
       const currentUser = await userApi.current();
-      
+
       // Update both state and storage
       setUserData(currentUser);
       setState({

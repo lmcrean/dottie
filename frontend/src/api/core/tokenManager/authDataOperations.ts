@@ -57,4 +57,4 @@ export const storeAuthData = (data: AuthResponse): boolean => {
 export const clearAllTokens = (): void => {
   clearAllStorage();
   dispatchTokenChangeEvent();
-}; 
+};

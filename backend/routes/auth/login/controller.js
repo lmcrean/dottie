@@ -2,6 +2,7 @@ import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { refreshTokens } from '../middleware/index.js';
+import jwtConfig from '../../../config/jwt.js';
 
 // Helper function for validation
 function isValidEmail(email) {
@@ -35,28 +36,28 @@ export const login = async (req, res) => {
       
       const testUserId = `test-user-${Date.now()}`;
       const token = jwt.sign(
-        { 
-          id: testUserId, 
+        {
+          id: testUserId,
           email,
-          jti: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          jti: jwtConfig.generateJTI()
         },
-        process.env.JWT_SECRET || 'dev-jwt-secret',
-        { expiresIn: '24h' }
+        jwtConfig.JWT_SECRET,
+        { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
       );
-      
+
       // Generate refresh token
       const refreshToken = jwt.sign(
-        { 
-          id: testUserId, 
+        {
+          id: testUserId,
           email,
-          jti: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          jti: jwtConfig.generateJTI()
         },
-        process.env.REFRESH_SECRET || 'your-refresh-secret-key',
-        { expiresIn: '7d' }
+        jwtConfig.REFRESH_SECRET,
+        { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN }
       );
       
-      // Store refresh token
-      refreshTokens.add(refreshToken);
+      // Store refresh token in database
+      await refreshTokens.add(refreshToken, testUserId);
       
       return res.json({ 
         token, 
@@ -83,28 +84,28 @@ export const login = async (req, res) => {
     
     // Generate JWT token
     const token = jwt.sign(
-      { 
-        id: user.id, 
+      {
+        id: user.id,
         email: user.email,
-        jti: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        jti: jwtConfig.generateJTI()
       },
-      process.env.JWT_SECRET || 'dev-jwt-secret',
-      { expiresIn: '24h' }
+      jwtConfig.JWT_SECRET,
+      { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
     );
-    
+
     // Generate refresh token
     const refreshToken = jwt.sign(
-      { 
-        id: user.id, 
+      {
+        id: user.id,
         email: user.email,
-        jti: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        jti: jwtConfig.generateJTI()
       },
-      process.env.REFRESH_SECRET || 'your-refresh-secret-key',
-      { expiresIn: '7d' }
+      jwtConfig.REFRESH_SECRET,
+      { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN }
     );
     
-    // Store refresh token
-    refreshTokens.add(refreshToken);
+    // Store refresh token in database
+    await refreshTokens.add(refreshToken, user.id);
     
     // Remove password hash before sending response
     const { password_hash: _, ...userWithoutPassword } = user;

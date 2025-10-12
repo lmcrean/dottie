@@ -1,0 +1,305 @@
+name: Deploy API to Google Cloud Run (Branch)
+
+on:
+  workflow_call:
+    inputs:
+      branch_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+    outputs:
+      deployment_url:
+        description: "API deployment URL"
+        value: ${{ jobs.deploy.outputs.deployment_url }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_url: ${{ steps.deploy.outputs.deployment_url }}
+    
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 📋 Load Project Configuration
+        id: config
+        uses: ./.github/workflows/actions/load-config
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      
+      - name: 📥 Install API Dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: 🔧 Build API
+        run: |
+          cd backend
+          npm run build || echo "No build step configured"
+      
+      - name: 🧪 Run API Tests
+        run: |
+          cd backend
+          npm test || echo "⚠️ Tests not configured or failed"
+      
+      - name: 🔐 Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: 🛠️ Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ steps.config.outputs.gcp-project-id }}
+      
+      # Add comprehensive validation steps
+      - name: 🔍 Validate GCP Authentication & Permissions
+        run: |
+          echo "=== 🔐 VALIDATING GCP AUTHENTICATION ==="
+          
+          # Test basic authentication
+          echo "🧪 Testing basic gcloud auth..."
+          if gcloud auth list --filter=status:ACTIVE --format="value(account)"; then
+            echo "✅ Successfully authenticated to GCP"
+          else
+            echo "❌ GCP authentication failed"
+            exit 1
+          fi
+          
+          # Verify project access
+          echo "🏗️ Testing project access..."
+          PROJECT_ID=$(gcloud config get-value project)
+          echo "📋 Current project: $PROJECT_ID"
+          
+          if [ "$PROJECT_ID" != "${{ steps.config.outputs.gcp-project-id }}" ]; then
+            echo "❌ Project mismatch! Expected: ${{ steps.config.outputs.gcp-project-id }}, Got: $PROJECT_ID"
+            exit 1
+          fi
+          
+          # Test service account details
+          echo "👤 Service account details:"
+          gcloud auth list --filter=status:ACTIVE --format="table(account,status)"
+          
+          echo "=== 📦 VALIDATING ARTIFACT REGISTRY ==="
+          
+          # Check if Artifact Registry API is enabled
+          echo "🔌 Checking Artifact Registry API..."
+          if gcloud services list --enabled --filter="name:artifactregistry.googleapis.com" --format="value(name)"; then
+            echo "✅ Artifact Registry API is enabled"
+          else
+            echo "❌ Artifact Registry API is not enabled"
+            exit 1
+          fi
+          
+          # Check if repository exists
+          echo "📦 Checking ${{ steps.config.outputs.artifact-registry-repository }} repository..."
+          if gcloud artifacts repositories describe ${{ steps.config.outputs.artifact-registry-repository }} --location=${{ steps.config.outputs.artifact-registry-location }} --format="value(name)"; then
+            echo "✅ ${{ steps.config.outputs.artifact-registry-repository }} repository exists"
+          else
+            echo "❌ ${{ steps.config.outputs.artifact-registry-repository }} repository does not exist"
+            echo "🔧 Creating repository..."
+            gcloud artifacts repositories create ${{ steps.config.outputs.artifact-registry-repository }} \
+              --repository-format=docker \
+              --location=${{ steps.config.outputs.artifact-registry-location }} \
+              --description="API Docker images for branch deployments"
+          fi
+          
+          # Test Docker authentication
+          echo "🐳 Testing Docker authentication..."
+          if gcloud auth configure-docker ${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev --quiet; then
+            echo "✅ Docker authentication configured"
+          else
+            echo "❌ Docker authentication failed"
+            exit 1
+          fi
+          
+          # Test repository permissions
+          echo "🔑 Testing repository permissions..."
+          CLEAN_BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
+          SERVICE_NAME="api-${CLEAN_BRANCH}"
+          IMAGE_NAME="${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev/${{ steps.config.outputs.gcp-project-id }}/${{ steps.config.outputs.artifact-registry-repository }}/${SERVICE_NAME}:test"
+          
+          echo "🧪 Testing image push permissions with test image..."
+          echo "FROM alpine:latest" > Dockerfile.test
+          echo "RUN echo 'test'" >> Dockerfile.test
+          
+          if docker build -f Dockerfile.test -t ${IMAGE_NAME} . && docker push ${IMAGE_NAME}; then
+            echo "✅ Successfully pushed test image - permissions are correct!"
+            # Clean up test image
+            gcloud artifacts docker images delete ${IMAGE_NAME} --quiet || echo "⚠️ Could not delete test image (this is okay)"
+          else
+            echo "❌ Failed to push test image - permission issue detected!"
+            echo "🔍 Checking IAM permissions for service account..."
+            
+            # Get current service account
+            CURRENT_SA=$(gcloud auth list --filter=status:ACTIVE --format="value(account)")
+            echo "📋 Current service account: $CURRENT_SA"
+            
+            # Check IAM policy for the service account
+            echo "🔍 IAM roles for service account:"
+            gcloud projects get-iam-policy ${{ steps.config.outputs.gcp-project-id }} \
+              --flatten="bindings[].members" \
+              --format="table(bindings.role)" \
+              --filter="bindings.members:$CURRENT_SA"
+            
+            exit 1
+          fi
+          
+          # Clean up test files
+          rm -f Dockerfile.test
+          
+          echo "=== ✅ ALL VALIDATIONS PASSED ==="
+
+      - name: 🐳 Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev
+      
+      - name: 🏗️ Build and Push Docker Image
+        run: |
+          # Clean branch name for use in service names (remove special characters)
+          CLEAN_BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
+          SERVICE_NAME="api-${CLEAN_BRANCH}"
+          IMAGE_NAME="${{ steps.config.outputs.artifact-registry-location }}-docker.pkg.dev/${{ steps.config.outputs.gcp-project-id }}/${{ steps.config.outputs.artifact-registry-repository }}/${SERVICE_NAME}:${{ github.sha }}"
+          
+          echo "🏷️ Building image: $IMAGE_NAME"
+          echo "🔖 Service name: $SERVICE_NAME"
+          
+          # Build and push the image from repository root with correct context
+          docker build -t $IMAGE_NAME -f backend/Dockerfile .
+          docker push $IMAGE_NAME
+          
+          # Store values for next step
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
+      
+      - name: 🚀 Deploy to Cloud Run
+        id: deploy
+        run: |
+          # Deploy Node.js API service
+          echo "🚀 Deploying Node.js API service..."
+          
+          # Clean up any existing conflicting services to ensure predictable URLs
+          echo "🗑️ Cleaning up any existing conflicting services..."
+          
+          # Delete service and wait for complete removal
+          if gcloud run services describe $SERVICE_NAME --region=${{ steps.config.outputs.cloud-run-region }} --quiet > /dev/null 2>&1; then
+            echo "📍 Found existing service, deleting..."
+            gcloud run services delete $SERVICE_NAME --region=${{ steps.config.outputs.cloud-run-region }} --quiet
+            
+            # Wait for deletion to complete
+            echo "⏳ Waiting for service deletion to complete..."
+            while gcloud run services describe $SERVICE_NAME --region=${{ steps.config.outputs.cloud-run-region }} --quiet > /dev/null 2>&1; do
+              echo "   Still deleting..."
+              sleep 5
+            done
+            echo "✅ Service deletion completed"
+          else
+            echo "📍 No existing service found"
+          fi
+          
+          # Deploy the service with deterministic naming
+          echo "🚀 Deploying service with name: $SERVICE_NAME"
+          gcloud run deploy $SERVICE_NAME \
+            --image $IMAGE_NAME \
+            --platform managed \
+            --region ${{ steps.config.outputs.cloud-run-region }} \
+            --allow-unauthenticated \
+            --memory=${{ steps.config.outputs.cloud-run-memory }} \
+            --cpu=${{ steps.config.outputs.cloud-run-cpu }} \
+            --min-instances=${{ steps.config.outputs.cloud-run-min-instances }} \
+            --max-instances=${{ steps.config.outputs.cloud-run-max-instances }} \
+            --timeout=${{ steps.config.outputs.cloud-run-timeout }} \
+            --concurrency=${{ steps.config.outputs.cloud-run-concurrency }} \
+            --set-env-vars="NODE_ENV=production,JWT_SECRET=${{ secrets.JWT_SECRET }},GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_ANON_PUBLIC=${{ secrets.SUPABASE_ANON_PUBLIC }},SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }},DB_TYPE=${{ secrets.DB_TYPE }}"
+          
+          # Get the service URL - should now be predictable
+          SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --platform managed --region ${{ steps.config.outputs.cloud-run-region }} --format 'value(status.url)')
+          
+          echo "🌐 Service deployed at: $SERVICE_URL"
+          echo "deployment_url=$SERVICE_URL" >> $GITHUB_OUTPUT
+          
+          # Verify the URL matches expected pattern
+          EXPECTED_URL="https://$SERVICE_NAME.${{ steps.config.outputs.cloud-run-region }}.run.app"
+          if [ "$SERVICE_URL" = "$EXPECTED_URL" ]; then
+            echo "✅ Service URL matches expected pattern: $EXPECTED_URL"
+          else
+            echo "⚠️ Service URL mismatch: expected '$EXPECTED_URL', got '$SERVICE_URL'"
+            echo "🔍 This indicates Cloud Run is adding hash suffixes - may need frontend adjustment"
+          fi
+          
+          # Verify environment variables were set correctly
+          echo "🔍 Verifying environment variables in deployed service..."
+          gcloud run services describe $SERVICE_NAME --platform managed --region ${{ steps.config.outputs.cloud-run-region }} --format="value(spec.template.spec.template.spec.containers[0].env[].name,spec.template.spec.template.spec.containers[0].env[].value)"
+      
+      - name: ✅ Validate API Deployment
+        run: |
+          API_URL="${{ steps.deploy.outputs.deployment_url }}"
+          echo "🔍 Testing API at: $API_URL"
+
+          # Validate URL pattern matches expected deployment
+          CLEAN_BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
+          EXPECTED_PATTERN="https://api-${CLEAN_BRANCH}-.*\.a\.run\.app"
+          if [[ "$API_URL" =~ $EXPECTED_PATTERN ]]; then
+            echo "✅ API URL matches expected pattern for branch deployment"
+          else
+            echo "❌ API URL does not match expected pattern!"
+            echo "🔍 Expected pattern: $EXPECTED_PATTERN"
+            echo "🔍 Actual URL: $API_URL"
+            echo "⚠️ Note: Cloud Run may be using different naming - this could cause frontend discovery issues"
+          fi
+          
+          # Test health endpoint with retry and validate response
+          for i in {1..5}; do
+            echo "🏥 Health check attempt $i/5..."
+
+            # Get health response
+            HEALTH_RESPONSE=$(curl -s -f "$API_URL${{ steps.config.outputs.api-health-endpoint }}" -m 15)
+            CURL_EXIT_CODE=$?
+            
+            if [ $CURL_EXIT_CODE -eq 0 ]; then
+              echo "✅ API responded successfully!"
+              echo "📄 Health Response: $HEALTH_RESPONSE"
+
+              # Basic validation for Node.js API health response
+              echo "✅ Node.js API health check passed!"
+              break
+            else
+              echo "❌ API health endpoint failed (HTTP error)"
+              
+              if [ $i -eq 5 ]; then
+                echo "❌ API health check failed after 5 attempts"
+                exit 1
+              fi
+            fi
+            
+            echo "⏳ Waiting 10 seconds before retry..."
+            sleep 10
+          done
+          
+          # Test CORS by making a preflight request
+          echo "🌐 Testing CORS configuration..."
+          CORS_RESPONSE=$(curl -s -X OPTIONS "$API_URL${{ steps.config.outputs.api-health-endpoint }}" \
+            -H "Origin: ${{ steps.config.outputs.firebase-main-url }}" \
+            -H "Access-Control-Request-Method: GET" \
+            -H "Access-Control-Request-Headers: Content-Type" \
+            -w "%{http_code}" -o /dev/null)
+          
+          if [ "$CORS_RESPONSE" = "200" ]; then
+            echo "✅ CORS configuration is working correctly!"
+          else
+            echo "⚠️ CORS preflight returned status: $CORS_RESPONSE"
+            echo "🔍 This may indicate CORS issues with the frontend"
+          fi
+      
+      - name: 📊 Deployment Summary
+        run: |
+          echo "🎯 API Deployment Complete!"
+          echo "📍 URL: ${{ steps.deploy.outputs.deployment_url }}"
+          echo "🏷️ Service: $SERVICE_NAME"
+          echo "✅ Health check passed"

@@ -5,7 +5,7 @@ import {
   postRefreshToken,
   getTokenVerification
 } from './requests';
-import { LoginInput, SignupInput, AuthResponse } from './types';
+import { LoginInput, AuthResponse } from './types';
 import { apiClient } from '../core/apiClient';
 
 // Common function to set the Authorization header
@@ -19,22 +19,17 @@ export const setAuthHeader = (token: string) => {
 // Ensure the Authorization header is set when the login succeeds
 export const postLogin = async (credentials: LoginInput): Promise<AuthResponse> => {
   const response = await originalPostLogin(credentials);
-  
+
   // Set the Authorization header
   if (response.token) {
     setAuthHeader(response.token);
   }
-  
+
   return response;
 };
 
 // Export all auth-related functions
-export {
-  postSignup,
-  postLogout,
-  postRefreshToken,
-  getTokenVerification
-};
+export { postSignup, postLogout, postRefreshToken, getTokenVerification };
 
 // Export types
 export * from './types';

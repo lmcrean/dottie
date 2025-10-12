@@ -10,7 +10,7 @@ interface PatternIconProps {
 
 export const PatternIcon = ({ pattern, size = 'md', className = '' }: PatternIconProps) => {
   const patternInfo = PATTERN_DATA[pattern];
-  
+
   const sizeClasses = {
     sm: 'h-6 w-6',
     md: 'h-12 w-12',
@@ -26,4 +26,4 @@ export const PatternIcon = ({ pattern, size = 'md', className = '' }: PatternIco
       title={patternInfo.title}
     />
   );
-}; 
+};

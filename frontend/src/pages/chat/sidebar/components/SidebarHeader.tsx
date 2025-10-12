@@ -1,6 +1,4 @@
 import React from 'react';
-import { Button } from '@/src/components/buttons/button';
-import { Plus } from 'lucide-react';
 
 interface SidebarHeaderProps {
   onNewChat: () => void;

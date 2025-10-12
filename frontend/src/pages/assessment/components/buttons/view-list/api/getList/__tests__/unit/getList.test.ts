@@ -3,7 +3,7 @@ import { getList } from '../../Request';
 import { apiClient } from '../../../../../../../../../api/core/apiClient';
 
 // Mock the apiClient
-vi.mock('../../../../../core/apiClient', () => ({
+vi.mock('../../../../../../../../../api/core/apiClient', () => ({
   apiClient: {
     get: vi.fn(),
   },

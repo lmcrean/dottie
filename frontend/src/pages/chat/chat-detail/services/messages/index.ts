@@ -1,10 +1,10 @@
 // Message APIs - Individual functions for backward compatibility
 export { sendMessage, sendInitialMessage } from './messageService';
-export type { 
-  SendMessageRequest, 
+export type {
+  SendMessageRequest,
   SendMessageResponse,
   SendInitialMessageRequest,
-  SendInitialMessageResponse 
+  SendInitialMessageResponse
 } from './messageService';
 
 // Unified Message Service - New consolidated service
@@ -19,8 +19,4 @@ export type {
 } from './messageService';
 
 // Message hooks
-export { 
-  useMessageState,
-  useInputState,
-  useMessageSender
-} from './hooks'; 
+export { useMessageState, useInputState, useMessageSender } from './hooks';

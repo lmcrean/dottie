@@ -5,11 +5,11 @@ import * as useAssessmentDataModule from '@/src/pages/assessment/steps/context/h
 import * as useAssessmentResultModule from '@/src/pages/assessment/steps/context/hooks/use-assessment-result';
 
 // Mock the modules we depend on
-vi.mock('@/src/pages/assessment/context/hooks/useAssessmentData', () => ({
+vi.mock('@/src/pages/assessment/steps/context/hooks/useAssessmentData', () => ({
   useAssessmentData: vi.fn()
 }));
 
-vi.mock('@/src/pages/assessment/context/hooks/use-assessment-result', () => ({
+vi.mock('@/src/pages/assessment/steps/context/hooks/use-assessment-result', () => ({
   useAssessmentResult: vi.fn()
 }));
 
@@ -73,14 +73,14 @@ describe('AgeRange component', () => {
         recommendations: []
       };
       
-      vi.mocked(useAssessmentResultModule.useAssessmentResult).mockReturnValue({
+      (useAssessmentResultModule.useAssessmentResult as any).mockReturnValue({
         result: mockResult,
         isComplete: true,
         transformToFlattenedFormat: () => mockResult
       });
 
       // Mock the useAssessmentData hook which is used by results page
-      vi.mocked(useAssessmentDataModule.useAssessmentData).mockReturnValue({
+      (useAssessmentDataModule.useAssessmentData as any).mockReturnValue({
         pattern: 'regular',
         age: '18-24', // This is what should be passed to AgeRange
         cycle_length: '26-30',
@@ -113,7 +113,7 @@ describe('AgeRange component', () => {
     
     it('should display "Not specified" when age is null in context', () => {
       // Mock with null age value to simulate the issue
-      vi.mocked(useAssessmentDataModule.useAssessmentData).mockReturnValue({
+      (useAssessmentDataModule.useAssessmentData as any).mockReturnValue({
         pattern: 'regular',
         age: '', // Empty age should trigger "Not specified"
         cycle_length: '26-30',

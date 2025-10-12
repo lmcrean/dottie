@@ -48,15 +48,15 @@ describe('Pain Page to Hook Connection', () => {
       painLevel: 'severe',
       setPainLevel: mockSetPainLevel
     }));
-    
+
     renderWithRouter(<PainPage />)
-    
-    // Check that the radio item for 'severe' is checked
-    const radioItem = document.getElementById('severe');
-    expect(radioItem).toBeTruthy();
-    
+
     // Verify the continue button is enabled
     const continueButton = screen.getByText('Continue').closest('button');
     expect(continueButton).not.toBeDisabled();
+
+    // Check that the selected option has the selected styling
+    const selectedOption = screen.getByTestId('option-severe');
+    expect(selectedOption).toHaveClass('bg-pink-50');
   })
 }) 

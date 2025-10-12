@@ -1,5 +1,6 @@
 // Global setup file for test database
 import { getEnvironment } from './urls.js';
+import { runAllMigrations } from '../db/runAllMigrations.js';
 
 // Set test mode
 process.env.TEST_MODE = 'true';
@@ -79,17 +80,23 @@ export const setupMockDatabase = () => {
  * Main database setup function for Vitest
  */
 export default async () => {
-
-  
   // Different setup based on environment
   const env = getEnvironment();
   process.env.NODE_ENV = env === 'PROD' ? 'production' : 'development';
-  
+
+  // Initialize the actual database schema for tests
+  try {
+    console.log('[Global Setup] Running database migrations...');
+    await runAllMigrations();
+    console.log('[Global Setup] Database migrations completed successfully');
+  } catch (error) {
+    console.warn('[Global Setup] Warning: Failed to run migrations:', error.message);
+  }
+
   setupMockDatabase();
-  
+
   return () => {
     // Cleanup when tests are done
-
     delete global.testDb;
     delete global.testDbUtils;
   };

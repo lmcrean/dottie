@@ -12,4 +12,4 @@ export const dispatchTokenChangeEvent = (): void => {
   } catch (e) {
     console.error('[Event Handler] Failed to dispatch token change event:', e);
   }
-}; 
+};

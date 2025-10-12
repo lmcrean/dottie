@@ -85,11 +85,7 @@ const UserIcon: React.FC = () => {
           <List className="h-5 w-5" />
         </button>
       )}
-      <button 
-        onClick={handleProfileClick}
-        title="Profile" 
-        className="hover:text-pink-600"
-      >
+      <button onClick={handleProfileClick} title="Profile" className="hover:text-pink-600">
         <User className="h-5 w-5" />
       </button>
     </div>

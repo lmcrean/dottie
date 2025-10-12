@@ -3,11 +3,11 @@ export { conversationApi } from './conversation';
 export { sendMessage, sendInitialMessage, messageService, sendMessageGeneric } from './messages';
 
 // Message types - Legacy exports for backward compatibility
-export type { 
-  SendMessageRequest, 
+export type {
+  SendMessageRequest,
   SendMessageResponse,
   SendInitialMessageRequest,
-  SendInitialMessageResponse 
+  SendInitialMessageResponse
 } from './messages';
 
 // New unified message types
@@ -24,11 +24,7 @@ export type {
 export { useConversationPageState } from './conversation/hooks/useConversationPageState';
 
 // Message hooks
-export { 
-  useMessageState,
-  useInputState,
-  useMessageSender
-} from './messages';
+export { useMessageState, useInputState, useMessageSender } from './messages';
 
 // Conversation hooks
 export { useConversationData } from './conversation/hooks/data/useConversationData';

@@ -104,12 +104,20 @@ class ValidatePassword {
 
     // Check strength
     const strengthValidation = this.validateStrength(password);
-    errors.push(...strengthValidation.errors);
+    if (strengthValidation && Array.isArray(strengthValidation.errors)) {
+      errors.push(...strengthValidation.errors);
+    } else {
+      errors.push('Validation error: password strength validation failed');
+    }
 
     // Check confirmation if provided
     if (confirmPassword !== null) {
       const confirmationValidation = this.validateConfirmation(password, confirmPassword);
-      errors.push(...confirmationValidation.errors);
+      if (confirmationValidation && Array.isArray(confirmationValidation.errors)) {
+        errors.push(...confirmationValidation.errors);
+      } else {
+        errors.push('Validation error: password confirmation validation failed');
+      }
     }
 
     return {

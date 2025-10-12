@@ -48,15 +48,15 @@ describe('Period Duration Page to Hook Connection', () => {
       periodDuration: '6-7',
       setPeriodDuration: mockSetPeriodDuration
     }));
-    
+
     renderWithRouter(<PeriodDurationPage />)
-    
+
     // Verify that the continue button is enabled when an option is selected
     const continueButton = screen.getByText('Continue').closest('button');
     expect(continueButton).not.toBeDisabled();
-    
-    // Verify that the radio button is checked
-    const radioItem = document.getElementById('6-7');
-    expect(radioItem).toBeTruthy();
+
+    // Verify that the option has the selected styling
+    const selectedOption = screen.getByTestId('option-6-7');
+    expect(selectedOption).toHaveClass('bg-pink-50');
   })
 }) 

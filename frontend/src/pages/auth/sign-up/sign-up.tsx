@@ -44,14 +44,19 @@ export default function SignUpPage() {
         const errorData = error.response.data;
         const errorType = errorData.errorType;
         const userMessage = errorData.message;
-        
+
         // Use specific error messages based on error type
         switch (errorType) {
           case 'EMAIL_CONFLICT':
-            toast.error(userMessage || 'An account with this email already exists. Please use a different email or try signing in.');
+            toast.error(
+              userMessage ||
+                'An account with this email already exists. Please use a different email or try signing in.'
+            );
             break;
           case 'USERNAME_CONFLICT':
-            toast.error(userMessage || 'This username is already taken. Please choose a different username.');
+            toast.error(
+              userMessage || 'This username is already taken. Please choose a different username.'
+            );
             break;
           case 'VALIDATION_ERROR':
             toast.error(userMessage || 'Please check your information and try again.');
