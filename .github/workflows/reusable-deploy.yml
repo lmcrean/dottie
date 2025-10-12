@@ -285,23 +285,13 @@ jobs:
       - name: 📥 Install Web Dependencies
         run: |
           cd ${{ steps.config.outputs.web-entry-point }}
-          echo "🔍 Checking package-lock.json sync..."
+          echo "🔍 Installing dependencies..."
 
-          # Try npm ci first (preferred for CI)
-          if npm ci; then
-            echo "✅ Dependencies installed with npm ci"
-          else
-            echo "⚠️ npm ci failed - lock file may be out of sync"
-            echo "🔧 Attempting to fix with npm install..."
+          # Use npm install to ensure platform-specific optional dependencies are included
+          # (npm ci can skip optional dependencies when lock file is from different platform)
+          npm install --force
 
-            # Remove node_modules and package-lock.json to start fresh
-            rm -rf node_modules package-lock.json
-
-            # Install dependencies and regenerate lock file
-            npm install
-
-            echo "✅ Dependencies installed with npm install (lock file regenerated)"
-          fi
+          echo "✅ Dependencies installed"
 
       - name: 🔧 Configure API Integration
         run: |
