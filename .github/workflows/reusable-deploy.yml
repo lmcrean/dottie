@@ -201,7 +201,7 @@ jobs:
             --max-instances=${{ steps.config.outputs.cloud-run-max-instances }} \
             --timeout=${{ steps.config.outputs.cloud-run-timeout }} \
             --concurrency=${{ steps.config.outputs.cloud-run-concurrency }} \
-            --set-env-vars="NODE_ENV=production,JWT_SECRET=${{ secrets.JWT_SECRET }},GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
+            --set-env-vars="NODE_ENV=production,JWT_SECRET=${{ secrets.JWT_SECRET }},REFRESH_SECRET=${{ secrets.REFRESH_SECRET }},GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
 
           # Get the service URL
           SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --platform managed --region ${{ steps.config.outputs.cloud-run-region }} --format 'value(status.url)')
