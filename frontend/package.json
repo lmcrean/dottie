@@ -132,5 +132,8 @@
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.31.0",
     "vitest": "^3.0.9"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.52.4"
   }
 }

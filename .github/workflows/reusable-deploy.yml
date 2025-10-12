@@ -285,13 +285,7 @@ jobs:
       - name: 📥 Install Web Dependencies
         run: |
           cd ${{ steps.config.outputs.web-entry-point }}
-          echo "🔍 Installing dependencies..."
-
-          # Use npm install to ensure platform-specific optional dependencies are included
-          # (npm ci can skip optional dependencies when lock file is from different platform)
-          npm install --force
-
-          echo "✅ Dependencies installed"
+          npm ci
 
       - name: 🔧 Configure API Integration
         run: |
