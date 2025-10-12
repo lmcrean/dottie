@@ -110,16 +110,19 @@ export const signup = async (req, res) => {
       const errors = userResult.errors || [];
       let errorType = 'VALIDATION_ERROR';
       let userMessage = 'Failed to create account. Please check your information and try again.';
-      
+      let statusCode = 400;
+
       if (errors.includes('Email already exists')) {
         errorType = 'EMAIL_CONFLICT';
         userMessage = 'An account with this email address already exists. Please use a different email or try signing in.';
+        statusCode = 409;
       } else if (errors.includes('Username already exists')) {
         errorType = 'USERNAME_CONFLICT';
         userMessage = 'This username is already taken. Please choose a different username.';
+        statusCode = 409;
       }
-      
-      return res.status(400).json({ 
+
+      return res.status(statusCode).json({
         error: errors.join(', '),
         errorType: errorType,
         message: userMessage

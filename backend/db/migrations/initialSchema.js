@@ -103,7 +103,7 @@ export async function createTables(db) {
       // Foreign key handling based on database type
       if (!isSQLite) {
         table.foreign("user_id").references("users.id");
-        table.foreign("assessment_id").references("assessments.id")
+        // Note: assessment_id is TEXT and nullable, not a proper foreign key
       } else {
         try {
           table.foreign("user_id").references("users.id");
@@ -145,6 +145,36 @@ export async function createTables(db) {
     });
   }
 
+  // Refresh tokens table
+  if (!(await db.schema.hasTable("refresh_tokens"))) {
+    await db.schema.createTable("refresh_tokens", (table) => {
+      table.increments("id").primary();
+      table.uuid("user_id").notNullable();
+      table.string("token_hash", 255).notNullable();
+      table.timestamp("expires_at").notNullable();
+      table.timestamp("created_at").defaultTo(db.fn.now());
+
+      // Add indices for performance
+      table.index("user_id");
+      table.index("expires_at");
+      table.index("token_hash");
+
+      // Foreign key handling based on database type
+      if (!isSQLite) {
+        table.foreign("user_id").references("users.id").onDelete("CASCADE");
+      } else {
+        try {
+          table.foreign("user_id").references("users.id").onDelete("CASCADE");
+        } catch (error) {
+          console.warn(
+            "Warning: Could not create foreign key - common with SQLite:",
+            error.message
+          );
+        }
+      }
+    });
+  }
+
   // Determine which assessment schema to use
   if (process.env.TEST_MODE === "true") {
     // In test mode, use the special assessment schema (includes 'age')
@@ -175,6 +205,7 @@ export async function createTables(db) {
  * @param {object} db - Knex database instance
  */
 export async function dropTables(db) {
+  await db.schema.dropTableIfExists("refresh_tokens");
   await db.schema.dropTableIfExists("assessments");
   await db.schema.dropTableIfExists("symptoms");
   await db.schema.dropTableIfExists("period_logs");

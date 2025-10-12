@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import path from 'path';
 import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
 
@@ -67,12 +67,16 @@ export const runSymptomsStep = async (page: Page): Promise<void> => {
     await page.waitForTimeout(2000);
 
     // Wait for navigation through generate-recommendations and save pages to complete
-    // and finally arrive at results page
-    await page.waitForURL('**/results**', { timeout: 20000 });
+    // The app navigates to the assessment detail/results page after saving
+    // Instead of waiting for a specific URL, wait for the results content to appear
+    await page.waitForSelector(
+      'text=/Assessment Details|Regular Menstrual Cycles|Irregular Cycles/',
+      { timeout: 20000 }
+    );
 
     // Wait for the results page to load fully
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
   } catch (error) {
     console.error('Error completing assessment:', error);
     throw error;

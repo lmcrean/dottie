@@ -3,7 +3,7 @@ import { userApi } from '../..';
 import { apiClient } from '../../../../../api/core/apiClient';
 
 // Correctly mock the API client - both default and named export
-vi.mock('../../../core/apiClient', () => {
+vi.mock('../../../../../api/core/apiClient', () => {
   const mockClient = {
     get: vi.fn(),
     post: vi.fn(),
@@ -43,14 +43,13 @@ describe('User API', () => {
 
   describe('updateUser', () => {
     it('should update a user profile', async () => {
-      const mockId = '1';
       const mockInput = { name: 'Updated Name' };
-      const mockResponse = { id: mockId, name: 'Updated Name', email: 'test@example.com' };
+      const mockResponse = { id: '1', name: 'Updated Name', email: 'test@example.com' };
       (apiClient.put as any).mockResolvedValueOnce({ data: mockResponse });
-      
-      const result = await userApi.update(mockId, mockInput);
-      
-      expect(apiClient.put).toHaveBeenCalledWith(`/api/user/${mockId}`, mockInput);
+
+      const result = await userApi.update(mockInput);
+
+      expect(apiClient.put).toHaveBeenCalledWith('/api/user/me', mockInput);
       expect(result).toEqual(mockResponse);
     });
   });
@@ -59,10 +58,10 @@ describe('User API', () => {
     it('should delete a user', async () => {
       const mockId = '1';
       (apiClient.delete as any).mockResolvedValueOnce({});
-      
+
       await userApi.delete(mockId);
-      
-      expect(apiClient.delete).toHaveBeenCalledWith(`/api/user/${mockId}`);
+
+      expect(apiClient.delete).toHaveBeenCalledWith('/api/user/me');
     });
   });
 

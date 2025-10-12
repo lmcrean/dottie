@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
-
-// Environment variables with defaults
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-jwt-secret';
+import jwtConfig from '../../../../config/jwt.js';
 
 /**
  * Optional token verification
@@ -29,7 +27,7 @@ export const optionalToken = (req, res, next) => {
 
     try {
       // Verify token
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, jwtConfig.JWT_SECRET);
       req.user = decoded;
     } catch (error) {
       // If token is invalid, continue without authentication

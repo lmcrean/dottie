@@ -33,14 +33,14 @@ export function validateAuth(functionName: string): void {
  * @returns null if 404 and handle404AsNull is true, otherwise re-throws
  */
 export function handleApiError(
-  error: unknown, 
-  functionName: string, 
+  error: unknown,
+  functionName: string,
   handle404AsNull = false
 ): null | never {
   if (handle404AsNull && axios.isAxiosError(error) && error.response?.status === 404) {
     return null;
   }
-  
+
   console.error(`[${functionName}] API call failed:`, error);
   throw error;
 }
@@ -48,17 +48,14 @@ export function handleApiError(
 /**
  * Makes an authenticated API GET request with standardized error handling
  */
-export async function authenticatedGet<T>(
-  url: string, 
-  config: ApiConfig = {}
-): Promise<T | null> {
+export async function authenticatedGet<T>(url: string, config: ApiConfig = {}): Promise<T | null> {
   const { requireAuth = true, handle404AsNull = false, functionName = 'authenticatedGet' } = config;
-  
+
   try {
     if (requireAuth) {
       validateAuth(functionName);
     }
-    
+
     const response = await apiClient.get<T>(url);
     return response.data;
   } catch (error) {
@@ -75,12 +72,12 @@ export async function authenticatedPost<TRequest, TResponse>(
   config: ApiConfig = {}
 ): Promise<TResponse> {
   const { requireAuth = true, functionName = 'authenticatedPost' } = config;
-  
+
   try {
     if (requireAuth) {
       validateAuth(functionName);
     }
-    
+
     const response = await apiClient.post<TResponse>(url, data);
     return response.data;
   } catch (error) {
@@ -106,22 +103,22 @@ export function normalizeChatId(
       console.log(`[${functionName}] Extracted ID from object property: ${result}`);
       return result;
     }
-    
+
     if (chatId.conversationId) {
       const result = String(chatId.conversationId);
       console.log(`[${functionName}] Extracted conversationId from object property: ${result}`);
       return result;
     }
-    
+
     if (typeof chatId.toString === 'function' && chatId.toString() !== '[object Object]') {
       const result = chatId.toString();
       console.log(`[${functionName}] Used object's toString(): ${result}`);
       return result;
     }
-    
+
     console.error(`[${functionName}] Cannot extract valid ID from object:`, chatId);
     throw new Error('Invalid chat ID format. Please try again.');
   }
-  
+
   return String(chatId);
-} 
+}

@@ -8,4 +8,4 @@ export interface MemoryStorage {
 }
 
 export type StorageKey = string;
-export type StorageValue = string | null; 
+export type StorageValue = string | null;

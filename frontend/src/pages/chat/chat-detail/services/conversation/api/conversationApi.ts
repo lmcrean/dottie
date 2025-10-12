@@ -16,11 +16,11 @@ export const conversationApi = {
     const conversationIdString = String(conversationId);
     return await authenticatedGet<ConversationResponse>(
       `/api/chat/history/${conversationIdString}`,
-      { 
+      {
         requireAuth: false, // Conversation fetching doesn't require auth check
         handle404AsNull: true,
         functionName: 'fetchConversation'
       }
     );
   }
-}; 
+};

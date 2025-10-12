@@ -13,7 +13,7 @@ interface UseInputStateReturn {
   sendFromInput: () => Promise<void>;
 }
 
-export function useInputState({ 
+export function useInputState({
   initialValue = '',
   onSend
 }: UseInputStateProps = {}): UseInputStateReturn {
@@ -34,7 +34,7 @@ export function useInputState({
       console.log('[useInputState] Message sent successfully from input');
     } catch (error) {
       console.error('[useInputState] Failed to send message from input:', error);
-      // Note: We don't restore input here as the error handling 
+      // Note: We don't restore input here as the error handling
       // should be done by the main sending logic
     }
   };
@@ -57,4 +57,4 @@ export function useInputState({
     handleKeyDown,
     sendFromInput
   };
-} 
+}

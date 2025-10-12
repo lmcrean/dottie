@@ -18,8 +18,10 @@ class ValidateCredentials {
       errors.push('Email is required');
     } else {
       const emailValidation = ValidateEmail.validateFormat(email);
-      if (!emailValidation.isValid) {
+      if (emailValidation && !emailValidation.isValid && Array.isArray(emailValidation.errors)) {
         errors.push(...emailValidation.errors);
+      } else if (!emailValidation || !emailValidation.isValid) {
+        errors.push('Validation error: email format validation failed');
       }
     }
 
@@ -53,7 +55,11 @@ class ValidateCredentials {
 
     // Validate format
     const formatValidation = this.validateFormat(email, password);
-    errors.push(...formatValidation.errors);
+    if (formatValidation && Array.isArray(formatValidation.errors)) {
+      errors.push(...formatValidation.errors);
+    } else {
+      errors.push('Validation error: credentials format validation failed');
+    }
 
     return {
       isValid: errors.length === 0,

@@ -38,7 +38,9 @@ export type FollowUpMessageResponse = BaseMessageResponse;
  * Send initial message with assessment context
  * @endpoint /api/chat/:chatId/message/initial (POST)
  */
-export async function sendInitialMessage(params: InitialMessageRequest): Promise<InitialMessageResponse> {
+export async function sendInitialMessage(
+  params: InitialMessageRequest
+): Promise<InitialMessageResponse> {
   const chatIdString = normalizeChatId(params.chat_id, 'sendInitialMessage');
 
   const requestBody = {
@@ -58,7 +60,9 @@ export async function sendInitialMessage(params: InitialMessageRequest): Promise
  * Send follow-up message in existing conversation
  * @endpoint /api/chat/:chatId/message (POST)
  */
-export async function sendMessage(params: FollowUpMessageRequest): Promise<FollowUpMessageResponse> {
+export async function sendMessage(
+  params: FollowUpMessageRequest
+): Promise<FollowUpMessageResponse> {
   const requestBody = {
     message: params.message,
     conversationId: params.conversationId
@@ -96,4 +100,4 @@ export default {
   sendInitialMessage,
   sendMessage,
   sendMessageGeneric
-}; 
+};

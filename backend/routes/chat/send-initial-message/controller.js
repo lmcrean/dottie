@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import logger from '../../../services/logger.js';
 import { insertChatMessage, getConversation, updateConversationAssessmentLinks } from '../../../models/chat/index.js';
+import { generateMessageId } from '../../../models/chat/message/shared/utils/responseBuilders.js';
 
 // Initialize Gemini API
 const API_KEY = process.env.GEMINI_API_KEY;
@@ -125,9 +126,15 @@ export const sendInitialMessage = async (req, res) => {
 
     // Log before insertChatMessage (User Message)
     console.log(`[sendInitialMessage] Inserting user message to chat ${chatIdString}, message length: ${message.length}`);
-    
+
     // Save user message to database
-    const userMessage = { role: 'user', content: message };
+    const userMessageId = generateMessageId();
+    const userMessage = {
+      id: userMessageId,
+      role: 'user',
+      content: message,
+      created_at: new Date().toISOString()
+    };
     await insertChatMessage(chatIdString, userMessage);
     
     let aiResponse;
@@ -190,9 +197,15 @@ export const sendInitialMessage = async (req, res) => {
     
     // Log before insertChatMessage (Assistant Message)
     console.log(`[sendInitialMessage] Inserting assistant message to chat ${chatIdString}, message length: ${aiResponse.length}`);
-    
+
     // Save AI response to database
-    const assistantMessage = { role: 'assistant', content: aiResponse };
+    const assistantMessageId = generateMessageId();
+    const assistantMessage = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: aiResponse,
+      created_at: new Date().toISOString()
+    };
     await insertChatMessage(chatIdString, assistantMessage);
 
     // Return the response in the format frontend expects

@@ -87,12 +87,20 @@ class ValidateUsername {
 
     // Check format first
     const formatValidation = this.validateFormat(username);
-    errors.push(...formatValidation.errors);
+    if (formatValidation && Array.isArray(formatValidation.errors)) {
+      errors.push(...formatValidation.errors);
+    } else {
+      errors.push('Validation error: username format validation failed');
+    }
 
     // If format is valid, check uniqueness
-    if (formatValidation.isValid) {
+    if (formatValidation && formatValidation.isValid) {
       const uniquenessValidation = await this.validateUniqueness(username);
-      errors.push(...uniquenessValidation.errors);
+      if (uniquenessValidation && Array.isArray(uniquenessValidation.errors)) {
+        errors.push(...uniquenessValidation.errors);
+      } else {
+        errors.push('Validation error: username uniqueness validation failed');
+      }
     }
 
     return {
@@ -112,12 +120,20 @@ class ValidateUsername {
 
     // Check format first
     const formatValidation = this.validateFormat(username);
-    errors.push(...formatValidation.errors);
+    if (formatValidation && Array.isArray(formatValidation.errors)) {
+      errors.push(...formatValidation.errors);
+    } else {
+      errors.push('Validation error: username format validation failed');
+    }
 
     // If format is valid, check uniqueness
-    if (formatValidation.isValid) {
+    if (formatValidation && formatValidation.isValid) {
       const uniquenessValidation = await this.validateUniqueness(username, userId);
-      errors.push(...uniquenessValidation.errors);
+      if (uniquenessValidation && Array.isArray(uniquenessValidation.errors)) {
+        errors.push(...uniquenessValidation.errors);
+      } else {
+        errors.push('Validation error: username uniqueness validation failed');
+      }
     }
 
     return {

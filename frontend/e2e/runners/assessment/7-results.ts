@@ -1,4 +1,5 @@
-import { Page, expect } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 import path from 'path';
 import { SCREENSHOT_DIR, debugPage } from '../../utils/test-utils';
 
@@ -22,27 +23,26 @@ export const checkResultsPage = async (page: Page): Promise<void> => {
   // Check for key elements on the results page
 
   try {
-    // Verify title
+    // Verify title - should be the pattern type (Regular/Irregular Cycles)
     const title = await page
       .locator('h1')
-      .filter({ hasText: /Assessment Results/ })
+      .filter({ hasText: /Regular Menstrual Cycles|Irregular Cycles/ })
       .first();
-    await expect(title).toBeVisible();
+    await expect(title).toBeVisible({ timeout: 10000 });
 
-    // Check for determined pattern section
-    const patternSection = await page
-      .locator('div')
-      .filter({ hasText: /Your Menstrual Pattern/ })
-      .first();
-    await expect(patternSection).toBeVisible();
+    // Check for assessment details section
+    const detailsSection = await page.locator('text=Assessment Details').first();
+    await expect(detailsSection).toBeVisible();
 
-    // Check for results table
-    const resultsTable = await page.locator('table').first();
-    await expect(resultsTable).toBeVisible();
+    // Check for recommendations section
+    const recommendationsSection = await page.locator('text=Recommendations').first();
+    await expect(recommendationsSection).toBeVisible();
 
     // Check for chat button
     const chatButton = await page.getByRole('button', { name: /chat with dottie/i });
     await expect(chatButton).toBeVisible();
+
+    console.log('✅ Results page verification complete');
   } catch (error) {
     console.error('Error checking results page:', error);
     throw error;

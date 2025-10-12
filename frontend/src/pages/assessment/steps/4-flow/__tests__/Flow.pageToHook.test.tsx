@@ -48,15 +48,15 @@ describe('Flow Page to Hook Connection', () => {
       flowHeaviness: 'very-heavy',
       setFlowHeaviness: mockSetFlowHeaviness
     }));
-    
+
     renderWithRouter(<FlowPage />)
-    
+
     // Check that the continue button is enabled
     const continueButton = screen.getByText('Continue').closest('button');
     expect(continueButton).not.toBeDisabled();
-    
-    // Look for selected option by class instead of ID
-    const heavyOption = screen.getByText('Very Heavy').closest('div');
-    expect(heavyOption).toHaveClass('bg-pink-50');
+
+    // Verify that the selected option has the selected styling
+    const selectedOption = screen.getByTestId('option-very-heavy');
+    expect(selectedOption).toHaveClass('bg-pink-50');
   })
 }) 

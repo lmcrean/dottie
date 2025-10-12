@@ -18,7 +18,9 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['list']],
   use: {
-    baseURL: 'https://dottie-backend.vercel.app',
+    // CI sets PLAYWRIGHT_BASE_URL for branch-specific deployments
+    // Default to main production API for local testing
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://dottie-api-v7hdajoteq-nw.a.run.app',
     trace: 'on-first-retry',
     extraHTTPHeaders: {
       'x-test-env': 'prod'

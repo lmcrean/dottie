@@ -75,12 +75,20 @@ class ValidateEmail {
 
     // Check format first
     const formatValidation = this.validateFormat(email);
-    errors.push(...formatValidation.errors);
+    if (formatValidation && Array.isArray(formatValidation.errors)) {
+      errors.push(...formatValidation.errors);
+    } else {
+      errors.push('Validation error: email format validation failed');
+    }
 
     // If format is valid, check uniqueness
-    if (formatValidation.isValid) {
+    if (formatValidation && formatValidation.isValid) {
       const uniquenessValidation = await this.validateUniqueness(email);
-      errors.push(...uniquenessValidation.errors);
+      if (uniquenessValidation && Array.isArray(uniquenessValidation.errors)) {
+        errors.push(...uniquenessValidation.errors);
+      } else {
+        errors.push('Validation error: email uniqueness validation failed');
+      }
     }
 
     return {
@@ -100,12 +108,20 @@ class ValidateEmail {
 
     // Check format first
     const formatValidation = this.validateFormat(email);
-    errors.push(...formatValidation.errors);
+    if (formatValidation && Array.isArray(formatValidation.errors)) {
+      errors.push(...formatValidation.errors);
+    } else {
+      errors.push('Validation error: email format validation failed');
+    }
 
     // If format is valid, check uniqueness
-    if (formatValidation.isValid) {
+    if (formatValidation && formatValidation.isValid) {
       const uniquenessValidation = await this.validateUniqueness(email, userId);
-      errors.push(...uniquenessValidation.errors);
+      if (uniquenessValidation && Array.isArray(uniquenessValidation.errors)) {
+        errors.push(...uniquenessValidation.errors);
+      } else {
+        errors.push('Validation error: email uniqueness validation failed');
+      }
     }
 
     return {

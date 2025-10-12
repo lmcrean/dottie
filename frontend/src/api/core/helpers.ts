@@ -6,4 +6,4 @@ export const isSuccess = (status: number): boolean => status >= 200 && status < 
 
 export const isClientError = (status: number): boolean => status >= 400 && status < 500;
 
-export const isServerError = (status: number): boolean => status >= 500; 
+export const isServerError = (status: number): boolean => status >= 500;

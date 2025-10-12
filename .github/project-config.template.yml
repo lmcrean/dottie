@@ -1,0 +1,63 @@
+# Project Configuration Template
+# Copy this file to `.github/project-config.yml` in your new project and update the values
+
+project:
+  # Google Cloud Platform Configuration
+  gcp:
+    project_id: "YOUR_GCP_PROJECT_ID"              # e.g., "my-project-123456"
+    region: "us-central1"                          # GCP region for resources
+    service_account: "YOUR_SERVICE_ACCOUNT_EMAIL"  # e.g., "github-actions@my-project.iam.gserviceaccount.com"
+    
+    # Artifact Registry Configuration
+    artifact_registry:
+      repository: "api-images"                     # Docker repository name
+      location: "us-central1"                     # Same as gcp.region typically
+    
+    # Cloud Run Configuration
+    cloud_run:
+      region: "us-central1"                       # Same as gcp.region typically
+      memory: "512Mi"                             # Memory allocation
+      cpu: "1"                                    # CPU allocation
+      min_instances: 0                            # Minimum instances (0 for cost savings)
+      max_instances: 10                           # Maximum instances
+      timeout: "60s"                              # Request timeout
+      concurrency: 100                            # Concurrent requests per instance
+
+  # Firebase Configuration
+  firebase:
+    project_id: "YOUR_FIREBASE_PROJECT_ID"        # Usually same as gcp.project_id
+    hosting:
+      main_url: "https://YOUR_FIREBASE_PROJECT_ID.web.app"
+      branch_url_pattern: "https://YOUR_FIREBASE_PROJECT_ID--branch-{pr_number}-{hash}.web.app"
+
+  # Application Configuration
+  app:
+    name: "YOUR_APP_NAME"                         # Short name for your application
+    api:
+      service_name_pattern: "api-csharp-{branch}" # Cloud Run service naming pattern
+      health_endpoint: "/health"                  # Health check endpoint
+      cors_origins:                               # Allowed CORS origins
+        - "https://YOUR_FIREBASE_PROJECT_ID.web.app"
+        - "https://YOUR_FIREBASE_PROJECT_ID--*.web.app"
+    
+    web:
+      entry_point: "apps/web"                     # Path to web application from repo root
+      build_command: "npm run build"              # Build command
+      test_command: "npm run test -- --run --reporter=verbose"  # Test command
+      environment_file: "src/environments/environment.prod.ts"  # Environment config file
+      config_file: "src/assets/config.js"        # Runtime config file
+
+# GitHub Secrets Required
+# Add these secrets to your GitHub repository settings:
+secrets:
+  required:
+    - GCP_SA_KEY                    # Google Cloud service account JSON key
+    - GCP_PROJECT_ID                # Google Cloud project ID (should match project.gcp.project_id)
+    - FIREBASE_SERVICE_ACCOUNT_KEY  # Firebase service account JSON key
+
+# Instructions for New Projects:
+# 1. Copy this file to `.github/project-config.yml` in your new project
+# 2. Replace all "YOUR_*" placeholders with your actual values
+# 3. Copy the `.github/actions/load-config/` directory to your new project
+# 4. Copy the workflow files you need and they will automatically use your config
+# 5. Add the required GitHub secrets to your repository settings

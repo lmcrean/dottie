@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: [
-      '**/*.api.pw.spec.{js,ts}', 
+      '**/*.api.pw.spec.{js,ts}',
       '**/playwright/**',
       '**/node_modules/**'
     ],
@@ -19,6 +19,15 @@ export default defineConfig({
     },
     testTimeout: 60000,
     globalSetup: './test-utilities/setupDb.js',
+    // Limit concurrent tests to prevent port conflicts and database race conditions
+    maxConcurrency: 5,
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        maxThreads: 5,
+        minThreads: 1
+      }
+    },
     // Match anything with 'dev' in the file path or test name
     includeMatch: [
       // Include tests with 'dev' in the file path

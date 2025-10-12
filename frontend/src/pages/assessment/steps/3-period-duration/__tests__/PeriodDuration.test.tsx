@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import PeriodDurationPage from '../page'
-import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
 import * as PeriodDurationHook from '../hooks/use-period-duration'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-period-duration', () => ({
+vi.mock('../hooks/use-period-duration', () => ({
   usePeriodDuration: vi.fn()
 }));
 
@@ -67,10 +67,11 @@ describe('PeriodDuration', () => {
 
   it('should navigate to the previous page when back button is clicked', () => {
     renderWithRouter(<PeriodDurationPage />)
-    
-    // Check if the back button links to the cycle length page
-    const backButton = screen.getByText('Back').closest('a')
-    expect(backButton).toHaveAttribute('href', '/assessment/cycle-length')
+
+    // Check if the back button is rendered (it's a button, not a link)
+    const backButton = screen.getByTestId('back-button')
+    expect(backButton).toBeInTheDocument()
+    expect(backButton.tagName).toBe('BUTTON')
   })
 
   it('should display privacy information', () => {

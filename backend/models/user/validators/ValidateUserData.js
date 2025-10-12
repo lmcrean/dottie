@@ -51,14 +51,22 @@ class ValidateUserData {
    */
   static validateForCreation(userData) {
     const errors = [];
-    
+
     // Check required fields
     const requiredValidation = this.validateRequiredFields(userData);
-    errors.push(...requiredValidation.errors);
+    if (requiredValidation && Array.isArray(requiredValidation.errors)) {
+      errors.push(...requiredValidation.errors);
+    } else {
+      errors.push('Validation error: required fields validation failed');
+    }
 
     // Check age if provided
     const ageValidation = this.validateAge(userData.age);
-    errors.push(...ageValidation.errors);
+    if (ageValidation && Array.isArray(ageValidation.errors)) {
+      errors.push(...ageValidation.errors);
+    } else {
+      errors.push('Validation error: age validation failed');
+    }
 
     return {
       isValid: errors.length === 0,
@@ -73,11 +81,15 @@ class ValidateUserData {
    */
   static validateForUpdate(userData) {
     const errors = [];
-    
+
     // For updates, we don't require all fields, just validate what's provided
     if (userData.age !== undefined) {
       const ageValidation = this.validateAge(userData.age);
-      errors.push(...ageValidation.errors);
+      if (ageValidation && Array.isArray(ageValidation.errors)) {
+        errors.push(...ageValidation.errors);
+      } else {
+        errors.push('Validation error: age validation failed');
+      }
     }
 
     return {

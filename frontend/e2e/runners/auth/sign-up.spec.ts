@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 /**
  * Creates a new test user account
@@ -11,13 +11,14 @@ export const signUpTestUser = async (page: Page) => {
   const username = `testuser_${Date.now()}`;
 
   // Navigate to sign-up page
-  await page.goto('http://localhost:3005/auth/sign-up');
+  // Uses baseURL from playwright.config.ts (localhost locally, deployed URL in CI)
+  await page.goto('/auth/sign-up');
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(1000); // Give the page time to fully load
 
   try {
     console.log('Starting sign-up process...');
-    
+
     // Wait for form to be visible
     await page.waitForSelector('form', { timeout: 10000 });
     console.log('Form found on the page');
@@ -28,21 +29,41 @@ export const signUpTestUser = async (page: Page) => {
     // Log all input elements to help debug
     const inputs = await page.locator('input').all();
     console.log(`Found ${inputs.length} input elements on page`);
-    
+
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
-      const id = await input.getAttribute('id') || 'no-id';
-      const type = await input.getAttribute('type') || 'no-type';
-      const name = await input.getAttribute('name') || 'no-name';
-      console.log(`Input #${i+1}: id=${id}, type=${type}, name=${name}`);
+      const id = (await input.getAttribute('id')) || 'no-id';
+      const type = (await input.getAttribute('type')) || 'no-type';
+      const name = (await input.getAttribute('name')) || 'no-name';
+      console.log(`Input #${i + 1}: id=${id}, type=${type}, name=${name}`);
     }
 
     // Try to fill in registration form using multiple selector strategies
-    await fillInputField(page, 'input#name, input[name="name"], input[placeholder*="name" i]', 'Test User');
-    await fillInputField(page, 'input#username, input[name="username"], input[placeholder*="username" i]', username);
-    await fillInputField(page, 'input#email, input[name="email"], input[type="email"], input[placeholder*="email" i]', email);
-    await fillInputField(page, 'input#password, input[name="password"], input[type="password"]:nth-of-type(1), input[placeholder*="password" i]:nth-of-type(1)', password);
-    await fillInputField(page, 'input#confirmPassword, input[name="confirmPassword"], input[type="password"]:nth-of-type(2), input[placeholder*="confirm" i], input[placeholder*="retype" i]', password);
+    await fillInputField(
+      page,
+      'input#name, input[name="name"], input[placeholder*="name" i]',
+      'Test User'
+    );
+    await fillInputField(
+      page,
+      'input#username, input[name="username"], input[placeholder*="username" i]',
+      username
+    );
+    await fillInputField(
+      page,
+      'input#email, input[name="email"], input[type="email"], input[placeholder*="email" i]',
+      email
+    );
+    await fillInputField(
+      page,
+      'input#password, input[name="password"], input[type="password"]:nth-of-type(1), input[placeholder*="password" i]:nth-of-type(1)',
+      password
+    );
+    await fillInputField(
+      page,
+      'input#confirmPassword, input[name="confirmPassword"], input[type="password"]:nth-of-type(2), input[placeholder*="confirm" i], input[placeholder*="retype" i]',
+      password
+    );
 
     // Wait a moment for form validation
     await page.waitForTimeout(500);
@@ -53,12 +74,12 @@ export const signUpTestUser = async (page: Page) => {
     // Find all buttons on the page
     const buttons = await page.locator('button').all();
     console.log(`Found ${buttons.length} buttons on the page`);
-    
+
     for (let i = 0; i < buttons.length; i++) {
       const button = buttons[i];
       const text = await button.textContent();
-      const type = await button.getAttribute('type') || 'no-type';
-      console.log(`Button #${i+1}: text="${text?.trim()}", type=${type}`);
+      const type = (await button.getAttribute('type')) || 'no-type';
+      console.log(`Button #${i + 1}: text="${text?.trim()}", type=${type}`);
     }
 
     // Click create account button - try multiple selectors
@@ -69,18 +90,18 @@ export const signUpTestUser = async (page: Page) => {
       'button[type="submit"]',
       'form button'
     ];
-    
+
     let buttonClicked = false;
     for (const selector of buttonSelectors) {
       const button = page.locator(selector);
-      if (await button.count() > 0) {
+      if ((await button.count()) > 0) {
         console.log(`Found button with selector: ${selector}`);
         await button.click();
         buttonClicked = true;
         break;
       }
     }
-    
+
     if (!buttonClicked) {
       console.error('Could not find submit button with any of the expected selectors');
       // As a last resort, try to submit the form directly
@@ -106,7 +127,9 @@ export const signUpTestUser = async (page: Page) => {
       console.error('Registration might have failed - still on sign-up page');
 
       // Check for error messages
-      const errorMessages = await page.locator('[role="alert"], .text-red-500, [class*="error" i]').all();
+      const errorMessages = await page
+        .locator('[role="alert"], .text-red-500, [class*="error" i]')
+        .all();
       for (const error of errorMessages) {
         const errorText = await error.textContent();
         console.error(`Error message found: "${errorText}"`);
@@ -117,12 +140,14 @@ export const signUpTestUser = async (page: Page) => {
       if (formErrors.length > 0) {
         console.error(`Found ${formErrors.length} invalid form fields`);
       }
-      
+
       // Try to extract any relevant error messages from the page
       const pageText = await page.textContent('body');
       if (pageText.includes('error') || pageText.includes('failed')) {
-        console.error('Page contains error-related text. Body text excerpt:', 
-          pageText.substring(0, 500) + '...');
+        console.error(
+          'Page contains error-related text. Body text excerpt:',
+          pageText.substring(0, 500) + '...'
+        );
       }
     } else {
       console.log('Registration appears successful - redirected to:', currentUrl);
@@ -143,19 +168,19 @@ export const signUpTestUser = async (page: Page) => {
  * Helper function to fill an input field using multiple selectors
  */
 async function fillInputField(page: Page, selectors: string, value: string) {
-  const selectorList = selectors.split(',').map(s => s.trim());
+  const selectorList = selectors.split(',').map((s) => s.trim());
   let filled = false;
-  
+
   for (const selector of selectorList) {
     const locator = page.locator(selector);
-    if (await locator.count() > 0) {
+    if ((await locator.count()) > 0) {
       await locator.fill(value);
       console.log(`Filled input with selector: ${selector}`);
       filled = true;
       break;
     }
   }
-  
+
   if (!filled) {
     console.error(`Could not find input field with any of these selectors: ${selectors}`);
   }

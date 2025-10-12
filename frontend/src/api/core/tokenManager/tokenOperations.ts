@@ -14,7 +14,7 @@ export const setAuthToken = (token: string): boolean => {
   if (!token) return false;
 
   const success = setStorageValue(TOKEN_KEYS.AUTH_TOKEN, token);
-  
+
   if (success) {
     dispatchTokenChangeEvent();
   }
@@ -57,4 +57,4 @@ export const getRefreshToken = (): string | null => {
  */
 export const hasRefreshToken = (): boolean => {
   return !!getRefreshToken();
-}; 
+};

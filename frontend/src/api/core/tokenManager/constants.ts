@@ -8,4 +8,4 @@ export const TOKEN_KEYS = {
   AUTH_TOKEN: 'authToken',
   REFRESH_TOKEN: 'refresh_token',
   USER: 'auth_user'
-} as const; 
+} as const;

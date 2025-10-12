@@ -16,4 +16,4 @@ export interface UseChatPageStateReturn {
   handleNewChat: () => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   assessmentId: string | null;
-} 
+}

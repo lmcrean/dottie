@@ -9,12 +9,17 @@ import { findById } from './findById.js';
  */
 export async function create(table, data) {
   try {
-    // Log entry point
+    // Log entry point (don't spread data - causes "(intermediate value) is not iterable" error)
     console.log(`[DbService.create] Creating record in ${table} with data:`, {
-      ...data,
-      id_type: data.id ? typeof data.id : 'undefined',
-      conversation_id_type: data.conversation_id ? typeof data.conversation_id : 'undefined'
+      data: data,
+      id_type: data?.id ? typeof data.id : 'undefined',
+      conversation_id_type: data?.conversation_id ? typeof data.conversation_id : 'undefined'
     });
+
+    // Validate data before spreading (prevent "(intermediate value) is not iterable" error)
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid data provided to create()');
+    }
 
     // Create a sanitized copy of the data to avoid modifying the original
     const sanitizedData = { ...data };
@@ -50,14 +55,26 @@ export async function create(table, data) {
       table
     });
 
+    // Filter out undefined values to prevent NULL being inserted
+    // This allows database defaults (like gen_random_uuid() for id) to work
+    const cleanedData = Object.fromEntries(
+      Object.entries(sanitizedData).filter(([_, value]) => value !== undefined)
+    );
+
     // Prepare parameters for SQL execution
-    const parameters = Object.values(sanitizedData);
-    
+    const parameters = Object.values(cleanedData);
+
     // Log SQL parameters
     console.log(`[DbService.create] Executing SQL with parameters:`, parameters);
 
-    const [id] = await db(table)
-      .insert(sanitizedData);
+    // Use returning() for PostgreSQL compatibility
+    // SQLite returns [id], PostgreSQL needs .returning() to return data
+    const result = await db(table)
+      .insert(cleanedData)
+      .returning('*');
+
+    // PostgreSQL returns an array of objects, SQLite returns an array of IDs
+    const id = result[0]?.id || result[0] || sanitizedData.id;
 
     // Log successful insertion
     console.log(`[DbService.create] Successfully inserted record in ${table} with ID: ${sanitizedData.id || id}`);
