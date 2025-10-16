@@ -1,31 +1,28 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { signup } from '../../signup/controller.js';
+import User from '../../../../models/user/User.js';
+import bcrypt from 'bcrypt';
 
-// Mock the User model
-const mockUser = {
-  findByEmail: vi.fn(),
-  findByUsername: vi.fn(),
-  create: vi.fn()
-};
+// Spy on User methods
+let findByEmailSpy, findByUsernameSpy, createSpy, bcryptHashSpy;
 
-// Mock the dependencies
-vi.mock('../../../models/user/User.js', () => ({
-  default: mockUser
-}));
+beforeEach(() => {
+  // Create spies for User methods
+  findByEmailSpy = vi.spyOn(User, 'findByEmail');
+  findByUsernameSpy = vi.spyOn(User, 'findByUsername');
+  createSpy = vi.spyOn(User, 'create');
+  bcryptHashSpy = vi.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword123');
+});
 
-vi.mock('bcrypt', () => ({
-  default: {
-    hash: vi.fn().mockResolvedValue('hashedpassword123')
-  }
-}));
+afterEach(() => {
+  // Restore all spies
+  vi.restoreAllMocks();
+});
 
 describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] }, () => {
   let req, res;
 
   beforeEach(() => {
-    // Reset all mocks
-    vi.clearAllMocks();
-
     // Setup request and response mocks
     req = {
       body: {
@@ -44,14 +41,14 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
 
   it('should return specific error for email conflict with structured response', async () => {
     // Mock findByEmail to return an existing user (email conflict)
-    mockUser.findByEmail.mockResolvedValue({
+    findByEmailSpy.mockResolvedValue({
       id: '123',
       username: 'existinguser',
       email: 'user@example.com'
     });
-    
+
     // Mock findByUsername to return null (no username conflict)
-    mockUser.findByUsername.mockResolvedValue(null);
+    findByUsernameSpy.mockResolvedValue(null);
 
     await signup(req, res);
 
@@ -65,10 +62,10 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
 
   it('should return specific error for username conflict with structured response', async () => {
     // Mock findByEmail to return null (no email conflict)
-    mockUser.findByEmail.mockResolvedValue(null);
-    
+    findByEmailSpy.mockResolvedValue(null);
+
     // Mock findByUsername to return an existing user (username conflict)
-    mockUser.findByUsername.mockResolvedValue({
+    findByUsernameSpy.mockResolvedValue({
       id: '456',
       username: 'testuser',
       email: 'other@example.com'
@@ -86,13 +83,13 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
 
   it('should check email conflict before username conflict', async () => {
     // Mock both to exist - email should be checked first
-    mockUser.findByEmail.mockResolvedValue({
+    findByEmailSpy.mockResolvedValue({
       id: '123',
       username: 'existinguser',
       email: 'user@example.com'
     });
-    
-    mockUser.findByUsername.mockResolvedValue({
+
+    findByUsernameSpy.mockResolvedValue({
       id: '456',
       username: 'testuser',
       email: 'other@example.com'
@@ -109,24 +106,24 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
     });
 
     // findByUsername should not be called if email already exists
-    expect(mockUser.findByEmail).toHaveBeenCalledWith('user@example.com');
-    expect(mockUser.findByUsername).not.toHaveBeenCalled();
+    expect(findByEmailSpy).toHaveBeenCalledWith('user@example.com');
+    expect(findByUsernameSpy).not.toHaveBeenCalled();
   });
 
   it('should handle User.create validation errors with structured response', async () => {
     // Mock no existing users
-    mockUser.findByEmail.mockResolvedValue(null);
-    mockUser.findByUsername.mockResolvedValue(null);
-    
+    findByEmailSpy.mockResolvedValue(null);
+    findByUsernameSpy.mockResolvedValue(null);
+
     // Mock User.create to return validation error
-    mockUser.create.mockResolvedValue({
+    createSpy.mockResolvedValue({
       success: false,
       errors: ['Email already exists'] // This could happen in race conditions
     });
 
     await signup(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(409);
     expect(res.json).toHaveBeenCalledWith({
       error: 'Email already exists',
       errorType: 'EMAIL_CONFLICT',
@@ -136,18 +133,18 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
 
   it('should handle User.create username validation errors with structured response', async () => {
     // Mock no existing users
-    mockUser.findByEmail.mockResolvedValue(null);
-    mockUser.findByUsername.mockResolvedValue(null);
-    
+    findByEmailSpy.mockResolvedValue(null);
+    findByUsernameSpy.mockResolvedValue(null);
+
     // Mock User.create to return username validation error
-    mockUser.create.mockResolvedValue({
+    createSpy.mockResolvedValue({
       success: false,
       errors: ['Username already exists'] // This could happen in race conditions
     });
 
     await signup(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(409);
     expect(res.json).toHaveBeenCalledWith({
       error: 'Username already exists',
       errorType: 'USERNAME_CONFLICT',
@@ -157,11 +154,11 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
 
   it('should handle general validation errors with structured response', async () => {
     // Mock no existing users
-    mockUser.findByEmail.mockResolvedValue(null);
-    mockUser.findByUsername.mockResolvedValue(null);
-    
+    findByEmailSpy.mockResolvedValue(null);
+    findByUsernameSpy.mockResolvedValue(null);
+
     // Mock User.create to return other validation error
-    mockUser.create.mockResolvedValue({
+    createSpy.mockResolvedValue({
       success: false,
       errors: ['Password is too weak']
     });
@@ -178,7 +175,7 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
 
   it('should handle server errors with structured response', async () => {
     // Mock findByEmail to throw an error
-    mockUser.findByEmail.mockRejectedValue(new Error('Database connection failed'));
+    findByEmailSpy.mockRejectedValue(new Error('Database connection failed'));
 
     await signup(req, res);
 

@@ -71,7 +71,7 @@ export const removeStorageValue = (key: StorageKey): void => {
  * Clear all token-related storage
  */
 export const clearAllStorage = (): void => {
-  Object.values(TOKEN_KEYS).forEach(key => {
+  Object.values(TOKEN_KEYS).forEach((key) => {
     removeStorageValue(key);
   });
-}; 
+};

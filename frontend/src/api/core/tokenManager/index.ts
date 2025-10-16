@@ -17,16 +17,10 @@ export {
 } from './tokenOperations';
 
 // Re-export user operations
-export {
-  setUserData,
-  getUserData
-} from './userOperations';
+export { setUserData, getUserData } from './userOperations';
 
 // Re-export auth data operations
-export {
-  storeAuthData,
-  clearAllTokens
-} from './authDataOperations';
+export { storeAuthData, clearAllTokens } from './authDataOperations';
 
 // Default export for backward compatibility
 import { TOKEN_KEYS } from './constants';
@@ -53,4 +47,4 @@ export default {
   hasRefreshToken,
   clearAllTokens,
   storeAuthData
-}; 
+};

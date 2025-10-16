@@ -74,27 +74,33 @@ beforeAll(async () => {
 // Cleanup after tests
 afterAll(async () => {
   try {
-    // Clean up test data
+    // Clean up test data - ensure proper order and await all operations
     if (testAssessmentId) {
       try {
-        // Use raw query to delete
+        // Use raw query to delete assessment
         await db.raw("DELETE FROM assessments WHERE id = ?", [testAssessmentId]);
+        // Wait a moment for DB to commit
+        await new Promise(resolve => setTimeout(resolve, 50));
       } catch (error) {
-
+        // Silent cleanup errors (assessment may have been deleted by test)
       }
     }
-    
+
     if (testUserId) {
       try {
-        // Use raw query to delete
+        // Use raw query to delete user
         await db.raw("DELETE FROM users WHERE id = ?", [testUserId]);
+        // Wait a moment for DB to commit
+        await new Promise(resolve => setTimeout(resolve, 50));
       } catch (error) {
-
+        // Silent cleanup errors
       }
     }
-    
-    // Close test server
-    await closeTestServer(server);
+
+    // Ensure server is closed before test completes
+    if (server) {
+      await closeTestServer(server);
+    }
   } catch (error) {
     console.error("Error in test cleanup:", error);
   }

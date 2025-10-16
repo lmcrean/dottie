@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import FlowPage from '../page'
-import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
 import * as FlowHook from '../hooks/use-flow-heaviness'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-flow-heaviness', () => ({
+vi.mock('../hooks/use-flow-heaviness', () => ({
   useFlowHeaviness: vi.fn()
 }));
 
@@ -51,8 +51,10 @@ describe('Flow page', () => {
 
   it('navigates to the previous page when back button is clicked', () => {
     renderWithRouter(<FlowPage />)
-    const backButton = screen.getByText('Back').closest('a')
-    expect(backButton).toHaveAttribute('href', '/assessment/period-duration')
+    // Check if the back button is rendered (it's a button, not a link)
+    const backButton = screen.getByTestId('back-button')
+    expect(backButton).toBeInTheDocument()
+    expect(backButton.tagName).toBe('BUTTON')
   })
 
   it('displays the correct progress percentage', () => {

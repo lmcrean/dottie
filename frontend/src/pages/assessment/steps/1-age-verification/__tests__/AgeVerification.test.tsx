@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import AgeVerificationPage from '../page'
-import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
-import * as AgeVerificationHook from '../../../../../hooks/assessment/steps/use-age-verification'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
+import * as AgeVerificationHook from '../hooks/use-age-verification'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-age-verification', () => ({
+vi.mock('../hooks/use-age-verification', () => ({
   useAgeVerification: vi.fn()
 }));
 

@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom'; // Vite not nextjs. useNavigate and Button removed.
-import { Wrench } from 'lucide-react'; // Zap removed
+import { useLocation } from 'react-router-dom'; // Vite not nextjs. useNavigate and Button removed.
+// Zap removed
 // Button import removed
 import QuickCompleteButton from '@/src/pages/assessment/steps/components/QuickCompleteButton';
 
@@ -10,12 +10,13 @@ export default function UITestPageSwitch() {
   // isAgeVerificationPage removed
 
   // Check if we're in a development environment (localhost)
-  const isLocalhost = typeof window !== 'undefined' && 
-    (window.location.hostname === 'localhost' || 
-     window.location.hostname === '127.0.0.1' ||
-     window.location.hostname.startsWith('192.168.') ||
-     window.location.hostname.startsWith('10.') ||
-     window.location.hostname.startsWith('172.'));
+  const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.startsWith('192.168.') ||
+      window.location.hostname.startsWith('10.') ||
+      window.location.hostname.startsWith('172.'));
 
   // handleQuickResponse function removed
 

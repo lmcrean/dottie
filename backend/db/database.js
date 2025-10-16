@@ -1,5 +1,4 @@
 import knex from "knex";
-import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -15,31 +14,28 @@ const dbPath = path.join(rootDir, "dev.sqlite3");
 
 // Determine environment
 const isProduction = process.env.NODE_ENV === "production";
-const isVercel = process.env.VERCEL === "1";
+const hasNeonUrl = !!process.env.NEON_DATABASE_URL;
 
 // Choose database based on environment
 let db;
 
 async function initDB() {
-  if (isProduction && isVercel) {
-    // Production environment - use Supabase
+  if (isProduction && hasNeonUrl) {
+    // Production environment - use Neon PostgreSQL
+    console.log("🐘 Initializing Neon PostgreSQL database...");
 
-    // Import Supabase shim
-    try {
-      const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_ANON_PUBLIC
-      );
-
-      // Import the Supabase shim
-      const supabaseModule = await import("./supabaseShim.js");
-      db = supabaseModule.default;
-    } catch (error) {
-      console.error("Error initializing Supabase:", error);
-      throw error;
-    }
+    db = knex({
+      client: "pg",
+      connection: process.env.NEON_DATABASE_URL,
+      pool: {
+        min: 2,
+        max: 10
+      },
+      acquireConnectionTimeout: 10000
+    });
   } else {
     // Development environment - use SQLite
+    console.log("📁 Initializing SQLite database...");
 
     db = knex({
       client: "sqlite3",
@@ -59,7 +55,9 @@ async function initDB() {
 }
 
 const dbInstance = await initDB();
-const dbType = isProduction && isVercel ? 'Supabase' : 'SQLite';
+const dbType = isProduction && hasNeonUrl ? 'PostgreSQL (Neon)' : 'SQLite';
+
+console.log(`✅ Database initialized: ${dbType}`);
 
 export { dbInstance as db, dbType };
 export default dbInstance;

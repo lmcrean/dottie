@@ -1,0 +1,33 @@
+name: Deploy Branch Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+  checks: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/reusable-deploy.yml
+    secrets: inherit
+    with:
+      deployment_type: 'branch'
+      branch_name: ${{ github.head_ref }}
+      pr_number: ${{ github.event.number }}
+
+  test:
+    needs: deploy
+    uses: ./.github/workflows/reusable-test.yml
+    secrets: inherit
+    with:
+      api_url: ${{ needs.deploy.outputs.api_url }}
+      web_url: ${{ needs.deploy.outputs.web_url }}
+      deployment_type: 'branch'
+      branch_name: ${{ github.head_ref }}
+      pr_number: ${{ github.event.number }}

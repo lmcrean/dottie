@@ -67,7 +67,18 @@ class CreateUser {
       };
 
       // Create user in database
+      console.log('[CreateUser] Attempting to create user in database:', {
+        table: UserBase.getTableName(),
+        userId: newUser.id,
+        username: newUser.username
+      });
+
       const createdUser = await DbService.create(UserBase.getTableName(), newUser);
+
+      console.log('[CreateUser] User created successfully:', {
+        id: createdUser?.id,
+        username: createdUser?.username
+      });
 
       // Return sanitized user data
       return {
@@ -76,10 +87,15 @@ class CreateUser {
       };
 
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('[CreateUser] Error creating user:', {
+        error: error.message,
+        stack: error.stack,
+        code: error.code,
+        errno: error.errno
+      });
       return {
         success: false,
-        errors: ['Failed to create user']
+        errors: [`Failed to create user: ${error.message}`]
       };
     }
   }

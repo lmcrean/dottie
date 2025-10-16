@@ -1,6 +1,7 @@
 import logger from '../../../services/logger.js';
 import { getConversation, insertChatMessage } from '../../../models/chat/index.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateMessageId } from '../../../models/chat/message/shared/utils/responseBuilders.js';
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -79,7 +80,13 @@ export const sendFollowUpMessage = async (req, res) => {
     }
 
     // Save user message to database
-    const userMessage = { role: 'user', content: message };
+    const userMessageId = generateMessageId();
+    const userMessage = {
+      id: userMessageId,
+      role: 'user',
+      content: message,
+      created_at: new Date().toISOString()
+    };
     await insertChatMessage(targetConversationId, userMessage);
     
     let aiResponse;
@@ -144,7 +151,13 @@ export const sendFollowUpMessage = async (req, res) => {
     }
     
     // Save AI response to database
-    const assistantMessage = { role: 'assistant', content: aiResponse };
+    const assistantMessageId = generateMessageId();
+    const assistantMessage = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: aiResponse,
+      created_at: new Date().toISOString()
+    };
     await insertChatMessage(targetConversationId, assistantMessage);
 
     // Return the response in the format frontend expects

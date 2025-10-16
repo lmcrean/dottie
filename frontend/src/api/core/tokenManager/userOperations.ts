@@ -38,4 +38,4 @@ export const getUserData = (): User | null => {
     console.error('[User Operations] Failed to parse user data:', e);
     return null;
   }
-}; 
+};

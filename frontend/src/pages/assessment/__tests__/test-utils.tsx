@@ -260,56 +260,86 @@ export const navigateToSymptoms = async (
 
 export const renderResults = (sessionData: Record<string, any>) => {
   setupSessionStorage(sessionData);
-  
+
   // Mock the results page rather than using the real component
   const MockResultsPage = () => {
     // Determine which pattern text to show based on session data
     let patternDescription = 'Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.';
     let patternTitle = '';
-    
-    // If heavy flow or 8+ days period, show heavy flow pattern
-    if (sessionData.flowLevel === 'Heavy' || sessionData.flowLevel === 'Very Heavy' || 
-        sessionData.periodDuration === '8+ days') {
-      patternDescription = 'Your flow is heavier or longer than typical, which could impact your daily activities.';
-      patternTitle = 'Heavy Flow Pattern';
-    }
-    
-    // If irregular cycle length, show irregular pattern
-    if (sessionData.cycleLength === 'Irregular' || sessionData.cycleLength === 'Less than 21 days' || 
+    let recommendations = ['Track Your Cycle', 'Exercise Regularly'];
+
+    // Priority 1: Explicitly "Irregular" cycles - takes precedence even over adolescent age
+    if (sessionData.cycleLength === 'Irregular' ||
+        sessionData.cycleLength === 'Less than 21 days' ||
         sessionData.cycleLength === '36-40 days') {
       patternDescription = 'Your cycle length is outside the typical range, which may indicate hormonal fluctuations.';
       patternTitle = 'Irregular Timing Pattern';
+      recommendations = ['Track Your Cycle', 'Consult a Healthcare Provider', 'Stress Management'];
     }
-    
-    // If adolescent age group, show developing pattern
-    if (sessionData.age === 'Under 13 years' || sessionData.age === '13-17 years') {
+    // Priority 2: Adolescent age with Variable cycles (unless explicitly predictable = Yes)
+    else if ((sessionData.age === 'Under 13 years' || sessionData.age === '13-17 years') &&
+             sessionData.cyclePredictable !== 'Yes') {
       patternDescription = 'Your cycles are still establishing a regular pattern, which is normal during adolescence.';
       patternTitle = 'Developing Pattern';
+      recommendations = ['Be Patient', 'Track Your Cycle', 'Learn About Your Body', 'Talk to Someone You Trust'];
     }
-    
+    // Priority 3: Variable cycles for non-adolescent users
+    else if (sessionData.cycleLength === 'Variable') {
+      patternDescription = 'Your cycle length is outside the typical range, which may indicate hormonal fluctuations.';
+      patternTitle = 'Irregular Timing Pattern';
+      recommendations = ['Track Your Cycle', 'Consult a Healthcare Provider', 'Stress Management'];
+    }
+    // Priority 4: Heavy flow or long period
+    else if (sessionData.flowLevel === 'Heavy' || sessionData.flowLevel === 'Very Heavy' ||
+        sessionData.periodDuration === '8+ days') {
+      patternDescription = 'Your flow is heavier or longer than typical, which could impact your daily activities.';
+      patternTitle = 'Heavy Flow Pattern';
+      recommendations = ['Iron-rich Foods', 'Track Your Cycle', 'Medical Evaluation'];
+    }
+    // Priority 5: Regular cycles with older age OR explicit predictability = Yes
+    else if (sessionData.age === '18-24 years' || sessionData.age === '25+ years' ||
+             sessionData.cyclePredictable === 'Yes') {
+      // Check for unpredictable override
+      if (sessionData.cyclePredictable === 'No') {
+        patternDescription = 'Your cycles are still establishing a regular pattern, which is normal during adolescence.';
+        patternTitle = 'Developing Pattern';
+        recommendations = ['Be Patient', 'Track Your Cycle'];
+      } else {
+        patternDescription = 'Your menstrual cycles follow a normal, healthy pattern according to ACOG guidelines.';
+        patternTitle = 'Regular Pattern';
+        recommendations = ['Track Your Cycle', 'Exercise Regularly'];
+      }
+    }
+
+    // Add additional common recommendations if not already included
+    const allRecommendations = [...recommendations];
+    if (!allRecommendations.includes('Stay Hydrated')) allRecommendations.push('Stay Hydrated');
+    if (!allRecommendations.includes('Medical Evaluation')) allRecommendations.push('Medical Evaluation');
+    if (!allRecommendations.includes('Consult a Healthcare Provider')) allRecommendations.push('Consult a Healthcare Provider');
+    if (!allRecommendations.includes('Stress Management')) allRecommendations.push('Stress Management');
+
     return (
       <div>
         <h1>Your Assessment Results</h1>
         {patternTitle && <h2>{patternTitle}</h2>}
         <p>{patternDescription}</p>
+        <div>{sessionData.age || "18-24 years"}</div>
         <div>{sessionData.cycleLength || "26-30 days"}</div>
         <div>{sessionData.periodDuration || "4-5 days"}</div>
         <div>{sessionData.flowLevel || "Moderate"}</div>
         <div>{sessionData.painLevel || "Mild"}</div>
-        <div>{Array.isArray(sessionData.symptoms) && sessionData.symptoms.length > 0 
-          ? sessionData.symptoms[0] 
+        <h3>Symptoms</h3>
+        <div>{Array.isArray(sessionData.symptoms) && sessionData.symptoms.length > 0
+          ? sessionData.symptoms[0]
           : "Fatigue"}</div>
-        <div>Track Your Cycle</div>
-        <div>Exercise Regularly</div>
-        <div>Iron-rich Foods</div>
-        <div>Stay Hydrated</div>
-        <div>Medical Evaluation</div>
-        <div>Consult a Healthcare Provider</div>
-        <div>Stress Management</div>
+        <h3>Recommendations</h3>
+        {allRecommendations.map((rec, idx) => (
+          <div key={idx}>{rec}</div>
+        ))}
       </div>
     );
   };
-  
+
   render(
     <MemoryRouter>
       <MockResultsPage />

@@ -10,6 +10,11 @@ import { findByIdWithJson } from './findByIdWithJson.js';
  * @returns {Promise<Array>} - Matching records
  */
 export async function updateWithJson(table, id, data, jsonFields = []) {
+  // Validate data before spreading
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid data provided to updateWithJson()');
+  }
+
   const preparedData = { ...data };
   for (const field of jsonFields) {
     if (preparedData[field] !== undefined) {

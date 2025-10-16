@@ -41,9 +41,4 @@ const updateApiBaseUrl = (url: string) => {
   return newUrl;
 };
 
-export { 
-  apiClient, 
-  setAuthToken, 
-  setRefreshToken, 
-  updateApiBaseUrl as setApiBaseUrl 
-};
+export { apiClient, setAuthToken, setRefreshToken, updateApiBaseUrl as setApiBaseUrl };

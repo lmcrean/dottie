@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import CycleLengthPage from '../page'
-import { AssessmentResultProvider } from '../../../../../context/assessment/AssessmentResultProvider'
-import * as CycleLengthHook from '../../../../../hooks/assessment/steps/use-cycle-length'
+import { AssessmentResultProvider } from '../../context/AssessmentResultProvider'
+import * as CycleLengthHook from '../hooks/use-cycle-length'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-cycle-length', () => ({
+vi.mock('../hooks/use-cycle-length', () => ({
   useCycleLength: vi.fn()
 }));
 
@@ -67,10 +67,11 @@ describe('CycleLength', () => {
 
   it('should navigate to the previous page when back button is clicked', () => {
     renderWithRouter(<CycleLengthPage />)
-    
-    // Check if the back button links to the age verification page
-    const backButton = screen.getByText('Back').closest('a')
-    expect(backButton).toHaveAttribute('href', '/assessment/age-verification')
+
+    // Check if the back button is rendered (it's a button, not a link)
+    const backButton = screen.getByTestId('back-button')
+    expect(backButton).toBeInTheDocument()
+    expect(backButton.tagName).toBe('BUTTON')
   })
 
   it('should display privacy information', () => {

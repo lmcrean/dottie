@@ -74,7 +74,7 @@ export function AssessmentDataDisplay({
       return [];
     };
 
-    const parseRecommendations = (field: any): Array<{title: string; description: string}> => {
+    const parseRecommendations = (field: any): Array<{ title: string; description: string }> => {
       if (Array.isArray(field)) return field;
       if (typeof field === 'string') {
         try {

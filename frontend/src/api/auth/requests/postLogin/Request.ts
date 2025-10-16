@@ -13,11 +13,11 @@ export const postLogin = async (credentials: LoginInput): Promise<AuthResponse> 
     if (response.data.token) {
       setAuthToken(response.data.token);
     }
-    
+
     if (response.data.refreshToken) {
       setRefreshToken(response.data.refreshToken);
     }
-    
+
     return response.data;
   } catch (error) {
     console.error('Login failed:', error);

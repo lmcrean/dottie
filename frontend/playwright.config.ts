@@ -67,7 +67,10 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL to use in all tests
-    baseURL: 'http://localhost:3005',
+    // In CI: Use deployed URL from environment variable
+    // Locally: Use localhost for development
+    baseURL:
+      process.env.WEB_DEPLOYMENT_URL || process.env.FIREBASE_HOSTING_URL || 'http://localhost:3005',
 
     // Collect trace when retrying a test
     trace: 'on-first-retry',
@@ -88,12 +91,25 @@ export default defineConfig({
   globalTeardown: './global-teardown.ts',
 
   // Setup and teardown for the tests
-  webServer: {
-    command: 'npm run dev:e2e',
-    url: 'http://localhost:3005',
-    reuseExistingServer: true,
-    stdout: 'pipe',
-    stderr: 'pipe',
-    timeout: 120000 // Increase timeout to 2 minutes to ensure API is fully ready
-  }
+  // Only start local servers when running locally (not in CI)
+  webServer: process.env.CI
+    ? undefined
+    : [
+        {
+          command: 'cd ../backend && npm run dev:e2e',
+          url: 'http://localhost:5005/api/setup/health/hello',
+          reuseExistingServer: true,
+          stdout: 'pipe',
+          stderr: 'pipe',
+          timeout: 120000
+        },
+        {
+          command: 'npm run dev:frontend:e2e',
+          url: 'http://localhost:3005',
+          reuseExistingServer: true,
+          stdout: 'pipe',
+          stderr: 'pipe',
+          timeout: 60000
+        }
+      ]
 });

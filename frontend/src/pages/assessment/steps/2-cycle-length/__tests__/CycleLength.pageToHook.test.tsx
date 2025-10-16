@@ -2,10 +2,10 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import CycleLengthPage from '../page'
-import * as CycleLengthHook from '../../../../../hooks/assessment/steps/use-cycle-length'
+import * as CycleLengthHook from '../hooks/use-cycle-length'
 
 // Mock the hook
-vi.mock('../../../../../hooks/assessment/steps/use-cycle-length', () => ({
+vi.mock('../hooks/use-cycle-length', () => ({
   useCycleLength: vi.fn()
 }));
 
@@ -48,15 +48,15 @@ describe('Cycle Length Page to Hook Connection', () => {
       cycleLength: '31-35',
       setCycleLength: mockSetCycleLength
     });
-    
+
     renderWithRouter(<CycleLengthPage />)
-    
+
     // Verify that the continue button is enabled when an option is selected
     const continueButton = screen.getByText('Continue').closest('button');
     expect(continueButton).not.toBeDisabled();
-    
-    // Verify that the radio button is checked
-    const radioItem = document.getElementById('31-35');
-    expect(radioItem).toBeTruthy();
+
+    // Verify that the selected option has the selected styling
+    const selectedOption = screen.getByTestId('option-31-35');
+    expect(selectedOption).toHaveClass('bg-pink-50');
   })
 }) 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
-import { Button } from '@/src/components/buttons/button';
 import { MessageSquare } from 'lucide-react';
 import { ConversationListItem } from '../../types';
 import { ConversationItem } from './ConversationItem';

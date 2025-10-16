@@ -36,16 +36,27 @@ export function useConversationPageState({
   const hasSentInitialMessage = useRef(false);
 
   const {
-    messages, setMessages, currentConversationId, assessmentId, assessmentObject,
-    isLoading: conversationLoading, loadConversation, clearConversation
+    messages,
+    setMessages,
+    currentConversationId,
+    assessmentId,
+    assessmentObject,
+    isLoading: conversationLoading,
+    loadConversation,
+    clearConversation
   } = useConversationData({ conversationId: chatId });
 
   const { addUserMessage, addAssistantMessage, addErrorMessage } = useMessageState({
-    messages, setMessages
+    messages,
+    setMessages
   });
 
   const { isLoading: sendingLoading, handleSend: sendMessage } = useMessageSender({
-    currentConversationId, addUserMessage, addAssistantMessage, addErrorMessage, onSidebarRefresh
+    currentConversationId,
+    addUserMessage,
+    addAssistantMessage,
+    addErrorMessage,
+    onSidebarRefresh
   });
 
   const { input, setInput, handleKeyDown, sendFromInput } = useInputState({
@@ -53,7 +64,8 @@ export function useConversationPageState({
   });
 
   const { handleConversationSelect, handleNewChat } = useConversationNavigation({
-    onConversationLoad: loadConversation, onConversationClear: clearConversation
+    onConversationLoad: loadConversation,
+    onConversationClear: clearConversation
   });
 
   useEffect(() => {
@@ -67,8 +79,17 @@ export function useConversationPageState({
   }, [initialMessage, messages.length, sendMessage]);
 
   return {
-    messages, input, setInput, currentConversationId, assessmentId, assessmentObject,
+    messages,
+    input,
+    setInput,
+    currentConversationId,
+    assessmentId,
+    assessmentObject,
     isLoading: conversationLoading || sendingLoading,
-    handleSend: sendMessage, sendFromInput, handleConversationSelect, handleNewChat, handleKeyDown
+    handleSend: sendMessage,
+    sendFromInput,
+    handleConversationSelect,
+    handleNewChat,
+    handleKeyDown
   };
 }

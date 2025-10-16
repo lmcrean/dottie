@@ -1,0 +1,147 @@
+name: Deploy Branch Preview (API → Web → Test)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+  checks: write
+  id-token: write
+
+jobs:
+  deploy-api:
+    uses: ./.github/workflows/deploy-api.production.branch.yml
+    secrets: inherit
+    with:
+      branch_name: ${{ github.head_ref }}
+      pr_number: ${{ github.event.number }}
+
+  test-api:
+    needs: deploy-api
+    uses: ./.github/workflows/test-api.production.branch.yml
+    secrets: inherit
+    with:
+      api_deployment_url: ${{ needs.deploy-api.outputs.deployment_url }}
+      branch_name: ${{ github.head_ref }}
+      pr_number: ${{ github.event.number }}
+
+  deploy-web:
+    needs: [deploy-api, test-api]
+    if: needs.test-api.result == 'success'
+    uses: ./.github/workflows/deploy-web.production.branch.yml
+    secrets: inherit
+    with:
+      branch_name: ${{ github.head_ref }}
+      pr_number: ${{ github.event.number }}
+      api_url: ${{ needs.deploy-api.outputs.deployment_url }}
+
+  test-integration:
+    needs: [deploy-api, test-api, deploy-web]
+    uses: ./.github/workflows/test-integration.production.branch.yml
+    secrets: inherit
+    with:
+      web_url: ${{ needs.deploy-web.outputs.deployment_url }}
+      api_url: ${{ needs.deploy-api.outputs.deployment_url }}
+
+  test-e2e:
+    needs: [deploy-api, test-api, deploy-web, test-integration]
+    if: needs.test-integration.result == 'success'
+    uses: ./.github/workflows/test-e2e.production.branch.yml
+    secrets: inherit
+    with:
+      web_url: ${{ needs.deploy-web.outputs.deployment_url }}
+      api_url: ${{ needs.deploy-api.outputs.deployment_url }}
+      branch_name: ${{ github.head_ref }}
+      pr_number: ${{ github.event.number }}
+
+  update-pr:
+    needs: [deploy-api, test-api, deploy-web, test-integration, test-e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💬 Update PR with Deployment Status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const webUrl = '${{ needs.deploy-web.outputs.deployment_url }}';
+            const apiUrl = '${{ needs.deploy-api.outputs.deployment_url }}';
+            const apiTestStatus = '${{ needs.test-api.result }}';
+            const integrationStatus = '${{ needs.test-integration.result }}';
+            const e2eStatus = '${{ needs.test-e2e.result }}';
+            const apiStatus = '${{ needs.deploy-api.result }}';
+            const webStatus = '${{ needs.deploy-web.result }}';
+            
+            // Determine overall test status
+            const allTestsPassed = apiTestStatus === 'success' && integrationStatus === 'success' && e2eStatus === 'success';
+            const statusEmoji = allTestsPassed ? '✅' : '⚠️';
+            const statusText = allTestsPassed ? 'All tests passed!' : 'Some tests failed';
+            
+            // Handle deployment failures
+            let deploymentSection = '';
+            if (apiStatus === 'success' && webStatus === 'success') {
+              deploymentSection = `## 🚀 DEPLOYMENT BRANCH
+
+            ### 🌐 Web App
+            **Live Preview:** [${webUrl}](${webUrl})
+
+            ### ⚡ API Service  
+            **API Endpoint:** [${apiUrl}](${apiUrl})
+
+            ### 🧪 Quick Test Links
+            - [📱 Web App](${webUrl}) - Test the user interface
+            - [❤️ API Health](${apiUrl}/health) - Verify API status
+            - [🔗 Click here to test!](${webUrl})
+
+            ### 🧪 Test Results
+            - **API Tests**: ${apiTestStatus === 'success' ? '✅ Passed' : apiTestStatus === 'skipped' ? '⏭️ Skipped' : '❌ Failed'}
+            - **Integration Tests**: ${integrationStatus === 'success' ? '✅ Passed' : integrationStatus === 'skipped' ? '⏭️ Skipped' : '❌ Failed'}
+            - **E2E Tests**: ${e2eStatus === 'success' ? '✅ Passed' : e2eStatus === 'skipped' ? '⏭️ Skipped' : '❌ Failed'}
+            
+            ${statusEmoji} ${statusText}`;
+            } else {
+              deploymentSection = `## ❌ FAILED
+
+            ### Deployment Status
+            - **API**: ${apiStatus === 'success' ? '✅' : '❌'} ${apiStatus === 'success' ? apiUrl : 'Deployment failed'}
+            - **Web**: ${webStatus === 'success' ? '✅' : '❌'} ${webStatus === 'success' ? webUrl : 'Deployment failed'}
+            
+            ${apiStatus !== 'success' ? `**API Error:** ${apiUrl || 'API deployment failed - check logs'}` : ''}
+            ${webStatus !== 'success' ? `**Web Error:** ${webUrl || 'Web deployment failed - check logs'}` : ''}`;
+            }
+
+            const commentBody = `${deploymentSection}
+
+            ---
+            *🔄 Last updated: ${new Date().toLocaleString()} UTC*
+            
+            <!-- BRANCH_DEPLOYMENT_COMMENT -->`;
+
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('<!-- BRANCH_DEPLOYMENT_COMMENT -->')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            }

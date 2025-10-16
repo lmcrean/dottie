@@ -49,4 +49,4 @@ export function useMessageState({
     addAssistantMessage,
     addErrorMessage
   };
-} 
+}

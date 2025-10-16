@@ -43,7 +43,7 @@ const ChatPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex h-full bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <div
         className={`h-full transition-all duration-300 ease-in-out ${

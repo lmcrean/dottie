@@ -28,63 +28,70 @@ export function useConversationLoader({
   const [isLoading, setIsLoading] = useState(false);
   const [hasLoadedConversation, setHasLoadedConversation] = useState<string | null>(null);
 
-  const loadConversation = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      setIsLoading(true);
-      console.log(`[useConversationLoader] Loading conversation: ${id}`);
+  const loadConversation = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        setIsLoading(true);
+        console.log(`[useConversationLoader] Loading conversation: ${id}`);
 
-      const fullConversation = await conversationApi.fetchConversation(id);
+        const fullConversation = await conversationApi.fetchConversation(id);
 
-      if (fullConversation) {
-        console.log(`[useConversationLoader] Conversation loaded successfully, messages count: ${fullConversation.messages.length}`);
-        
-        const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
-          role: msg.role,
-          content: msg.content,
-          created_at: msg.created_at
-        }));
+        if (fullConversation) {
+          console.log(
+            `[useConversationLoader] Conversation loaded successfully, messages count: ${fullConversation.messages.length}`
+          );
 
-        setMessages(convertedMessages);
-        setCurrentConversationId(id);
-        setHasLoadedConversation(id);
+          const convertedMessages = fullConversation.messages.map((msg: ApiMessage) => ({
+            role: msg.role,
+            content: msg.content,
+            created_at: msg.created_at
+          }));
 
-        const assessmentIdString = fullConversation.assessment_id
-          ? String(fullConversation.assessment_id)
-          : null;
-        setAssessmentId(assessmentIdString);
+          setMessages(convertedMessages);
+          setCurrentConversationId(id);
+          setHasLoadedConversation(id);
 
-        if (fullConversation.assessment_object) {
-          try {
-            const assessmentObj =
-              typeof fullConversation.assessment_object === 'string'
-                ? JSON.parse(fullConversation.assessment_object)
-                : fullConversation.assessment_object;
-            setAssessmentObject(assessmentObj);
-          } catch (error) {
-            console.warn('Failed to parse assessment_object:', error);
-            setAssessmentObject(fullConversation.assessment_object);
+          const assessmentIdString = fullConversation.assessment_id
+            ? String(fullConversation.assessment_id)
+            : null;
+          setAssessmentId(assessmentIdString);
+
+          if (fullConversation.assessment_object) {
+            try {
+              const assessmentObj =
+                typeof fullConversation.assessment_object === 'string'
+                  ? JSON.parse(fullConversation.assessment_object)
+                  : fullConversation.assessment_object;
+              setAssessmentObject(assessmentObj);
+            } catch (error) {
+              console.warn('Failed to parse assessment_object:', error);
+              setAssessmentObject(fullConversation.assessment_object);
+            }
+          } else {
+            setAssessmentObject(null);
           }
-        } else {
-          setAssessmentObject(null);
-        }
 
-        return true;
-      } else {
-        console.warn(`Conversation ${id} not found`);
+          return true;
+        } else {
+          console.warn(`Conversation ${id} not found`);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error loading conversation:', error);
         return false;
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error loading conversation:', error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setMessages, setCurrentConversationId, setAssessmentId, setAssessmentObject]);
+    },
+    [setMessages, setCurrentConversationId, setAssessmentId, setAssessmentObject]
+  );
 
   // Load conversation when conversationId prop changes
   useEffect(() => {
     if (conversationId && conversationId !== hasLoadedConversation) {
-      console.log(`[useConversationLoader] useEffect triggered - conversationId: ${conversationId}, hasLoadedConversation: ${hasLoadedConversation}`);
+      console.log(
+        `[useConversationLoader] useEffect triggered - conversationId: ${conversationId}, hasLoadedConversation: ${hasLoadedConversation}`
+      );
       loadConversation(conversationId);
     }
   }, [conversationId, hasLoadedConversation, loadConversation]);
@@ -93,4 +100,4 @@ export function useConversationLoader({
     isLoading,
     loadConversation
   };
-} 
+}
