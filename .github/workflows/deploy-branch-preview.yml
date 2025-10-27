@@ -13,7 +13,89 @@ permissions:
   id-token: write
 
 jobs:
+  # Check if PR is from a fork - forks don't have access to secrets
+  check-fork:
+    runs-on: ubuntu-latest
+    outputs:
+      is_fork: ${{ steps.check.outputs.is_fork }}
+    steps:
+      - name: Check if PR is from fork
+        id: check
+        run: |
+          if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+            echo "🔀 PR is from a fork: ${{ github.event.pull_request.head.repo.full_name }}"
+          else
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+            echo "✅ PR is from same repository"
+          fi
+
+  # Notify external contributors that deployment is skipped for forks
+  notify-fork:
+    needs: check-fork
+    if: needs.check-fork.outputs.is_fork == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment on PR about fork limitation
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commentBody = `## ℹ️ Fork PR Detected
+
+            Thank you for your contribution! 🎉
+
+            **Note:** Deployment previews are currently only available for PRs from the main repository, not from forks. This is because GitHub doesn't pass repository secrets to workflows triggered from forks for security reasons.
+
+            ### What this means:
+            - ✅ Your code changes are still being validated locally
+            - ✅ Maintainers will review your PR
+            - ❌ Automatic preview deployment is skipped
+            - ❌ Live E2E tests against deployed preview are skipped
+
+            ### What happens next:
+            Once a maintainer reviews and approves your PR, they can:
+            1. Manually trigger a deployment preview if needed
+            2. Merge your PR, which will deploy to production
+
+            Thank you for understanding! 🙏
+
+            ---
+            *💡 If you're a maintainer and want to preview this PR, you can:*
+            - *Close and reopen as a branch in the main repo*
+            - *Or manually trigger the workflow after merge*
+
+            <!-- FORK_PR_NOTICE -->`;
+
+            // Check if we already posted this comment
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const existingComment = comments.data.find(comment =>
+              comment.body.includes('<!-- FORK_PR_NOTICE -->')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            }
+
   deploy:
+    needs: check-fork
+    if: needs.check-fork.outputs.is_fork == 'false'
     uses: ./.github/workflows/reusable-deploy.yml
     secrets: inherit
     with:
@@ -22,7 +104,8 @@ jobs:
       pr_number: ${{ github.event.number }}
 
   test:
-    needs: deploy
+    needs: [check-fork, deploy]
+    if: needs.check-fork.outputs.is_fork == 'false'
     uses: ./.github/workflows/reusable-test.yml
     secrets: inherit
     with:

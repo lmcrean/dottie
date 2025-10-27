@@ -33,13 +33,21 @@ The project uses a **reusable workflow pattern** to eliminate code duplication a
 
 ### Trigger Workflows (Minimal)
 
-**`deploy-branch-preview.yml`** - Branch deployment trigger (~30 lines)
-- **Purpose**: Preview deployments for pull requests
+**`deploy-branch-preview.yml`** - Same-repo branch deployment
+- **Purpose**: Preview deployments for PRs from branches in the main repo
 - **Trigger**: PR opened/synchronized/reopened, manual dispatch
-- **Action**: Calls `reusable-deploy.yml` → `reusable-test.yml` with branch parameters
+- **Fork Handling**: Detects fork PRs and skips deployment, posts informative comment
+- **Action**: Calls `reusable-deploy.yml` → `reusable-test.yml` with branch parameters (only for same-repo PRs)
 - **Result**: Temporary preview deployment with URLs posted to PR
 
-**`deploy-main-production.yml`** - Production deployment trigger (~30 lines)
+**`deploy-fork-preview.yml`** - Fork PR deployment (maintainer-approved) **NEW**
+- **Purpose**: Preview deployments for fork PRs when maintainer adds label
+- **Trigger**: PR label `deploy-preview` added/removed, PR synchronized
+- **Security**: Uses `pull_request_target` (has secret access, only maintainers can label)
+- **Action**: Calls `reusable-deploy.yml` → `reusable-test.yml` when label present
+- **Result**: Full deployment + tests for approved fork PRs
+
+**`deploy-main-production.yml`** - Production deployment trigger
 - **Purpose**: Production deployments for main branch
 - **Trigger**: Push to main, manual dispatch
 - **Action**: Calls `reusable-deploy.yml` → `reusable-test.yml` with main parameters
@@ -57,14 +65,50 @@ The project uses a **reusable workflow pattern** to eliminate code duplication a
 - Full integration testing against preview deployments
 - PR comments with deployment URLs and test results
 
-**Deployment Flow**:
-1. Build and deploy API to Cloud Run with branch-specific name: `api-{branch-name}`
-2. Build and deploy Web to Firebase with preview channel: `branch-{pr-number}`
-3. Post deployment URLs to PR comment
-4. Run API tests (unit, health, endpoints)
-5. Run integration tests (cross-service, CORS, performance)
-6. Run E2E tests (Playwright browser tests)
-7. Update PR comment with test results
+### Fork PR Handling
+
+**Important**: Pull requests from **forks** (external contributors) cannot access repository secrets for security reasons. This is a GitHub security feature to prevent malicious actors from stealing secrets.
+
+**For Fork PRs**:
+- ✅ Basic validation still runs (linting, local unit tests)
+- ❌ Deployment preview is **skipped** (requires secrets for GCP/Firebase)
+- ❌ E2E tests against deployed preview are **skipped**
+- 📝 Automatic PR comment explains the limitation to contributors
+
+**For Same-Repo PRs** (branches in main repo):
+- ✅ Full deployment preview with all tests
+- ✅ Access to all secrets and cloud resources
+- ✅ Complete E2E test suite
+
+**Label-Triggered Deployment for Maintainers**:
+To deploy a fork PR with one click:
+1. Review the PR code changes for safety (check for malicious code)
+2. Add the `deploy-preview` label to the PR
+3. The `deploy-fork-preview.yml` workflow will automatically trigger
+4. Full deployment + tests will run with access to secrets
+5. Remove the label to stop future deployments on new commits
+
+**How it works**:
+- Uses `pull_request_target` event (runs in context of base branch)
+- Has access to repository secrets (safe because only maintainers can add labels)
+- Only runs when `deploy-preview` label is present
+- Posts security reminder comment when deployment starts
+
+**Alternative Manual Workaround**:
+If you prefer not to use the label system:
+1. Create a new branch in the main repo
+2. Pull the fork's changes into that branch
+3. Open a PR from that branch (will have full access to secrets)
+
+**Deployment Flow** (Same-Repo PRs Only):
+1. Check if PR is from fork (if yes, skip deployment and notify)
+2. Build and deploy API to Cloud Run with branch-specific name: `api-{branch-name}`
+3. Build and deploy Web to Firebase with preview channel: `branch-{pr-number}`
+4. Post deployment URLs to PR comment
+5. Run API tests (unit, health, endpoints)
+6. Run integration tests (cross-service, CORS, performance)
+7. Run E2E tests (Playwright browser tests)
+8. Update PR comment with test results
 
 ## Main Deployments
 
