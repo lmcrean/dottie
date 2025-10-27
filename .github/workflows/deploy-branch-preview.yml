@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 jobs:
-  # Check if PR is from a fork - forks don't have access to secrets
+  # Check if PR is from a fork - forks are handled by deploy-fork-preview.yml
   check-fork:
     runs-on: ubuntu-latest
     outputs:
@@ -24,15 +24,11 @@ jobs:
         run: |
           if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
             echo "is_fork=true" >> $GITHUB_OUTPUT
-            echo "🔀 PR is from a fork: ${{ github.event.pull_request.head.repo.full_name }}"
-            echo "⏭️ Skipping deployment (use deploy-fork-preview.yml with 'deploy-preview' label instead)"
+            echo "🔀 Fork PR detected - skipping (deploy-fork-preview.yml will handle deployment)"
           else
             echo "is_fork=false" >> $GITHUB_OUTPUT
-            echo "✅ PR is from same repository"
+            echo "✅ Same-repo PR - deploying preview"
           fi
-
-  # Note: Fork notification is handled by deploy-fork-preview.yml to avoid permission issues
-  # (pull_request trigger from forks cannot write comments even with permissions specified)
 
   deploy:
     needs: check-fork

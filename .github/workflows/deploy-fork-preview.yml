@@ -1,8 +1,8 @@
-name: Deploy Fork Preview (Maintainer-Approved)
+name: Deploy Fork Preview
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -12,180 +12,28 @@ permissions:
   id-token: write
 
 jobs:
-  # Check fork status and label presence
-  check-prerequisites:
+  # Check if this is actually a fork PR (skip if same-repo)
+  check-fork:
     runs-on: ubuntu-latest
     outputs:
       is_fork: ${{ steps.check.outputs.is_fork }}
-      has_label: ${{ steps.check.outputs.has_label }}
-      should_deploy: ${{ steps.check.outputs.should_deploy }}
-      should_notify: ${{ steps.check.outputs.should_notify }}
     steps:
-      - name: Check fork status and label
+      - name: Check if PR is from fork
         id: check
         run: |
-          # Check if PR is from fork
-          IS_FORK="false"
           if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
-            IS_FORK="true"
-            echo "🔀 PR is from fork: ${{ github.event.pull_request.head.repo.full_name }}"
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+            echo "🔀 Fork PR detected - will deploy with maintainer approval"
+            echo "📍 From: ${{ github.event.pull_request.head.repo.full_name }}"
+            echo "⚠️ Note: GitHub requires maintainer approval for first-time contributors"
           else
-            echo "📍 PR is from same repository (will be handled by deploy-branch-preview.yml)"
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Same-repo PR - skipping (handled by deploy-branch-preview.yml)"
           fi
-
-          # Check if deploy-preview label is present
-          HAS_LABEL="false"
-          LABELS='${{ toJSON(github.event.pull_request.labels.*.name) }}'
-          if echo "$LABELS" | grep -q "deploy-preview"; then
-            HAS_LABEL="true"
-            echo "🏷️ 'deploy-preview' label found"
-          else
-            echo "⏭️ 'deploy-preview' label not found"
-          fi
-
-          # Output values
-          echo "is_fork=$IS_FORK" >> $GITHUB_OUTPUT
-          echo "has_label=$HAS_LABEL" >> $GITHUB_OUTPUT
-
-          # Determine actions
-          if [ "$IS_FORK" = "false" ]; then
-            # Same-repo PR - skip entirely (handled by other workflow)
-            echo "should_deploy=false" >> $GITHUB_OUTPUT
-            echo "should_notify=false" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping: Same-repo PRs use deploy-branch-preview.yml"
-          elif [ "$HAS_LABEL" = "true" ]; then
-            # Fork with label - deploy
-            echo "should_deploy=true" >> $GITHUB_OUTPUT
-            echo "should_notify=false" >> $GITHUB_OUTPUT
-            echo "✅ Will deploy: Fork PR with deploy-preview label"
-          else
-            # Fork without label - just notify
-            echo "should_deploy=false" >> $GITHUB_OUTPUT
-            echo "should_notify=true" >> $GITHUB_OUTPUT
-            echo "📝 Will notify: Fork PR without deploy-preview label"
-          fi
-
-  # Notify contributor that fork PRs need maintainer approval
-  notify-fork:
-    needs: check-prerequisites
-    if: needs.check-prerequisites.outputs.should_notify == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Comment on fork PR about deployment limitation
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const commentBody = `## ℹ️ Fork PR Detected
-
-            Thank you for your contribution! 🎉
-
-            **Deployment previews require maintainer approval** for fork PRs. This is because GitHub doesn't pass repository secrets to fork workflows for security reasons.
-
-            ### What this means:
-            - ✅ Your code changes are being reviewed
-            - ✅ All local validation still runs
-            - ⏸️ Preview deployment requires \`deploy-preview\` label
-
-            ### What happens next:
-            Once a maintainer reviews your code, they can:
-            1. ✅ Add the \`deploy-preview\` label to trigger a preview deployment
-            2. 🚀 Merge your PR, which will deploy to production
-
-            Thank you for understanding! 🙏
-
-            ---
-            **For maintainers:** Review the code changes, then add the \`deploy-preview\` label to trigger deployment.
-
-            <!-- FORK_PR_NOTICE -->`;
-
-            try {
-              // Check if we already posted this comment
-              const comments = await github.rest.issues.listComments({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-              });
-
-              const existingComment = comments.data.find(comment =>
-                comment.body && comment.body.includes('<!-- FORK_PR_NOTICE -->')
-              );
-
-              if (existingComment) {
-                console.log('Updating existing fork notice comment');
-                await github.rest.issues.updateComment({
-                  comment_id: existingComment.id,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: commentBody
-                });
-              } else {
-                console.log('Creating new fork notice comment');
-                await github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: commentBody
-                });
-              }
-            } catch (error) {
-              console.error('Failed to post comment:', error);
-              throw error;
-            }
-
-  # Post a comment warning maintainers about security considerations
-  safety-warning:
-    needs: check-prerequisites
-    if: needs.check-prerequisites.outputs.should_deploy == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Post security reminder for maintainer-approved deployment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const commentBody = `## 🔐 Maintainer-Approved Deployment Started
-
-            **⚠️ Security Reminder:** This deployment has access to repository secrets. Ensure you've reviewed the code changes in this PR before the deployment completes.
-
-            🚀 Deployment in progress...
-
-            **Deployment will include:**
-            - API deployment to Google Cloud Run
-            - Web deployment to Firebase Hosting
-            - Full integration and E2E tests
-
-            <!-- FORK_DEPLOY_WARNING -->`;
-
-            try {
-              console.log('Checking for existing security warning comment');
-              const comments = await github.rest.issues.listComments({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-              });
-
-              const existingComment = comments.data.find(comment =>
-                comment.body && comment.body.includes('<!-- FORK_DEPLOY_WARNING -->')
-              );
-
-              if (!existingComment) {
-                console.log('Creating new security warning comment');
-                await github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: commentBody
-                });
-              } else {
-                console.log('Security warning comment already exists');
-              }
-            } catch (error) {
-              console.error('Failed to post security warning:', error);
-              throw error;
-            }
 
   deploy:
-    needs: check-prerequisites
-    if: needs.check-prerequisites.outputs.should_deploy == 'true'
+    needs: check-fork
+    if: needs.check-fork.outputs.is_fork == 'true'
     uses: ./.github/workflows/reusable-deploy.yml
     secrets: inherit
     with:
@@ -194,8 +42,8 @@ jobs:
       pr_number: ${{ github.event.number }}
 
   test:
-    needs: [check-prerequisites, deploy]
-    if: needs.check-prerequisites.outputs.should_deploy == 'true'
+    needs: [check-fork, deploy]
+    if: needs.check-fork.outputs.is_fork == 'true'
     uses: ./.github/workflows/reusable-test.yml
     secrets: inherit
     with:
