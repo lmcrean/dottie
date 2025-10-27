@@ -33,13 +33,14 @@ The project uses a **reusable workflow pattern** to eliminate code duplication a
 
 ### Trigger Workflows (Minimal)
 
-**`deploy-branch-preview.yml`** - Branch deployment trigger (~30 lines)
-- **Purpose**: Preview deployments for pull requests
-- **Trigger**: PR opened/synchronized/reopened, manual dispatch
+**`deploy-branch-preview.yml`** - Branch preview deployment (handles both same-repo and fork PRs)
+- **Purpose**: Preview deployments for all PRs (same-repo and forks)
+- **Trigger**: `pull_request_target` on opened/synchronized/reopened, manual dispatch
+- **Security**: Uses `pull_request_target` - GitHub requires maintainer approval for first-time fork contributors
 - **Action**: Calls `reusable-deploy.yml` → `reusable-test.yml` with branch parameters
 - **Result**: Temporary preview deployment with URLs posted to PR
 
-**`deploy-main-production.yml`** - Production deployment trigger (~30 lines)
+**`deploy-main-production.yml`** - Production deployment trigger
 - **Purpose**: Production deployments for main branch
 - **Trigger**: Push to main, manual dispatch
 - **Action**: Calls `reusable-deploy.yml` → `reusable-test.yml` with main parameters
@@ -57,14 +58,37 @@ The project uses a **reusable workflow pattern** to eliminate code duplication a
 - Full integration testing against preview deployments
 - PR comments with deployment URLs and test results
 
-**Deployment Flow**:
-1. Build and deploy API to Cloud Run with branch-specific name: `api-{branch-name}`
-2. Build and deploy Web to Firebase with preview channel: `branch-{pr-number}`
-3. Post deployment URLs to PR comment
-4. Run API tests (unit, health, endpoints)
-5. Run integration tests (cross-service, CORS, performance)
-6. Run E2E tests (Playwright browser tests)
-7. Update PR comment with test results
+### Fork PR Handling
+
+**Simple Approach**: One workflow (`deploy-branch-preview.yml`) handles **both** same-repo and fork PRs using `pull_request_target`.
+
+**How it works**:
+- **Same-repo PRs**: Deploy automatically (no approval needed)
+- **Fork PRs (first-time contributors)**: GitHub requires maintainer approval before workflow runs
+- **Fork PRs (returning contributors)**: Deploy automatically (approval only needed once)
+
+**For ALL PRs (same-repo and forks)**:
+- ✅ Full deployment preview with all tests
+- 📝 Deployment URLs posted to PR automatically
+- 🔄 Same deployment experience for everyone
+
+**Maintainer Workflow for Fork PRs**:
+1. Fork contributor opens PR
+2. GitHub shows "Workflow awaiting approval" in Actions tab
+3. Review the PR code changes
+4. Click "Approve and run"
+5. Deployment happens automatically
+6. Future PRs from same contributor auto-deploy (no approval needed)
+
+**Deployment Flow** (all PRs via `deploy-branch-preview.yml`):
+1. **Fork PRs only**: Wait for maintainer approval (first-time contributors)
+2. Build and deploy API to Cloud Run with branch-specific name: `api-{branch-name}`
+3. Build and deploy Web to Firebase with preview channel: `branch-{pr-number}`
+4. Post deployment URLs to PR comment
+5. Run API tests (unit, health, endpoints)
+6. Run integration tests (cross-service, CORS, performance)
+7. Run E2E tests (Playwright browser tests)
+8. Update PR comment with test results
 
 ## Main Deployments
 
