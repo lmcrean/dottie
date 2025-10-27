@@ -1,7 +1,7 @@
 name: Deploy Branch Preview
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
@@ -13,26 +13,7 @@ permissions:
   id-token: write
 
 jobs:
-  # Check if PR is from a fork - forks are handled by deploy-fork-preview.yml
-  check-fork:
-    runs-on: ubuntu-latest
-    outputs:
-      is_fork: ${{ steps.check.outputs.is_fork }}
-    steps:
-      - name: Check if PR is from fork
-        id: check
-        run: |
-          if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
-            echo "is_fork=true" >> $GITHUB_OUTPUT
-            echo "🔀 Fork PR detected - skipping (deploy-fork-preview.yml will handle deployment)"
-          else
-            echo "is_fork=false" >> $GITHUB_OUTPUT
-            echo "✅ Same-repo PR - deploying preview"
-          fi
-
   deploy:
-    needs: check-fork
-    if: needs.check-fork.outputs.is_fork == 'false'
     uses: ./.github/workflows/reusable-deploy.yml
     secrets: inherit
     with:
@@ -41,8 +22,7 @@ jobs:
       pr_number: ${{ github.event.number }}
 
   test:
-    needs: [check-fork, deploy]
-    if: needs.check-fork.outputs.is_fork == 'false'
+    needs: deploy
     uses: ./.github/workflows/reusable-test.yml
     secrets: inherit
     with:
