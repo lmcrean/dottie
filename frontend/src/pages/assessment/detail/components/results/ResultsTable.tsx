@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CardContent } from '@/src/components/ui/card';
+import { User, Droplet, Search, Calendar, Stethoscope } from 'lucide-react';
 import { AssessmentData } from '../../../steps/context/hooks/useAssessmentData';
 import {
   AgeRange,
@@ -113,8 +114,16 @@ export const ResultsTable = ({
     return (
       <div className="p-4">
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* Basic Information Section */}
           <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-lg font-medium text-pink-700">Basic Information</h3>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                <User className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              <h3 className="text-lg font-medium text-pink-700 dark:text-pink-400">
+                Basic Information
+              </h3>
+            </div>
             <div className="space-y-2">
               <p className="text-sm text-gray-600 dark:text-slate-200">
                 <span className="font-medium dark:text-slate-100">Age:</span>{' '}
@@ -135,8 +144,16 @@ export const ResultsTable = ({
             </div>
           </div>
 
+          {/* Flow & Pain Section */}
           <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-lg font-medium text-pink-700">Flow & Pain</h3>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                <Droplet className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              <h3 className="text-lg font-medium text-pink-700 dark:text-pink-400">
+                Flow & Pain
+              </h3>
+            </div>
             <div className="space-y-2">
               <p className="text-sm text-gray-600 dark:text-slate-200">
                 <span className="font-medium dark:text-slate-100">Flow Level:</span>{' '}
@@ -151,32 +168,63 @@ export const ResultsTable = ({
         </div>
 
         <div className="space-y-6">
-          <Symptoms
-            physicalSymptoms={physical}
-            emotionalSymptoms={emotional}
-            otherSymptoms={other}
-            setIsClamped={setIsClamped!}
-          />
+          {/* Symptoms Section - wrapped with icon */}
+          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                <Search className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-slate-100">
+                Symptoms Reported
+              </h3>
+            </div>
+            <Symptoms
+              physicalSymptoms={physical}
+              emotionalSymptoms={emotional}
+              otherSymptoms={other}
+              setIsClamped={setIsClamped!}
+            />
+          </div>
 
+          {/* Recommendations Section */}
           <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-100">
               Recommendations
             </h3>
             <div className="space-y-4">
               {recommendations && recommendations.length > 0 ? (
-                recommendations.map((rec, index) => (
-                  <div
-                    key={index}
-                    className="rounded-lg border bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800"
-                  >
-                    <h4 className="text-xl font-medium text-pink-600 dark:text-pink-500">
-                      {rec.title}
-                    </h4>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">
-                      {rec.description}
-                    </p>
-                  </div>
-                ))
+                recommendations.map((rec, index) => {
+                  // Determine which icon to use based on recommendation title
+                  const getRecommendationIcon = (title: string) => {
+                    if (title.toLowerCase().includes('track') || title.toLowerCase().includes('cycle')) {
+                      return <Calendar className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
+                    } else if (title.toLowerCase().includes('consult') || title.toLowerCase().includes('healthcare') || title.toLowerCase().includes('doctor')) {
+                      return <Stethoscope className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
+                    }
+                    return <Calendar className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
+                  };
+
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-lg border bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                          {getRecommendationIcon(rec.title)}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-xl font-medium text-pink-600 dark:text-pink-500">
+                            {rec.title}
+                          </h4>
+                          <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">
+                            {rec.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
               ) : (
                 <p className="text-sm text-gray-500 dark:text-slate-400">
                   No recommendations available.
