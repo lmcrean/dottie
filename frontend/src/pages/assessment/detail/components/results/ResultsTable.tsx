@@ -130,7 +130,6 @@ export const ResultsTable = ({
             <User className="absolute -right-6 -top-6 h-32 w-32 text-pink-300/40 transition-all duration-300 group-hover:scale-110 group-hover:text-pink-300/50 dark:text-pink-500/15 dark:group-hover:text-pink-500/20" />
             <div className="relative z-10">
               <div className="mb-4 flex items-center gap-2">
-                <span className="text-2xl">👤</span>
                 <h3 className="text-xl font-bold text-pink-700 dark:text-pink-400">
                   About You
                 </h3>
@@ -169,7 +168,6 @@ export const ResultsTable = ({
             <Droplet className="absolute -right-6 -top-6 h-32 w-32 text-red-300/40 transition-all duration-300 group-hover:scale-110 group-hover:text-red-300/50 dark:text-pink-500/15 dark:group-hover:text-pink-500/20" />
             <div className="relative z-10">
               <div className="mb-4 flex items-center gap-2">
-                <span className="text-2xl">💧</span>
                 <h3 className="text-xl font-bold text-rose-700 dark:text-pink-400">
                   Flow & Pain
                 </h3>
@@ -198,7 +196,6 @@ export const ResultsTable = ({
             <Search className="absolute -right-6 -top-6 h-32 w-32 text-purple-300/40 transition-all duration-300 group-hover:scale-110 group-hover:text-purple-300/50 dark:text-purple-500/15 dark:group-hover:text-purple-500/20" />
             <div className="relative z-10">
               <div className="mb-4 flex items-center gap-2">
-                <span className="text-2xl">🔍</span>
                 <h3 className="text-xl font-bold text-purple-700 dark:text-purple-400">
                   What You're Experiencing
                 </h3>
@@ -216,7 +213,6 @@ export const ResultsTable = ({
           <div className="relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 p-6 shadow-lg dark:border-slate-700 dark:from-slate-900 dark:via-blue-950/20 dark:to-indigo-950/30">
             <div className="relative z-10">
               <div className="mb-6 flex items-center gap-2">
-                <span className="text-2xl">✨</span>
                 <h3 className="text-xl font-bold text-indigo-700 dark:text-indigo-400">
                   Tips Just for You
                 </h3>
@@ -226,26 +222,23 @@ export const ResultsTable = ({
                   recommendations.map((rec, index) => {
                     const getRecommendationDisplay = (title: string) => {
                       if (title.toLowerCase().includes('track') || title.toLowerCase().includes('cycle')) {
-                        return { 
-                          icon: Calendar, 
-                          emoji: '📅', 
-                          color: 'from-cyan-100 via-blue-100 to-sky-100 dark:from-blue-950/40 dark:via-cyan-950/30 dark:to-sky-950/40', 
+                        return {
+                          icon: Calendar,
+                          color: 'from-cyan-100 via-blue-100 to-sky-100 dark:from-blue-950/40 dark:via-cyan-950/30 dark:to-sky-950/40',
                           iconColor: 'text-blue-400/30 dark:text-blue-500/15',
                           borderColor: 'border-blue-200 dark:border-slate-700'
                         };
                       } else if (title.toLowerCase().includes('consult') || title.toLowerCase().includes('healthcare') || title.toLowerCase().includes('doctor')) {
-                        return { 
-                          icon: Stethoscope, 
-                          emoji: '🩺', 
-                          color: 'from-emerald-100 via-green-100 to-teal-100 dark:from-green-950/40 dark:via-emerald-950/30 dark:to-teal-950/40', 
+                        return {
+                          icon: Stethoscope,
+                          color: 'from-emerald-100 via-green-100 to-teal-100 dark:from-green-950/40 dark:via-emerald-950/30 dark:to-teal-950/40',
                           iconColor: 'text-green-400/30 dark:text-green-500/15',
                           borderColor: 'border-green-200 dark:border-slate-700'
                         };
                       }
-                      return { 
-                        icon: Heart, 
-                        emoji: '💖', 
-                        color: 'from-pink-100 via-rose-100 to-fuchsia-100 dark:from-pink-950/40 dark:via-rose-950/30 dark:to-fuchsia-950/40', 
+                      return {
+                        icon: Heart,
+                        color: 'from-pink-100 via-rose-100 to-fuchsia-100 dark:from-pink-950/40 dark:via-rose-950/30 dark:to-fuchsia-950/40',
                         iconColor: 'text-pink-400/30 dark:text-pink-500/15',
                         borderColor: 'border-pink-200 dark:border-slate-700'
                       };
@@ -262,7 +255,6 @@ export const ResultsTable = ({
                         <IconComponent className={`absolute -right-4 -bottom-4 h-28 w-28 ${display.iconColor} transition-all duration-300 group-hover:scale-110`} />
                         <div className="relative z-10">
                           <h4 className="mb-2 flex items-center gap-2 text-lg font-bold text-gray-800 dark:text-slate-100">
-                            <span className="text-xl">{display.emoji}</span>
                             {rec.title}
                           </h4>
                           <p className="text-sm leading-relaxed text-gray-700 dark:text-slate-300">
