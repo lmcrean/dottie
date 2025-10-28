@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CardContent } from '@/src/components/ui/card';
-import { User, Droplet, Search, Calendar, Stethoscope } from 'lucide-react';
+import { User, Droplet, Search, Calendar, Stethoscope, Heart, Sparkles } from 'lucide-react';
 import { AssessmentData } from '../../../steps/context/hooks/useAssessmentData';
 import {
   AgeRange,
@@ -113,123 +113,173 @@ export const ResultsTable = ({
 
     return (
       <div className="p-4">
+        {/* Header with sparkle decoration */}
+        <div className="mb-6 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 px-6 py-2 dark:from-pink-900/30 dark:to-purple-900/30">
+            <Sparkles className="h-5 w-5 text-pink-500 dark:text-pink-400" />
+            <span className="text-sm font-medium text-gray-700 dark:text-slate-200">
+              Your Personal Health Summary
+            </span>
+            <Sparkles className="h-5 w-5 text-purple-500 dark:text-purple-400" />
+          </div>
+        </div>
+
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Basic Information Section */}
-          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
-                <User className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+          <div className="group relative overflow-hidden rounded-2xl border border-pink-200 bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-slate-700 dark:from-slate-900 dark:via-pink-950/20 dark:to-purple-950/30">
+            <User className="absolute -right-6 -top-6 h-32 w-32 text-pink-300/40 transition-all duration-300 group-hover:scale-110 group-hover:text-pink-300/50 dark:text-pink-500/15 dark:group-hover:text-pink-500/20" />
+            <div className="relative z-10">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="text-2xl">👤</span>
+                <h3 className="text-xl font-bold text-pink-700 dark:text-pink-400">
+                  About You
+                </h3>
               </div>
-              <h3 className="text-lg font-medium text-pink-700 dark:text-pink-400">
-                Basic Information
-              </h3>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium dark:text-slate-100">Age:</span>{' '}
-                {formatDisplayValue(displayAge)}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium dark:text-slate-100">Pattern:</span>{' '}
-                {formatDisplayValue(pattern)}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium dark:text-slate-100">Cycle Length:</span>{' '}
-                {formatDisplayValue(displayCycleLength)}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium dark:text-slate-100">Period Duration:</span>{' '}
-                {formatDisplayValue(displayPeriodDuration)}
-              </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between rounded-lg bg-white/50 p-3 dark:bg-slate-800/50">
+                  <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Age</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+                    {formatDisplayValue(displayAge)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-white/50 p-3 dark:bg-slate-800/50">
+                  <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Pattern</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+                    {formatDisplayValue(pattern)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-white/50 p-3 dark:bg-slate-800/50">
+                  <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Cycle Length</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+                    {formatDisplayValue(displayCycleLength)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-white/50 p-3 dark:bg-slate-800/50">
+                  <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Period Duration</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+                    {formatDisplayValue(displayPeriodDuration)}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Flow & Pain Section */}
-          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
-                <Droplet className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+          <div className="group relative overflow-hidden rounded-2xl border border-red-200 bg-gradient-to-br from-red-50 via-pink-50 to-rose-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-slate-700 dark:from-slate-900 dark:via-red-950/20 dark:to-pink-950/30">
+            <Droplet className="absolute -right-6 -top-6 h-32 w-32 text-red-300/40 transition-all duration-300 group-hover:scale-110 group-hover:text-red-300/50 dark:text-pink-500/15 dark:group-hover:text-pink-500/20" />
+            <div className="relative z-10">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="text-2xl">💧</span>
+                <h3 className="text-xl font-bold text-rose-700 dark:text-pink-400">
+                  Flow & Pain
+                </h3>
               </div>
-              <h3 className="text-lg font-medium text-pink-700 dark:text-pink-400">
-                Flow & Pain
-              </h3>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium dark:text-slate-100">Flow Level:</span>{' '}
-                {formatDisplayValue(displayFlowHeaviness)}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-slate-200">
-                <span className="font-medium dark:text-slate-100">Pain Level:</span>{' '}
-                {formatDisplayValue(displayPainLevel)}
-              </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between rounded-lg bg-white/50 p-3 dark:bg-slate-800/50">
+                  <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Flow Level</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+                    {formatDisplayValue(displayFlowHeaviness)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-white/50 p-3 dark:bg-slate-800/50">
+                  <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Pain Level</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+                    {formatDisplayValue(displayPainLevel)}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="space-y-6">
-          {/* Symptoms Section - wrapped with icon */}
-          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
-                <Search className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+          {/* Symptoms Section */}
+          <div className="group relative overflow-hidden rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-slate-700 dark:from-slate-900 dark:via-purple-950/20 dark:to-indigo-950/30">
+            <Search className="absolute -right-6 -top-6 h-32 w-32 text-purple-300/40 transition-all duration-300 group-hover:scale-110 group-hover:text-purple-300/50 dark:text-purple-500/15 dark:group-hover:text-purple-500/20" />
+            <div className="relative z-10">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="text-2xl">🔍</span>
+                <h3 className="text-xl font-bold text-purple-700 dark:text-purple-400">
+                  What You're Experiencing
+                </h3>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-slate-100">
-                Symptoms Reported
-              </h3>
+              <Symptoms
+                physicalSymptoms={physical}
+                emotionalSymptoms={emotional}
+                otherSymptoms={other}
+                setIsClamped={setIsClamped!}
+              />
             </div>
-            <Symptoms
-              physicalSymptoms={physical}
-              emotionalSymptoms={emotional}
-              otherSymptoms={other}
-              setIsClamped={setIsClamped!}
-            />
           </div>
 
           {/* Recommendations Section */}
-          <div className="rounded-lg border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-slate-100">
-              Recommendations
-            </h3>
-            <div className="space-y-4">
-              {recommendations && recommendations.length > 0 ? (
-                recommendations.map((rec, index) => {
-                  // Determine which icon to use based on recommendation title
-                  const getRecommendationIcon = (title: string) => {
-                    if (title.toLowerCase().includes('track') || title.toLowerCase().includes('cycle')) {
-                      return <Calendar className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
-                    } else if (title.toLowerCase().includes('consult') || title.toLowerCase().includes('healthcare') || title.toLowerCase().includes('doctor')) {
-                      return <Stethoscope className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
-                    }
-                    return <Calendar className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
-                  };
+          <div className="relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 p-6 shadow-lg dark:border-slate-700 dark:from-slate-900 dark:via-blue-950/20 dark:to-indigo-950/30">
+            <div className="relative z-10">
+              <div className="mb-6 flex items-center gap-2">
+                <span className="text-2xl">✨</span>
+                <h3 className="text-xl font-bold text-indigo-700 dark:text-indigo-400">
+                  Tips Just for You
+                </h3>
+              </div>
+              <div className="space-y-4">
+                {recommendations && recommendations.length > 0 ? (
+                  recommendations.map((rec, index) => {
+                    const getRecommendationDisplay = (title: string) => {
+                      if (title.toLowerCase().includes('track') || title.toLowerCase().includes('cycle')) {
+                        return { 
+                          icon: Calendar, 
+                          emoji: '📅', 
+                          color: 'from-cyan-100 via-blue-100 to-sky-100 dark:from-blue-950/40 dark:via-cyan-950/30 dark:to-sky-950/40', 
+                          iconColor: 'text-blue-400/30 dark:text-blue-500/15',
+                          borderColor: 'border-blue-200 dark:border-slate-700'
+                        };
+                      } else if (title.toLowerCase().includes('consult') || title.toLowerCase().includes('healthcare') || title.toLowerCase().includes('doctor')) {
+                        return { 
+                          icon: Stethoscope, 
+                          emoji: '🩺', 
+                          color: 'from-emerald-100 via-green-100 to-teal-100 dark:from-green-950/40 dark:via-emerald-950/30 dark:to-teal-950/40', 
+                          iconColor: 'text-green-400/30 dark:text-green-500/15',
+                          borderColor: 'border-green-200 dark:border-slate-700'
+                        };
+                      }
+                      return { 
+                        icon: Heart, 
+                        emoji: '💖', 
+                        color: 'from-pink-100 via-rose-100 to-fuchsia-100 dark:from-pink-950/40 dark:via-rose-950/30 dark:to-fuchsia-950/40', 
+                        iconColor: 'text-pink-400/30 dark:text-pink-500/15',
+                        borderColor: 'border-pink-200 dark:border-slate-700'
+                      };
+                    };
 
-                  return (
-                    <div
-                      key={index}
-                      className="rounded-lg border bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
-                          {getRecommendationIcon(rec.title)}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-xl font-medium text-pink-600 dark:text-pink-500">
+                    const display = getRecommendationDisplay(rec.title);
+                    const IconComponent = display.icon;
+
+                    return (
+                      <div
+                        key={index}
+                        className={`group relative overflow-hidden rounded-xl border ${display.borderColor} bg-gradient-to-br ${display.color} p-5 shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
+                      >
+                        <IconComponent className={`absolute -right-4 -bottom-4 h-28 w-28 ${display.iconColor} transition-all duration-300 group-hover:scale-110`} />
+                        <div className="relative z-10">
+                          <h4 className="mb-2 flex items-center gap-2 text-lg font-bold text-gray-800 dark:text-slate-100">
+                            <span className="text-xl">{display.emoji}</span>
                             {rec.title}
                           </h4>
-                          <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">
+                          <p className="text-sm leading-relaxed text-gray-700 dark:text-slate-300">
                             {rec.description}
                           </p>
                         </div>
                       </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="text-sm text-gray-500 dark:text-slate-400">
-                  No recommendations available.
-                </p>
-              )}
+                    );
+                  })
+                ) : (
+                  <div className="rounded-xl bg-white/50 p-8 text-center dark:bg-slate-800/50">
+                    <p className="text-sm text-gray-500 dark:text-slate-400">
+                      No recommendations available at the moment.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
