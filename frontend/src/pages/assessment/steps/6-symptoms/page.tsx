@@ -269,22 +269,22 @@ export default function SymptomsPage() {
             />
           </div>
 
-          <Card className="mb-8 w-full border-pink-100 bg-pink-50 shadow-md transition-shadow duration-300 hover:shadow-lg">
+          <Card className="mb-8 w-full border-pink-100 bg-pink-50 shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600" />
+                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600 dark:text-slate-100" />
                 <div>
-                  <h3 className="mb-1 font-semibold text-gray-800">About Period Symptoms</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="mb-1 font-semibold text-gray-800 dark:text-slate-100">About Period Symptoms</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">
                     {`It's normal to experience several symptoms during your menstrual cycle. Hormonal
                     fluctuations can affect your body in many ways beyond just bleeding.`}
                   </p>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                     However, symptoms that significantly interfere with daily life are not normal
                     and may indicate conditions like PMDD (Premenstrual Dysphoric Disorder) or other
                     reproductive health issues.
                   </p>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                     Tracking these symptoms can help your healthcare provider make better
                     assessments.
                   </p>

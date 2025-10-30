@@ -254,17 +254,17 @@ export default function PeriodDurationPage() {
             </Card>
           </div>
 
-          <Card className="mb-8 w-full border-pink-100 bg-pink-50 shadow-md transition-shadow duration-300 hover:shadow-lg">
+          <Card className="mb-8 w-full border-pink-100 bg-pink-50 shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600" />
+                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600 dark:text-slate-100" />
                 <div>
-                  <h3 className="mb-1 font-semibold text-gray-800">About Period Duration</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="mb-1 font-semibold text-gray-800 dark:text-slate-100">About Period Duration</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">
                     A typical period lasts between 3-7 days. Periods lasting longer than 7 days may
                     indicate hormonal imbalances or other health conditions.
                   </p>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                     Spotting before or after your period is common but should be noted separately
                     from your main flow.
                   </p>

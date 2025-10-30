@@ -240,18 +240,18 @@ export default function FlowPage() {
             </Card>
           </div>
 
-          <Card className="mb-8 w-full border-pink-100 bg-pink-50">
+          <Card className="mb-8 w-full border-pink-100 bg-pink-50 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600" />
+                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600 dark:text-slate-100" />
                 <div>
-                  <h3 className="mb-1 font-semibold text-gray-800">About Flow Heaviness</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="mb-1 font-semibold text-gray-800 dark:text-slate-100">About Flow Heaviness</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">
                     Most people lose 30-80ml of blood during their period. Menstrual flow that
                     consistently soaks through a pad/tampon every hour for several hours may
                     indicate heavy menstrual bleeding (menorrhagia).
                   </p>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                     Flow often varies throughout your period, typically starting lighter, becoming
                     heavier in the middle, and ending with lighter flow.
                   </p>

@@ -242,18 +242,18 @@ export default function PainPage() {
             </Card>
           </div>
 
-          <Card className="mb-8 w-full border-pink-100 bg-pink-50">
+          <Card className="mb-8 w-full border-pink-100 bg-pink-50 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600" />
+                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600 dark:text-slate-100" />
                 <div>
-                  <h3 className="mb-1 font-semibold text-gray-800">About Menstrual Pain</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="mb-1 font-semibold text-gray-800 dark:text-slate-100">About Menstrual Pain</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">
                     {`Mild to moderate menstrual cramps (dysmenorrhea) are common. They're caused by
                     substances called prostaglandins that help the uterus contract to shed its
                     lining.`}
                   </p>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                     Severe pain that disrupts your life may be a sign of conditions like
                     endometriosis, adenomyosis, or uterine fibroids, and should be discussed with a
                     healthcare provider.
