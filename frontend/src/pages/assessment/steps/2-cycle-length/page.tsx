@@ -253,17 +253,17 @@ export default function CycleLengthPage() {
             </Card>
           </div>
 
-          <Card className="mb-8 w-full border-pink-100 bg-pink-50">
+          <Card className="mb-8 w-full border-pink-100 bg-pink-50 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="pt-6">
               <div className="flex gap-2">
-                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600" />
+                <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-pink-600 dark:text-slate-100" />
                 <div>
-                  <h3 className="mb-1 font-semibold text-gray-800">About Menstrual Cycles</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="mb-1 font-semibold text-gray-800 dark:text-slate-100">About Menstrual Cycles</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">
                     A typical menstrual cycle can range from 21 to 35 days. Cycles outside this
                     range or that vary significantly may indicate hormonal fluctuations.
                   </p>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                     Not sure? Try using our period tracker for 2-3 months to discover your pattern.
                   </p>
                 </div>
