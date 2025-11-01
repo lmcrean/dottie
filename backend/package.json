@@ -10,7 +10,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "npm i && node scripts/setup-env.js && nodemon server.js",
+    "dev:ts": "npm i && node scripts/setup-env.js && nodemon --exec tsx server.js",
     "dev:e2e": "npm i && node scripts/setup-env.js && cross-env PORT=5005 node server.js --mode e2e",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "type-check": "tsc --noEmit",
     "db:init": "node db/init.js",
     "db:init:sqlite": "node db/init-sqlite.js",
     "db:reset": "node scripts/reset-db.js",
@@ -76,6 +80,15 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20.17.10",
+    "@types/pg": "^8.11.10",
+    "@types/supertest": "^6.0.2",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.9.0",
     "cross-env": "^7.0.3",
     "mssql": "^12.0.0",
@@ -83,6 +96,8 @@
     "sqlite3": "^5.1.7",
     "supertest": "^7.1.0",
     "tedious": "^18.6.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
     "vitest": "^3.1.2"
   }
 }
