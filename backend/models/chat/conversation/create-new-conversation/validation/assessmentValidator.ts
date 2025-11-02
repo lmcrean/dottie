@@ -38,7 +38,7 @@ export const validateAssessmentOwnership = async (
     // Import Assessment model dynamically to avoid circular dependencies
     const { default: Assessment } = await import('../../../../assessment/Assessment.js');
 
-    const assessment = await Assessment.findById(assessmentId);
+    const assessment = await Assessment.findById(String(assessmentId));
     if (!assessment) {
       logger.warn(`Assessment not found: ${assessmentId}`);
       return false;
@@ -71,7 +71,7 @@ export const validateAssessmentExists = async (
   try {
     const { default: Assessment } = await import('../../../../assessment/Assessment.js');
 
-    const assessment = await Assessment.findById(assessmentId);
+    const assessment = await Assessment.findById(String(assessmentId));
     return !!assessment;
   } catch (error) {
     logger.error('Error validating assessment exists:', error);
@@ -94,7 +94,7 @@ export const validateAndGetAssessment = async (
   try {
     const { default: Assessment } = await import('../../../../assessment/Assessment.js');
 
-    const assessment = await Assessment.findById(assessmentId);
+    const assessment = await Assessment.findById(String(assessmentId));
     if (!assessment) {
       logger.warn(`Assessment not found: ${assessmentId}`);
       return null;
@@ -111,7 +111,7 @@ export const validateAndGetAssessment = async (
       user_id: assessment.user_id,
       pattern: (assessment as any).pattern || (assessment as any).assessment_pattern,
       created_at: assessment.created_at,
-      updated_at: assessment.updated_at,
+      updated_at: (assessment as any).updated_at || assessment.created_at,
       isValid: true
     };
   } catch (error) {

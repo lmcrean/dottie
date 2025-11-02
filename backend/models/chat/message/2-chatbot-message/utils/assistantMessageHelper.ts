@@ -3,11 +3,9 @@ import logger from '../../../../../services/logger.js';
 import { ConfigHelper } from './configHelper.js';
 import { insertChatMessage } from '../../1-user-message/add-message/database/sendUserMessage.js';
 import { generateMessageId } from '../../shared/utils/responseBuilders.js';
-import { generateInitialResponse as generateInitialAI } from '../services/ai/generators/initialAI.js';
-import { generateInitialResponse as generateInitialMock } from '../services/mock/generators/initialMock.js';
-import { generateFollowUpResponse as generateFollowUpAI } from '../services/ai/generators/followUpAI.js';
-import { generateFollowUpResponse as generateFollowUpMock } from '../services/mock/generators/followUpMock.js';
-import { getConversationHistory } from '../../../read-chat-detail/getWithContext.js';
+import { generateAIResponse } from '../services/ai/generators/aiResponse.js';
+import { generateMockResponse } from '../services/mock/generators/mockResponse.js';
+// import { getConversationHistory } from '../../../read-chat-detail/getWithContext.js';
 import { updateConversationPreview } from '../../../conversation/read-conversation/getPreviewHook.js';
 import DbService from '../../../../../services/dbService.js';
 
@@ -22,13 +20,8 @@ interface GeneratedResponse {
 /**
  * Assistant message result
  */
-export interface AssistantMessageResult {
-  id: string | number;
+export interface AssistantMessageResult extends MessageRecord {
   conversationId: string | number;
-  role: 'assistant';
-  content: string;
-  parent_message_id?: string | number | null;
-  created_at: string;
   metadata?: Record<string, any>;
 }
 
@@ -49,22 +42,17 @@ export async function generateAndStoreAssistantResponse(
   try {
     const serviceType = ConfigHelper.detectService();
 
-    // Determine if this is initial or follow-up response
-    const isInitial = !parentMessageId;
+    // TODO: Get conversation history for context
+    // For now, use empty history for initial message
+    const messages: MessageRecord[] = [];
+    const assessmentData = null;
+    const pattern = assessmentPattern;
 
     let response: GeneratedResponse;
-    if (isInitial) {
-      response = serviceType === 'ai'
-        ? await generateInitialAI(messageText, assessmentPattern)
-        : await generateInitialMock(messageText, assessmentPattern);
+    if (serviceType === 'ai') {
+      response = await generateAIResponse(messageText, messages, assessmentData, pattern);
     } else {
-      // Get conversation history for follow-up context
-      const conversation = await getConversationHistory(conversationId);
-      const { messages, assessment_pattern } = conversation;
-
-      response = serviceType === 'ai'
-        ? await generateFollowUpAI(messageText, messages, assessment_pattern)
-        : await generateFollowUpMock(messageText, messages, assessment_pattern);
+      response = await generateMockResponse(messageText, messages, assessmentData, pattern);
     }
 
     const assistantMessageId = generateMessageId();
@@ -89,11 +77,14 @@ export async function generateAndStoreAssistantResponse(
 
     return {
       id: assistantMessageId,
+      conversation_id: conversationId,
       conversationId,
-      role: 'assistant',
+      user_id: '', // Assistant messages don't have a user_id
+      role: 'assistant' as const,
       content: response.content,
-      parent_message_id: parentMessageId,
+      parent_message_id: parentMessageId || null,
       created_at: assistantMessage.created_at,
+      updated_at: assistantMessage.created_at,
       metadata: response.metadata
     };
 
