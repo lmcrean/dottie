@@ -1,6 +1,6 @@
 import { describe, beforeEach, afterEach, vi } from 'vitest';
 import DbService from '@/services/dbService.js';
-import logger from '@/services/logger';
+import logger from '@/services/logger.js';
 
 // Import test runners
 import { runSuccessfulCreationTests } from './runners/successfulCreation.js';

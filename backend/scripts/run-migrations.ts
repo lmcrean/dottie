@@ -1,4 +1,4 @@
-import knex from 'knex';
+import knex, { Knex } from 'knex';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Create knex instance
-const knexInstance = knex({
+const knexInstance: Knex = knex({
   client: 'sqlite3',
   connection: {
     filename: path.join(__dirname, '../db/database.sqlite')
@@ -20,16 +20,16 @@ const knexInstance = knex({
 });
 
 // Function to run migrations
-async function runMigrations() {
+async function runMigrations(): Promise<void> {
   try {
     console.log('Running migrations...');
     const migrations = await knexInstance.migrate.latest({
       directory: path.join(__dirname, '../db/migrations')
     });
-    
+
     console.log('Migrations completed!');
     console.log('Migrations run:', migrations[1]);
-    
+
     process.exit(0);
   } catch (error) {
     console.error('Error running migrations:', error);
@@ -38,4 +38,4 @@ async function runMigrations() {
 }
 
 // Run migrations
-runMigrations(); 
+runMigrations();

@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
-import express from 'express';
+import express, { Express } from 'express';
 
 // Create a simple mock server for testing
-const createMockServer = () => {
+const createMockServer = (): Express => {
   const app = express();
   app.use(express.json());
-  
+
   // Mock PUT /api/user/me endpoint
   app.put('/api/user/me', (req, res) => {
     const id = 'test-user-123';
@@ -36,7 +36,7 @@ const createMockServer = () => {
 describe('User ID Endpoints - Unit Tests', () => {
   const app = createMockServer();
   const TEST_USER_ID = 'test-user-123';
-  
+
   describe('PUT /api/user/me', () => {
     it('should update a user successfully', async () => {
       const updateData = {
@@ -48,7 +48,7 @@ describe('User ID Endpoints - Unit Tests', () => {
         .put(`/api/user/me`)
         .set('Authorization', 'Bearer test-token-123')
         .send(updateData);
-        
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('id', TEST_USER_ID);
       expect(response.body).toHaveProperty('name', updateData.name);
@@ -61,10 +61,10 @@ describe('User ID Endpoints - Unit Tests', () => {
       const response = await request(app)
         .delete(`/api/user/${TEST_USER_ID}`)
         .set('Authorization', 'Bearer test-token-123');
-        
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message', `User ${TEST_USER_ID} deleted successfully`);
       expect(response.body).toHaveProperty('success', true);
     });
   });
-}); 
+});

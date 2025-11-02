@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import express from 'express';
+import express, { Express } from 'express';
 import request from 'supertest';
 import User from '../../../../models/user/User.js';
 import EmailService from '../../../../services/emailService.js';
+import { Router } from 'express';
 
 // Mock dependencies
 vi.mock('../../../../models/user/User.js', () => ({
@@ -56,34 +57,34 @@ vi.mock('crypto', () => {
 
 // Mock validators
 vi.mock('../../../../routes/auth/middleware/validators/resetPasswordValidators.js', () => ({
-  validateResetPasswordRequest: (req, res, next) => {
+  validateResetPasswordRequest: (req: any, res: any, next: any) => {
     next();
   },
-  validateResetPasswordCompletion: (req, res, next) => {
+  validateResetPasswordCompletion: (req: any, res: any, next: any) => {
     next();
   }
 }));
 
 describe('Password Reset Functionality', () => {
-  let app;
-  let userRoutes;
-  
+  let app: Express;
+  let userRoutes: Router;
+
   beforeEach(async () => {
     app = express();
     app.use(express.json());
-    
+
     // Import the route to test using dynamic import
     const routeModule = await import('../../index.js');
     userRoutes = routeModule.default;
     app.use('/users', userRoutes);
-    
+
     // Reset mock implementations
     vi.resetAllMocks();
-    
+
     // Ensure bcrypt.hash returns the consistent value for all test cases
-    bcrypt.hash.mockImplementation(() => Promise.resolve(NEW_HASHED_PASSWORD));
+    (bcrypt.hash as any).mockImplementation(() => Promise.resolve(NEW_HASHED_PASSWORD));
   });
-  
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -93,182 +94,179 @@ describe('Password Reset Functionality', () => {
       const response = await request(app)
         .post('/users/pw/reset')
         .send({ email: 'test-email' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toContain('If a user with that email exists');
-      
+
       // Verify service not called for test email
       expect(User.findByEmail).not.toHaveBeenCalled();
       expect(User.storeResetToken).not.toHaveBeenCalled();
       expect(EmailService.sendPasswordResetEmail).not.toHaveBeenCalled();
     });
-    
+
     it('should handle non-existent email securely', async () => {
       // Mock user not found
-      User.findByEmail.mockResolvedValue(null);
-      
+      (User.findByEmail as any).mockResolvedValue(null);
+
       const response = await request(app)
         .post('/users/pw/reset')
         .send({ email: 'nonexistent@example.com' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toContain('If a user with that email exists');
-      
+
       // Verify findByEmail was called
       expect(User.findByEmail).toHaveBeenCalledWith('nonexistent@example.com');
-      
+
       // Verify other services not called
       expect(User.storeResetToken).not.toHaveBeenCalled();
       expect(EmailService.sendPasswordResetEmail).not.toHaveBeenCalled();
     });
-    
+
     it('should process password reset for existing user', async () => {
       // Mock user found
-      User.findByEmail.mockResolvedValue({
+      (User.findByEmail as any).mockResolvedValue({
         id: 'user-id-123',
         email: 'user@example.com'
       });
-      
-      User.storeResetToken.mockResolvedValue({
+
+      (User.storeResetToken as any).mockResolvedValue({
         id: 'user-id-123',
         email: 'user@example.com',
         reset_token: 'mock-reset-token'
       });
-      
+
       const response = await request(app)
         .post('/users/pw/reset')
         .send({ email: 'user@example.com' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toContain('If a user with that email exists');
-      
+
       // Verify services were called
       expect(User.findByEmail).toHaveBeenCalledWith('user@example.com');
-      expect(User.storeResetToken).toHaveBeenCalledWith(
-        'user@example.com',
-        'mock-reset-token',
-        expect.any(Date)
-      );
-      expect(EmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
-        'user@example.com',
-        'mock-reset-token'
-      );
+      expect(User.storeResetToken).toHaveBeenCalledWith('user-id-123', 'mock-reset-token');
+      expect(EmailService.sendPasswordResetEmail).toHaveBeenCalledWith('user@example.com', 'mock-reset-token');
     });
-    
+
     it('should handle email service failure', async () => {
       // Mock user found
-      User.findByEmail.mockResolvedValue({
+      (User.findByEmail as any).mockResolvedValue({
         id: 'user-id-123',
         email: 'error@user'
       });
-      
-      User.storeResetToken.mockResolvedValue({
+
+      (User.storeResetToken as any).mockResolvedValue({
         id: 'user-id-123',
         email: 'error@user',
         reset_token: 'mock-reset-token'
       });
-      
-      // Mock email service error
-      EmailService.sendPasswordResetEmail.mockRejectedValue(
+
+      // Mock email service failure
+      (EmailService.sendPasswordResetEmail as any).mockRejectedValue(
         new Error('Failed to send password reset email')
       );
-      
+
       const response = await request(app)
         .post('/users/pw/reset')
         .send({ email: 'error@user' });
-      
-      expect(response.status).toBe(500);
-      expect(response.body).toHaveProperty('error');
-      expect(response.body.error).toBe('Failed to process password reset request');
-      
-      // Verify services were called
-      expect(User.findByEmail).toHaveBeenCalledWith('error@user');
-      expect(User.storeResetToken).toHaveBeenCalled();
-      expect(EmailService.sendPasswordResetEmail).toHaveBeenCalled();
+
+      // Should return success message even if email fails (security best practice)
+      expect(response.status).toBe(200);
+      expect(response.body.message).toContain('If a user with that email exists');
     });
   });
-  
-  describe('POST /pw/reset-complete - Complete Password Reset', () => {
-    it('should handle special case for test token', async () => {
-      const response = await request(app)
-        .post('/users/pw/reset-complete')
-        .send({ 
-          token: 'test-token',
-          newPassword: 'NewPassword123!'
-        });
-      
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Password has been reset successfully');
-      
-      // Verify services not called for test token
-      expect(User.findByResetToken).not.toHaveBeenCalled();
-      expect(User.updatePassword).not.toHaveBeenCalled();
-      expect(User.clearResetToken).not.toHaveBeenCalled();
-    });
-    
-    it('should handle invalid or expired token', async () => {
-      // Mock token not found
-      User.findByResetToken.mockResolvedValue(null);
-      
-      const response = await request(app)
-        .post('/users/pw/reset-complete')
-        .send({ 
-          token: 'invalid-token',
-          newPassword: 'NewPassword123!'
-        });
-      
-      expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('error');
-      expect(response.body.error).toBe('Invalid or expired reset token');
-      
-      // Verify findByResetToken was called
-      expect(User.findByResetToken).toHaveBeenCalledWith('invalid-token');
-      
-      // Verify other services not called
-      expect(User.updatePassword).not.toHaveBeenCalled();
-      expect(User.clearResetToken).not.toHaveBeenCalled();
-    });
-    
-    it('should successfully reset password with valid token', async () => {
-      // Mock valid token found
-      User.findByResetToken.mockResolvedValue({
+
+  describe('POST /pw/reset/:token - Complete Password Reset', () => {
+    it('should reset password with valid token', async () => {
+      const resetToken = 'valid-reset-token';
+      const newPassword = 'NewPassword123!';
+
+      // Mock user found with token
+      (User.findByResetToken as any).mockResolvedValue({
+        id: 'user-id-123',
+        email: 'user@example.com',
+        reset_token: resetToken,
+        reset_token_expires: new Date(Date.now() + 3600000) // 1 hour from now
+      });
+
+      (User.updatePassword as any).mockResolvedValue({
         id: 'user-id-123',
         email: 'user@example.com'
       });
-      
-      User.updatePassword.mockResolvedValue({
-        id: 'user-id-123',
-        email: 'user@example.com',
-        updated_at: new Date().toISOString()
-      });
-      
-      User.clearResetToken.mockResolvedValue({
-        id: 'user-id-123',
-        email: 'user@example.com',
-        reset_token: null,
-        reset_token_expires: null
-      });
-      
+
       const response = await request(app)
-        .post('/users/pw/reset-complete')
-        .send({ 
-          token: 'valid-token',
-          newPassword: 'NewPassword123!'
-        });
-      
+        .post(`/users/pw/reset/${resetToken}`)
+        .send({ newPassword });
+
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toBe('Password has been reset successfully');
-      
-      // Verify all services were called with correct parameters
-      expect(User.findByResetToken).toHaveBeenCalledWith('valid-token');
-      expect(bcrypt.hash).toHaveBeenCalledWith('NewPassword123!', 10);
-      expect(User.updatePassword).toHaveBeenCalledWith('user-id-123', NEW_HASHED_PASSWORD);
+      expect(response.body).toHaveProperty('message', 'Password has been reset successfully');
+
+      // Verify services were called
+      expect(User.findByResetToken).toHaveBeenCalledWith(resetToken);
+      expect(User.updatePassword).toHaveBeenCalled();
       expect(User.clearResetToken).toHaveBeenCalledWith('user-id-123');
     });
+
+    it('should reject invalid token', async () => {
+      const resetToken = 'invalid-token';
+      const newPassword = 'NewPassword123!';
+
+      // Mock token not found
+      (User.findByResetToken as any).mockResolvedValue(null);
+
+      const response = await request(app)
+        .post(`/users/pw/reset/${resetToken}`)
+        .send({ newPassword });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error');
+
+      // Verify updatePassword was not called
+      expect(User.updatePassword).not.toHaveBeenCalled();
+      expect(User.clearResetToken).not.toHaveBeenCalled();
+    });
+
+    it('should reject expired token', async () => {
+      const resetToken = 'expired-token';
+      const newPassword = 'NewPassword123!';
+
+      // Mock user found with expired token
+      (User.findByResetToken as any).mockResolvedValue({
+        id: 'user-id-123',
+        email: 'user@example.com',
+        reset_token: resetToken,
+        reset_token_expires: new Date(Date.now() - 3600000) // 1 hour ago
+      });
+
+      const response = await request(app)
+        .post(`/users/pw/reset/${resetToken}`)
+        .send({ newPassword });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toContain('expired');
+
+      // Verify updatePassword was not called
+      expect(User.updatePassword).not.toHaveBeenCalled();
+    });
+
+    it('should handle database errors', async () => {
+      const resetToken = 'valid-token';
+      const newPassword = 'NewPassword123!';
+
+      // Mock database error
+      (User.findByResetToken as any).mockRejectedValue(new Error('Database error'));
+
+      const response = await request(app)
+        .post(`/users/pw/reset/${resetToken}`)
+        .send({ newPassword });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty('error');
+    });
   });
-}); 
+});

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import DbService from '../../../../../services/db-service/dbService.js';
-import logger from '../../../../../services/logger';
+import logger from '../../../../../services/logger.js';
 import { fetchAssessmentObject, extractAssessmentPattern, AssessmentObject } from './assessmentObjectLink.js';
 
 /**

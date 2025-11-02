@@ -1,5 +1,5 @@
 import DbService from '../../../services/dbService.js';
-import logger from '../../../services/logger';
+import logger from '../../../services/logger.js';
 
 /**
  * Chat utility class for conversation operations

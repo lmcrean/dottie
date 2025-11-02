@@ -25,6 +25,5 @@ if (!isProduction || !isVercel) {
     }
   }
 } else {
-
   // No initialization needed for Supabase as it's managed externally
 }

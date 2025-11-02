@@ -1,6 +1,6 @@
-import logger from '../../../../../services/logger';
+import logger from '../../../../../services/logger.js';
 import DbService from '../../../../../services/dbService.js';
-import { generateMessageId } from '../../shared/utils/responseBuilders';
+import { generateMessageId } from '../../shared/utils/responseBuilders.js';
 import { verifyParentMessageId } from '../../1-user-message/add-message/database/linkParentMessageId.js';
 import { updateConversationPreview } from '../../../conversation/read-conversation/getPreviewHook.js';
 
