@@ -3,8 +3,8 @@
     /* Language and Environment */
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "ES2022",
-    "moduleResolution": "bundler",
+    "module": "Node16",
+    "moduleResolution": "node16",
 
     /* Emit */
     "outDir": "./dist",
@@ -42,7 +42,15 @@
     "checkJs": false,
 
     /* Skip Lib Check for Performance */
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    /* Module Resolution Helpers */
+    "baseUrl": ".",
+    "paths": {
+      "*/logger.js": ["*/logger.ts", "*/logger.js"],
+      "*/responseBuilders.js": ["*/responseBuilders.ts", "*/responseBuilders.js"],
+      "*/messageFormatters.js": ["*/messageFormatters.ts"]
+    }
   },
   "include": [
     "**/*.ts",
