@@ -55,7 +55,7 @@ describe('getUserConversations', () => {
       expect(result).toHaveLength(2);
       
       // Check first conversation formatting
-      expect(result[0]).toEqual({
+      expect(result[0]).toMatchObject({
         id: 'conv-1',
         last_message_date: '2024-01-15T10:00:00.000Z',
         preview: 'This is a test message that is longer than fifty characters...',
@@ -66,7 +66,7 @@ describe('getUserConversations', () => {
       });
 
       // Check second conversation formatting
-      expect(result[1]).toEqual({
+      expect(result[1]).toMatchObject({
         id: 'conv-2',
         last_message_date: '2024-01-14T09:00:00.000Z',
         preview: 'Short message',

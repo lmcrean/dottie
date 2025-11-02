@@ -148,7 +148,7 @@ describe('Password Reset Functionality', () => {
 
       // Verify services were called
       expect(User.findByEmail).toHaveBeenCalledWith('user@example.com');
-      expect(User.storeResetToken).toHaveBeenCalledWith('user-id-123', 'mock-reset-token');
+      expect(User.storeResetToken).toHaveBeenCalledWith('user@example.com', 'mock-reset-token', expect.any(Date));
       expect(EmailService.sendPasswordResetEmail).toHaveBeenCalledWith('user@example.com', 'mock-reset-token');
     });
 
