@@ -7,15 +7,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, "..", "..", "..");
 
 // Step 1: Check that Supabase environment variables are set
-const requiredEnvVars = ["SUPABASE_ANON_PUBLIC", "SUPABASE_SERVICE_ROLE_KEY"];
+const requiredEnvVars: string[] = ["SUPABASE_ANON_PUBLIC", "SUPABASE_SERVICE_ROLE_KEY"];
 
 // Load .env file manually to check variables
-const envPath = path.join(rootDir, ".env");
-let envVars = {};
+const envPath: string = path.join(rootDir, ".env");
+let envVars: Record<string, string> = {};
 
 try {
-  const envContent = fs.readFileSync(envPath, "utf8");
-  const lines = envContent.split("\n");
+  const envContent: string = fs.readFileSync(envPath, "utf8");
+  const lines: string[] = envContent.split("\n");
 
   for (const line of lines) {
     if (line.trim() && !line.startsWith("#")) {
@@ -28,7 +28,7 @@ try {
     }
   }
 
-  const missingEnvVars = requiredEnvVars.filter((envVar) => !envVars[envVar]);
+  const missingEnvVars: string[] = requiredEnvVars.filter((envVar) => !envVars[envVar]);
 
   if (missingEnvVars.length > 0) {
     console.error(

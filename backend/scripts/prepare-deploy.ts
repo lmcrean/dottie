@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Get current directory 
+// Get current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
@@ -56,4 +56,4 @@ try {
 }
 
 console.log('✅ Deployment preparation complete!');
-console.log('Ready for Vercel deployment'); 
+console.log('Ready for Vercel deployment');

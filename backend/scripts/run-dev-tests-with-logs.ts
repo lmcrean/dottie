@@ -5,7 +5,7 @@
  * This helps debug and compare dev vs prod behavior
  */
 
-import { spawn } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -16,7 +16,7 @@ const rootDir = join(__dirname, '..');
 console.log('🔧 Starting Backend Server with Detailed Logging...');
 
 // Start the backend server first
-const serverProcess = spawn('npm', ['run', 'dev'], {
+const serverProcess: ChildProcess = spawn('npm', ['run', 'dev'], {
   cwd: rootDir,
   stdio: 'inherit',
   env: {
@@ -30,10 +30,10 @@ const serverProcess = spawn('npm', ['run', 'dev'], {
 // Wait a bit for server to start
 setTimeout(() => {
   console.log('\n🧪 Running Dev Tests...');
-  
+
   // Run the tests
-  const testProcess = spawn('npx', [
-    'playwright', 'test', 
+  const testProcess: ChildProcess = spawn('npx', [
+    'playwright', 'test',
     'e2e/dev/master-integration.api.pw.spec.js',
     '-c', 'playwright.dev.config.js',
     '--reporter=list'
@@ -49,12 +49,12 @@ setTimeout(() => {
 
   testProcess.on('close', (code) => {
     console.log(`\n📝 Tests completed with code: ${code}`);
-    
+
     // Kill the server
     serverProcess.kill('SIGTERM');
-    
+
     setTimeout(() => {
-      process.exit(code);
+      process.exit(code || 0);
     }, 1000);
   });
 
@@ -82,4 +82,4 @@ process.on('SIGTERM', () => {
   console.log('\n🛑 Cleaning up...');
   serverProcess.kill('SIGTERM');
   process.exit(0);
-}); 
+});

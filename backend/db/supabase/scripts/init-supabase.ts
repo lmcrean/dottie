@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 
@@ -6,12 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 dotenv.config();
 
 // Create a Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // Using service role key for full access
+const supabase: SupabaseClient = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // Using service role key for full access
 );
 
-async function initializeDatabase() {
+async function initializeDatabase(): Promise<void> {
   try {
     // Create users table
 

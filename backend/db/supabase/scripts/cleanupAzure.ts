@@ -6,9 +6,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, "..");
 
 // Update .env file to remove Azure SQL related variables
-const envPath = path.join(rootDir, ".env");
+const envPath: string = path.join(rootDir, ".env");
 try {
-  let envContent = fs.readFileSync(envPath, "utf8");
+  let envContent: string = fs.readFileSync(envPath, "utf8");
 
   // Add a comment explaining the migration
   envContent = envContent.replace(
@@ -29,13 +29,13 @@ try {
 }
 
 // List files to be deleted
-const filesToDelete = [
+const filesToDelete: string[] = [
   path.join(rootDir, "db", "index.js"),
   // Add more files if needed
 ];
 
 // Delete files
-filesToDelete.forEach((file) => {
+filesToDelete.forEach((file: string) => {
   try {
     if (fs.existsSync(file)) {
       fs.unlinkSync(file);

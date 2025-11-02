@@ -17,11 +17,23 @@ import {
   getConversationForUser as originalGetConversationForUser,
   getConversationSummary as originalGetConversationSummary
 } from './conversation/read-conversation/getConversation.js';
-import { addUserMessage as originalAddUserMessage, sendMessage as originalSendMessage } from './message/1-user-message/add-message/sendUserMessage.js';
+import {
+  addUserMessage as originalAddUserMessage,
+  sendMessage as originalSendMessage,
+  type SendUserMessageOptions,
+  type UserMessageResult
+} from './message/1-user-message/add-message/sendUserMessage.js';
 import { insertChatMessage as originalInsertChatMessage } from './message/1-user-message/add-message/database/sendUserMessage.js';
 import { generateAndSaveResponse as originalGenerateAndSaveResponse } from './message/2-chatbot-message/generateResponse.js';
-import { sendChatbotMessage as originalSendChatbotMessage } from './message/2-chatbot-message/database/sendChatbotMessage.js';
+import {
+  sendChatbotMessage as originalSendChatbotMessage,
+  type SendChatbotMessageOptions,
+  type ChatbotMessageResult
+} from './message/2-chatbot-message/database/sendChatbotMessage.js';
 import { updateConversationAssessmentLinks as originalUpdateConversationAssessmentLinks } from './conversation/update-conversation/updateAssessmentLinks.js';
+
+// Re-export types
+export type { SendUserMessageOptions, UserMessageResult, SendChatbotMessageOptions, ChatbotMessageResult };
 
 // TEMPORARY: Comment out sendMessageFlow import to fix initialization issue
 // import { sendMessageFlow as importedSendMessageFlow } from './message/send-message-flow/sendMessageFlow.js';

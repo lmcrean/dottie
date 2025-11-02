@@ -1,16 +1,16 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
 
 // Create a Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_PUBLIC
+const supabase: SupabaseClient = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_PUBLIC!
 );
 
-async function checkTables() {
+async function checkTables(): Promise<void> {
   try {
     // Check users table
 
@@ -21,7 +21,7 @@ async function checkTables() {
 
     if (usersError) {
       console.error("Error accessing users table:", usersError.message);
-    } 
+    }
 
     // List all tables in the public schema
 

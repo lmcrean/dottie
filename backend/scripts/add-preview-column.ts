@@ -4,12 +4,12 @@ import { addPreviewToConversations } from '../db/migrations/20240528_add_preview
 /**
  * Run the add preview column migration directly
  */
-async function addPreviewColumn() {
+async function addPreviewColumn(): Promise<void> {
   try {
     console.log('Adding preview column to conversations table...');
-    
+
     await addPreviewToConversations(db);
-    
+
     console.log('Successfully added preview column to conversations table');
     process.exit(0);
   } catch (error) {
@@ -19,4 +19,4 @@ async function addPreviewColumn() {
 }
 
 // Run the migration
-addPreviewColumn(); 
+addPreviewColumn();

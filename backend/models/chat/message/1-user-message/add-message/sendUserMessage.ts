@@ -7,7 +7,7 @@ import Chat from '../../../list/chat.js';
 /**
  * Options for sending a user message
  */
-interface SendUserMessageOptions {
+export interface SendUserMessageOptions {
   parentMessageId?: number | string | null;
   context?: Record<string, any>;
 }
@@ -15,7 +15,7 @@ interface SendUserMessageOptions {
 /**
  * User message result
  */
-interface UserMessageResult {
+export interface UserMessageResult {
   userMessage: {
     id: string;
     conversationId: number | string;

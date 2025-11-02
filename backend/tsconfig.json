@@ -3,10 +3,11 @@
     /* Language and Environment */
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
 
     /* Emit */
+    "noEmitOnError": false,
     "outDir": "./dist",
     "rootDir": "./",
     "sourceMap": true,
@@ -17,15 +18,15 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 
-    /* Type Checking - Relaxed for build to pass */
-    "strict": false,
+    /* Type Checking - Strict but practical */
+    "strict": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
-    "strictFunctionTypes": false,
+    "strictFunctionTypes": true,
     "strictBindCallApply": false,
     "strictPropertyInitialization": false,
     "noImplicitThis": false,
-    "alwaysStrict": false,
+    "alwaysStrict": true,
 
     /* Additional Checks - Enable Gradually */
     "noUnusedLocals": false,

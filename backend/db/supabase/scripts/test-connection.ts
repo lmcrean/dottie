@@ -1,17 +1,17 @@
 // Script to test Supabase connection directly
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
 
 // Create Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_PUBLIC
+const supabase: SupabaseClient = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_PUBLIC!
 );
 
-async function testConnection() {
+async function testConnection(): Promise<void> {
   try {
     // Test authentication API (should always work)
     const authResponse = await supabase.auth.getSession();

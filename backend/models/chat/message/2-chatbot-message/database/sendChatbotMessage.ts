@@ -7,7 +7,7 @@ import { updateConversationPreview } from '../../../conversation/read-conversati
 /**
  * Options for sending a chatbot message
  */
-interface SendChatbotMessageOptions {
+export interface SendChatbotMessageOptions {
   parentMessageId?: number | string | null;
   metadata?: Record<string, any>;
 }
@@ -15,7 +15,7 @@ interface SendChatbotMessageOptions {
 /**
  * Chatbot message result
  */
-interface ChatbotMessageResult {
+export interface ChatbotMessageResult {
   chatbotMessage: {
     id: string;
     conversationId: number | string;
