@@ -27,9 +27,9 @@ export default defineConfig({
     }
   },
   
-  testMatch: '**/*.api.pw.spec.js',
+  testMatch: '**/*.api.pw.spec.{js,ts}',
   
-  globalSetup: join(__dirname, 'e2e/setup/global-setup-prod.js'),
+  globalSetup: join(__dirname, 'e2e/setup/global-setup-prod.ts'),
   
   projects: [
     {

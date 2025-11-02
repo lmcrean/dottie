@@ -18,7 +18,7 @@ export default defineConfig({
   },
   
   // Specific file pattern for API tests
-  testMatch: '**/*.api.pw.spec.js',
+  testMatch: '**/*.api.pw.spec.{js,ts}',
 
   // Configure webServer to automatically start the backend server during tests
   webServer: {

@@ -18,7 +18,7 @@ export default defineConfig({
   },
   
   // Specific file pattern to avoid conflicts with vitest
-  testMatch: '**/*.api.pw.spec.js',
+  testMatch: '**/*.api.pw.spec.{js,ts}',
 
   // Configure webServer to automatically start the backend server during tests
   webServer: {
@@ -35,7 +35,7 @@ export default defineConfig({
       use: {
         // No browser needed for API tests
       },
-      testMatch: '**/*.api.pw.spec.js',
+      testMatch: '**/*.api.pw.spec.{js,ts}',
     },
     {
       name: 'browser',
@@ -43,7 +43,7 @@ export default defineConfig({
         // Using only Safari as per instructions
         browserName: 'webkit',
       },
-      testMatch: '**/*.ui.pw.spec.js',
+      testMatch: '**/*.ui.pw.spec.{js,ts}',
     },
   ],
 }); 
