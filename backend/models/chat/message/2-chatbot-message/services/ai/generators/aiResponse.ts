@@ -1,7 +1,7 @@
 import type { MessageRecord } from '../../../../../types.js';
 import logger from '../../../../../../services/logger.js';
 import { buildAIResponse, buildFallbackResponse } from '../../../shared/utils/responseBuilders.js';
-import { formatMessagesForAI } from '../../../shared/utils/messageFormatters';
+import { formatMessagesForAI } from '../../../shared/utils/messageFormatters.js';
 
 /**
  * Assessment data interface

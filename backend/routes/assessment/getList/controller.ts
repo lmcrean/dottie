@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { assessments } from "../store/index.js";
 import db from "../../../db/index.js";
 import Assessment from '../../../models/assessment/Assessment.js';
 import { AuthenticatedRequest } from '../../types.js';
