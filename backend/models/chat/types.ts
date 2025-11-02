@@ -102,6 +102,7 @@ export interface MessageFlowInput {
 export interface CreateConversationResponse {
   success: boolean;
   conversationId: number | string;
+  assessmentId?: number | string | null;
   conversation?: ConversationData;
   error?: string;
 }
@@ -139,6 +140,7 @@ export interface ConversationSummary {
   updated_at: Date | string;
   message_count?: number;
   last_message_at?: Date | string;
+  last_message_date?: Date | string; // Alias for last_message_at for backward compatibility
 }
 
 /**

@@ -21,10 +21,11 @@ beforeAll(async () => {
     server = createServer(app);
     request = supertest(app);
 
-    // Create test user data with random email to avoid conflicts
+    // Create test user data with random email and username to avoid conflicts
+    const timestamp = Date.now();
     testUser = {
-      username: "e2etestuser",
-      email: `e2e-test-${Date.now()}@example.com`,
+      username: `e2etestuser-${timestamp}`,
+      email: `e2e-test-${timestamp}@example.com`,
       password: "TestPass123!",
       age: 25,
     };
@@ -91,7 +92,7 @@ describe("User Authentication Flow (E2E)", () => {
     // Create a test token with the secret
     const secret = process.env.JWT_SECRET || "dev-jwt-secret";
     accessToken = jwt.sign(
-      { userId: testUserId, email: testUser.email },
+      { id: testUserId, email: testUser.email },
       secret,
       { expiresIn: "1h" }
     );

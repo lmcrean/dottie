@@ -37,20 +37,20 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
 
       const createResult = await User.create(userData);
       expect(createResult.success).toBe(true);
-      expect(createResult.user).toBeDefined();
-      expect(createResult.user.username).toBe(originalUsername);
-      expect(createResult.user.email).toBe(originalEmail);
-      expect(createResult.user.password_hash).toBeUndefined(); // Should be sanitized
+      expect(createResult.data).toBeDefined();
+      expect(createResult.data.username).toBe(originalUsername);
+      expect(createResult.data.email).toBe(originalEmail);
+      expect(createResult.data.password_hash).toBeUndefined(); // Should be sanitized
 
-      testUser = createResult.user;
+      testUser = createResult.data;
       console.log('✅ User created successfully with ID:', testUser.id);
 
       // 2. AUTHENTICATE USER
       console.log('Step 2: Authenticating user...');
       const authResult = await User.authenticate(originalEmail, 'hashed_password_123');
       expect(authResult.success).toBe(true);
-      expect(authResult.user).toBeDefined();
-      expect(authResult.user.id).toBe(testUser.id);
+      expect(authResult.data).toBeDefined();
+      expect(authResult.data.id).toBe(testUser.id);
       console.log('✅ User authenticated successfully');
 
       // 3. GET USER BY ID
@@ -67,8 +67,8 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       const newUsername = `updated-${originalUsername}`;
       const updateUsernameResult = await User.updateUsername(testUser.id, newUsername);
       expect(updateUsernameResult.success).toBe(true);
-      expect(updateUsernameResult.user).toBeDefined();
-      expect(updateUsernameResult.user.username).toBe(newUsername);
+      expect(updateUsernameResult.data).toBeDefined();
+      expect(updateUsernameResult.data.username).toBe(newUsername);
       console.log('✅ Username updated successfully');
 
       // 5. UPDATE EMAIL
@@ -76,8 +76,8 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       const newEmail = `updated-${originalEmail}`;
       const updateEmailResult = await User.updateEmail(testUser.id, newEmail);
       expect(updateEmailResult.success).toBe(true);
-      expect(updateEmailResult.user).toBeDefined();
-      expect(updateEmailResult.user.email).toBe(newEmail);
+      expect(updateEmailResult.data).toBeDefined();
+      expect(updateEmailResult.data.email).toBe(newEmail);
       console.log('✅ Email updated successfully');
 
       // 6. UPDATE PASSWORD
@@ -85,15 +85,15 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       const newPasswordHash = 'new_hashed_password_456';
       const updatePasswordResult = await User.updatePassword(testUser.id, 'hashed_password_123', newPasswordHash);
       expect(updatePasswordResult.success).toBe(true);
-      expect(updatePasswordResult.user).toBeDefined();
+      expect(updatePasswordResult.data).toBeDefined();
       console.log('✅ Password updated successfully');
 
       // 7. VERIFY CHANGES BY RE-AUTHENTICATION
       console.log('Step 7: Verifying changes with new credentials...');
       const reAuthResult = await User.authenticate(newEmail, newPasswordHash);
       expect(reAuthResult.success).toBe(true);
-      expect(reAuthResult.user.username).toBe(newUsername);
-      expect(reAuthResult.user.email).toBe(newEmail);
+      expect(reAuthResult.data.username).toBe(newUsername);
+      expect(reAuthResult.data.email).toBe(newEmail);
       console.log('✅ Re-authentication successful with new credentials');
 
       // 8. DELETE USER
@@ -147,9 +147,9 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
 
       const validCreateResult = await User.create(validUserData);
       expect(validCreateResult.success).toBe(true);
-      expect(validCreateResult.user).toBeDefined();
+      expect(validCreateResult.data).toBeDefined();
 
-      testUser = validCreateResult.user;
+      testUser = validCreateResult.data;
       console.log('✅ Valid user created successfully');
     });
   });
@@ -165,7 +165,7 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       };
 
       const createResult = await User.create(userData);
-      testUser = createResult.user;
+      testUser = createResult.data;
     });
 
     it('should handle various authentication scenarios', async () => {
@@ -173,7 +173,7 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       console.log('Step 1: Testing successful authentication...');
       const successAuth = await User.authenticate(originalEmail, 'correct_password_hash');
       expect(successAuth.success).toBe(true);
-      expect(successAuth.user.id).toBe(testUser.id);
+      expect(successAuth.data.id).toBe(testUser.id);
       console.log('✅ Successful authentication verified');
 
       // Test failed authentication with wrong password
@@ -211,7 +211,7 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       };
 
       const createResult = await User.create(userData);
-      testUser = createResult.user;
+      testUser = createResult.data;
     });
 
     it('should validate updates and handle uniqueness constraints', async () => {
@@ -247,14 +247,14 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
         console.log('Step 4: Testing successful username update...');
         const validUsernameUpdate = await User.updateUsername(testUser.id, `updated-${originalUsername}`);
         expect(validUsernameUpdate.success).toBe(true);
-        expect(validUsernameUpdate.user.username).toBe(`updated-${originalUsername}`);
+        expect(validUsernameUpdate.data.username).toBe(`updated-${originalUsername}`);
         console.log('✅ Username updated successfully');
 
         // Test successful email update
         console.log('Step 5: Testing successful email update...');
         const validEmailUpdate = await User.updateEmail(testUser.id, `updated-${originalEmail}`);
         expect(validEmailUpdate.success).toBe(true);
-        expect(validEmailUpdate.user.email).toBe(`updated-${originalEmail}`);
+        expect(validEmailUpdate.data.email).toBe(`updated-${originalEmail}`);
         console.log('✅ Email updated successfully');
 
       } finally {
@@ -276,22 +276,22 @@ describe('User Workflow Runner Tests (TDD Plan)', () => {
       };
 
       const createResult = await User.create(userData);
-      testUser = createResult.user;
+      testUser = createResult.data;
 
       // Test deletion preview
       console.log('Step 2: Testing deletion preview...');
       const previewResult = await User.getDeletionPreview(testUser.id);
       expect(previewResult.success).toBe(true);
-      expect(previewResult.preview).toBeDefined();
-      expect(previewResult.preview.user).toBeDefined();
-      expect(previewResult.preview.relatedData).toBeDefined();
+      expect(previewResult.data).toBeDefined();
+      expect(previewResult.data.user).toBeDefined();
+      expect(previewResult.data.relatedData).toBeDefined();
       console.log('✅ Deletion preview generated successfully');
 
       // Test soft delete
       console.log('Step 3: Testing soft delete...');
       const softDeleteResult = await User.softDelete(testUser.id);
       expect(softDeleteResult.success).toBe(true);
-      expect(softDeleteResult.user.deleted_at).toBeDefined();
+      expect(softDeleteResult.data.deleted_at).toBeDefined();
       console.log('✅ User soft deleted successfully');
 
       // Verify user still exists but marked as deleted

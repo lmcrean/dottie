@@ -61,10 +61,17 @@ describe('Conversation creation integration flow', () => {
       const result = await createAssessmentConversation(mockUserId, mockAssessmentId);
 
       // Verify the result
-      expect(result).toEqual({
+      expect(result).toMatchObject({
+        success: true,
         conversationId: mockConversationId,
         assessmentId: mockAssessmentId,
-        created_at: expect.any(String)
+        conversation: expect.objectContaining({
+          id: mockConversationId,
+          user_id: mockUserId,
+          assessment_id: mockAssessmentId,
+          created_at: expect.any(String),
+          updated_at: expect.any(String)
+        })
       });
 
       // Verify assessment was fetched

@@ -36,7 +36,8 @@ export const getUserConversations = async (
       created_at: conversation.created_at,
       updated_at: conversation.last_message_date || conversation.updated_at,
       message_count: conversation.message_count || 0,
-      last_message_at: conversation.last_message_date
+      last_message_at: conversation.last_message_date,
+      last_message_date: conversation.last_message_date
     }));
 
     console.log(`[getUserConversations] Final result:`, JSON.stringify(result, null, 2));

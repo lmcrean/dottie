@@ -51,6 +51,7 @@ export const createAssessmentConversation = async (
     return {
       success: true,
       conversationId: conversationIdString,
+      assessmentId: assessmentIdString,
       conversation: {
         id: conversationIdString,
         user_id: userIdString,
@@ -62,10 +63,6 @@ export const createAssessmentConversation = async (
 
   } catch (error) {
     logger.error('Error creating assessment conversation:', error);
-    return {
-      success: false,
-      conversationId: '',
-      error: (error as Error).message
-    };
+    throw error;
   }
 };

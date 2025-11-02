@@ -113,8 +113,8 @@ describe('getConversation - Read Conversation by ID', () => {
         mockData.conversationId,
         [],
         [
-          { field: 'created_at', direction: 'ASC' },
-          { field: 'id', direction: 'ASC' }
+          { field: 'created_at', direction: 'asc' },
+          { field: 'id', direction: 'asc' }
         ]
       );
     });
