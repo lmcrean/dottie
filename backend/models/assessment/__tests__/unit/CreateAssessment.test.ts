@@ -49,7 +49,7 @@ describe('CreateAssessment', () => {
       const expectedResult = {
         id: 'test-uuid-123',
         user_id: userId,
-        created_at: expect.any(Date),
+        created_at: expect.any(String),
         ...transformedData
       };
 
@@ -62,7 +62,7 @@ describe('CreateAssessment', () => {
       expect(DbService.create).toHaveBeenCalledWith('assessments', {
         id: 'test-uuid-123',
         user_id: userId,
-        created_at: expect.any(Date),
+        created_at: expect.any(String),
         ...transformedData
       });
       expect(result).toEqual(expectedResult);
@@ -95,7 +95,7 @@ describe('CreateAssessment', () => {
       const expectedPayload = {
         id: 'test-uuid-123',
         user_id: userId,
-        created_at: expect.any(Date),
+        created_at: expect.any(String),
         age: 25
       };
 

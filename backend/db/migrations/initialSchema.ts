@@ -1,4 +1,4 @@
-// include updateAssessmentToJsonSchema.js - updated assessment table to use JSON
+// include updateAssessmentToJsonSchema.ts - updated assessment table to use JSON
 import { updateAssessmentToJsonSchema } from "./updateAssessmentToJsonSchema.js";
 
 //for test - TODO: remove

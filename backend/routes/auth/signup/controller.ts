@@ -146,7 +146,7 @@ export const signup = async (req: AuthenticatedRequest, res: Response): Promise<
       return;
     }
 
-    const user = userResult.user;
+    const user = userResult.data;
 
     // For testing environments, handle null user case
     if (!user) {
