@@ -1,4 +1,4 @@
-import logger from '../../../../../../services/logger.ts';
+import logger from '../../../../../../services/logger';
 import DbService from '../../../../../../services/dbService.js';
 import { updateConversationPreview } from '../../../../conversation/read-conversation/getPreviewHook.js';
 

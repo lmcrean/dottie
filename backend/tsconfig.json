@@ -3,8 +3,11 @@
     /* Language and Environment */
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "allowArbitraryExtensions": true,
+    "resolvePackageJsonExports": true,
+    "resolvePackageJsonImports": true,
 
     /* Emit */
     "outDir": "./dist",

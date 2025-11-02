@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { getUserConversations } from '../chatGetList.js';
 import { editMessageWithRegeneration } from '../../message/user-message/add-message/edit-message.js/editMessageRegeneration.js';
 import DbService from '@/services/dbService.js';
-import logger from '@/services/logger.ts';
+import logger from '@/services/logger';
 
 // Mock dependencies
 vi.mock('@/services/dbService.js');

@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import logger from '../../../services/logger.ts';
+import logger from '../../../services/logger';
 import { sendMessageFlow } from '../../../models/chat/message/send-message-flow/sendMessageFlow.js';
 import { AuthenticatedRequest } from '../../types.js';
 

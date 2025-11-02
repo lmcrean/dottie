@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createConversation } from '../database/conversationCreate.js';
 import DbService from '../../../../../services/db-service/dbService.js';
-import logger from '../../../../../services/logger.ts';
+import logger from '../../../../../services/logger';
 import * as assessmentObjectLink from '../database/assessmentObjectLink.js';
 
 // Mock dependencies

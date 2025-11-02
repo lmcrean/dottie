@@ -1,5 +1,5 @@
 import DbService from '../../../../services/db-service/dbService.js';
-import logger from '../../../../services/logger.ts';
+import logger from '../../../../services/logger';
 
 /**
  * Update an existing conversation with an assessment ID and its pattern.

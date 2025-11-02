@@ -1,5 +1,5 @@
 import type { ExtendedValidationResult } from '../../../../../types.js';
-import logger from '../../../../../../services/logger.ts';
+import logger from '../../../../../../services/logger';
 
 /**
  * Validation rules for message content

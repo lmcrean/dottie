@@ -1,5 +1,5 @@
 import type { MessageRecord } from '../../../../types.js';
-import logger from '../../../../../../services/logger.ts';
+import logger from '../../../../../../services/logger';
 import { updateChatMessage } from '../database/sendUserMessage.js';
 import { generateResponseToMessage } from '../../../2-chatbot-message/generateResponse.js';
 import Chat from '../../../../list/chat.js';

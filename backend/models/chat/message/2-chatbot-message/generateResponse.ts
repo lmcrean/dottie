@@ -1,4 +1,4 @@
-import logger from '../../../../services/logger.ts';
+import logger from '../../../../services/logger';
 import { sendChatbotMessage } from './database/sendChatbotMessage.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getConversationForUser } from '../../conversation/read-conversation/getConversation.js';

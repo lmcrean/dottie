@@ -1,4 +1,4 @@
-import logger from '../../../../../../../services/logger.ts';
+import logger from '../../../../../../../services/logger';
 
 /**
  * Formatting options for user messages

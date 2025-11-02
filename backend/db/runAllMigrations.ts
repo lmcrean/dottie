@@ -5,7 +5,7 @@ import { addAssessmentFieldsToConversations } from "./migrations/addAssessmentFi
 import { addAssessmentObjectToConversations } from "./migrations/addAssessmentObjectToConversations.js";
 import { addOtherSymptomsColumn } from "./migrations/add-other-symptoms.js";
 import { addDeletedAtToUsers } from "./migrations/addDeletedAtToUsers.js";
-import logger from "../services/logger.ts";
+import logger from "../services/logger";
 
 /**
  * Run all database migrations in order

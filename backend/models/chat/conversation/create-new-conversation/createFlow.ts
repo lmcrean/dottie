@@ -1,4 +1,4 @@
-import logger from '../../../../services/logger.ts';
+import logger from '../../../../services/logger';
 import { createConversation } from './database/conversationCreate.js';
 import type { CreateConversationResponse } from '../../types.js';
 

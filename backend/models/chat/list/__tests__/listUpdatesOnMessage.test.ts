@@ -3,7 +3,7 @@ import { getUserConversations } from '../chatGetList.js';
 import { sendMessage } from '../../message/user-message/add-message/sendMessage.js';
 import { createAssessmentConversation } from '../../conversation/create-new-conversation/createFlow.js';
 import DbService from '@/services/dbService.js';
-import logger from '@/services/logger.ts';
+import logger from '@/services/logger';
 
 // Mock dependencies
 vi.mock('@/services/dbService.js');

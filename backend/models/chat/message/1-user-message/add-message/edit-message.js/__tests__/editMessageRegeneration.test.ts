@@ -20,7 +20,7 @@ import { cleanupChildrenMessages } from '../cleanupChildrenMessages.js';
 import { generateResponseToMessage, generateAndSaveResponse } from '../../../../2-chatbot-message/generateResponse.js';
 import { updateChatMessage } from '../../database/sendUserMessage.js';
 import Chat from '../../../../../list/chat.js';
-import logger from '@/services/logger.ts';
+import logger from '@/services/logger';
 
 describe('Edit Message and Regeneration', () => {
   const mockUserId = 'test-user-123';

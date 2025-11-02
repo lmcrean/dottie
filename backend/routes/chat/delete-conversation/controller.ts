@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import logger from '../../../services/logger.ts';
+import logger from '../../../services/logger';
 import { deleteConversation as deleteConversationModel } from '../../../models/chat/index.js';
 import { AuthenticatedRequest } from '../../types.js';
 

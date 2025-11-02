@@ -1,5 +1,5 @@
 import DbService from '../../../../services/dbService.js';
-import logger from '../../../../services/logger.ts';
+import logger from '../../../../services/logger';
 
 /**
  * Delete a conversation and all its messages

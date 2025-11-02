@@ -1,8 +1,8 @@
 import type { MessageRecord } from '../../../types.js';
-import logger from '../../../../../services/logger.ts';
+import logger from '../../../../../services/logger';
 import { ConfigHelper } from './configHelper.js';
 import { insertChatMessage } from '../../1-user-message/add-message/database/sendUserMessage.js';
-import { generateMessageId } from '../../shared/utils/responseBuilders.ts';
+import { generateMessageId } from '../../shared/utils/responseBuilders';
 import { generateAIResponse } from '../services/ai/generators/aiResponse.js';
 import { generateMockResponse } from '../services/mock/generators/mockResponse.js';
 // import { getConversationHistory } from '../../../read-chat-detail/getWithContext.js';

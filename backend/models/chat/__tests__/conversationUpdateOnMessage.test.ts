@@ -1,6 +1,6 @@
 import { describe, beforeEach, afterEach, vi, it, expect } from 'vitest';
 import DbService from '@/services/dbService.js';
-import logger from '@/services/logger.ts';
+import logger from '@/services/logger';
 
 // Import test runners
 import { runConversationUpdateTests } from './runners/conversationUpdate.js';

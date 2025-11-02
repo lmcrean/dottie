@@ -1,4 +1,4 @@
-import logger from '../../../../../../services/logger.ts';
+import logger from '../../../../../../services/logger';
 import { getChatMessage, getChatMessagesAfterTimestamp, deleteChatMessage } from '../database/sendUserMessage.js';
 
 /**

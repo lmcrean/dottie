@@ -1,6 +1,6 @@
 import type { MessageRecord } from '../../../../../types.js';
-import logger from '../../../../../../services/logger.ts';
-import { buildMockResponse } from '../../../shared/utils/responseBuilders.ts';
+import logger from '../../../../../../services/logger';
+import { buildMockResponse } from '../../../shared/utils/responseBuilders';
 
 /**
  * Assessment data interface for mock responses

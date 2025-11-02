@@ -1,7 +1,7 @@
 import type { MessageRecord } from '../../../../../types.js';
-import logger from '../../../../../../services/logger.ts';
-import { buildAIResponse, buildFallbackResponse } from '../../../shared/utils/responseBuilders.ts';
-import { formatMessagesForAI } from '../../../shared/utils/messageFormatters.ts';
+import logger from '../../../../../../services/logger';
+import { buildAIResponse, buildFallbackResponse } from '../../../shared/utils/responseBuilders';
+import { formatMessagesForAI } from '../../../shared/utils/messageFormatters.js';
 
 /**
  * Assessment data interface

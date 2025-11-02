@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
-import logger from '../services/logger.ts';
+import logger from '../services/logger';
 import jwtConfig from '../config/jwt.js';
 import { AuthenticatedRequest, AuthUser, ApiError } from '../routes/types.js';
 
