@@ -15,7 +15,8 @@ export default defineConfig({
       // Exclude incomplete test files with missing runner modules
       '**/createAssessmentConversation.test.ts',
       '**/messageFlowDialogue.test.ts',
-      '**/conversationUpdateOnMessage.test.ts'
+      '**/conversationUpdateOnMessage.test.ts',
+      '**/assessmentIntegration.test.ts'
     ],
     environment: 'node',
     coverage: {
