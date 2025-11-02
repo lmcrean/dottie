@@ -18,7 +18,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
     },
     testTimeout: 60000,
-    globalSetup: './test-utilities/setupDb.js',
+    globalSetup: './test-utilities/setupDb.ts',
     // Limit concurrent tests to prevent port conflicts and database race conditions
     maxConcurrency: 5,
     pool: 'threads',

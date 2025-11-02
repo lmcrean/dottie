@@ -29,7 +29,7 @@ vi.mock('../../../auth/middleware/index.js', () => ({
   authenticateToken: (req, res, next) => {
     // Add a mock user to the request with the ID that will be used in the tests
     req.user = {
-      userId: req.headers['test-user-id'] || 'test-user-id',
+      id: req.headers['test-user-id'] || 'test-user-id',
       role: 'user'
     };
     next();
