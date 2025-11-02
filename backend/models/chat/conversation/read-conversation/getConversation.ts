@@ -1,5 +1,5 @@
 import DbService from '../../../../services/dbService.js';
-import logger from '../../../../services/logger.js';
+import logger from '../../../../services/logger.ts';
 import ParseAssessmentJson from '../../../assessment/transformers/ParseAssessmentJson.js';
 
 /**

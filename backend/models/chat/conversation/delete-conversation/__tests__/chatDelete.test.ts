@@ -18,7 +18,7 @@ vi.mock('../../../../../services/logger.js', () => ({
 }));
 
 import DbService from '../../../../../services/dbService.js';
-import logger from '../../../../../services/logger.js';
+import logger from '../../../../../services/logger.ts';
 
 describe('deleteConversation', () => {
   const mockConversationId = 'conv-123';

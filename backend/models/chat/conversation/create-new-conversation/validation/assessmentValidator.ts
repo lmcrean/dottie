@@ -1,4 +1,4 @@
-import logger from '../../../../../services/logger.js';
+import logger from '../../../../../services/logger.ts';
 
 /**
  * Assessment validation details

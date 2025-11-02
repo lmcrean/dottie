@@ -4,7 +4,7 @@ import { updateAssessmentSchema } from "./migrations/assessmentSchema.js";
 /**
  * Apply schema updates for tests
  */
-async function updateDatabaseForTests() {
+async function updateDatabaseForTests(): Promise<void> {
   try {
     await updateAssessmentSchema(db);
   } catch (error) {
@@ -19,7 +19,7 @@ async function updateDatabaseForTests() {
 }
 
 // Run the update if this file is executed directly
-if (process.argv[1].includes("updateForTests.js")) {
+if (process.argv[1].includes("updateForTests.js") || process.argv[1].includes("updateForTests.ts")) {
   updateDatabaseForTests();
 }
 

@@ -5,11 +5,11 @@
 class EmailService {
   /**
    * Send a password reset email
-   * @param {string} to - Recipient email address
-   * @param {string} resetToken - Password reset token
-   * @returns {Promise<boolean>} - Success indicator
+   * @param to - Recipient email address
+   * @param resetToken - Password reset token
+   * @returns Success indicator
    */
-  static async sendPasswordResetEmail(to, resetToken) {
+  static async sendPasswordResetEmail(to: string, resetToken: string): Promise<boolean> {
     // Log the email details in development environment
     if (process.env.NODE_ENV !== 'production') {
       console.log(`
@@ -21,15 +21,15 @@ class EmailService {
         ===============================================
       `);
     }
-    
+
     // For testing, special emails return specific results
     if (to === 'error@user') {
       return Promise.reject(new Error('Failed to send password reset email'));
     }
-    
+
     // Return success for all other emails
     return Promise.resolve(true);
   }
 }
 
-export default EmailService; 
+export default EmailService;

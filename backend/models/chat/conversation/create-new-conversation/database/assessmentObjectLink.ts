@@ -1,5 +1,5 @@
 import DbService from '../../../../../services/db-service/dbService.js';
-import logger from '../../../../../services/logger.js';
+import logger from '../../../../../services/logger.ts';
 
 /**
  * Structured assessment object for conversation linking

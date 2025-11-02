@@ -5,39 +5,39 @@ import { addAssessmentFieldsToConversations } from "./migrations/addAssessmentFi
 import { addAssessmentObjectToConversations } from "./migrations/addAssessmentObjectToConversations.js";
 import { addOtherSymptomsColumn } from "./migrations/add-other-symptoms.js";
 import { addDeletedAtToUsers } from "./migrations/addDeletedAtToUsers.js";
-import logger from "../services/logger.js";
+import logger from "../services/logger.ts";
 
 /**
  * Run all database migrations in order
  */
-export async function runAllMigrations() {
+export async function runAllMigrations(): Promise<void> {
   try {
     logger.info("Starting database migrations...");
-    
+
     // 1. Create initial tables
     logger.info("Creating initial tables...");
     await createTables(db);
-    
+
     // 2. Update assessment schema
     logger.info("Updating assessment schema...");
     await updateAssessmentSchema(db);
-    
+
     // 3. Add assessment fields to conversations
     logger.info("Adding assessment fields to conversations...");
     await addAssessmentFieldsToConversations(db);
-    
+
     // 4. Add assessment object to conversations
     logger.info("Adding assessment object to conversations...");
     await addAssessmentObjectToConversations(db);
-    
+
     // 5. Add other symptoms column
     logger.info("Adding other symptoms column...");
     await addOtherSymptomsColumn(db);
-    
+
     // 6. Add deleted_at column to users table
     logger.info("Adding deleted_at column to users table...");
     await addDeletedAtToUsers(db);
-    
+
     logger.info("All migrations completed successfully");
   } catch (error) {
     logger.error("Error running migrations:", error);
@@ -46,11 +46,11 @@ export async function runAllMigrations() {
 }
 
 // Run migrations if this file is executed directly
-if (process.argv[1].includes("runAllMigrations.js")) {
+if (process.argv[1].includes("runAllMigrations.js") || process.argv[1].includes("runAllMigrations.ts")) {
   runAllMigrations()
     .then(() => process.exit(0))
     .catch(() => process.exit(1))
     .finally(() => db.destroy());
 }
 
-export default runAllMigrations; 
+export default runAllMigrations;

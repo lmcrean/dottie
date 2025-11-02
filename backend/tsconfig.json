@@ -3,8 +3,8 @@
     /* Language and Environment */
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "Node16",
-    "moduleResolution": "node16",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
 
     /* Emit */
     "outDir": "./dist",
@@ -42,15 +42,9 @@
     "checkJs": false,
 
     /* Skip Lib Check for Performance */
-    "skipLibCheck": true,
+    "skipLibCheck": true
 
-    /* Module Resolution Helpers */
-    "baseUrl": ".",
-    "paths": {
-      "*/logger.js": ["*/logger.ts", "*/logger.js"],
-      "*/responseBuilders.js": ["*/responseBuilders.ts", "*/responseBuilders.js"],
-      "*/messageFormatters.js": ["*/messageFormatters.ts"]
-    }
+    /* Note: Path mappings removed - Node16 module resolution handles .js -> .ts mapping automatically */
   },
   "include": [
     "**/*.ts",

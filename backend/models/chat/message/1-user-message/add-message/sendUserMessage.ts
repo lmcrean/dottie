@@ -1,6 +1,6 @@
-import logger from '../../../../../services/logger.js';
+import logger from '../../../../../services/logger.ts';
 import { insertChatMessage } from './database/sendUserMessage.js';
-import { generateMessageId } from '../../shared/utils/responseBuilders.js';
+import { generateMessageId } from '../../shared/utils/responseBuilders.ts';
 import { verifyParentMessageId } from './database/linkParentMessageId.js';
 import Chat from '../../../list/chat.js';
 

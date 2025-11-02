@@ -21,12 +21,11 @@ const BCRYPT_ROUNDS = 12;
 /**
  * Add a refresh token to the database
  *
- * @param {string} token - The raw refresh token
- * @param {string} userId - The user ID associated with this token
- * @param {number} expiresInDays - Number of days until token expires (default: 7)
- * @returns {Promise<void>}
+ * @param token - The raw refresh token
+ * @param userId - The user ID associated with this token
+ * @param expiresInDays - Number of days until token expires (default: 7)
  */
-export async function add(token, userId, expiresInDays = 7) {
+export async function add(token: string, userId: string, expiresInDays: number = 7): Promise<void> {
   try {
     // Hash the token before storing
     const tokenHash = await bcrypt.hash(token, BCRYPT_ROUNDS);
@@ -50,11 +49,11 @@ export async function add(token, userId, expiresInDays = 7) {
 /**
  * Check if a refresh token exists and is valid
  *
- * @param {string} token - The raw refresh token to check
- * @param {string} [userId] - Optional user ID to narrow search (improves performance)
- * @returns {Promise<boolean>} True if token exists and is valid, false otherwise
+ * @param token - The raw refresh token to check
+ * @param userId - Optional user ID to narrow search (improves performance)
+ * @returns True if token exists and is valid, false otherwise
  */
-export async function has(token, userId = null) {
+export async function has(token: string, userId: string | null = null): Promise<boolean> {
   try {
     // Build query with optional userId filter for performance
     let query = db('refresh_tokens')
@@ -88,10 +87,10 @@ export async function has(token, userId = null) {
 /**
  * Delete a specific refresh token
  *
- * @param {string} token - The raw refresh token to delete
- * @returns {Promise<boolean>} True if token was found and deleted, false otherwise
+ * @param token - The raw refresh token to delete
+ * @returns True if token was found and deleted, false otherwise
  */
-export async function deleteToken(token) {
+export async function deleteToken(token: string): Promise<boolean> {
   try {
     // Get all tokens
     const tokens = await db('refresh_tokens').select('id', 'token_hash');
@@ -116,10 +115,10 @@ export async function deleteToken(token) {
  * Delete all refresh tokens for a specific user
  * Useful for logging out a user from all devices
  *
- * @param {string} userId - The user ID
- * @returns {Promise<number>} Number of tokens deleted
+ * @param userId - The user ID
+ * @returns Number of tokens deleted
  */
-export async function deleteAllForUser(userId) {
+export async function deleteAllForUser(userId: string): Promise<number> {
   try {
     const deletedCount = await db('refresh_tokens')
       .where('user_id', userId)
@@ -136,9 +135,9 @@ export async function deleteAllForUser(userId) {
  * Clean up expired tokens
  * Should be run periodically (e.g., via cron job)
  *
- * @returns {Promise<number>} Number of tokens cleaned up
+ * @returns Number of tokens cleaned up
  */
-export async function cleanup() {
+export async function cleanup(): Promise<number> {
   try {
     const deletedCount = await db('refresh_tokens')
       .where('expires_at', '<', new Date())
@@ -158,16 +157,16 @@ export async function cleanup() {
 /**
  * Get the total count of active refresh tokens
  *
- * @returns {Promise<number>} Total number of non-expired tokens
+ * @returns Total number of non-expired tokens
  */
-export async function getActiveTokenCount() {
+export async function getActiveTokenCount(): Promise<number> {
   try {
     const result = await db('refresh_tokens')
       .where('expires_at', '>', new Date())
       .count('* as count')
       .first();
 
-    return parseInt(result.count) || 0;
+    return parseInt(result.count as string) || 0;
   } catch (error) {
     console.error('Error getting token count:', error);
     return 0;
@@ -177,10 +176,10 @@ export async function getActiveTokenCount() {
 /**
  * Get the count of active tokens for a specific user
  *
- * @param {string} userId - The user ID
- * @returns {Promise<number>} Number of active tokens for this user
+ * @param userId - The user ID
+ * @returns Number of active tokens for this user
  */
-export async function getActiveTokenCountForUser(userId) {
+export async function getActiveTokenCountForUser(userId: string): Promise<number> {
   try {
     const result = await db('refresh_tokens')
       .where('user_id', userId)
@@ -188,7 +187,7 @@ export async function getActiveTokenCountForUser(userId) {
       .count('* as count')
       .first();
 
-    return parseInt(result.count) || 0;
+    return parseInt(result.count as string) || 0;
   } catch (error) {
     console.error('Error getting user token count:', error);
     return 0;
@@ -199,9 +198,9 @@ export async function getActiveTokenCountForUser(userId) {
  * Clean up orphaned tokens (tokens belonging to deleted users)
  * Useful for SQLite where foreign key constraints may not be enforced
  *
- * @returns {Promise<number>} Number of orphaned tokens cleaned up
+ * @returns Number of orphaned tokens cleaned up
  */
-export async function cleanupOrphanedTokens() {
+export async function cleanupOrphanedTokens(): Promise<number> {
   try {
     const deletedCount = await db('refresh_tokens')
       .whereNotExists(function() {

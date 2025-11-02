@@ -1,6 +1,6 @@
 import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
 import DbService from '@/services/dbService.js';
-import logger from '@/services/logger.js';
+import logger from '@/services/logger.ts';
 import { getConversation, getConversationForUser, getConversationSummary } from '../getConversation.js';
 
 // Mock all dependencies

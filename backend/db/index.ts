@@ -6,4 +6,4 @@
 import db from './database.js';
 
 export { db };
-export default db; 
+export default db;

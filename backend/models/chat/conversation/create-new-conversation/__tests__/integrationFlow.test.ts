@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createAssessmentConversation } from '../createFlow.js';
 import { createConversation } from '../database/conversationCreate.js';
 import DbService from '../../../../../services/db-service/dbService.js';
-import logger from '../../../../../services/logger.js';
+import logger from '../../../../../services/logger.ts';
 
 // Mock dependencies
 vi.mock('../../../../../services/db-service/dbService.js');

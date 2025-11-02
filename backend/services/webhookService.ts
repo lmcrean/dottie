@@ -1,9 +1,24 @@
-import logger from './logger.js';
+import logger from './logger.ts';
+
+interface WebhookEndpoint {
+  url: string;
+  event: string;
+}
+
+interface WebhookPayload {
+  event: string;
+  timestamp: string;
+  data: any;
+}
 
 /**
  * Webhook service for notifying external systems of conversation updates
  */
 class WebhookService {
+  private webhookEndpoints: WebhookEndpoint[];
+  private retryAttempts: number;
+  private retryDelay: number;
+
   constructor() {
     this.webhookEndpoints = [];
     this.retryAttempts = 3;
@@ -12,28 +27,28 @@ class WebhookService {
 
   /**
    * Register a webhook endpoint
-   * @param {string} url - Webhook URL
-   * @param {string} event - Event type ('conversation.created', 'message.added', etc.)
+   * @param url - Webhook URL
+   * @param event - Event type ('conversation.created', 'message.added', etc.)
    */
-  registerWebhook(url, event) {
+  registerWebhook(url: string, event: string): void {
     this.webhookEndpoints.push({ url, event });
     logger.info(`Webhook registered: ${url} for event: ${event}`);
   }
 
   /**
    * Send webhook notification
-   * @param {string} event - Event type
-   * @param {Object} payload - Event payload
+   * @param event - Event type
+   * @param payload - Event payload
    */
-  async sendWebhook(event, payload) {
+  async sendWebhook(event: string, payload: any): Promise<void> {
     const relevantWebhooks = this.webhookEndpoints.filter(webhook => webhook.event === event);
-    
+
     if (relevantWebhooks.length === 0) {
       logger.debug(`No webhooks registered for event: ${event}`);
       return;
     }
 
-    const promises = relevantWebhooks.map(webhook => 
+    const promises = relevantWebhooks.map(webhook =>
       this.deliverWebhook(webhook.url, event, payload)
     );
 
@@ -42,13 +57,14 @@ class WebhookService {
 
   /**
    * Deliver webhook with retry logic
-   * @param {string} url - Webhook URL
-   * @param {string} event - Event type
-   * @param {Object} payload - Event payload
+   * @param url - Webhook URL
+   * @param event - Event type
+   * @param payload - Event payload
+   * @param attempt - Current attempt number
    */
-  async deliverWebhook(url, event, payload, attempt = 1) {
+  async deliverWebhook(url: string, event: string, payload: any, attempt: number = 1): Promise<boolean> {
     try {
-      const webhookPayload = {
+      const webhookPayload: WebhookPayload = {
         event,
         timestamp: new Date().toISOString(),
         data: payload
@@ -61,7 +77,7 @@ class WebhookService {
           'User-Agent': 'Dottie-Webhook/1.0'
         },
         body: JSON.stringify(webhookPayload),
-        timeout: 5000 // 5 second timeout
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       });
 
       if (!response.ok) {
@@ -71,7 +87,7 @@ class WebhookService {
       logger.info(`Webhook delivered successfully to ${url} for event: ${event}`);
       return true;
 
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Webhook delivery failed (attempt ${attempt}/${this.retryAttempts}) to ${url}:`, error);
 
       if (attempt < this.retryAttempts) {
@@ -86,33 +102,33 @@ class WebhookService {
 
   /**
    * Delay helper for retry logic
-   * @param {number} ms - Milliseconds to delay
+   * @param ms - Milliseconds to delay
    */
-  delay(ms) {
+  delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
    * Notify conversation created
-   * @param {Object} conversationData - Conversation data
+   * @param conversationData - Conversation data
    */
-  async notifyConversationCreated(conversationData) {
+  async notifyConversationCreated(conversationData: any): Promise<void> {
     await this.sendWebhook('conversation.created', conversationData);
   }
 
   /**
    * Notify message added
-   * @param {Object} messageData - Message data
+   * @param messageData - Message data
    */
-  async notifyMessageAdded(messageData) {
+  async notifyMessageAdded(messageData: any): Promise<void> {
     await this.sendWebhook('message.added', messageData);
   }
 
   /**
    * Notify conversation updated
-   * @param {Object} conversationData - Updated conversation data
+   * @param conversationData - Updated conversation data
    */
-  async notifyConversationUpdated(conversationData) {
+  async notifyConversationUpdated(conversationData: any): Promise<void> {
     await this.sendWebhook('conversation.updated', conversationData);
   }
 }
@@ -133,4 +149,4 @@ if (process.env.WEBHOOK_CONVERSATION_UPDATED) {
   webhookService.registerWebhook(process.env.WEBHOOK_CONVERSATION_UPDATED, 'conversation.updated');
 }
 
-export default webhookService; 
+export default webhookService;

@@ -1,5 +1,5 @@
 import type { MessageRecord } from '../../types.js';
-import logger from '../../../../services/logger.js';
+import logger from '../../../../services/logger.ts';
 import { getConversationForUser } from '../../conversation/read-conversation/getConversation.js';
 import { createConversation } from '../../conversation/create-new-conversation/database/conversationCreate.js';
 import { addUserMessage } from '../1-user-message/add-message/sendUserMessage.js';

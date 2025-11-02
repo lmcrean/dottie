@@ -2,13 +2,13 @@ import db from "./index.js";
 import { createTables } from "./migrations/initialSchema.js";
 
 /**
- * Initialize SQLite database with required tables
+ * Initialize the database with required tables
  */
-async function initializeSQLiteDatabase() {
+async function initializeDatabase(): Promise<void> {
   try {
     await createTables(db);
   } catch (error) {
-    console.error("Error initializing SQLite database:", error);
+    console.error("Error initializing database:", error);
     process.exit(1);
   } finally {
     // Close database connection
@@ -17,8 +17,8 @@ async function initializeSQLiteDatabase() {
 }
 
 // Run the initialization if this file is executed directly
-if (process.argv[1].includes("init-sqlite.js")) {
-  initializeSQLiteDatabase();
+if (process.argv[1].includes("init.js") || process.argv[1].includes("init.ts")) {
+  initializeDatabase();
 }
 
-export default initializeSQLiteDatabase;
+export default initializeDatabase;
