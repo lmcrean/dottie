@@ -11,6 +11,37 @@ The project uses a **reusable workflow pattern** to eliminate code duplication a
 - **Maintainability**: Change once, apply everywhere
 - **Dual-Server Support**: Handles both API (Cloud Run) and Web (Firebase) deployments
 
+## Setup and Configuration
+
+### GitHub Environment Setup
+
+The workflow system uses GitHub Environments to control deployment access for external contributors. This ensures secure deployments while maintaining automation.
+
+**Required Environment**: `preview-deployments`
+
+**To set up the environment**:
+
+1. Go to your repository on GitHub
+2. Navigate to **Settings** → **Environments**
+3. Click **New environment**
+4. Name it `preview-deployments`
+5. Under **Deployment protection rules**, enable **Required reviewers**
+6. Add repository maintainers as required reviewers
+7. Click **Save protection rules**
+
+**How it works**:
+- When an external contributor opens a PR, the deployment waits for approval
+- A maintainer reviews the changes and approves via the "Review deployments" button in the Actions tab
+- Once approved, that PR's first deployment runs
+- **All subsequent commits to the same PR automatically deploy** without additional approval
+- New PRs require new approval (one approval per PR, not per commit)
+
+**Benefits**:
+- ✅ Security: Prevents unauthorized use of CI/CD resources
+- ✅ Automation: Follow-up commits auto-deploy after initial approval
+- ✅ Audit trail: GitHub tracks who approved which deployments
+- ✅ Flexibility: Different protection rules for different environments
+
 ## Workflow Structure
 
 ### Reusable Workflows (Core Logic)
@@ -64,21 +95,32 @@ The project uses a **reusable workflow pattern** to eliminate code duplication a
 
 **How it works**:
 - **Same-repo PRs**: Deploy automatically (no approval needed)
-- **Fork PRs (first-time contributors)**: GitHub requires maintainer approval before workflow runs
-- **Fork PRs (returning contributors)**: Deploy automatically (approval only needed once)
+- **Fork PRs (all contributors)**: Use GitHub Environments for deployment protection
+  - First commit requires maintainer approval
+  - All subsequent commits to the same PR auto-deploy
+  - No repeated approvals needed for follow-up commits
+
+**GitHub Environment Configuration**:
+The workflow uses the `preview-deployments` environment to control access:
+- Environment must be configured with required reviewers (repository maintainers)
+- Provides one-time approval per PR
+- Subsequent commits trigger automatic deployment
+- Better security and audit trail than label-based approach
 
 **For ALL PRs (same-repo and forks)**:
 - ✅ Full deployment preview with all tests
 - 📝 Deployment URLs posted to PR automatically
 - 🔄 Same deployment experience for everyone
+- 🔐 One-time approval, then automatic for follow-up commits
 
 **Maintainer Workflow for Fork PRs**:
 1. Fork contributor opens PR
-2. GitHub shows "Workflow awaiting approval" in Actions tab
-3. Review the PR code changes
-4. Click "Approve and run"
-5. Deployment happens automatically
-6. Future PRs from same contributor auto-deploy (no approval needed)
+2. Workflow runs authorization check automatically
+3. For external contributors: Review the PR code changes
+4. Add the `deploy-preview` label to authorize deployment
+5. First deployment requires environment approval (click "Review deployments" in Actions)
+6. **All subsequent commits automatically deploy** - no additional approval needed
+7. New PRs from the same contributor still require approval (per-PR, not per-contributor)
 
 **Deployment Flow** (all PRs via `deploy-branch-preview.yml`):
 1. **Fork PRs only**: Wait for maintainer approval (first-time contributors)

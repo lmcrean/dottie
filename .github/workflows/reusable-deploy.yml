@@ -15,6 +15,10 @@ on:
         description: 'PR number for branch deployments'
         required: false
         type: string
+      environment:
+        description: 'GitHub Environment for deployment protection (optional)'
+        required: false
+        type: string
     outputs:
       api_url:
         description: "API deployment URL"
@@ -26,6 +30,8 @@ on:
 jobs:
   deploy-api:
     runs-on: ubuntu-latest
+    # Apply environment protection if specified (for preview deployments)
+    environment: ${{ inputs.environment }}
     outputs:
       deployment_url: ${{ steps.deploy.outputs.deployment_url }}
 
@@ -264,6 +270,8 @@ jobs:
   deploy-web:
     needs: deploy-api
     runs-on: ubuntu-latest
+    # Apply environment protection if specified (for preview deployments)
+    environment: ${{ inputs.environment }}
     outputs:
       deployment_url: ${{ steps.set_url.outputs.deployment_url }}
 

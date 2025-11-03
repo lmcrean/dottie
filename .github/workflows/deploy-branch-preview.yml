@@ -2,7 +2,7 @@ name: Deploy Branch Preview
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, labeled]
   workflow_dispatch:
 
 permissions:
@@ -13,13 +13,115 @@ permissions:
   id-token: write
 
 jobs:
+  check-authorization:
+    runs-on: ubuntu-latest
+    # Skip this job if triggered by a label event that's not the deploy-preview label
+    if: github.event_name != 'labeled' || github.event.label.name == 'deploy-preview'
+    outputs:
+      authorized: ${{ steps.check.outputs.authorized }}
+    steps:
+      - name: 🔐 Check if deployment is authorized
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const prAuthor = context.payload.pull_request.user.login;
+
+            // Check if author is a collaborator
+            let isCollaborator = false;
+            try {
+              const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: prAuthor
+              });
+              // Collaborators have 'admin', 'write', or 'read' permission
+              isCollaborator = ['admin', 'write', 'read'].includes(permission.permission);
+              console.log(`👤 User ${prAuthor} permission level: ${permission.permission}`);
+            } catch (error) {
+              console.log(`👤 User ${prAuthor} is not a collaborator`);
+            }
+
+            // If user is a collaborator, authorize immediately
+            if (isCollaborator) {
+              console.log(`✅ Authorized: ${prAuthor} is a repository collaborator`);
+              core.setOutput('authorized', 'true');
+              return;
+            }
+
+            // For external contributors, check for the deploy-preview label
+            console.log(`🔍 External contributor detected: ${prAuthor}`);
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const hasDeployLabel = labels.some(label => label.name === 'deploy-preview');
+
+            if (hasDeployLabel) {
+              console.log(`✅ Authorized: PR #${prNumber} has 'deploy-preview' label`);
+              core.setOutput('authorized', 'true');
+            } else {
+              console.log(`⏸️  Not authorized: External contributor without 'deploy-preview' label`);
+              console.log(`ℹ️  A maintainer must add the 'deploy-preview' label to trigger deployment`);
+              core.setOutput('authorized', 'false');
+
+              // Post a comment explaining the situation
+              try {
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber
+                });
+
+                const botComment = comments.find(comment =>
+                  comment.user.type === 'Bot' &&
+                  comment.body.includes('<!-- DEPLOY_AUTHORIZATION_NEEDED -->')
+                );
+
+                const commentBody = `## 🔐 Deployment Authorization Required
+
+Thank you for your contribution! 🙌
+
+As an external contributor, your PR requires manual approval before deployment previews are created.
+
+**For maintainers:** Add the \`deploy-preview\` label to this PR to trigger the deployment workflow.
+
+---
+*This is an automated security measure to prevent abuse of CI/CD resources.*
+
+<!-- DEPLOY_AUTHORIZATION_NEEDED -->`;
+
+                if (!botComment) {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: prNumber,
+                    body: commentBody
+                  });
+                }
+              } catch (error) {
+                console.log('Failed to post comment:', error.message);
+              }
+
+              // Don't fail the job - just set authorized to false and let deploy job skip
+              core.notice('⏸️  Deployment paused - waiting for deploy-preview label');
+            }
+
   deploy:
+    needs: check-authorization
+    if: needs.check-authorization.outputs.authorized == 'true'
     uses: ./.github/workflows/reusable-deploy.yml
     secrets: inherit
     with:
       deployment_type: 'branch'
       branch_name: ${{ github.head_ref }}
       pr_number: ${{ github.event.number }}
+      # Use GitHub Environment for one-time approval per PR
+      # After initial approval, all subsequent commits auto-deploy
+      environment: 'preview-deployments'
 
   test:
     needs: deploy
