@@ -118,7 +118,7 @@ jobs:
             backend/test-results/
             backend/coverage/
           retention-days: 7
-          if-no-files-found: warn
+          if-no-files-found: ignore
 
   test-integration:
     needs: test-api
@@ -399,7 +399,7 @@ jobs:
           name: e2e-test-results-${{ inputs.deployment_type }}-${{ inputs.pr_number || 'main' }}
           path: frontend/playwright-report/
           retention-days: 30
-          if-no-files-found: warn
+          if-no-files-found: ignore
 
       - name: 📸 Upload E2E Screenshots
         uses: actions/upload-artifact@v4
@@ -408,7 +408,7 @@ jobs:
           name: e2e-screenshots-${{ inputs.deployment_type }}-${{ inputs.pr_number || 'main' }}
           path: frontend/test-results/
           retention-days: 7
-          if-no-files-found: warn
+          if-no-files-found: ignore
 
       - name: 📋 E2E Test Summary
         if: always()
