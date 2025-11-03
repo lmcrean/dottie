@@ -13,6 +13,9 @@ class ReadUser {
    * @param sanitize - Whether to sanitize the result (default: true)
    * @returns Found user or null
    */
+  static async findById(id: string, sanitize: true): Promise<UserPublic | null>;
+  static async findById(id: string, sanitize: false): Promise<UserRecord | null>;
+  static async findById(id: string, sanitize?: boolean): Promise<UserPublic | UserRecord | null>;
   static async findById(id: string, sanitize: boolean = true): Promise<UserPublic | UserRecord | null> {
     try {
       if (!id || typeof id !== 'string') {
@@ -39,6 +42,9 @@ class ReadUser {
    * @param sanitize - Whether to sanitize the result (default: true)
    * @returns Found user or null
    */
+  static async findByEmail(email: string, sanitize: true): Promise<UserPublic | null>;
+  static async findByEmail(email: string, sanitize: false): Promise<UserRecord | null>;
+  static async findByEmail(email: string, sanitize?: boolean): Promise<UserPublic | UserRecord | null>;
   static async findByEmail(email: string, sanitize: boolean = true): Promise<UserPublic | UserRecord | null> {
     try {
       if (!email || typeof email !== 'string') {
@@ -66,6 +72,9 @@ class ReadUser {
    * @param sanitize - Whether to sanitize the result (default: true)
    * @returns Found user or null
    */
+  static async findByUsername(username: string, sanitize: true): Promise<UserPublic | null>;
+  static async findByUsername(username: string, sanitize: false): Promise<UserRecord | null>;
+  static async findByUsername(username: string, sanitize?: boolean): Promise<UserPublic | UserRecord | null>;
   static async findByUsername(username: string, sanitize: boolean = true): Promise<UserPublic | UserRecord | null> {
     try {
       if (!username || typeof username !== 'string') {

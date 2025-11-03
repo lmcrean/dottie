@@ -3,7 +3,7 @@ import User from '../../../models/user/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { refreshTokens } from '../middleware/index.js';
-import jwtConfig from '../../../config/jwt.js';
+import jwtConfig, { getJWTSecret, getRefreshSecret } from '../../../config/jwt.js';
 import { AuthenticatedRequest, ApiResponse } from '../../types.js';
 
 // Login request body type
@@ -64,7 +64,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
           email,
           jti: jwtConfig.generateJTI()
         },
-        jwtConfig.JWT_SECRET as string,
+        getJWTSecret(),
         { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
       );
 
@@ -75,7 +75,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
           email,
           jti: jwtConfig.generateJTI()
         },
-        jwtConfig.REFRESH_SECRET as string,
+        getRefreshSecret(),
         { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN }
       );
 
@@ -115,7 +115,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
         email: user.email,
         jti: jwtConfig.generateJTI()
       },
-      jwtConfig.JWT_SECRET as string,
+      getJWTSecret(),
       { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
     );
 
@@ -126,7 +126,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
         email: user.email,
         jti: jwtConfig.generateJTI()
       },
-      jwtConfig.REFRESH_SECRET as string,
+      getRefreshSecret(),
       { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN }
     );
 

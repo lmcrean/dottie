@@ -125,4 +125,26 @@ export const TOKEN_EXPIRY: TokenExpiry = {
   REFRESH_TOKEN: '7d',  // Refresh tokens can be longer
 };
 
+/**
+ * Get JWT_SECRET with guaranteed string type (throws if not set)
+ */
+export function getJWTSecret(): string {
+  const secret = jwtConfig.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+  return secret;
+}
+
+/**
+ * Get REFRESH_SECRET with guaranteed string type (throws if not set)
+ */
+export function getRefreshSecret(): string {
+  const secret = jwtConfig.REFRESH_SECRET;
+  if (!secret) {
+    throw new Error('REFRESH_SECRET is not configured');
+  }
+  return secret;
+}
+
 export default jwtConfig;

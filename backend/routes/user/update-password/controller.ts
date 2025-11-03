@@ -33,8 +33,8 @@ export const updatePassword = async (req: AuthenticatedRequest, res: Response): 
       return;
     }
 
-    // Verify user exists
-    const user = await User.findById(userId);
+    // Verify user exists - get unsanitized user to access password_hash
+    const user = await User.findById(userId, false);
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });

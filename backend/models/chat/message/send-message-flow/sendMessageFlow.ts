@@ -1,9 +1,9 @@
-import type { MessageRecord } from '../../types.js';
 import logger from '../../../../services/logger.js';
 import { getConversationForUser } from '../../conversation/read-conversation/getConversation.js';
 import { createConversation } from '../../conversation/create-new-conversation/database/conversationCreate.js';
-import { addUserMessage } from '../1-user-message/add-message/sendUserMessage.js';
+import { addUserMessage, type UserMessageResult } from '../1-user-message/add-message/sendUserMessage.js';
 import { generateAndSaveResponse } from '../2-chatbot-message/generateResponse.js';
+import type { ChatbotMessageResult } from '../2-chatbot-message/database/sendChatbotMessage.js';
 
 /**
  * Send message flow result
@@ -11,8 +11,8 @@ import { generateAndSaveResponse } from '../2-chatbot-message/generateResponse.j
 export interface SendMessageFlowResult {
   success: boolean;
   conversationId: string | number;
-  userMessage: MessageRecord;
-  assistantMessage: MessageRecord;
+  userMessage: UserMessageResult['userMessage'];
+  assistantMessage: ChatbotMessageResult['chatbotMessage'];
   timestamp: string;
 }
 

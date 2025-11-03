@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { refreshTokens } from '../middleware/index.js';
-import jwtConfig from '../../../config/jwt.js';
+import jwtConfig, { getJWTSecret } from '../../../config/jwt.js';
 import { AuthenticatedRequest, AuthUser } from '../../types.js';
 
 interface RefreshRequest {
@@ -43,7 +43,7 @@ export const refresh = async (req: AuthenticatedRequest, res: Response): Promise
         jti: jwtConfig.generateJTI(),
         iat: Math.floor(Date.now() / 1000)
       },
-      jwtConfig.JWT_SECRET as string,
+      getJWTSecret(),
       { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
     );
 

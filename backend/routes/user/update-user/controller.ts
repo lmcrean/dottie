@@ -49,13 +49,11 @@ export const updateUser = async (req: AuthenticatedRequest, res: Response): Prom
 
     const updatedUser = await User.update(userId, updateData);
 
-    // Remove sensitive information
-    const { password_hash, ...userWithoutPassword } = updatedUser;
-
+    // updatedUser is already sanitized (UserPublic), no need to remove password_hash
     // Map 'username' back to 'name' in the response for frontend compatibility
     const responseData = {
-      ...userWithoutPassword,
-      name: userWithoutPassword.username,
+      ...updatedUser,
+      name: updatedUser.username,
     };
 
     res.json(responseData);

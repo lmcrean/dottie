@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
  * User object attached to request after authentication
  */
 export interface AuthUser {
-  id: number | string; // number for real users, string for test users
+  id: string; // User ID from JWT
   username?: string;
   email: string;
   iat?: number; // JWT issued at timestamp

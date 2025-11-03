@@ -27,7 +27,7 @@ export const getCurrentUser = async (req: AuthenticatedRequest, res: Response): 
       return;
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId, false);
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });

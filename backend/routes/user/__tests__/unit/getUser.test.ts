@@ -73,7 +73,7 @@ describe('GET /me - Get Current User', () => {
 
     // Assertions
     expect(response.status).toBe(200);
-    expect(User.findById).toHaveBeenCalledWith(userId);
+    expect(User.findById).toHaveBeenCalledWith(userId, false);
     expect(response.body).not.toHaveProperty('password_hash');
     expect(response.body).toMatchObject({
       id: userId,

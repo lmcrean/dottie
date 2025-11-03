@@ -52,14 +52,23 @@ class User {
 
   // === READ OPERATIONS ===
 
+  static async findById(id: string, sanitize: true): Promise<UserPublic | null>;
+  static async findById(id: string, sanitize: false): Promise<UserRecord | null>;
+  static async findById(id: string, sanitize?: boolean): Promise<UserPublic | UserRecord | null>;
   static async findById(id: string, sanitize: boolean = true): Promise<UserPublic | UserRecord | null> {
     return await ReadUser.findById(id, sanitize);
   }
 
+  static async findByEmail(email: string, sanitize: true): Promise<UserPublic | null>;
+  static async findByEmail(email: string, sanitize: false): Promise<UserRecord | null>;
+  static async findByEmail(email: string, sanitize?: boolean): Promise<UserPublic | UserRecord | null>;
   static async findByEmail(email: string, sanitize: boolean = true): Promise<UserPublic | UserRecord | null> {
     return await ReadUser.findByEmail(email, sanitize);
   }
 
+  static async findByUsername(username: string, sanitize: true): Promise<UserPublic | null>;
+  static async findByUsername(username: string, sanitize: false): Promise<UserRecord | null>;
+  static async findByUsername(username: string, sanitize?: boolean): Promise<UserPublic | UserRecord | null>;
   static async findByUsername(username: string, sanitize: boolean = true): Promise<UserPublic | UserRecord | null> {
     return await ReadUser.findByUsername(username, sanitize);
   }
