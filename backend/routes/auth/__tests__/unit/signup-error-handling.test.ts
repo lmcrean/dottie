@@ -118,7 +118,7 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
     // Mock User.create to return validation error
     createSpy.mockResolvedValue({
       success: false,
-      errors: ['Email already exists'] // This could happen in race conditions
+      error: 'Email already exists' // This could happen in race conditions
     });
 
     await signup(req, res);
@@ -139,7 +139,7 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
     // Mock User.create to return username validation error
     createSpy.mockResolvedValue({
       success: false,
-      errors: ['Username already exists'] // This could happen in race conditions
+      error: 'Username already exists' // This could happen in race conditions
     });
 
     await signup(req, res);
@@ -160,7 +160,7 @@ describe('Signup Error Handling', { tags: ['authentication', 'unit', 'error'] },
     // Mock User.create to return other validation error
     createSpy.mockResolvedValue({
       success: false,
-      errors: ['Password is too weak']
+      error: 'Password is too weak'
     });
 
     await signup(req, res);
