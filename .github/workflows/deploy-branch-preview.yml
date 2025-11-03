@@ -119,6 +119,9 @@ As an external contributor, your PR requires manual approval before deployment p
       deployment_type: 'branch'
       branch_name: ${{ github.head_ref }}
       pr_number: ${{ github.event.number }}
+      # Use GitHub Environment for one-time approval per PR
+      # After initial approval, all subsequent commits auto-deploy
+      environment: 'preview-deployments'
 
   test:
     needs: deploy
