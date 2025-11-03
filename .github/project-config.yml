@@ -19,8 +19,8 @@ project:
       region: "europe-west2"
       memory: "512Mi"
       cpu: "1"
-      min_instances: 1
-      max_instances: 10
+      min_instances: 0        # COST SAVINGS: Scale to zero when idle (prevents 24/7 charges)
+      max_instances: 3        # COST CONTROL: Reduced from 10 to limit max concurrent instances
       timeout: "60s"
       concurrency: 100
 
