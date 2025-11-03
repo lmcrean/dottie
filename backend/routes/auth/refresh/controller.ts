@@ -44,7 +44,7 @@ export const refresh = async (req: AuthenticatedRequest, res: Response): Promise
         iat: Math.floor(Date.now() / 1000)
       },
       getJWTSecret(),
-      { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
+      { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN } as jwt.SignOptions
     );
 
     res.json({ token });

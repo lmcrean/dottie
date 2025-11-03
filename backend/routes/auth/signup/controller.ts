@@ -123,7 +123,7 @@ export const signup = async (req: AuthenticatedRequest, res: Response): Promise<
     // Handle the new structured response from User.create()
     if (!userResult.success) {
       // Parse the specific validation errors for better error messaging
-      const errors = userResult.errors || [];
+      const errors = userResult.error ? [userResult.error] : [];
       let errorType = 'VALIDATION_ERROR';
       let userMessage = 'Failed to create account. Please check your information and try again.';
       let statusCode = 400;

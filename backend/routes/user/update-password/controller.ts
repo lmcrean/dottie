@@ -53,8 +53,8 @@ export const updatePassword = async (req: AuthenticatedRequest, res: Response): 
     const saltRounds = 10;
     const password_hash = await bcrypt.hash(newPassword, saltRounds);
 
-    // Update the password
-    await User.updatePassword(userId, password_hash);
+    // Update the password (pass current hash for verification)
+    await User.updatePassword(userId, user.password_hash, password_hash);
 
     res.json({
       message: 'Password updated successfully',

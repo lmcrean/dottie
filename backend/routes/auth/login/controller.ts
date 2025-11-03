@@ -65,7 +65,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
           jti: jwtConfig.generateJTI()
         },
         getJWTSecret(),
-        { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
+        { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN } as jwt.SignOptions
       );
 
       // Generate refresh token
@@ -76,7 +76,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
           jti: jwtConfig.generateJTI()
         },
         getRefreshSecret(),
-        { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN }
+        { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN } as jwt.SignOptions
       );
 
       // Store refresh token in database
@@ -116,7 +116,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
         jti: jwtConfig.generateJTI()
       },
       getJWTSecret(),
-      { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN }
+      { expiresIn: jwtConfig.TOKEN_EXPIRY.ACCESS_TOKEN } as jwt.SignOptions
     );
 
     // Generate refresh token
@@ -127,7 +127,7 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
         jti: jwtConfig.generateJTI()
       },
       getRefreshSecret(),
-      { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN }
+      { expiresIn: jwtConfig.TOKEN_EXPIRY.REFRESH_TOKEN } as jwt.SignOptions
     );
 
     // Store refresh token in database

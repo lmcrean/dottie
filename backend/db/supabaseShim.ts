@@ -125,7 +125,7 @@ const createQueryBuilder = (tableName: string): QueryBuilder => {
 
     // Execution methods
     async _runSelect(columns: string = '*'): Promise<any[]> {
-      let query = supabase.from(this._table).select(columns);
+      let query: any = supabase.from(this._table).select(columns);
 
       // Apply wheres
       for (const where of this._wheres) {
@@ -154,7 +154,7 @@ const createQueryBuilder = (tableName: string): QueryBuilder => {
     },
 
     async _runCount(): Promise<{ count: number }> {
-      let query = supabase.from(this._table).select('*', { count: 'exact', head: true });
+      let query: any = supabase.from(this._table).select('*', { count: 'exact', head: true });
 
       // Apply wheres
       for (const where of this._wheres) {
@@ -184,7 +184,7 @@ const createQueryBuilder = (tableName: string): QueryBuilder => {
       console.log(`[Supabase] Update data:`, JSON.stringify(this._updates));
       console.log(`[Supabase] Where conditions:`, JSON.stringify(this._wheres));
 
-      let query = supabase.from(this._table).update(this._updates);
+      let query: any = supabase.from(this._table).update(this._updates);
 
       // Apply wheres
       for (const where of this._wheres) {
@@ -217,7 +217,7 @@ const createQueryBuilder = (tableName: string): QueryBuilder => {
     },
 
     async _runDelete(): Promise<number> {
-      let query = supabase.from(this._table).delete();
+      let query: any = supabase.from(this._table).delete();
 
       // Apply wheres
       for (const where of this._wheres) {

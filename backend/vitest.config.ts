@@ -30,6 +30,7 @@ export default defineConfig({
     ],
     environment: 'node',
     coverage: {
+      provider: 'v8',
       reporter: ['text', 'json', 'html'],
     },
     testTimeout: 60000,
@@ -43,14 +44,8 @@ export default defineConfig({
         minThreads: 1
       }
     },
-    // Match anything with 'dev' in the file path or test name
-    includeMatch: [
-      // Include tests with 'dev' in the file path
-      { name: 'dev', pattern: '**/dev/**' },
-      { name: 'unit', pattern: '**/unit/**' },
-      { name: 'e2e', pattern: '**/e2e/**' },
-      { name: 'prod', pattern: '**/prod/**' }
-    ],
+    // Note: includeMatch is not a valid vitest config property
+    // Use include/exclude patterns instead
     // Alias to make imports work properly
     alias: {
       '@': resolve(__dirname, './'),

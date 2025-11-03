@@ -42,7 +42,7 @@ async function initializeDatabase(): Promise<void> {
         .limit(1);
 
       if (directSqlError && directSqlError.message.includes("does not exist")) {
-        const { error: createError } = await supabase.auth.admin.executeSql(`
+        const { error: createError } = await (supabase.auth.admin as any).executeSql(`
           CREATE TABLE IF NOT EXISTS public.users (
             id UUID PRIMARY KEY,
             username TEXT UNIQUE NOT NULL,

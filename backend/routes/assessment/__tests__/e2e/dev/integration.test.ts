@@ -58,10 +58,10 @@ beforeAll(async () => {
       ]
     );
 
-    // Create a JWT token
+    // Create a JWT token (use 'id' instead of 'userId' for consistency)
     const secret = process.env.JWT_SECRET || "dev-jwt-secret";
     testToken = jwt.sign(
-      { userId: testUserId, email: userData.email },
+      { id: testUserId, email: userData.email },
       secret,
       { expiresIn: "1h" }
     );

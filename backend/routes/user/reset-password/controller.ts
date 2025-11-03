@@ -50,11 +50,9 @@ export const requestPasswordReset = async (req: AuthenticatedRequest, res: Respo
 
     // Generate a reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1); // Token expires in 1 hour
 
-    // Store the reset token in the database
-    await User.storeResetToken(email, resetToken, expiresAt);
+    // Store the reset token in the database (expires in 1 hour)
+    await User.initiatePasswordReset(email, resetToken, 1);
 
     // Send the reset token via email
     await EmailService.sendPasswordResetEmail(email, resetToken);
@@ -89,23 +87,17 @@ export const completePasswordReset = async (req: AuthenticatedRequest, res: Resp
       return;
     }
 
-    // Find user by reset token
-    const user = await User.findByResetToken(token);
-
-    if (!user) {
-      res.status(400).json({ error: 'Invalid or expired reset token' });
-      return;
-    }
-
     // Hash the new password
     const saltRounds = 10;
     const password_hash = await bcrypt.hash(newPassword, saltRounds);
 
-    // Update the user's password
-    await User.updatePassword(user.id, password_hash);
+    // Reset password using the token (this validates the token and updates the password)
+    const result = await User.resetPassword(token, password_hash);
 
-    // Clear reset token
-    await User.clearResetToken(user.id);
+    if (!result.success) {
+      res.status(400).json({ error: result.error || 'Invalid or expired reset token' });
+      return;
+    }
 
     res.json({
       message: 'Password has been reset successfully'
