@@ -1,8 +1,7 @@
-// @ts-check
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './dev/tests',
+  testDir: './e2e/dev',
   timeout: 30000,
   expect: {
     timeout: 5000,
@@ -16,34 +15,28 @@ export default defineConfig({
     baseURL: 'http://localhost:5000',
     trace: 'on-first-retry',
   },
-  
-  // Specific file pattern to avoid conflicts with vitest
+
+  // Specific file pattern for API tests
   testMatch: '**/*.api.pw.spec.{js,ts}',
 
   // Configure webServer to automatically start the backend server during tests
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5000/api/hello',
+    url: 'http://localhost:5000/api/setup/health/hello',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 60000,
+    // Enable stdout/stderr to capture backend console logs
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 
-  // Create separate projects for API tests and browser tests
+  // Create a project for API testing
   projects: [
     {
       name: 'api',
       use: {
         // No browser needed for API tests
       },
-      testMatch: '**/*.api.pw.spec.{js,ts}',
-    },
-    {
-      name: 'browser',
-      use: {
-        // Using only Safari as per instructions
-        browserName: 'webkit',
-      },
-      testMatch: '**/*.ui.pw.spec.{js,ts}',
-    },
+    }
   ],
-}); 
+});

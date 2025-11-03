@@ -1,4 +1,3 @@
-// @ts-check
 import { defineConfig } from '@playwright/test';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -26,11 +25,11 @@ export default defineConfig({
       'x-test-env': 'prod'
     }
   },
-  
+
   testMatch: '**/*.api.pw.spec.{js,ts}',
-  
+
   globalSetup: join(__dirname, 'e2e/setup/global-setup-prod.ts'),
-  
+
   projects: [
     {
       name: 'api',
@@ -39,4 +38,4 @@ export default defineConfig({
       },
     }
   ],
-}); 
+});
