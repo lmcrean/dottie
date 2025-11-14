@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { Calendar, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
 import { toast } from 'sonner';
+
 import PageTransition from '../animations/page-transitions';
+import { assessmentApi, type Assessment } from '@/src/pages/assessment/api';
+import { MenstrualPattern } from '../steps/context/types';
+import { PATTERN_DATA } from '../steps/context/types/recommendations';
 
 export default function HistoryPage() {
   // #actual
@@ -163,14 +166,25 @@ export default function HistoryPage() {
                   ? assessment.cycle_length
                   : assessment.assessment_data?.cycleLength;
 
+                // Ensure we have a valid pattern value
+                const safePattern: MenstrualPattern = [
+                  'regular',
+                  'irregular',
+                  'heavy',
+                  'pain',
+                  'developing'
+                ].includes(itemPattern as string)
+                  ? (itemPattern as MenstrualPattern)
+                  : 'regular';
+
                 return (
                   <Link
                     key={assessment.id}
                     to={`/assessment/history/${assessment.id}`}
                     className="block rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                   >
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-center gap-28">
+                      <div className='flex-grow'>
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center rounded-full bg-pink-100 px-2.5 py-2 text-xs font-medium text-pink-800 dark:bg-pink-700 dark:text-pink-100">
                             {formatValue(itemPattern)}
@@ -194,9 +208,13 @@ export default function HistoryPage() {
                               : ''}
                           </p>
                         </div>
-
-                        {/* Add dynamic icons here based on assessment data */}
                       </div>
+                      {/* Add dynamic icons here based on assessment data */}
+                      <img
+                        src={PATTERN_DATA[safePattern].icon}
+                        className="h-16 w-16 md:h-24 md:w-24"
+                        alt="menstrual-pattern-icon"
+                      />
                       <ChevronRight className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                     </div>
                   </Link>
