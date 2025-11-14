@@ -194,6 +194,8 @@ export default function HistoryPage() {
                               : ''}
                           </p>
                         </div>
+
+                        {/* Add dynamic icons here based on assessment data */}
                       </div>
                       <ChevronRight className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                     </div>
